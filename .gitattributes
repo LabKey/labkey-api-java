@@ -1,0 +1,23 @@
+* text=auto !eol
+java/remoteapi.iml -text
+java/remoteapi.ipr -text
+java/src/org/apache/commons/httpclient/contrib/ssl/EasySSLProtocolSocketFactory.java -text
+java/src/org/apache/commons/httpclient/contrib/ssl/EasyX509TrustManager.java -text
+java/src/org/labkey/remoteapi/Command.java -text
+java/src/org/labkey/remoteapi/CommandException.java -text
+java/src/org/labkey/remoteapi/CommandResponse.java -text
+java/src/org/labkey/remoteapi/Connection.java -text
+java/src/org/labkey/remoteapi/PostCommand.java -text
+java/src/org/labkey/remoteapi/Test.java -text
+java/src/org/labkey/remoteapi/assay/AssayListCommand.java -text
+java/src/org/labkey/remoteapi/assay/AssayListResponse.java -text
+java/src/org/labkey/remoteapi/query/DeleteRowsCommand.java -text
+java/src/org/labkey/remoteapi/query/Filter.java -text
+java/src/org/labkey/remoteapi/query/InsertRowsCommand.java -text
+java/src/org/labkey/remoteapi/query/RowsResponse.java -text
+java/src/org/labkey/remoteapi/query/SaveRowsCommand.java -text
+java/src/org/labkey/remoteapi/query/SaveRowsResponse.java -text
+java/src/org/labkey/remoteapi/query/SelectRowsCommand.java -text
+java/src/org/labkey/remoteapi/query/SelectRowsResponse.java -text
+java/src/org/labkey/remoteapi/query/Sort.java -text
+java/src/org/labkey/remoteapi/query/UpdateRowsCommand.java -text
