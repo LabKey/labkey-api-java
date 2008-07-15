@@ -1,4 +1,5 @@
 * text=auto !eol
+java/build.xml -text
 java/remoteapi.iml -text
 java/remoteapi.ipr -text
 java/src/org/apache/commons/httpclient/contrib/ssl/EasySSLProtocolSocketFactory.java -text

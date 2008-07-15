@@ -1,0 +1,38 @@
+<project name="remoteapi" basedir="." default="build">
+
+    <property name="source.dir" value="${basedir}/src"/>
+    <property name="build.dir" value="${basedir}/build"/>
+    <property name="build.classes.dir" value="${build.dir}/classes"/>
+    <property name="build.jar.dir" value="${build.dir}/jar"/>
+    <property name="build.jar.name" value="labkey-remote-api.jar"/>
+    <property name="dist.dir" value="${basedir}/dist"/>
+
+    <path id="component.class.path">
+        <fileset dir="lib" includes="*.jar"/>
+    </path>
+
+
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+        <delete dir="${dist.dir}"/>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="${build.classes.dir}"/>
+        <javac srcdir="${source.dir}" destdir="${build.classes.dir}"
+               classpathref="component.class.path"  target="1.5"/>
+    </target>
+
+    <target name="jar" depends="compile">
+        <mkdir dir="${build.jar.dir}"/>
+        <jar destfile="${build.jar.dir}/${build.jar.name}" basedir="${build.classes.dir}"/>
+    </target>
+
+    <target name="dist" depends="compile,jar">
+        <mkdir dir="${dist.dir}"/>
+        <copy file="${build.jar.dir}/${build.jar.name}" tofile="${dist.dir}/${build.jar.name}"/>
+    </target>
+
+    <target name="build" depends="dist"/>
+    <target name="rebuild" depends="clean,build"/>
+</project>
