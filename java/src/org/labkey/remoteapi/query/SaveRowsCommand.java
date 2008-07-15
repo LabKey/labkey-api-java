@@ -91,11 +91,6 @@ public abstract class SaveRowsCommand extends PostCommand
         return json;
     }
 
-    public SaveRowsResponse execute(Connection connection) throws IOException, EncoderException
-    {
-        return (SaveRowsResponse)super.execute(connection);
-    }
-
     public SaveRowsResponse execute(Connection connection, String folderPath) throws IOException, EncoderException
     {
         return (SaveRowsResponse)super.execute(connection, folderPath);

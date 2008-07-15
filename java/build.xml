@@ -6,6 +6,7 @@
     <property name="build.jar.dir" value="${build.dir}/jar"/>
     <property name="build.jar.name" value="labkey-remote-api.jar"/>
     <property name="dist.dir" value="${basedir}/dist"/>
+    <property name="doc.dir" value="${dist.dir}/doc"/>
 
     <path id="component.class.path">
         <fileset dir="lib" includes="*.jar"/>
@@ -28,7 +29,12 @@
         <jar destfile="${build.jar.dir}/${build.jar.name}" basedir="${build.classes.dir}"/>
     </target>
 
-    <target name="dist" depends="compile,jar">
+    <target name="javadoc">
+        <javadoc sourcepath="${source.dir}" destdir="${doc.dir}" classpathref="component.class.path"
+                 author="true" version="true" packagenames="org.labkey.remoteapi.*"/>
+    </target>
+
+    <target name="dist" depends="compile,jar,javadoc">
         <mkdir dir="${dist.dir}"/>
         <copy file="${build.jar.dir}/${build.jar.name}" tofile="${dist.dir}/${build.jar.name}"/>
     </target>

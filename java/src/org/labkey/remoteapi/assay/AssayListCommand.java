@@ -70,11 +70,6 @@ public class AssayListCommand extends Command
         _id = id;
     }
 
-    public AssayListResponse execute(Connection connection) throws IOException, EncoderException
-    {
-        return (AssayListResponse)super.execute(connection);
-    }
-
     public AssayListResponse execute(Connection connection, String folderPath) throws IOException, EncoderException
     {
         return (AssayListResponse)super.execute(connection, folderPath);

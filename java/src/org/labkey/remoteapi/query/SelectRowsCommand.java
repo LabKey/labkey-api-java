@@ -155,11 +155,6 @@ public class SelectRowsCommand extends Command
         addFilter(new Filter(columnName, value, operator));
     }
 
-    public SelectRowsResponse execute(Connection connection) throws IOException, EncoderException
-    {
-        return (SelectRowsResponse)(super.execute(connection));
-    }
-
     public SelectRowsResponse execute(Connection connection, String folderPath) throws IOException, EncoderException
     {
         return (SelectRowsResponse)(super.execute(connection, folderPath));
