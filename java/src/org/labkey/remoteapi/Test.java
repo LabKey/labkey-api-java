@@ -17,10 +17,9 @@ package org.labkey.remoteapi;
 
 import org.labkey.remoteapi.query.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
-import java.util.Date;
 
 /*
 * User: Dave
@@ -31,12 +30,11 @@ public class Test
 {
     public static void main(String[] args) throws Exception
     {
-        Connection cn = new Connection("https://localhost:8443/labkey");
+        Connection cn = new Connection("https://labkey.org");
 
         try
         {
             selectTest(cn);
-            //insertTest(cn);
         }
         catch(CommandException e)
         {
@@ -47,29 +45,19 @@ public class Test
     @SuppressWarnings("unchecked")
     public static void selectTest(Connection cn) throws Exception
     {
-        SelectRowsCommand cmd = new SelectRowsCommand("lists", "People");
+        SelectRowsCommand cmd = new SelectRowsCommand("study", "Physical Exam");
 
-        cmd.addSort("LastName", Sort.Direction.DESCENDING);
-        cmd.addSort(new Sort("FirstName"));
+        cmd.addSort(new Sort("SequenceNum"));
+        cmd.addSort("Weight", Sort.Direction.DESCENDING);
 
-        //cmd.addFilter(new Filter("LastName", "Stearns"));
-
-        SelectRowsResponse response = cmd.execute(cn, "Api Test");
+        SelectRowsResponse response = cmd.execute(cn, "Home/Study/demo");
         System.out.println("Number of rows: " + response.getRowCount());
+
         List<Map<String,Object>> rows = response.getRows();
         for(Map<String,Object> row : rows)
         {
             System.out.println(row);
         }
-
-        SelectRowsResponse.ColumnDataType type = response.getColumnDataType("Date");
-        if(null != type)
-            System.out.println("Type of FirstName column is " + type);
-        Map<String,Object> row = response.getRows().get(0);
-        assert row.get("Date") instanceof Date;
-
-        String idCol = response.getProperty("metaData.id");
-        System.out.println("ID column is " + idCol);
     }
 
     public static void insertTest(Connection cn) throws Exception

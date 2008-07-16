@@ -15,11 +15,11 @@
  */
 package org.labkey.remoteapi;
 
-import org.json.simple.JSONValue;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 /*
 * User: Dave
@@ -28,7 +28,16 @@ import java.util.List;
 */
 
 /**
- * Contains the details about the response sent by the server after executing a command
+ * Represents the details of a response returned from the LabKey Server.
+ * <p>
+ * Client code will typically use a class derived from this class that is
+ * returned from the particular command used (e.g. SelectRowsCommand returns
+ * SelectRowsResponse). However, if you are using the Command class directly to
+ * call an HTTP API that does not yet have a specialized command class,
+ * you would use this object to obtain the response details.
+ *
+ * @author Dave Stearns, LabKey Corporation
+ * @version 1.0
  */
 public class CommandResponse
 {
@@ -36,22 +45,52 @@ public class CommandResponse
     private int _statusCode;
     private JSONObject _data = null;
 
+    /**
+     * Constructs a new CommandResponse, initialized with the provided
+     * response text and status code.
+     * @param text The response text
+     * @param statusCode The HTTP status code
+     */
     public CommandResponse(String text, int statusCode)
     {
         _text = text;
         _statusCode = statusCode;
     }
 
+    /**
+     * Returns the raw response text.
+     * <p>
+     * Use this if your command
+     * returns something other than JSON, or if you want to
+     * use a different JSON parser.
+     * <p>
+     * This may return null if no
+     * response body was sent by the server.
+     * @return The raw response text.
+     */
     public String getText()
     {
         return _text;
     }
 
+    /**
+     * Returns the HTTP status code (typically 200).
+     * @return The HTTP status code
+     */
     public int getStatusCode()
     {
         return _statusCode;
     }
 
+    /**
+     * Attemtps to parse the response text and return the a property Map.
+     * <p>
+     * If the response text cannot be parsed, a runtime error will be thrown.
+     * <p>
+     * Note that the values in the Map may be simple values,
+     * Lists, or Maps.
+     * @return The parsed data as a property map.
+     */
     @SuppressWarnings("unchecked")
     public Map<String,Object> getParsedData()
     {
@@ -60,6 +99,16 @@ public class CommandResponse
         return _data;
     }
 
+    /**
+     * Returns the value of a specific property in the parsed data
+     * given a path to that property.
+     * <p>
+     * The path is a period-delimited list of property names. For
+     * example, to obtain the 'bar' property from the Map associated
+     * with the 'foo' property, the path would be 'foo.bar'.
+     * @param path The property path.
+     * @return The property value, or null if the property was not found.
+     */
     @SuppressWarnings("unchecked")
     public <T> T getProperty(String path)
     {
@@ -70,6 +119,15 @@ public class CommandResponse
         return (T)getProperty(pathParts, 0, getParsedData());
     }
 
+    /**
+     * Called by {@link #getProperty(String)} after splitting the path into
+     * a String[], and recursively by itself as it descends the property
+     * hierarchy.
+     * @param path The path split into a String[].
+     * @param index The current index into the path array.
+     * @param parent The current parent map.
+     * @return The property value, or null if not found.
+     */
     @SuppressWarnings("unchecked")
     protected <T> T getProperty(String[] path, int index, Map<String,Object> parent)
     {
@@ -87,6 +145,14 @@ public class CommandResponse
         }
     }
 
+    /**
+     * Finds an Map in a List of Maps who's property identified by <code>propertyName</code>
+     * matches the <code>value</code> supplied. Returns null if not found.
+     * @param objects The list of Maps to search.
+     * @param propertyName The property name to examine in each Map.
+     * @param value The value to compare against.
+     * @return The Map where the value of propertyName equals value, or null if not found.
+     */
     protected Map<String,Object> findObject(List<Map<String,Object>> objects, String propertyName, String value)
     {
         assert null != value;

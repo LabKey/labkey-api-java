@@ -20,28 +20,58 @@ package org.labkey.remoteapi.query;
 * Date: Jul 14, 2008
 * Time: 1:16:58 PM
 */
+/**
+ * Response object used for commands that derive from SaveRowsCommand.
+ * This response object provides helper methods for accessing the important
+ * bits of the parsed response data.
+ */
 public class SaveRowsResponse extends RowsResponse
 {
+    /**
+     * Constructs a new SaveRowsResponse given the response text and status code
+     * @param text The response text.
+     * @param statusCode The HTTP status code.
+     */
     public SaveRowsResponse(String text, int statusCode)
     {
         super(text, statusCode);
     }
 
+    /**
+     * Returns the 'rowsAffected' response property.
+     * @return The number of rows affected by the command, or null if this property
+     * was not present in the response.
+     */
     public Number getRowsAffected()
     {
         return getProperty("rowsAffected");
     }
 
+    /**
+     * Returns the 'schemaName' response property.
+     * @return The schema name affected by the command, or null if this property
+     * was not present in the response.
+     */
     public String getSchemaName()
     {
         return getProperty("schemaName");
     }
 
+    /**
+     * Returns the 'queryName' response property.
+     * @return The query name affected by the command, or null if this property
+     * was not present in the response.
+     */
     public String getQueryName()
     {
         return getProperty("queryName");
     }
 
+    /**
+     * Returns the 'command' response property.
+     * @return The command executed, or null if this property
+     * was not present in the response.
+     */
     public String getCommand()
     {
         return getProperty("command");

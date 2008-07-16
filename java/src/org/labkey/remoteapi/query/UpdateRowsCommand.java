@@ -20,8 +20,24 @@ package org.labkey.remoteapi.query;
 * Date: Jul 11, 2008
 * Time: 5:24:45 PM
 */
+
+/**
+ * Command for updating rows into a table in a read-write schema.
+ * The user associated with the connection used when executing this
+ * command must have permission to update data into the specified query.
+ * <p>
+ * For details on schemas and queries, see the {@link SaveRowsCommand}.
+ * @see SaveRowsCommand
+ */
 public class UpdateRowsCommand extends SaveRowsCommand
 {
+    /**
+     * Constructs an UpdateRowsCommand for the given schemaName and queryName.
+     * See the {@link SaveRowsCommand} for more details.
+     * @param schemaName The schemaName
+     * @param queryName The queryName.
+     * @see SaveRowsCommand
+     */
     public UpdateRowsCommand(String schemaName, String queryName)
     {
         super(schemaName, queryName, "updateRows");

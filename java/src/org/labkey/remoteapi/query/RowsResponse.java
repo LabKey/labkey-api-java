@@ -18,31 +18,50 @@ package org.labkey.remoteapi.query;
 import org.apache.commons.logging.LogFactory;
 import org.labkey.remoteapi.CommandResponse;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Date;
-import java.text.SimpleDateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /*
 * User: Dave
 * Date: Jul 14, 2008
 * Time: 11:57:17 AM
 */
+/**
+ * Base class for command responses that contain an array of rows
+ * and meta-data about those rows. Primarily, this class converts
+ * date values in the rows array to real Java Date objects.
+ */
 public abstract class RowsResponse extends CommandResponse
 {
+    /**
+     * Constructs a new RowsResponse given the specified text and status code.
+     * @param text The response text.
+     * @param statusCode The HTTP status code.
+     */
     protected RowsResponse(String text, int statusCode)
     {
         super(text, statusCode);
         fixupParsedData();
     }
 
+    /**
+     * Returns the list of rows from the parsed response data.
+     * @return The list of rows (each row is a Map), or null if
+     * the rows list was not included in the response.
+     */
     public List<Map<String,Object>> getRows()
     {
         return getProperty("rows");
     }
 
+    /**
+     * Fixes up the parsed data. Currently, this converts string-based
+     * date literals into real Java Date objects.
+     */
     protected void fixupParsedData()
     {
         //because JSON does not have a literal representation for dates
@@ -52,6 +71,9 @@ public abstract class RowsResponse extends CommandResponse
         //build up the list of date fields
         List<String> dateFields = new ArrayList<String>();
         List<Map<String,Object>> fields = getProperty("metaData.fields");
+        if(null == fields)
+            return;
+
         for(Map<String,Object> field : fields)
         {
             String type = (String)field.get("type");

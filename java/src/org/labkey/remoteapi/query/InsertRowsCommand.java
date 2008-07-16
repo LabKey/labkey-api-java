@@ -15,21 +15,29 @@
  */
 package org.labkey.remoteapi.query;
 
-import org.labkey.remoteapi.PostCommand;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONArray;
-
-import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
-
 /*
 * User: Dave
 * Date: Jul 11, 2008
 * Time: 4:53:34 PM
 */
+
+/**
+ * Command for inserting rows into a table in a read-write schema.
+ * The user associated with the connection used when executing this
+ * command must have permission to insert data into the specified query.
+ * <p>
+ * For details on schemas and queries, see the {@link SaveRowsCommand}.
+ * @see SaveRowsCommand
+ */
 public class InsertRowsCommand extends SaveRowsCommand
 {
+    /**
+     * Constructs an InsertRowsCommand for the given schemaName and queryName.
+     * See the {@link SaveRowsCommand} for more details.
+     * @param schemaName The schemaName
+     * @param queryName The queryName.
+     * @see SaveRowsCommand
+     */
     public InsertRowsCommand(String schemaName, String queryName)
     {
         super(schemaName, queryName, "insertRows");

@@ -75,12 +75,24 @@ public class Filter
     private Operator _operator = Operator.EQUAL;
     private Object _value;
 
+    /**
+     * Constructs a new equality Filter for the given column name
+     * and value. By default, the operator will be set to {@link Filter.Operator#EQUAL}.
+     * @param columnName The column name.
+     * @param value The value it should be equal to.
+     */
     public Filter(String columnName, Object value)
     {
         _columnName = columnName;
         _value = value;
     }
 
+    /**
+     * Constructs a filter with a given column name, value and operator.
+     * @param columnName The column name to filter.
+     * @param value The value to compare it to.
+     * @param operator The operator for the comparisson.
+     */
     public Filter(String columnName, Object value, Operator operator)
     {
         _columnName = columnName;
@@ -118,13 +130,30 @@ public class Filter
         _value = value;
     }
 
+    /**
+     * Returns the query string parameter name for this filter.
+     * Because query string parameters contain only two items
+     * (name = value), we encode the operator in the name,
+     * and this method returns the appropriate encoding.
+     * @return The query string parameter name.
+     */
     public String getQueryStringParamName()
     {
-        return getColumnName() + "~" + getOperator().getName();
+        return (null == getColumnName() || null == getOperator())
+                ? ""
+                : getColumnName() + "~" + getOperator().getName();
     }
 
+    /**
+     * Returns the query string parameter value (not URL-encoded). By default,
+     * this simply returns the results of the <code>value.toString()</code>.
+     * Extended classes may override this to do a different string encoding.
+     * Note that this value will be URL-encoded by the caller, so do
+     * not URL-encode the value returned from this method.
+     * @return The query string parameter value.
+     */
     public String getQueryStringParamValue()
     {
-        return getValue().toString();
+        return null == getValue() ? "" : getValue().toString();
     }
 }

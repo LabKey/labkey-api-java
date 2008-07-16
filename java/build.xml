@@ -4,7 +4,7 @@
     <property name="build.dir" value="${basedir}/build"/>
     <property name="build.classes.dir" value="${build.dir}/classes"/>
     <property name="build.jar.dir" value="${build.dir}/jar"/>
-    <property name="build.jar.name" value="labkey-remote-api.jar"/>
+    <property name="build.jar.name" value="labkey-remote-api-1.0.jar"/>
     <property name="dist.dir" value="${basedir}/dist"/>
     <property name="doc.dir" value="${dist.dir}/doc"/>
 
@@ -31,6 +31,7 @@
 
     <target name="javadoc">
         <javadoc sourcepath="${source.dir}" destdir="${doc.dir}" classpathref="component.class.path"
+                 windowtitle="LabKey Remote API Library for Java Documentation"
                  author="true" version="true" packagenames="org.labkey.remoteapi.*"/>
     </target>
 

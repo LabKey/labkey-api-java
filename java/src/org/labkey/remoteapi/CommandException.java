@@ -19,16 +19,32 @@ import org.apache.commons.httpclient.HttpException;
 
 import java.util.Map;
 
-/*
-* User: Dave
-* Date: Jul 11, 2008
-* Time: 1:35:07 PM
-*/
+/**
+ * Represents an exception that occurs while executing a command.
+ * <p>
+ * An instance of this class is typically thrown when the server returns
+ * a non-success HTTP status code (&gt;= 400). The developer may catch
+ * this exception type and use the <code>getStatusCode()</code> method
+ * to retrieve the particular HTTP status code.
+ * <p>
+ * If the server generated an exception and sent details back to the
+ * client, the exception message will be set as the message text, which
+ * is returned from the <code>toString()</code> method. Other properties
+ * about the exception, such as the exception class and stack trace, may
+ * be obtained via the <code>getProperties()</code> method.
+ */
 public class CommandException extends HttpException
 {
     private int _statusCode;
     private Map<String,Object> _properties;
 
+    /**
+     * Constructs a new CommandException given a message, HTTP status code,
+     * and exception property map (which may be null).
+     * @param message The message text (should not be null).
+     * @param statusCode The HTTP status code.
+     * @param properties The exception property map (may be null)
+     */
     public CommandException(String message, int statusCode, Map<String,Object> properties)
     {
         super(message);
@@ -36,11 +52,19 @@ public class CommandException extends HttpException
         _properties = properties;
     }
 
+    /**
+     * Returns the HTTP status code returned by the server.
+     * @return The HTTP status code.
+     */
     public int getStatusCode()
     {
         return _statusCode;
     }
 
+    /**
+     * Returns the exception property map, or null if no map was set.
+     * @return The exception property map or null.
+     */
     public Map<String, Object> getProperties()
     {
         return _properties;

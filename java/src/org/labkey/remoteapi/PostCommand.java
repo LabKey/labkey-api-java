@@ -17,7 +17,6 @@ package org.labkey.remoteapi;
 
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.json.simple.JSONObject;
 
@@ -30,27 +29,66 @@ import java.io.UnsupportedEncodingException;
 */
 
 /**
- * Used as the base class for all commands that need to post data
+ * Base class for all commands that needs to post data to the server,
+ * rather than providing parameters in the query string.
+ * <p>
+ * Client code will not typically use this class directly, but will
+ * instead use one of the classes that extend this class (e.g.,
+ * {@link org.labkey.remoteapi.query.UpdateRowsCommand}). 
+ * <p>
+ * However, if future versions of the LabKey Server expose new HTTP APIs requiring a POST
+ * that are not yet supported with a specialized class in this library,
+ * the developer may still invoke these APIs by creating an instance of the
+ * PostCommand object directly, providing the controller and action name for
+ * the new API. The post body may then by supplied by overriding the
+ * {@link #getJsonObject()} method, returning the JSON object to post.
+ *  
+ * @author Dave Stearns, LabKey Corporation
+ * @version 1.0
  */
 public class PostCommand extends Command
 {
     private JSONObject _jsonObject = null;
 
+    /**
+     * Constructs a new PostCommand given a controller and action name.
+     * @param controllerName The controller name.
+     * @param actionName The action name.
+     */
     public PostCommand(String controllerName, String actionName)
     {
         super(controllerName, actionName);
     }
 
+    /**
+     * Returns the JSON object to post, or null if the JSON object
+     * has not yet been set. Override this method to provide the
+     * JSON object dynamically.
+     * @return The JSON object to post.
+     */
     public JSONObject getJsonObject()
     {
         return _jsonObject;
     }
 
+    /**
+     * Sets the JSON object to post.
+     * @param jsonObject The JSON object to post
+     */
     public void setJsonObject(JSONObject jsonObject)
     {
         _jsonObject = jsonObject;
     }
 
+    /**
+     * Overrides {@link Command#createMethod()} to create a
+     * <code>PostMethod</code> object.
+     * <p>
+     * Override this method if your post command sends something other
+     * than JSON in the post body. In your override, create the PostMethod
+     * and set the RequestEntity appropriately.
+     * @return The PostMethod object.
+     */
     protected HttpMethod createMethod()
     {
         PostMethod method = new PostMethod();
@@ -58,7 +96,6 @@ public class PostCommand extends Command
         //set the post body based on the supplied JSON object
         if(null != getJsonObject())
         {
-            RequestEntity entity = null;
             try
             {
                 method.setRequestEntity(new StringRequestEntity(getJsonObject().toString(),

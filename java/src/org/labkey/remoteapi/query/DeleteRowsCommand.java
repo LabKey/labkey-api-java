@@ -15,15 +15,22 @@
  */
 package org.labkey.remoteapi.query;
 
-import org.labkey.remoteapi.PostCommand;
-
-/*
-* User: Dave
-* Date: Jul 11, 2008
-* Time: 5:20:04 PM
-*/
+/**
+ * Command for deleting rows from a read-write schema. The user associated
+ * with the connection used when executing this command must have
+ * permission to delete the data.
+ * <p>
+ * For details on schemas and queries, see the {@link SaveRowsCommand}.
+ */
 public class DeleteRowsCommand extends SaveRowsCommand
 {
+    /**
+     * Constructs a DeleteRowsCommand for the given schemaName and queryName.
+     * See the {@link SaveRowsCommand} for more details.
+     * @param schemaName The schemaName
+     * @param queryName The queryName.
+     * @see SaveRowsCommand
+     */
     public DeleteRowsCommand(String schemaName, String queryName)
     {
         super(schemaName, queryName, "deleteRows");

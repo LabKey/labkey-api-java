@@ -17,14 +17,19 @@ package org.labkey.remoteapi.assay;
 
 import org.labkey.remoteapi.CommandResponse;
 
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 /*
 * User: Dave
 * Date: Jul 14, 2008
 * Time: 1:59:49 PM
 */
+/**
+ * Response class for the {@link AssayListCommand}. This class
+ * provides helpful getter method to access particular bits of the parsed
+ * response data.
+ */
 public class AssayListResponse extends CommandResponse
 {
     public AssayListResponse(String text, int statusCode)
@@ -32,16 +37,32 @@ public class AssayListResponse extends CommandResponse
         super(text, statusCode);
     }
 
+    /**
+     * Returns the definitions section of the response. This returns
+     * a list of assay definition Maps, each of which contains properties
+     * about the particular assay definition.
+     * @return The list of definitions.
+     */
     List<Map<String,Object>> getDefinitions()
     {
         return getProperty("definitions");
     }
 
+    /**
+     * Returns an assay definition for the assay identified by the specified name.
+     * @param name The name of the assay definition to find.
+     * @return The assay definition or null if not found.
+     */
     Map<String,Object> getDefinition(String name)
     {
         return findObject(getDefinitions(), "name", name);
     }
 
+    /**
+     * Returns an assay definition for the assay identified by the specified id.
+     * @param id The id of the assay definition to find.
+     * @return The assay definition or null if not found.
+     */
     Map<String,Object> getDefinition(int id)
     {
         return findObject(getDefinitions(), "id", String.valueOf(id));

@@ -20,8 +20,8 @@ import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.logging.LogFactory;
-import org.json.simple.JSONValue;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 import java.io.IOException;
 import java.util.Map;
@@ -40,6 +40,13 @@ import java.util.Map;
  * Command object directly, providing the controller and action name for
  * the new API. Parameters may then be specified by calling the <code>setParameters()</code>
  * method, passing a populated parameter <code>Map&lt;String,Object&gt;</code>
+ * <p>
+ * Note that this class is not thread-safe. Do not share instances of this class
+ * or its descendants between threads, unless the descendant declares explicitly that
+ * it is thread-safe.
+ *
+ * @author Dave Stearns, LabKey Corporation
+ * @version 1.0
  */
 public class Command
 {
@@ -115,7 +122,7 @@ public class Command
      * is typically useful only for administrator level operations.
      * <p>
      * The command will be executed against the server, using the credentials setup
-     * in the <code>connection<code> object. If the server is invalid or the user does not
+     * in the <code>connection</code> object. If the server is invalid or the user does not
      * have sufficient permissions, a <code>CommandException</code> will be thrown with
      * the 403 (Forbidden) HTTP status code.
      * <p>
