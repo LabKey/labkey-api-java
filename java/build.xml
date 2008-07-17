@@ -15,6 +15,7 @@
 
     <target name="clean">
         <delete dir="${build.dir}"/>
+        <delete dir="${dist.dir}"/>
     </target>
 
     <target name="compile">

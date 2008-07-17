@@ -43,7 +43,7 @@ public class AssayListResponse extends CommandResponse
      * about the particular assay definition.
      * @return The list of definitions.
      */
-    List<Map<String,Object>> getDefinitions()
+    public List<Map<String,Object>> getDefinitions()
     {
         return getProperty("definitions");
     }
@@ -53,7 +53,7 @@ public class AssayListResponse extends CommandResponse
      * @param name The name of the assay definition to find.
      * @return The assay definition or null if not found.
      */
-    Map<String,Object> getDefinition(String name)
+    public Map<String,Object> getDefinition(String name)
     {
         return findObject(getDefinitions(), "name", name);
     }
@@ -63,7 +63,7 @@ public class AssayListResponse extends CommandResponse
      * @param id The id of the assay definition to find.
      * @return The assay definition or null if not found.
      */
-    Map<String,Object> getDefinition(int id)
+    public Map<String,Object> getDefinition(int id)
     {
         return findObject(getDefinitions(), "id", String.valueOf(id));
     }
