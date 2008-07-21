@@ -16,6 +16,8 @@
 package org.labkey.remoteapi;
 
 import org.labkey.remoteapi.query.*;
+import org.labkey.remoteapi.assay.AssayListCommand;
+import org.labkey.remoteapi.assay.AssayListResponse;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,11 +32,13 @@ public class Test
 {
     public static void main(String[] args) throws Exception
     {
-        Connection cn = new Connection("https://labkey.org");
+        Connection cn = new Connection("http://localhost:8080/labkey");
 
         try
         {
             selectTest(cn);
+            crudTest(cn);
+            //assayTest(cn);
         }
         catch(CommandException e)
         {
@@ -45,12 +49,11 @@ public class Test
     @SuppressWarnings("unchecked")
     public static void selectTest(Connection cn) throws Exception
     {
-        SelectRowsCommand cmd = new SelectRowsCommand("study", "Physical Exam");
+        SelectRowsCommand cmd = new SelectRowsCommand("lists", "People");
 
-        cmd.addSort(new Sort("SequenceNum"));
-        cmd.addSort("Weight", Sort.Direction.DESCENDING);
+        cmd.addSort(new Sort("LastName"));
 
-        SelectRowsResponse response = cmd.execute(cn, "Home/Study/demo");
+        SelectRowsResponse response = cmd.execute(cn, "Api Test");
         System.out.println("Number of rows: " + response.getRowCount());
 
         List<Map<String,Object>> rows = response.getRows();
@@ -60,14 +63,54 @@ public class Test
         }
     }
 
-    public static void insertTest(Connection cn) throws Exception
+    public static void crudTest(Connection cn) throws Exception
     {
-        InsertRowsCommand cmd = new InsertRowsCommand("lists", "People");
+        int rowCount = 0;
+
+        //get the current row count
+        SelectRowsCommand cmdsel = new SelectRowsCommand("lists", "People");
+        SelectRowsResponse srresp = cmdsel.execute(cn, "Api Test");
+        rowCount = srresp.getRowCount().intValue();
+
+        //insert a row
+        InsertRowsCommand cmdins = new InsertRowsCommand("lists", "People");
+
         Map<String,Object> row = new HashMap<String,Object>();
-        row.put("FirstName", "Test");
-        row.put("LastName", "Person");
-        cmd.addRow(row);
-        RowsResponse response = cmd.execute(cn, "Api Test");
-        System.out.println(response.getParsedData().toString());
+        row.put("FirstName", "Insert");
+        row.put("LastName", "Test");
+
+        cmdins.addRow(row);
+        SaveRowsResponse resp = cmdins.execute(cn, "Api Test");
+
+        //make sure row count is one greater
+        srresp = cmdsel.execute(cn, "Api Test");
+        assert srresp.getRowCount().intValue() == rowCount + 1;
+
+        //update the newly-added row
+        UpdateRowsCommand cmdupd = new UpdateRowsCommand("lists", "People");
+        row = resp.getRows().get(0);
+        row.put("LastName", "Test UPDATED");
+        cmdupd.addRow(row);
+        resp = cmdupd.execute(cn, "Api Test");
+        assert resp.getRowsAffected().intValue() == 1;
+        assert resp.getRows().get(0).get("LastName").equals("Test UPDATED");
+
+        //delete the newly added row
+        DeleteRowsCommand cmddel = new DeleteRowsCommand("lists", "People");
+        cmddel.addRow(row);
+        resp = cmddel.execute(cn, "Api Test");
+        assert resp.getRowsAffected().intValue() == 1;
+        
+        //assert that the row count is back to what it was
+        srresp = cmdsel.execute(cn, "Api Test");
+        assert srresp.getRowCount().intValue() == rowCount;
     }
+
+    public static void assayTest(Connection cn) throws Exception
+    {
+        AssayListCommand cmd = new AssayListCommand();
+        AssayListResponse resp = cmd.execute(cn, "Study Test");
+        System.out.println(resp.getDefinitions());
+    }
+
 }
