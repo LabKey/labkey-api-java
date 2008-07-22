@@ -14,8 +14,9 @@
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../apache/commons-httpclient-3.1-src.zip!/commons-httpclient-3.1/src/java" />
-          <root url="jar://$MODULE_DIR$/../../apache/commons-httpclient-3.1-src.zip!/commons-httpclient-3.1/src/contrib" />
+          <root url="jar://$MODULE_DIR$/../../../apache/commons-httpclient-3.1-src.zip!/commons-httpclient-3.1/src/contrib" />
+          <root url="jar://$MODULE_DIR$/../../../apache/commons-httpclient-3.1-src.zip!/commons-httpclient-3.1/src/java" />
+          <root url="jar://$MODULE_DIR$/../../../apache/commons-httpclient-3.1-src.zip!/commons-httpclient-3.1/src/test" />
         </SOURCES>
       </library>
     </orderEntry>

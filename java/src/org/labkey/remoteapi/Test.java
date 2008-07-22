@@ -38,6 +38,7 @@ public class Test
         {
             selectTest(cn);
             crudTest(cn);
+            execSqlTest(cn);
             //assayTest(cn);
         }
         catch(CommandException e)
@@ -111,6 +112,14 @@ public class Test
         AssayListCommand cmd = new AssayListCommand();
         AssayListResponse resp = cmd.execute(cn, "Study Test");
         System.out.println(resp.getDefinitions());
+    }
+
+    public static void execSqlTest(Connection cn) throws Exception
+    {
+        ExecuteSqlCommand cmd = new ExecuteSqlCommand("lists");
+        cmd.setSql("select People.FirstName, count(People.FirstName) as Num from People group by People.FirstName");
+        SelectRowsResponse resp = cmd.execute(cn, "Api Test");
+        System.out.println(resp.getRows());
     }
 
 }
