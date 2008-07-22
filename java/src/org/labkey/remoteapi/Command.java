@@ -58,6 +58,7 @@ public class Command
     private String _controllerName = null;
     private String _actionName = null;
     private Map<String,Object> _parameters = null;
+    private int _timeout = 60000; //default timeout to 60 seconds
 
     /**
      * Constructs a new Command object for calling the specified
@@ -110,6 +111,27 @@ public class Command
     public void setParameters(Map<String, Object> parameters)
     {
         _parameters = parameters;
+    }
+
+    /**
+     * Returns the current command timeout setting in milliseconds (defaults to 60000).
+     * @return The current command timeout setting.
+     */
+    public int getTimeout()
+    {
+        return _timeout;
+    }
+
+    /**
+     * Sets the current command timeout setting.
+     * The value of the timeout parameter should be the maximum number of milliseconds
+     * this command should wait for a response from the server. By default, this is set
+     * to 60000 (60 seconds). To wait indefinitely, set this value to 0.
+     * @param timeout The new timeout setting
+     */
+    public void setTimeout(int timeout)
+    {
+        _timeout = timeout;
     }
 
     /**
@@ -230,6 +252,7 @@ public class Command
     protected HttpMethod getHttpMethod(Connection connection, String folderPath) throws EncoderException, URIException
     {
         HttpMethod method = createMethod();
+        method.getParams().setSoTimeout(getTimeout());
         method.setDoAuthentication(true);
 
         //construct a URI from the results of the getActionUrl method
