@@ -53,7 +53,7 @@ public class SelectRowsCommand extends Command
     private String _schemaName;
     private String _queryName;
     private String _viewName;
-    private String _columns;
+    private List<String> _columns = new ArrayList<String>();
     private int _maxRows = -1;
     private int _offset = 0;
     private List<Sort> _sorts = new ArrayList<Sort>();
@@ -136,18 +136,17 @@ public class SelectRowsCommand extends Command
      * set of columns will be requested.
      * @return The column list or null.
      */
-    public String getColumns()
+    public List<String> getColumns()
     {
         return _columns;
     }
 
     /**
-     * Sets an explicit list of columns to request. The list should be a comma-delimited set
-     * of column names. To refer to columns in a related table, use the syntax
+     * Sets an explicit list of columns to request. To refer to columns in a related table, use the syntax
      * <i>foreign-key-column</i>/<i>related-column</i> (e.g., 'RelatedPeptide/Protein');
      * @param columns The explicit column list, or null to request the default set of columns.
      */
-    public void setColumns(String columns)
+    public void setColumns(List<String> columns)
     {
         _columns = columns;
     }
@@ -295,8 +294,18 @@ public class SelectRowsCommand extends Command
         params.put("query.queryName", getQueryName());
         if(null != getViewName())
             params.put("query.viewName", getViewName());
-        if(null != getColumns())
-            params.put("query.columns", getColumns());
+        if(null != getColumns() && getColumns().size() > 0)
+        {
+            StringBuilder collist = new StringBuilder();
+            String sep = "";
+            for(String col : getColumns())
+            {
+                collist.append(sep);
+                collist.append(col);
+                sep = ",";
+            }
+            params.put("query.columns", collist);
+        }
         if(getMaxRows() > 0)
             params.put("query.maxRows", getMaxRows());
         else

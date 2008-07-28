@@ -53,6 +53,8 @@ public class Test
         SelectRowsCommand cmd = new SelectRowsCommand("lists", "People");
 
         cmd.addSort(new Sort("LastName"));
+        cmd.getColumns().add("FirstName");
+        cmd.getColumns().add("LastName");
 
         SelectRowsResponse response = cmd.execute(cn, "Api Test");
         System.out.println("Number of rows: " + response.getRowCount());
