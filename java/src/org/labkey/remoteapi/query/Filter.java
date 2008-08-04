@@ -42,7 +42,8 @@ public class Filter
         CONTAINS("contains", "Contains", true),
         DOES_NOT_CONTAIN("doesnotcontain", "Does Not Contain", true),
         DOES_NOT_START_WITH("doesnotstartwith", "Does Not Start With", true),
-        STARTS_WITH("startswith", "Starts With", true);
+        STARTS_WITH("startswith", "Starts With", true),
+        IN("in", "Equals One Of", true);
 
         private String _name;
         private String _caption;
