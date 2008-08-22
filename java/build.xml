@@ -37,6 +37,7 @@
     </target>
 
     <target name="dist" depends="compile,jar,javadoc">
+        <delete file="${dist.dir}/${zip.name}"/>
         <mkdir dir="${dist.dir}"/>
         <copy file="${build.jar.dir}/${build.jar.name}" tofile="${dist.dir}/${build.jar.name}"/>
         <copy todir="${dist.dir}/lib/">
