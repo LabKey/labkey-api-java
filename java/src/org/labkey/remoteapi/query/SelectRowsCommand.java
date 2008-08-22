@@ -280,11 +280,12 @@ public class SelectRowsCommand extends Command
      * Overridden to create a SelectRowsResponse object.
      * @param text The response text
      * @param status The HTTP status code
+     * @param contentType The Content-Type header value.
      * @return A SelectRowsResponse object.
      */
-    protected CommandResponse createResponse(String text, int status)
+    protected CommandResponse createResponse(String text, int status, String contentType)
     {
-        return new SelectRowsResponse(text, status);
+        return new SelectRowsResponse(text, status, contentType);
     }
 
     public Map<String, Object> getParameters()

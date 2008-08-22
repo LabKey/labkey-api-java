@@ -32,9 +32,9 @@ import java.util.Map;
  */
 public class AssayListResponse extends CommandResponse
 {
-    public AssayListResponse(String text, int statusCode)
+    public AssayListResponse(String text, int statusCode, String contentType)
     {
-        super(text, statusCode);
+        super(text, statusCode, contentType);
     }
 
     /**

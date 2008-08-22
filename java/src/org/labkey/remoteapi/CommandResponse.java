@@ -43,6 +43,7 @@ public class CommandResponse
 {
     private String _text;
     private int _statusCode;
+    private String _contentType;
     private JSONObject _data = null;
 
     /**
@@ -50,11 +51,13 @@ public class CommandResponse
      * response text and status code.
      * @param text The response text
      * @param statusCode The HTTP status code
+     * @param contentType The response content type
      */
-    public CommandResponse(String text, int statusCode)
+    public CommandResponse(String text, int statusCode, String contentType)
     {
         _text = text;
         _statusCode = statusCode;
+        _contentType = contentType;
     }
 
     /**
@@ -83,6 +86,17 @@ public class CommandResponse
     }
 
     /**
+     * Returns the Content-Type header value from the response.
+     * Note that this may return null if no content type header was
+     * supplied by the server (unlikely but possible).
+     * @return The content type of the response.
+     */
+    public String getContentType()
+    {
+        return _contentType;
+    }
+
+    /**
      * Attemtps to parse the response text and return the a property Map.
      * <p>
      * If the response text cannot be parsed, a runtime error will be thrown.
@@ -94,7 +108,8 @@ public class CommandResponse
     @SuppressWarnings("unchecked")
     public Map<String,Object> getParsedData()
     {
-        if(null == _data && null != getText())
+        if(null == _data && null != getText()
+                && null != _contentType && _contentType.contains(Command.CONTENT_TYPE_JSON))
             _data = (JSONObject)JSONValue.parse(getText());
         return _data;
     }
@@ -131,6 +146,9 @@ public class CommandResponse
     @SuppressWarnings("unchecked")
     protected <T> T getProperty(String[] path, int index, Map<String,Object> parent)
     {
+        if(null == parent)
+            return null;
+
         Object prop = parent.get(path[index]);
         //if this was the last path part, return the prop
         //will return null if final path part not found

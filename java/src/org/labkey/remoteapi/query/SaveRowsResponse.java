@@ -31,10 +31,11 @@ public class SaveRowsResponse extends RowsResponse
      * Constructs a new SaveRowsResponse given the response text and status code
      * @param text The response text.
      * @param statusCode The HTTP status code.
+     * @param contentType The Content-Type header value.
      */
-    public SaveRowsResponse(String text, int statusCode)
+    public SaveRowsResponse(String text, int statusCode, String contentType)
     {
-        super(text, statusCode);
+        super(text, statusCode, contentType);
     }
 
     /**

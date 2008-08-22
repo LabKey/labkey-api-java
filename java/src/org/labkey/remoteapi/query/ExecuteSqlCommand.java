@@ -156,9 +156,9 @@ public class ExecuteSqlCommand extends PostCommand
         return (SelectRowsResponse)super.execute(connection, folderPath);
     }
 
-    protected CommandResponse createResponse(String text, int status)
+    protected CommandResponse createResponse(String text, int status, String contentType)
     {
-        return new SelectRowsResponse(text, status);
+        return new SelectRowsResponse(text, status, contentType);
     }
 
     @SuppressWarnings("unchecked")

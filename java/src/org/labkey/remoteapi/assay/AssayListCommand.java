@@ -113,9 +113,9 @@ public class AssayListCommand extends Command
         return (AssayListResponse)super.execute(connection, folderPath);
     }
 
-    protected CommandResponse createResponse(String text, int status)
+    protected CommandResponse createResponse(String text, int status, String contentType)
     {
-        return new AssayListResponse(text, status);
+        return new AssayListResponse(text, status, contentType);
     }
 
     public Map<String, Object> getParameters()

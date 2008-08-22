@@ -41,10 +41,11 @@ public abstract class RowsResponse extends CommandResponse
      * Constructs a new RowsResponse given the specified text and status code.
      * @param text The response text.
      * @param statusCode The HTTP status code.
+     * @param contentType the Content-Type header value.
      */
-    protected RowsResponse(String text, int statusCode)
+    protected RowsResponse(String text, int statusCode, String contentType)
     {
-        super(text, statusCode);
+        super(text, statusCode, contentType);
         fixupParsedData();
     }
 
@@ -64,6 +65,9 @@ public abstract class RowsResponse extends CommandResponse
      */
     protected void fixupParsedData()
     {
+        if(null == getParsedData())
+            return;
+        
         //because JSON does not have a literal representation for dates
         //we need to fixup date values in the response rows for columns
         //of type date.

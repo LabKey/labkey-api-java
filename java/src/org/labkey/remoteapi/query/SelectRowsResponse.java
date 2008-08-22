@@ -64,10 +64,11 @@ public class SelectRowsResponse extends RowsResponse
      * Constructs a new SelectRowsResponse given the response text and HTTP status code.
      * @param text The response text.
      * @param statusCode The HTTP status code.
+     * @param contentType The Content-Type header value.
      */
-    public SelectRowsResponse(String text, int statusCode)
+    public SelectRowsResponse(String text, int statusCode, String contentType)
     {
-        super(text, statusCode);
+        super(text, statusCode, contentType);
     }
 
     /**

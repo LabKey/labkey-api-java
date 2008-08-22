@@ -178,6 +178,8 @@ public class Command
 
         int status = 0;
         String responseText = null;
+        Header contentTypeHeader = null;
+        String contentType = null;
 
         try
         {
@@ -187,6 +189,10 @@ public class Command
 
             //get the response text
             responseText = method.getResponseBodyAsString();
+
+            //get the content-type header
+            contentTypeHeader = method.getResponseHeader("Content-Type");
+            contentType = (null == contentTypeHeader ? null : contentTypeHeader.getValue());
         }
         finally
         {
@@ -203,9 +209,7 @@ public class Command
 
             //if the content-type is json, try to parse the response text
             //and extract the "exception" property from the root-level object
-            Header contentType = method.getResponseHeader("Content-Type");
-            if(null != contentType && null != contentType.getValue()
-                    && contentType.getValue().contains(CONTENT_TYPE_JSON))
+            if(null != contentType && contentType.contains(CONTENT_TYPE_JSON))
             {
                 //our server always returns a JSON object as the root item
                 json = (JSONObject)JSONValue.parse(responseText);
@@ -216,7 +220,7 @@ public class Command
             throw new CommandException(message, status, json);
         }
 
-        return createResponse(responseText, status);
+        return createResponse(responseText, status, contentType);
     }
 
     /**
@@ -226,12 +230,13 @@ public class Command
      * Override this method
      * to create an instance of a different class that extends CommandResponse
      * @param text The response text from the server.
-     * @param status The HTTP status code
+     * @param status The HTTP status code.
+     * @param contentType The Content-Type header value.
      * @return An instance of the response object.
      */
-    protected CommandResponse createResponse(String text, int status)
+    protected CommandResponse createResponse(String text, int status, String contentType)
     {
-        return new CommandResponse(text, status);
+        return new CommandResponse(text, status, contentType);
     }
 
     /**

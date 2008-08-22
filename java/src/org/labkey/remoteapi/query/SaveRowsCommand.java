@@ -159,8 +159,8 @@ public abstract class SaveRowsCommand extends PostCommand
         return (SaveRowsResponse)super.execute(connection, folderPath);
     }
 
-    protected CommandResponse createResponse(String text, int status)
+    protected CommandResponse createResponse(String text, int status, String contentType)
     {
-        return new SaveRowsResponse(text, status);
+        return new SaveRowsResponse(text, status, contentType);
     }
 }
