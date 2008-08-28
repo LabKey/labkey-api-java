@@ -256,5 +256,8 @@
     <mapping directory="" vcs="svn" />
   </component>
   <component name="WebServicesPlugin" addRequiredLibraries="true" />
+  <UsedPathMacros>
+    <macro name="JAVA_HOME" />
+  </UsedPathMacros>
 </project>
 

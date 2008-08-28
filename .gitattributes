@@ -8,6 +8,7 @@ java/src/org/labkey/remoteapi/Command.java -text
 java/src/org/labkey/remoteapi/CommandException.java -text
 java/src/org/labkey/remoteapi/CommandResponse.java -text
 java/src/org/labkey/remoteapi/Connection.java -text
+java/src/org/labkey/remoteapi/Demo.java -text
 java/src/org/labkey/remoteapi/PostCommand.java -text
 java/src/org/labkey/remoteapi/Test.java -text
 java/src/org/labkey/remoteapi/assay/AssayListCommand.java -text

@@ -174,9 +174,6 @@ public class Connection
                                 AuthScope.ANY_PORT, AuthScope.ANY_REALM),
                         new UsernamePasswordCredentials(getEmail(), getPassword())
                 );
-                
-                //send basic auth header on first request
-                _client.getParams().setAuthenticationPreemptive(true);
             }
         }
 
