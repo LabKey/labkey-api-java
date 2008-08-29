@@ -61,7 +61,7 @@ public class Command
      */
     public enum CommonParameters
     {
-        apiversion
+        apiVersion
     }
 
     private String _controllerName = null;
@@ -354,7 +354,7 @@ public class Command
 
         //add the required version if it's > 0
         if(getRequiredVersion() > 0)
-            params.put(CommonParameters.apiversion.name(), getRequiredVersion());
+            params.put(CommonParameters.apiVersion.name(), getRequiredVersion());
 
         StringBuilder qstring = new StringBuilder();
         URLCodec urlCodec = new URLCodec();
@@ -398,6 +398,6 @@ public class Command
      */
     protected double getRequiredVersion()
     {
-        return 8.23;
+        return 8.3;
     }
 }
