@@ -25,6 +25,7 @@ import org.json.simple.JSONValue;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Base class for all API commands. Typically, a developer will not
@@ -54,6 +55,14 @@ public class Command
      * A constant for the official JSON content type ("application/json")
      */
     public final static String CONTENT_TYPE_JSON = "application/json";
+
+    /**
+     * An enum of common parameter names used in API URLs.
+     */
+    public enum CommonParameters
+    {
+        apiversion
+    }
 
     private String _controllerName = null;
     private String _actionName = null;
@@ -101,6 +110,9 @@ public class Command
      */
     public Map<String, Object> getParameters()
     {
+        if(null == _parameters)
+            _parameters = new HashMap<String,Object>();
+
         return _parameters;
     }
 
@@ -339,8 +351,10 @@ public class Command
     protected String getQueryString() throws EncoderException
     {
         Map<String,Object> params = getParameters();
-        if(null == params)
-            return null;
+
+        //add the required version if it's > 0
+        if(getRequiredVersion() > 0)
+            params.put(CommonParameters.apiversion.name(), getRequiredVersion());
 
         StringBuilder qstring = new StringBuilder();
         URLCodec urlCodec = new URLCodec();
@@ -375,5 +389,15 @@ public class Command
     protected String getParamValueAsString(Object param, String name)
     {
         return param.toString();
+    }
+
+    /**
+     * Returns the required version number of this API call.
+     * Override this method to require a version other than the default
+     * @return The required version number
+     */
+    protected double getRequiredVersion()
+    {
+        return 8.23;
     }
 }
