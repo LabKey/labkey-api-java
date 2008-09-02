@@ -26,7 +26,7 @@ package org.labkey.remoteapi.query;
  * The user associated with the connection used when executing this
  * command must have permission to update data into the specified query.
  * <p>
- * For details on schemas and queries, see the {@link SaveRowsCommand}.
+ * For details on schemas and queries, and example code, see the {@link SaveRowsCommand}.
  * @see SaveRowsCommand
  */
 public class UpdateRowsCommand extends SaveRowsCommand

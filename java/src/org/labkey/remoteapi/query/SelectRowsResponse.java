@@ -15,6 +15,8 @@
  */
 package org.labkey.remoteapi.query;
 
+import org.json.simple.JSONObject;
+
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +31,7 @@ import java.util.Map;
  * {@link SelectRowsCommand#execute(org.labkey.remoteapi.Connection, String)}
  * method. This class provides helpful methods for obtaining specific bits
  * of the parsed response data.
+ * @see SelectRowsCommand
  */
 public class SelectRowsResponse extends RowsResponse
 {
@@ -65,10 +68,11 @@ public class SelectRowsResponse extends RowsResponse
      * @param text The response text.
      * @param statusCode The HTTP status code.
      * @param contentType The Content-Type header value.
+     * @param json The parsed JSONObject (or null if no JSON was returned
      */
-    public SelectRowsResponse(String text, int statusCode, String contentType)
+    public SelectRowsResponse(String text, int statusCode, String contentType, JSONObject json)
     {
-        super(text, statusCode, contentType);
+        super(text, statusCode, contentType, json);
     }
 
     /**

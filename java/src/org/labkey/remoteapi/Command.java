@@ -24,6 +24,9 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -192,6 +195,7 @@ public class Command
         String responseText = null;
         Header contentTypeHeader = null;
         String contentType = null;
+        JSONObject json = null;
 
         try
         {
@@ -199,12 +203,24 @@ public class Command
             //execute the method
             status = client.executeMethod(method);
 
-            //get the response text
-            responseText = method.getResponseBodyAsString();
-
             //get the content-type header
             contentTypeHeader = method.getResponseHeader("Content-Type");
             contentType = (null == contentTypeHeader ? null : contentTypeHeader.getValue());
+
+            //if content type is json, parse it
+            if(null != contentType && contentType.contains(CONTENT_TYPE_JSON))
+            {
+                //get the response stream
+                InputStream stream = method.getResponseBodyAsStream();
+
+                //our server always returns a JSON object as the root item
+                json = (JSONObject)JSONValue.parse(new BufferedReader(new InputStreamReader(stream)));
+            }
+            else
+            {
+                //otherwise, read it all into the response text
+                responseText = method.getResponseBodyAsString();
+            }
         }
         finally
         {
@@ -217,22 +233,16 @@ public class Command
         {
             //use the status text as the message by default
             String message = null != method.getStatusText() ? method.getStatusText() : "(no status text)";
-            JSONObject json = null;
 
             //if the content-type is json, try to parse the response text
             //and extract the "exception" property from the root-level object
-            if(null != contentType && contentType.contains(CONTENT_TYPE_JSON))
-            {
-                //our server always returns a JSON object as the root item
-                json = (JSONObject)JSONValue.parse(responseText);
-                if(null != json && json.containsKey("exception"))
-                    message = (String)json.get("exception");
-            }
+            if(null != contentType && contentType.contains(CONTENT_TYPE_JSON) && null != json && json.containsKey("exception"))
+                message = (String)json.get("exception");
 
             throw new CommandException(message, status, json);
         }
 
-        return createResponse(responseText, status, contentType);
+        return createResponse(responseText, status, contentType, json);
     }
 
     /**
@@ -244,11 +254,12 @@ public class Command
      * @param text The response text from the server.
      * @param status The HTTP status code.
      * @param contentType The Content-Type header value.
+     * @param json
      * @return An instance of the response object.
      */
-    protected CommandResponse createResponse(String text, int status, String contentType)
+    protected CommandResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new CommandResponse(text, status, contentType);
+        return new CommandResponse(text, status, contentType, json);
     }
 
     /**

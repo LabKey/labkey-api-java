@@ -19,6 +19,7 @@ import org.apache.commons.codec.EncoderException;
 import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.Connection;
+import org.json.simple.JSONObject;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -113,9 +114,9 @@ public class AssayListCommand extends Command
         return (AssayListResponse)super.execute(connection, folderPath);
     }
 
-    protected CommandResponse createResponse(String text, int status, String contentType)
+    protected CommandResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new AssayListResponse(text, status, contentType);
+        return new AssayListResponse(text, status, contentType, json);
     }
 
     public Map<String, Object> getParameters()

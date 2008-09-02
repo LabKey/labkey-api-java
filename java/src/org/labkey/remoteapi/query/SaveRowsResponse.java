@@ -15,6 +15,8 @@
  */
 package org.labkey.remoteapi.query;
 
+import org.json.simple.JSONObject;
+
 /*
 * User: Dave
 * Date: Jul 14, 2008
@@ -32,10 +34,11 @@ public class SaveRowsResponse extends RowsResponse
      * @param text The response text.
      * @param statusCode The HTTP status code.
      * @param contentType The Content-Type header value.
+     * @param json The parsed JSONObject (or null if JSON was not returned.
      */
-    public SaveRowsResponse(String text, int statusCode, String contentType)
+    public SaveRowsResponse(String text, int statusCode, String contentType, JSONObject json)
     {
-        super(text, statusCode, contentType);
+        super(text, statusCode, contentType, json);
     }
 
     /**

@@ -36,9 +36,29 @@ import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
  * <p>
  * <code>
  * <pre>
- *     Connection cn = new Connection("http://labkey.org");
+ *     Connection cn = new Connection("https://labkey.org");
  *     SelectRowsCommand cmd = new SelectRowsCommand("study", "Physical Exam");
  *     SelectRowsResponse response = cmd.execute(cn, "Home/Study/demo");
+ *     for(Map&lt;String,Object&gt; row : response.getRows())
+ *     {
+ *         System.out.println(row.get("ParticipantId") + " weighs " + row.get("Weight"));
+ *     }
+ * </pre>
+ * </code>
+ * <p>
+ * Example using Authentication
+ * <p>
+ * <code>
+ * <pre>
+ *     //get the user email and password from command-line arguments,
+ *     //environment variables, a file, or some other mechanism.
+ *     String user = getUser();
+ *     String password = getPassword();
+ *
+ *     //create a new connection passing the user credentials
+ *     Conneection cn = new Connection("https://localhost:8080/labkey", user, password);
+ *     SelectRowsCommand cmd = new SelectRowsCommand("lists", "People");
+ *     SelectRowsResponse response = cmd.execute(cn, "Api Test");
  * </pre>
  * </code>
  * <p>
@@ -61,6 +81,18 @@ public class Connection
     /**
      * Constructs a new Connection object given a base URL.
      * <p>
+     * This is equivalent to calling <code>Connection(baseUrl, null, null)</code>.
+     * @param baseUrl The base URL
+     * @see #Connection(String, String, String)
+     */
+    public Connection(String baseUrl)
+    {
+        this(baseUrl, null, null);
+    }
+
+    /**
+     * Constructs a new Connection object given a base URL and user credentials.
+     * <p>
      * The baseUrl parameter should include the protocol, domain name, port,
      * and LabKey web application context path (if configured). For example
      * in a typical localhost configuration, the base URL would be:
@@ -72,11 +104,18 @@ public class Connection
      * is fairly common for LabKey Server installations. If you do not want
      * to accept self-signed certificates, use
      * <code>setAcceptSelfSignedCerts(false)</code> to disable this behavior.
+     * <p>
+     * The email name and password should correspond to a valid user email
+     * and password on the target server.
      * @param baseUrl The base URL
+     * @param email The user email name to pass for authentication
+     * @param password The user password to send for authentication
      */
-    public Connection(String baseUrl)
+    public Connection(String baseUrl, String email, String password)
     {
         _baseUrl = baseUrl;
+        _email = email;
+        _password = password;
         setAcceptSelfSignedCerts(true);
     }
 

@@ -53,6 +53,39 @@ import java.util.Map;
  * to your portal page and choose the option "Show the list of tables in this schema"
  * in the part configuration page. Alternatively, if it is exposed, click on the Query
  * tab across the top of the main part of the page.
+ * <p>
+ * Examples:
+ * <code><pre>
+ *  Connection cn = new Connection("http://localhost:8080", user, password);
+ *
+ *  //Insert Rows Command
+ *  InsertRowsCommand cmd = new InsertRowsCommand("lists", "People");
+ *
+ *  Map&lt;String,Object&gt; row = new HashMap&lt;String,Object&gt;();
+ *  row.put("FirstName", "Insert");
+ *  row.put("LastName", "Test");
+ *
+ *  cmd.addRow(row); //can add multiple rows to insert many at once
+ *  SaveRowsResponse resp = cmd.execute(cn, "Api Test");
+ *
+ *  //get the newly-assigned primary key value from the first return row
+ *  int newKey = resp.getRows().get(0).get("Key");
+ *
+ *  //Update Rows Command
+ *  UpdateRowsCommand cmdUpd = new UpdateRowsCommand("lists", "People");
+ *  row = new HashMap&lt;String,Object&gt;();
+ *  row.put("Key", newKey);
+ *  row.put("LastName", "Test UPDATED");
+ *  cmdUpd.addRow(row);
+ *  resp = cmdUpd.execute(cn, "Api Test");
+ *
+ *  //Delete Rows Command
+ *  DeleteRowsCommand cmdDel = new DeleteRowsCommand("lists", "People");
+ *  row = new HashMap&lt;String,Object&gt;();
+ *  row.put("Key", newKey);
+ *  cmdDel.addRow(row);
+ *  resp = cmdDel.execute(cn, "Api Test");
+ * </pre></code>
  */
 public abstract class SaveRowsCommand extends PostCommand
 {
@@ -159,8 +192,8 @@ public abstract class SaveRowsCommand extends PostCommand
         return (SaveRowsResponse)super.execute(connection, folderPath);
     }
 
-    protected CommandResponse createResponse(String text, int status, String contentType)
+    protected CommandResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new SaveRowsResponse(text, status, contentType);
+        return new SaveRowsResponse(text, status, contentType, json);
     }
 }

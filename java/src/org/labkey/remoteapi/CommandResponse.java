@@ -52,12 +52,14 @@ public class CommandResponse
      * @param text The response text
      * @param statusCode The HTTP status code
      * @param contentType The response content type
+     * @param json The parsed JSONObject (or null if JSON was not returned.
      */
-    public CommandResponse(String text, int statusCode, String contentType)
+    public CommandResponse(String text, int statusCode, String contentType, JSONObject json)
     {
         _text = text;
         _statusCode = statusCode;
         _contentType = contentType;
+        _data = json;
     }
 
     /**

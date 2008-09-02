@@ -6,8 +6,12 @@
     <property name="build.jar.dir" value="${build.dir}/jar"/>
     <property name="build.jar.name" value="labkey-remote-api-1.0.jar"/>
     <property name="dist.dir" value="${basedir}/dist"/>
-    <property name="doc.dir" value="${dist.dir}/doc"/>
+    <property name="dist.ver.dir" value="${dist.dir}/labkey-remote-api-1.0"/>
+    <property name="doc.dir" value="${dist.ver.dir}/doc"/>
     <property name="zip.name" value="labkey-remote-api-java-1.0.zip"/>
+    <property name="license.source.path" value="../../server/installer/license.rtf"/>
+    <property name="license.dest.file" value="license.rtf"/>
+    <property name="readme.file" value="README.html"/>
 
     <path id="component.class.path">
         <fileset dir="lib" includes="*.jar"/>
@@ -38,11 +42,13 @@
 
     <target name="dist" depends="compile,jar,javadoc">
         <delete file="${dist.dir}/${zip.name}"/>
-        <mkdir dir="${dist.dir}"/>
-        <copy file="${build.jar.dir}/${build.jar.name}" tofile="${dist.dir}/${build.jar.name}"/>
-        <copy todir="${dist.dir}/lib/">
+        <mkdir dir="${dist.ver.dir}"/>
+        <copy file="${build.jar.dir}/${build.jar.name}" tofile="${dist.ver.dir}/${build.jar.name}"/>
+        <copy todir="${dist.ver.dir}/lib/">
             <fileset dir="lib" includes="*.jar"/>
         </copy>
+        <copy file="${license.source.path}" tofile="${dist.ver.dir}/${license.dest.file}"/>
+        <copy file="${readme.file}" tofile="${dist.ver.dir}/${readme.file}"/>
         <zip basedir="${dist.dir}" destfile="${dist.dir}/${zip.name}"/>
     </target>
 

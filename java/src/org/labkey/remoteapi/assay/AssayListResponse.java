@@ -16,6 +16,7 @@
 package org.labkey.remoteapi.assay;
 
 import org.labkey.remoteapi.CommandResponse;
+import org.json.simple.JSONObject;
 
 import java.util.List;
 import java.util.Map;
@@ -32,9 +33,16 @@ import java.util.Map;
  */
 public class AssayListResponse extends CommandResponse
 {
-    public AssayListResponse(String text, int statusCode, String contentType)
+    /**
+     * Constructs a new AssayListResponse
+     * @param text The response text.
+     * @param statusCode The HTTP status code.
+     * @param contentType The HTTP response content type
+     * @param json The parsed JSONObject (or null if JSON was not returned)
+     */
+    public AssayListResponse(String text, int statusCode, String contentType, JSONObject json)
     {
-        super(text, statusCode, contentType);
+        super(text, statusCode, contentType, json);
     }
 
     /**

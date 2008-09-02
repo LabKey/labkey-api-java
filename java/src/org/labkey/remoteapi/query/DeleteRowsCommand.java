@@ -20,7 +20,7 @@ package org.labkey.remoteapi.query;
  * with the connection used when executing this command must have
  * permission to delete the data.
  * <p>
- * For details on schemas and queries, see the {@link SaveRowsCommand}.
+ * For details on schemas and queries, and example code, see the {@link SaveRowsCommand}.
  */
 public class DeleteRowsCommand extends SaveRowsCommand
 {

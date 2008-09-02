@@ -26,6 +26,7 @@ public class Demo
         simpleSelectDemo();
         sortFilterDemo();
         executeSqlDemo();
+        getWebPartDemo();
     }
 
     public void simpleSelectDemo() throws Exception
@@ -36,9 +37,7 @@ public class Demo
 
         //create a new connection, specifying base URL,
         //user email, and password
-        Connection cn = new Connection("http://localhost:8080/labkey");
-        cn.setEmail(_email);
-        cn.setPassword(_password);
+        Connection cn = new Connection("http://localhost:8080/labkey", _email, _password);
 
         //create a SelectRowsCommand to call the selectRows.api
         SelectRowsCommand cmd = new SelectRowsCommand("lists", "People");
@@ -98,7 +97,20 @@ public class Demo
         System.out.println("Average Age is " + resp.getRows().get(0).get("AvgAge"));
     }
 
+    public void getWebPartDemo() throws Exception
+    {
+        System.out.println("-----------------------------------------------");
+        System.out.println("Get Web Part Demo");
+        System.out.println("-----------------------------------------------");
 
+        Connection cn = getConnection();
+        Command cmd = new Command("project", "getWebPart");
+        cmd.getParameters().put("webpart.name", "Wiki");
+        cmd.getParameters().put("name", "home");
+
+        CommandResponse resp = cmd.execute(cn, "Api Test");
+        System.out.println(resp.getText());
+    }
 
 
 
@@ -133,11 +145,7 @@ public class Demo
     private Connection getConnection()
     {
         if(null == _connection)
-        {
-            _connection = new Connection("http://localhost:8080/labkey");
-            _connection.setEmail(_email);
-            _connection.setPassword(_password);
-        }
+            _connection = new Connection("http://localhost:8080/labkey", _email, _password);
         return _connection;
     }
 

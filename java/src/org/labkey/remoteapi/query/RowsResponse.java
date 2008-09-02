@@ -17,6 +17,7 @@ package org.labkey.remoteapi.query;
 
 import org.apache.commons.logging.LogFactory;
 import org.labkey.remoteapi.CommandResponse;
+import org.json.simple.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,10 +43,11 @@ public abstract class RowsResponse extends CommandResponse
      * @param text The response text.
      * @param statusCode The HTTP status code.
      * @param contentType the Content-Type header value.
+     * @param json The parsed JSONObject (or null if JSON was not returned.
      */
-    protected RowsResponse(String text, int statusCode, String contentType)
+    protected RowsResponse(String text, int statusCode, String contentType, JSONObject json)
     {
-        super(text, statusCode, contentType);
+        super(text, statusCode, contentType, json);
         fixupParsedData();
     }
 

@@ -19,6 +19,7 @@ import org.apache.commons.codec.EncoderException;
 import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.Connection;
+import org.json.simple.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,6 +48,20 @@ import java.util.Map;
  * to your portal page and choose the option "Show the list of tables in this schema"
  * in the part configuration page. Alternatively, if it is exposed, click on the Query
  * tab across the top of the main part of the page.
+ * <p>Example:
+ * <p>
+ * <code>
+ * <pre>
+ *     Connection cn = new Connection("https://labkey.org");
+ *     SelectRowsCommand cmd = new SelectRowsCommand("study", "Physical Exam");
+ *     SelectRowsResponse response = cmd.execute(cn, "Home/Study/demo");
+ *     for(Map&lt;String,Object&gt; row : response.getRows())
+ *     {
+ *         System.out.println(row.get("ParticipantId") + " weighs " + row.get("Weight"));
+ *     }
+ * </pre>
+ * </code>
+ * <p>
  */
 public class SelectRowsCommand extends Command
 {
@@ -281,11 +296,12 @@ public class SelectRowsCommand extends Command
      * @param text The response text
      * @param status The HTTP status code
      * @param contentType The Content-Type header value.
+     * @param json The parsed JSONObject (or null if JSON was not returned).
      * @return A SelectRowsResponse object.
      */
-    protected CommandResponse createResponse(String text, int status, String contentType)
+    protected CommandResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new SelectRowsResponse(text, status, contentType);
+        return new SelectRowsResponse(text, status, contentType, json);
     }
 
     public Map<String, Object> getParameters()
