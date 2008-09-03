@@ -20,6 +20,7 @@ import org.json.simple.JSONObject;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.PostCommand;
+import org.labkey.remoteapi.CommandException;
 
 import java.io.IOException;
 
@@ -149,7 +150,7 @@ public class ExecuteSqlCommand extends PostCommand
         _offset = offset;
     }
 
-    public SelectRowsResponse execute(Connection connection, String folderPath) throws IOException, EncoderException
+    public SelectRowsResponse execute(Connection connection, String folderPath) throws IOException, CommandException
     {
         assert null != _schemaName : "You must set the schemaName before executing!";
         assert null != _sql : "You must set the Sql before executing!";

@@ -19,6 +19,7 @@ import org.apache.commons.codec.EncoderException;
 import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.Connection;
+import org.labkey.remoteapi.CommandException;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
@@ -109,7 +110,7 @@ public class AssayListCommand extends Command
         _id = id;
     }
 
-    public AssayListResponse execute(Connection connection, String folderPath) throws IOException, EncoderException
+    public AssayListResponse execute(Connection connection, String folderPath) throws IOException, CommandException
     {
         return (AssayListResponse)super.execute(connection, folderPath);
     }

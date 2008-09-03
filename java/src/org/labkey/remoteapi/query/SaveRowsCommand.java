@@ -20,6 +20,7 @@ import org.json.simple.JSONObject;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.PostCommand;
+import org.labkey.remoteapi.CommandException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -187,7 +188,7 @@ public abstract class SaveRowsCommand extends PostCommand
         return json;
     }
 
-    public SaveRowsResponse execute(Connection connection, String folderPath) throws IOException, EncoderException
+    public SaveRowsResponse execute(Connection connection, String folderPath) throws IOException, CommandException
     {
         return (SaveRowsResponse)super.execute(connection, folderPath);
     }

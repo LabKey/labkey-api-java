@@ -177,10 +177,9 @@ public class Command
      * @throws CommandException Thrown if the server returned a non-success status code.
      * @throws org.apache.commons.httpclient.HttpException Thrown if the HttpClient library generated an exception.
      * @throws IOException Thrown if there was an IO problem.
-     * @throws EncoderException Thrown if there was a problem encoding the URL
      */
     @SuppressWarnings("unchecked")
-    public CommandResponse execute(Connection connection, String folderPath) throws IOException, EncoderException
+    public CommandResponse execute(Connection connection, String folderPath) throws IOException, CommandException
     {
         assert null != getControllerName() : "You must set the controller name before executing the command!";
         assert null != getActionName() : "You must set the action name before executing the command!";
@@ -254,7 +253,7 @@ public class Command
      * @param text The response text from the server.
      * @param status The HTTP status code.
      * @param contentType The Content-Type header value.
-     * @param json
+     * @param json The parsed JSONObject (or null if no JSON was returned).
      * @return An instance of the response object.
      */
     protected CommandResponse createResponse(String text, int status, String contentType, JSONObject json)
@@ -274,10 +273,10 @@ public class Command
      * This and the base URL from the connection will be used to construct the
      * first part of the URL.
      * @return The constructed HttpMethod instance.
-     * @throws EncoderException Thrown if there is a problem encoding the URL
+     * @throws CommandException Thrown if there is a problem encoding the URL
      * @throws URIException Thrown if there is a problem parsing the base URL in the connection.
      */
-    protected HttpMethod getHttpMethod(Connection connection, String folderPath) throws EncoderException, URIException
+    protected HttpMethod getHttpMethod(Connection connection, String folderPath) throws CommandException, URIException
     {
         HttpMethod method = createMethod();
         method.getParams().setSoTimeout(getTimeout());
@@ -357,9 +356,9 @@ public class Command
      * <p>
      * The parameters in the query string should be encoded to avoid parsing errors on the server.
      * @return The query string
-     * @throws EncoderException Thrown if there is a problem encoding the query string parameter names or values
+     * @throws CommandException Thrown if there is a problem encoding the query string parameter names or values
      */
-    protected String getQueryString() throws EncoderException
+    protected String getQueryString() throws CommandException
     {
         Map<String,Object> params = getParameters();
 
@@ -369,18 +368,25 @@ public class Command
 
         StringBuilder qstring = new StringBuilder();
         URLCodec urlCodec = new URLCodec();
-        for(String name : params.keySet())
+        try
         {
-            Object value = params.get(name);
-            String strValue = null == value ? null : getParamValueAsString(value, name);
-            if(null != strValue)
+            for(String name : params.keySet())
             {
-                if(qstring.length() > 0)
-                    qstring.append('&');
-                qstring.append(urlCodec.encode(name));
-                qstring.append('=');
-                qstring.append(urlCodec.encode(strValue));
+                Object value = params.get(name);
+                String strValue = null == value ? null : getParamValueAsString(value, name);
+                if(null != strValue)
+                {
+                    if(qstring.length() > 0)
+                        qstring.append('&');
+                    qstring.append(urlCodec.encode(name));
+                    qstring.append('=');
+                    qstring.append(urlCodec.encode(strValue));
+                }
             }
+        }
+        catch(EncoderException e)
+        {
+            throw new CommandException(e.getMessage());
         }
 
         return qstring.length() > 0 ? qstring.toString() : null;

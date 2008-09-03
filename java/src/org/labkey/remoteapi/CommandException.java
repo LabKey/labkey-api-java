@@ -33,10 +33,20 @@ import java.util.Map;
  * about the exception, such as the exception class and stack trace, may
  * be obtained via the <code>getProperties()</code> method.
  */
-public class CommandException extends HttpException
+public class CommandException extends Exception
 {
     private int _statusCode;
     private Map<String,Object> _properties;
+
+    /**
+     * Constructs a new CommandException given a message only.
+     * The status code and properties map will be set to 0 and null repsectively
+     * @param message The message text (should not be null).
+     */
+    public CommandException(String message)
+    {
+        super(message);
+    }
 
     /**
      * Constructs a new CommandException given a message, HTTP status code,

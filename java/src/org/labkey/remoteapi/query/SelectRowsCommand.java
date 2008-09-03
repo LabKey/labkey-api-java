@@ -19,6 +19,7 @@ import org.apache.commons.codec.EncoderException;
 import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.Connection;
+import org.labkey.remoteapi.CommandException;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
@@ -286,7 +287,7 @@ public class SelectRowsCommand extends Command
         addFilter(new Filter(columnName, value, operator));
     }
 
-    public SelectRowsResponse execute(Connection connection, String folderPath) throws IOException, EncoderException
+    public SelectRowsResponse execute(Connection connection, String folderPath) throws IOException, CommandException
     {
         return (SelectRowsResponse)(super.execute(connection, folderPath));
     }
