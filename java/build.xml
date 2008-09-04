@@ -1,14 +1,19 @@
 <project name="remoteapi" basedir="." default="build">
 
+    <property name="version" value="1.0"/>
     <property name="source.dir" value="${basedir}/src"/>
     <property name="build.dir" value="${basedir}/build"/>
     <property name="build.classes.dir" value="${build.dir}/classes"/>
     <property name="build.jar.dir" value="${build.dir}/jar"/>
-    <property name="build.jar.name" value="labkey-remote-api-1.0.jar"/>
+    <property name="build.jar.name" value="labkey-remote-api-${version}.jar"/>
     <property name="dist.dir" value="${basedir}/dist"/>
-    <property name="dist.ver.dir" value="${dist.dir}/labkey-remote-api-1.0"/>
-    <property name="doc.dir" value="${dist.ver.dir}/doc"/>
-    <property name="zip.name" value="labkey-remote-api-java-1.0.zip"/>
+    <property name="dist.jar.dir" value="${dist.dir}/jar"/>
+    <property name="dist.source.dir" value="${dist.dir}/src"/>
+    <property name="dist.jar.ver.dir" value="${dist.jar.dir}/labkey-remote-api-${version}"/>
+    <property name="dist.source.dir" value="${dist.source.dir}/labkey-remote-api-${version}-source"/>
+    <property name="doc.dir" value="${dist.jar.ver.dir}/doc"/>
+    <property name="zip.name" value="labkey-remote-api-java-${version}.zip"/>
+    <property name="source.zip.name" value="labkey-remote-api-java-${version}-source.zip"/>
     <property name="license.source.path" value="../../server/installer/license.rtf"/>
     <property name="license.dest.file" value="license.rtf"/>
     <property name="readme.file" value="README.html"/>
@@ -26,7 +31,9 @@
     <target name="compile">
         <mkdir dir="${build.classes.dir}"/>
         <javac srcdir="${source.dir}" destdir="${build.classes.dir}"
-               classpathref="component.class.path"  target="1.5"/>
+               classpathref="component.class.path"
+               target="1.5"
+               debug="true"/>
     </target>
 
     <target name="jar" depends="compile">
@@ -42,14 +49,22 @@
 
     <target name="dist" depends="compile,jar,javadoc">
         <delete file="${dist.dir}/${zip.name}"/>
-        <mkdir dir="${dist.ver.dir}"/>
-        <copy file="${build.jar.dir}/${build.jar.name}" tofile="${dist.ver.dir}/${build.jar.name}"/>
-        <copy todir="${dist.ver.dir}/lib/">
+        <mkdir dir="${dist.jar.ver.dir}"/>
+        <copy file="${build.jar.dir}/${build.jar.name}" tofile="${dist.jar.ver.dir}/${build.jar.name}"/>
+        <copy todir="${dist.jar.ver.dir}/lib/">
             <fileset dir="lib" includes="*.jar"/>
         </copy>
-        <copy file="${license.source.path}" tofile="${dist.ver.dir}/${license.dest.file}"/>
-        <copy file="${readme.file}" tofile="${dist.ver.dir}/${readme.file}"/>
-        <zip basedir="${dist.dir}" destfile="${dist.dir}/${zip.name}"/>
+        <copy file="${license.source.path}" tofile="${dist.jar.ver.dir}/${license.dest.file}"/>
+        <copy file="${readme.file}" tofile="${dist.jar.ver.dir}/${readme.file}"/>
+        <zip basedir="${dist.jar.dir}" destfile="${dist.dir}/${zip.name}"/>
+
+        <delete file="${dist.dir}/${source.zip.name}"/>
+        <mkdir dir="${dist.source.dir}"/>
+        <copy file="${license.source.path}" tofile="${dist.source.dir}/${license.dest.file}"/>
+        <copy todir="${dist.source.dir}">
+            <fileset dir="src"/>
+        </copy>
+        <zip basedir="${dist.source.dir}" destfile="${dist.dir}/${source.zip.name}"/>
     </target>
 
     <target name="build" depends="dist"/>
