@@ -327,7 +327,7 @@ public class SelectRowsCommand extends Command
         if(getMaxRows() > 0)
             params.put("query.maxRows", getMaxRows());
         else
-            params.put("query.showAllRows", true);
+            params.put("query.showRows", "all");
         if(getOffset() > 0)
             params.put("query.offset", getOffset());
         if(null != getSorts() && getSorts().size() > 0)
