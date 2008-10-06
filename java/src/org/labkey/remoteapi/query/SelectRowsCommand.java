@@ -58,7 +58,7 @@ import java.util.Map;
  *     SelectRowsResponse response = cmd.execute(cn, "Home/Study/demo");
  *     for(Map&lt;String,Object&gt; row : response.getRows())
  *     {
- *         System.out.println(row.get("ParticipantId") + " weighs " + row.get("Weight"));
+ *         System.out.println(row.get("ParticipantId") + " weighs " + row.get("APXwtkg"));
  *     }
  * </pre>
  * </code>
