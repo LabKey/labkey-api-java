@@ -17,6 +17,10 @@ java/src/org/labkey/remoteapi/assay/AssayListResponse.java -text
 java/src/org/labkey/remoteapi/query/DeleteRowsCommand.java -text
 java/src/org/labkey/remoteapi/query/ExecuteSqlCommand.java -text
 java/src/org/labkey/remoteapi/query/Filter.java -text
+java/src/org/labkey/remoteapi/query/GetQueriesCommand.java -text
+java/src/org/labkey/remoteapi/query/GetQueriesResponse.java -text
+java/src/org/labkey/remoteapi/query/GetSchemasCommand.java -text
+java/src/org/labkey/remoteapi/query/GetSchemasResponse.java -text
 java/src/org/labkey/remoteapi/query/InsertRowsCommand.java -text
 java/src/org/labkey/remoteapi/query/RowsResponse.java -text
 java/src/org/labkey/remoteapi/query/SaveRowsCommand.java -text

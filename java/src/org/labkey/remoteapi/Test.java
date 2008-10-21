@@ -32,18 +32,40 @@ public class Test
 {
     public static void main(String[] args) throws Exception
     {
-        Connection cn = new Connection("http://localhost:8080/labkey");
+        Connection cn = new Connection("http://localhost:8080/labkey", args[0], args[1]);
 
         try
         {
-            selectTest(cn);
-            crudTest(cn);
-            execSqlTest(cn);
+            //selectTest(cn);
+            //crudTest(cn);
+            //execSqlTest(cn);
             //assayTest(cn);
+            schemasTest(cn);
         }
         catch(CommandException e)
         {
             System.out.println("Command Exception: " + e.getMessage());
+        }
+    }
+
+    private static void schemasTest(Connection cn) throws Exception
+    {
+        GetSchemasCommand cmd = new GetSchemasCommand();
+        GetSchemasResponse resp = cmd.execute(cn, "Api Test");
+        for(String name : resp.getSchemaNames())
+        {
+            System.out.println(name);
+        }
+
+        GetQueriesCommand cmdq = new GetQueriesCommand("lists");
+        GetQueriesResponse respq = cmdq.execute(cn, "Api Test");
+        for(String qname : respq.getQueryNames())
+        {
+            System.out.println(qname);
+            for(String colName : respq.getColumnNames(qname))
+            {
+                System.out.println("  " + colName);
+            }
         }
     }
 
