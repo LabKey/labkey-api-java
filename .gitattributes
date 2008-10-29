@@ -29,5 +29,8 @@ java/src/org/labkey/remoteapi/query/SelectRowsCommand.java -text
 java/src/org/labkey/remoteapi/query/SelectRowsResponse.java -text
 java/src/org/labkey/remoteapi/query/Sort.java -text
 java/src/org/labkey/remoteapi/query/UpdateRowsCommand.java -text
+java/src/org/labkey/remoteapi/security/ACL.java -text
+java/src/org/labkey/remoteapi/security/GetContainersCommand.java -text
+java/src/org/labkey/remoteapi/security/GetContainersResponse.java -text
 java/src/org/labkey/remoteapi/security/GetGroupPermsCommand.java -text
 java/src/org/labkey/remoteapi/security/GetGroupPermsResponse.java -text
