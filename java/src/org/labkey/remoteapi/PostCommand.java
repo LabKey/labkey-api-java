@@ -40,7 +40,7 @@ import java.io.UnsupportedEncodingException;
  * that are not yet supported with a specialized class in this library,
  * the developer may still invoke these APIs by creating an instance of the
  * PostCommand object directly, providing the controller and action name for
- * the new API. The post body may then by supplied by overriding the
+ * the new API. The post body may then be supplied by overriding the
  * {@link #getJsonObject()} method, returning the JSON object to post.
  *  
  * @author Dave Stearns, LabKey Corporation

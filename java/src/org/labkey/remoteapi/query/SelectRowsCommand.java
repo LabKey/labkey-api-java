@@ -15,12 +15,11 @@
  */
 package org.labkey.remoteapi.query;
 
-import org.apache.commons.codec.EncoderException;
+import org.json.simple.JSONObject;
 import org.labkey.remoteapi.Command;
+import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.Connection;
-import org.labkey.remoteapi.CommandException;
-import org.json.simple.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -179,7 +178,7 @@ public class SelectRowsCommand extends Command
     /**
      * Sets the current row limit value. If this is set to a positive value, only
      * the first <code>maxRows</code> rows will be returned from the server.
-     * @param maxRows The maximim number of rows to return, or -1 to get all rows (default)
+     * @param maxRows The maximum number of rows to return, or -1 to get all rows (default)
      */
     public void setMaxRows(int maxRows)
     {
