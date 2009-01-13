@@ -31,10 +31,10 @@ java/src/org/labkey/remoteapi/query/Sort.java -text
 java/src/org/labkey/remoteapi/query/UpdateRowsCommand.java -text
 java/src/org/labkey/remoteapi/sas/Main.java -text
 java/src/org/labkey/remoteapi/sas/NetrcFileParser.java -text
-java/src/org/labkey/remoteapi/sas/ResponseCache.java -text
 java/src/org/labkey/remoteapi/sas/SASConnection.java -text
 java/src/org/labkey/remoteapi/sas/SASResponse.java -text
 java/src/org/labkey/remoteapi/sas/SASSelectRowsCommand.java -text
+java/src/org/labkey/remoteapi/sas/Stash.java -text
 java/src/org/labkey/remoteapi/security/ACL.java -text
 java/src/org/labkey/remoteapi/security/GetContainersCommand.java -text
 java/src/org/labkey/remoteapi/security/GetContainersResponse.java -text

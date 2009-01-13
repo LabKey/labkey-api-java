@@ -1,4 +1,4 @@
-package org.labkey.remoteapi.sas;/*
+/*
  * Copyright (c) 2008 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +13,8 @@ package org.labkey.remoteapi.sas;/*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.labkey.remoteapi.sas;
 
 import org.labkey.remoteapi.CommandException;
 
@@ -39,12 +41,12 @@ public class Main
     }
 
     /*
-        Tests the wrapper used by SAS to access the remote API.  Requires the following:
+        Tests the SAS wrapper api by simulating in Java the calls made by the SAS macros.  Requires the following:
 
-        - Local, running LabKey Server with a list called People defined in /home and either guest
-          read permissions to /home or .netrc/_netrc configured with localhost credentials.
-        - Access to https://atlas.scharp.org and .netrc/_netrc configured with Atlas credentials.
-
+        - Local, running LabKey Server with a list called People defined in /home and either guest read
+          permissions to /home or .netrc/_netrc configured with localhost credentials.
+        - Access to https://atlas.scharp.org and .netrc/_netrc configured with Atlas credentials that have
+          read permissions to the specified folder.
      */
     private static void test() throws CommandException, IOException, URISyntaxException
     {
@@ -76,11 +78,14 @@ public class Main
 
         for (int i = 0; i < columnCount; i++)
         {
-            String column = response.getColumnName(i);
-            System.out.println(column + ": " + response.getType(column));
+            if (!response.isHidden(i))
+            {
+                String column = response.getColumnName(i);
+                System.out.println(column + ": " + response.getType(column));
+            }
         }
 
-        String key = response.cache();
+        String key = response.stash();
 
         SASResponse dataResponse = new SASResponse(key);
 
@@ -90,6 +95,9 @@ public class Main
 
             for (int i = 0; i < columnCount; i++)
             {
+                if (response.isHidden(i))
+                    continue;
+
                 String column = dataResponse.getColumnName(i);
                 String type = dataResponse.getType(column);
 

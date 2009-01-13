@@ -152,7 +152,7 @@ public class SelectRowsResponse extends RowsResponse
 
     /**
      * Returns the column model section of the response. The column model contains
-     * user-interface-realated information about the column, such as its header caption,
+     * user-interface-related information about the column, such as its header caption,
      * whether it is editable or required, etc.
      * <p>
      * This method will return a List of Maps, one for each column in the resultset. Each

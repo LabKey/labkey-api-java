@@ -34,15 +34,16 @@ public class SASResponse
     private SelectRowsResponse _resp;
     private Iterator<Map<String, Object>> _rowIterator;
     private Map<String, Object> _currentRow;
+    private static final Stash<SelectRowsResponse> _stash = new Stash<SelectRowsResponse>(60000);  // Stash entries for up to 60 seconds
 
     public SASResponse(SASConnection cn, SASSelectRowsCommand command, String folderPath) throws CommandException, IOException
     {
         _resp = command.execute(cn, folderPath);
     }
 
-    public SASResponse(String id)
+    public SASResponse(String key)
     {
-        _resp = ResponseCache.get(id);
+        _resp = _stash.get(key);
         _rowIterator = _resp.getRows().iterator();
     }
 
@@ -59,15 +60,22 @@ public class SASResponse
         return fields.get(i).get("name");
     }
 
-    public String getType(String key)
+    public String getType(String columnName)
     {
-        SelectRowsResponse.ColumnDataType type = _resp.getColumnDataType(key);
+        SelectRowsResponse.ColumnDataType type = _resp.getColumnDataType(columnName);
         return type.toString();
     }
 
-    public String cache()
+    public boolean isHidden(double index)
     {
-        return ResponseCache.put(_resp);
+        int i = (int)Math.round(index);
+        Map<String,Object> columnModel = _resp.getColumnModel().get(i);
+        return (Boolean)columnModel.get("hidden");
+    }
+
+    public String stash()
+    {
+        return _stash.put(_resp);
     }
 
     public boolean getRow()
