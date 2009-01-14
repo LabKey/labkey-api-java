@@ -27,35 +27,39 @@
 */
 %macro selectRows(folderPath, schemaName, queryName, dataSetName, viewName=, colSelect=, colSort=, rowOffset=, maxRows=, stripAllHidden=1);
 	data _null_;
-		declare javaobj cn ('org/labkey/remoteapi/sas/SASConnection', &lk_url);
-		declare javaobj sasSelectRows ('org/labkey/remoteapi/sas/SASSelectRowsCommand', &schemaName, &queryName);
+		declare javaobj sasCommand ('org/labkey/remoteapi/sas/SASSelectRowsCommand', &schemaName, &queryName);
 
 		length title $1000;
 
 		title = "Schema: &schemaName, Query: &queryName";
 
 		%if &viewName ne %then %do;
-			sasSelectRows.callVoidMethod('setViewName', &viewName);
+			sasCommand.callVoidMethod('setViewName', &viewName);
 			call cats(title, ", View: &viewName");
 		%end;
 
 		%if &colSelect ne %then %do;
-			sasSelectRows.callVoidMethod('setColumns', &colSelect);
+			sasCommand.callVoidMethod('setColumns', &colSelect);
 		%end;
 
 		%if &colSort ne %then	%do;
-			sasSelectRows.callVoidMethod('setSorts', &colSort);
+			sasCommand.callVoidMethod('setSorts', &colSort);
 		%end;
 
+		%sharedQueryHandling();
+%mend;
+
+%macro sharedQueryHandling();
 		%if &maxRows ne %then %do;
-			sasSelectRows.callVoidMethod('setMaxRows', &maxRows);
+			sasCommand.callVoidMethod('setMaxRows', &maxRows);
 		%end;
 
 		%if &rowOffset ne %then %do;
-			sasSelectRows.callVoidMethod('setOffset', &rowOffset);
+			sasCommand.callVoidMethod('setOffset', &rowOffset);
 		%end;
 
-		declare javaobj sasResponse ('org/labkey/remoteapi/sas/SASResponse', cn, sasSelectRows, &folderPath);
+		declare javaobj cn ('org/labkey/remoteapi/sas/SASConnection', &lk_url);
+		declare javaobj sasResponse ('org/labkey/remoteapi/sas/SASResponse', cn, sasCommand, &folderPath);
 
 		sasResponse.callIntMethod('getColumnCount', columnCount);
 
@@ -116,7 +120,7 @@
 		call symput('key', key);
 
 		sasResponse.delete();
-		sasSelectRows.delete();
+		sasCommand.delete();
 		cn.delete();
 	run;
 
@@ -145,25 +149,32 @@
 	run
 %mend;
 
+/*
+	Executes a SQL query against the instance of LabKey Server previously specified in %setConnection.
+*/
+%macro executeSql(folderPath, schemaName, sql, dataSetName, rowOffset=, maxRows=, stripAllHidden=1);
+	data _null_;
+		declare javaobj sasCommand ('org/labkey/remoteapi/sas/SASExecuteSqlCommand', &schemaName, &sql);
+
+		length title $1000;
+
+		title = "Schema: &schemaName, SQL: &sql";
+
+		%sharedQueryHandling();
+%mend;
 
 options mprint;
 
 %setConnection('http://localhost:8080/labkey');
+%executeSql('/home', 'Lists', 'SELECT People.Last, People.First FROM People', sql);
 
-%selectRows('home', 'Lists', 'People', all);
-
-proc print;
-run;
-
-%selectRows('home', 'Lists', 'People', subset, viewName='namesByAge', colSelect='First, Last', colSort='Last, -First', maxRows=3, rowOffset=1);
-
-proc print;
-run;
+/*
+%selectRows('/home', 'Lists', 'People', all);
+%selectRows('/home', 'Lists', 'People', subset, viewName='namesByAge', colSelect='First, Last', colSort='Last, -First', maxRows=3, rowOffset=1);
 
 %setConnection('https://atlas.scharp.org/cpas');
-
-%selectRows('/VISC/Zolla-Pazner-VDC/Neut Data Analysis Project', 'study', 'Monogram NAb', nab, colSelect='ConcentrationValue, PercentInhibition', stripAllHidden=0);
-
+%selectRows('/VISC/Zolla-Pazner-VDC/Neut Data Analysis Project', 'study', 'Monogram NAb', nab, colSelect='ConcentrationValue, PercentInhibition');
+*/
 proc print;
 run;
 

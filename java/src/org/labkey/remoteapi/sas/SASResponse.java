@@ -41,6 +41,11 @@ public class SASResponse
         _resp = command.execute(cn, folderPath);
     }
 
+    public SASResponse(SASConnection cn, SASExecuteSqlCommand command, String folderPath) throws CommandException, IOException
+    {
+        _resp = command.execute(cn, folderPath);
+    }
+
     public SASResponse(String key)
     {
         _resp = _stash.get(key);

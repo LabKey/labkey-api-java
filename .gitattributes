@@ -32,6 +32,7 @@ java/src/org/labkey/remoteapi/query/UpdateRowsCommand.java -text
 java/src/org/labkey/remoteapi/sas/Main.java -text
 java/src/org/labkey/remoteapi/sas/NetrcFileParser.java -text
 java/src/org/labkey/remoteapi/sas/SASConnection.java -text
+java/src/org/labkey/remoteapi/sas/SASExecuteSqlCommand.java -text
 java/src/org/labkey/remoteapi/sas/SASResponse.java -text
 java/src/org/labkey/remoteapi/sas/SASSelectRowsCommand.java -text
 java/src/org/labkey/remoteapi/sas/Stash.java -text
