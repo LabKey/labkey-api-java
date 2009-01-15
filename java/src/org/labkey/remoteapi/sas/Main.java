@@ -52,10 +52,23 @@ public class Main
     {
         SASConnection cn = new SASConnection("http://localhost:8080/labkey");
 
+        System.out.println();
+        System.out.println("All People");
+        System.out.println();
         SASSelectRowsCommand command = new SASSelectRowsCommand("lists", "People");
         SASResponse response = new SASResponse(cn, command, "home");
         logResponse(response);
 
+        command.addFilter("Age", "GREATER_THAN_OR_EQUAL_TO", "11");
+        response = new SASResponse(cn, command, "home");
+        System.out.println();
+        System.out.println("Old people");
+        System.out.println();
+        logResponse(response);
+
+        System.out.println();
+        System.out.println("Specify view, columns, sort, maxRows, and offset");
+        System.out.println();
         command = new SASSelectRowsCommand("lists", "People");
         command.setViewName("namesByAge");
         command.setColumns("First, Last");
@@ -65,6 +78,9 @@ public class Main
         response = new SASResponse(cn, command, "home");
         logResponse(response);
 
+        System.out.println();
+        System.out.println("NAB data from Atlas");
+        System.out.println();
         cn = new SASConnection("https://atlas.scharp.org/cpas");
         command = new SASSelectRowsCommand("study", "Monogram NAb");
         command.setColumns("ConcentrationValue, PercentInhibition");

@@ -19,9 +19,11 @@ import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.remoteapi.query.Sort;
+import org.labkey.remoteapi.query.Filter;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: adam
@@ -30,8 +32,9 @@ import java.util.*;
  */
 
 /*
-    The SAS JavaObj interface can't invoke all methods.  For example, return types must be void, double, or String.
-    This class is a wrapper around SelectRowsCommand that provides an interface that's usable from SAS.
+    The SAS JavaObj interface can't invoke all methods.  For example, parameters can only be double, String, or JavaObj.
+    Return types must be void, primitives, or String.  This class is a wrapper around SelectRowsCommand that provides an
+    interface that can be used from SAS.
  */
 public class SASSelectRowsCommand
 {
@@ -56,6 +59,34 @@ public class SASSelectRowsCommand
             list.add(name.trim());
 
         _command.setColumns(list);
+    }
+
+    public void addFilter(String columnName, String operator)
+    {
+        addFilter(columnName, operator, null);
+    }
+
+    // Values must always come in as Strings.  If we accepted numeric values they'd all arrive as doubles (that's
+    // all SAS supports) and the server chokes on int columns filtered on double values.
+    public void addFilter(String columnName, String operator, String value)
+    {
+        Filter.Operator op = Filter.Operator.getOperator(operator);
+
+        if (null == op)
+            throw new RuntimeException("Unknown operator");
+
+        if (op.isValueRequired())
+        {
+            if (null == value)
+                throw new RuntimeException("A value is required for operator " + op.getProgrammaticName());
+        }
+        else
+        {
+            if (null != value)
+                throw new RuntimeException("A value must not be specified for operator " + op.getProgrammaticName());
+        }
+
+        _command.addFilter(columnName, value, op);
     }
 
     public void setSorts(String columns)
