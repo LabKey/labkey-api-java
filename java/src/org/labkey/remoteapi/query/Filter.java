@@ -33,19 +33,25 @@ public class Filter
     {
         EQUAL("eq", "Equals", "EQUALS", true),
         NEQ("neq", "Does Not Equal", "NOT_EQUALS", true),
+        NEQ_OR_NULL("neqornull", "Does Not Equal", "NOT_EQUAL_OR_NULL", true),
+
         DATE_EQUAL("dateeq", "Equals", "DATE_EQUAL", true),
         DATE_NOT_EQUAL("dateneq", "Does Not Equal", "DATE_NOT_EQUAL", true),
-        NEQ_OR_NULL("neqornull", "Does Not Equal", "NOT_EQUAL_OR_NULL", true),
+
         ISBLANK("isblank", "Is Blank", "IS_MISSING", false),
         NON_BLANK("isnonblank", "Is Not Blank", "IS_NOT_MISSING", false),
+
         GT("gt", "Is Greater Than", "GREATER_THAN", true),
         GTE("gte", "Is Greater Than or Equal To", "GREATER_THAN_OR_EQUAL_TO", true),
         LT("lt", "Is Less Than", "LESS_THAN", true),
         LTE("lte", "Is Less Than or Equal To", "LESS_THAN_OR_EQUAL_TO", true),
-        CONTAINS("contains", "Contains", "CONTAIN", true),
+
+        CONTAINS("contains", "Contains", "CONTAINS", true),
         DOES_NOT_CONTAIN("doesnotcontain", "Does Not Contain", "DOES_NOT_CONTAIN", true),
-        DOES_NOT_START_WITH("doesnotstartwith", "Does Not Start With", "DOES_NOT_START_WITH", true),
+
         STARTS_WITH("startswith", "Starts With", "STARTS_WITH", true),
+        DOES_NOT_START_WITH("doesnotstartwith", "Does Not Start With", "DOES_NOT_START_WITH", true),
+
         IN("in", "Equals One Of", "EQUALS_ONE_OF", true);
 
         private static final Map<String, Operator> _programmaticNameToOperator = new HashMap<String, Operator>(Operator.values().length);

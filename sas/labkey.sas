@@ -17,7 +17,7 @@
 /*
 	Common code used by %executeSql and %selectRows.  Handles maxRows & rowOffset params (if present), initializes
  	the connection, executes the command, handles the meta data, sets a default title, and creates a SAS data set
-	containing all the data rows,.
+	containing all the data rows.
 */
 %macro sharedQueryHandling();
 		/*
