@@ -66,6 +66,8 @@ public class SASSelectRowsCommand
         addFilter(columnName, operator, null);
     }
 
+    // TODO: Convert date values for DATE_EQUALS / DATE_NOT_EQUALS.  Create addDateFilter?  What about ><, etc.
+
     // Values must always come in as Strings.  If we accepted numeric values they'd all arrive as doubles (that's
     // all SAS supports) and the server chokes on int columns filtered on double values.
     public void addFilter(String columnName, String operator, String value)

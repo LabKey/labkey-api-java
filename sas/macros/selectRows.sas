@@ -30,7 +30,7 @@
 		*/
 		%if &viewName ne %then %do;
 			sasCommand.callVoidMethod('setViewName', &viewName);
-			call cat(title, ", View: '", &viewName, "'");
+			title = cat(title, ", View: '", &viewName, "'");
 		%end;
 
 		%if &filter ne %then %do;

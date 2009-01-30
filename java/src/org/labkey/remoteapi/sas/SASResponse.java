@@ -36,6 +36,7 @@ public class SASResponse
     private Map<String, Object> _currentRow;
     private static final Stash<SelectRowsResponse> _stash = new Stash<SelectRowsResponse>(60000);  // Stash entries for up to 60 seconds
 
+    // We need one constructor per command class because of SAS's method calling limitations (object parameters must match expected class exactly).
     public SASResponse(SASConnection cn, SASSelectRowsCommand command, String folderPath) throws CommandException, IOException
     {
         _resp = command.execute(cn, folderPath);
@@ -113,7 +114,7 @@ public class SASResponse
     // Java dates are based on days since 1/1/1970; SAS Dates are based on days since 1/1/1960
     private static final double DAYS_BETWEEN_19700101_AND_19600101 = 3653;
 
-    // TODO: Adjust to GMT?
+    // TODO: Adjust to GMT?   d.setTime(d.getTime()-TimeZone.getDefault().getRawOffset());
     public double getDate(String key)
     {
         Date d = (Date)_currentRow.get(key);

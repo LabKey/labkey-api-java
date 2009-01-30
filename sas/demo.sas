@@ -1,56 +1,49 @@
 options mprint;
 
-/* Simple example specifying all required parameters. */
+/* Simple example specifying all required parameters.  */
+%selectRows(dsn=all, baseUrl="http://localhost:8080/labkey", folderPath="/home", schemaName="Lists", queryName="People");
 
-%selectRows(baseUrl="http://localhost:8080/labkey", folderPath="/home", schemaName="Lists", queryName="People", dsn=all);
+proc print data=all; run;
 
-proc print;
-run;
-
-/*	Set default parameter values to use in all subsequent calls. */
-
+/*	Set default parameter values to use in subsequent calls.  */
 %setDefaults(baseUrl="http://localhost:8080/labkey", folderPath="/home", schemaName="Lists", queryName="People");
 
-/*  Same result as %selectRows() above call, but only need to specify data set name since defaults have been set. */
-
+/*  Same result as last %selectRows() call, but only need to specify data set name since defaults are now set. */
 %selectRows(dsn=all2);
 
-proc print;
-run;
+proc print data=all2; run;
 
-/*  Demonstrate a filter: only males less than a certain height. */
+/*  These data sets should be identical.  */
+proc compare base=all compare=all2; run;
 
-%selectRows(filter=%makeFilter("Sex", "EQUALS", 1, "Height", "LESS_THAN", 1.7), dsn=shortMales);
+/*  Specify two filters: only males less than a certain height. */
+%selectRows(dsn=shortMales, filter=%makeFilter("Sex", "EQUALS", "1", "Height", "LESS_THAN", 1.7));
 
-proc print;
-run;
+proc print data=shortMales; run;
 
-/*  Specify a view. */
+/*  Demonstrate an IN filter: only people whose age is specified.  */
+%selectRows(dsn=lateThirties, filter=%makeFilter("Age", "EQUALS_ONE_OF", "36;37;38;39"));
 
-%selectRows(viewName="namesByAge", dsn=namesByAge);
+proc print data=lateThirties; run;
 
-proc print;
-run;
+/*  Specify a view and a not missing filter.  */
+%selectRows(dsn=namesByAge, viewName="namesByAge", filter=%makeFilter("Age", "IS_NOT_MISSING"));
 
-/*  Demostrate column list, sort, row limiting, row offset, and showing key columns. */
+proc print data=namesByAge; run;
 
-%selectRows(colSelect="First, Last, Age", colSort="Last, -First", maxRows=3, rowOffset=1, showHidden=1, dsn=limitRows);
+/*  Demostrate column list, sort, row limiting, row offset, and displaying key columns.  */
+%selectRows(dsn=limitRows, colSelect="First, Last, Age", colSort="Last, -First", maxRows=3, rowOffset=1, showHidden=1);
 
-proc print;
-run;
+proc print data=limitRows; run;
 
-/*  Query using arbitrary SQL. */
+/*  Query using custom SQL -- GROUP BY and aggregates in this case.  */
+%executeSql(dsn=groups, sql="SELECT People.Last, COUNT(People.First) AS Number, AVG(People.Height) AS AverageHeight, AVG(People.Age) AS AverageAge FROM People GROUP BY People.Last");
 
-%executeSql(sql="SELECT People.Last, COUNT(People.First) AS Number, AVG(People.Height) AS AverageHeight, AVG(People.Age) AS AverageAge FROM People GROUP BY People.Last", dsn=groups);
+proc print data=groups; run;
 
-proc print;
-run;
-/*
-%selectRows(baseUrl="https://atlas.scharp.org/cpas", folderPath="/VISC/Zolla-Pazner-VDC/Neut Data Analysis Project", schemaName='study', queryName='Monogram NAb', colSelect="ConcentrationValue, PercentInhibition", dsn=nab);
+%selectRows(dsn=nab, baseUrl="https://atlas.scharp.org/cpas", folderPath="/VISC/Zolla-Pazner-VDC/Neut Data Analysis Project", schemaName="study", queryName="Monogram NAb", colSelect="ConcentrationValue, PercentInhibition");
 
-proc print;
-run;
-*/
+proc print data=nab; run;
 
 /* Pebbles: February 22, 1963 */
 /* Bamm-Bamm: October 1, 1963 */

@@ -42,6 +42,7 @@ java/src/org/labkey/remoteapi/security/GetContainersResponse.java -text
 java/src/org/labkey/remoteapi/security/GetGroupPermsCommand.java -text
 java/src/org/labkey/remoteapi/security/GetGroupPermsResponse.java -text
 sas/demo.sas -text
+sas/demo.xls -text
 sas/macros/executeSql.sas -text
 sas/macros/makeFilter.sas -text
 sas/macros/selectRows.sas -text
