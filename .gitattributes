@@ -41,4 +41,10 @@ java/src/org/labkey/remoteapi/security/GetContainersCommand.java -text
 java/src/org/labkey/remoteapi/security/GetContainersResponse.java -text
 java/src/org/labkey/remoteapi/security/GetGroupPermsCommand.java -text
 java/src/org/labkey/remoteapi/security/GetGroupPermsResponse.java -text
+sas/executeSql.sas -text
 sas/labkey.sas -text
+sas/makeFilter.sas -text
+sas/selectRows.sas -text
+sas/setDefaults.sas -text
+sas/sharedQueryHandling.sas -text
+sas/test.sas -text
