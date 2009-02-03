@@ -6,7 +6,7 @@ options mprint;
 proc print data=all; run;
 
 /*	Set default parameter values to use in subsequent calls.  */
-%setDefaults(baseUrl="http://localhost:8080/labkey", folderPath="/home", schemaName="Lists", queryName="People");
+%setDefaults(baseUrl="http://localhost:8080/labkey", folderPath="/home", schemaName="lists", queryName="People");
 
 /*  Same result as last %selectRows() call, but only need to specify data set name since defaults are now set. */
 %selectRows(dsn=all2);
@@ -41,9 +41,23 @@ proc print data=limitRows; run;
 
 proc print data=groups; run;
 
+/*
 %selectRows(dsn=nab, baseUrl="https://atlas.scharp.org/cpas", folderPath="/VISC/Zolla-Pazner-VDC/Neut Data Analysis Project", schemaName="study", queryName="Monogram NAb", colSelect="ConcentrationValue, PercentInhibition");
 
 proc print data=nab; run;
+*/
+
+data children;
+	input first $ last $ height;
+	datalines;
+Pebbles Flintstone .5
+Bamm-Bamm Rubble .5
+;
+
+%insertRows(dsn=children);
+%selectRows(dsn=moreRows);
+
+proc print data=moreRows; run;
 
 /* Pebbles: February 22, 1963 */
 /* Bamm-Bamm: October 1, 1963 */

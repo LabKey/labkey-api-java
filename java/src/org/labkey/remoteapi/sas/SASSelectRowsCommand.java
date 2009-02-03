@@ -38,7 +38,7 @@ import java.util.List;
  */
 public class SASSelectRowsCommand
 {
-    private SelectRowsCommand _command;
+    private final SelectRowsCommand _command;
 
     public SASSelectRowsCommand(String schema, String query)
     {

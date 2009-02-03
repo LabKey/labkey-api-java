@@ -56,7 +56,7 @@
 					columns with a double value.
 				*/
 				%let value = "%sysfunc(compress(&value, %str(%'%")))";
-				%let code = &code sasCommand.callVoidMethod('addFilter', &column, &operator, &value)%str(;);
+				%let code = &code command.callVoidMethod('addFilter', &column, &operator, &value)%str(;);
 			%end;
 		%else
 			%do;
@@ -65,7 +65,7 @@
 					/*
 						For operators that don't require a value, just set the column and operator.
 					*/
-						%let code = &code sasCommand.callVoidMethod('addFilter', &column, &operator)%str(;);
+						%let code = &code command.callVoidMethod('addFilter', &column, &operator)%str(;);
 					%end;
 				%else
 					%do;

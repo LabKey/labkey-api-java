@@ -56,11 +56,11 @@ public class Main
         System.out.println("All People");
         System.out.println();
         SASSelectRowsCommand command = new SASSelectRowsCommand("lists", "People");
-        SASResponse response = new SASResponse(cn, command, "home");
+        SASSelectRowsResponse response = new SASSelectRowsResponse(cn, command, "home");
         logResponse(response);
 
         command.addFilter("Age", "GREATER_THAN_OR_EQUAL_TO", "11");
-        response = new SASResponse(cn, command, "home");
+        response = new SASSelectRowsResponse(cn, command, "home");
         System.out.println();
         System.out.println("Old people");
         System.out.println();
@@ -75,20 +75,37 @@ public class Main
         command.setSorts("Last, -First");
         command.setMaxRows(3.0);
         command.setOffset(1.0);
-        response = new SASResponse(cn, command, "home");
+        response = new SASSelectRowsResponse(cn, command, "home");
         logResponse(response);
 
+        System.out.println();
+        System.out.println("Insert new rows");
+        System.out.println();
+        SASInsertRowsCommand insert = new SASInsertRowsCommand("lists", "People");
+        SASRow row = new SASRow();
+        row.clear();
+        row.add("First", "Pebbles");
+        row.add("Last", "Flintstone");
+
+        insert.addRow(row);
+
+        SASSaveRowsResponse resp = new SASSaveRowsResponse(cn, insert, "home");
+
+        System.out.println("Inserted " + resp.getRowsAffected() + " rows.");
+
+/*
         System.out.println();
         System.out.println("NAB data from Atlas");
         System.out.println();
         cn = new SASConnection("https://atlas.scharp.org/cpas");
         command = new SASSelectRowsCommand("study", "Monogram NAb");
         command.setColumns("ConcentrationValue, PercentInhibition");
-        response = new SASResponse(cn, command, "/VISC/Zolla-Pazner-VDC/Neut Data Analysis Project");
+        response = new SASSelectRowsResponse(cn, command, "/VISC/Zolla-Pazner-VDC/Neut Data Analysis Project");
         logResponse(response);
+*/
     }
 
-    private static void logResponse(SASResponse response)
+    private static void logResponse(SASSelectRowsResponse response)
     {
         int columnCount = response.getColumnCount();
 
@@ -103,7 +120,7 @@ public class Main
 
         String key = response.stash();
 
-        SASResponse dataResponse = new SASResponse(key);
+        SASSelectRowsResponse dataResponse = new SASSelectRowsResponse(key);
 
         while (dataResponse.getRow())
         {

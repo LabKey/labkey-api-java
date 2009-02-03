@@ -19,7 +19,7 @@
 */
 %macro selectRows(baseUrl=&lk_baseUrl, folderPath=&lk_folderPath, schemaName=&lk_schemaName, queryName=&lk_queryName, dsn=, viewName=, filter=, colSelect=, colSort=, rowOffset=, maxRows=, showHidden=0);
 	data _null_;
-		declare javaobj sasCommand ('org/labkey/remoteapi/sas/SASSelectRowsCommand', &schemaName, &queryName);
+		declare javaobj command ('org/labkey/remoteapi/sas/SASSelectRowsCommand', &schemaName, &queryName);
 
 		length title $1000;
 
@@ -29,7 +29,7 @@
 			If viewName, filter, colSelect, or colSort params have been specified then set them on the command
 		*/
 		%if &viewName ne %then %do;
-			sasCommand.callVoidMethod('setViewName', &viewName);
+			command.callVoidMethod('setViewName', &viewName);
 			title = cat(title, ", View: '", &viewName, "'");
 		%end;
 
@@ -38,15 +38,15 @@
 		%end;
 
 		%if &colSelect ne %then %do;
-			sasCommand.callVoidMethod('setColumns', &colSelect);
+			command.callVoidMethod('setColumns', &colSelect);
 		%end;
 
 		%if &colSort ne %then	%do;
-			sasCommand.callVoidMethod('setSorts', &colSort);
+			command.callVoidMethod('setSorts', &colSort);
 		%end;
 
 		/*
 			Set the shared params, issue the query, and create the data set
 		*/
-		%sharedQueryHandling();
+		%sharedSelectRowsHandling();
 %mend selectRows;

@@ -29,25 +29,26 @@ import java.util.Map;
  * Date: Jan 10, 2009
  * Time: 11:09:53 PM
  */
-public class SASResponse
+public class SASSelectRowsResponse
 {
-    private SelectRowsResponse _resp;
+    private final SelectRowsResponse _resp;
     private Iterator<Map<String, Object>> _rowIterator;
     private Map<String, Object> _currentRow;
+
     private static final Stash<SelectRowsResponse> _stash = new Stash<SelectRowsResponse>(60000);  // Stash entries for up to 60 seconds
 
     // We need one constructor per command class because of SAS's method calling limitations (object parameters must match expected class exactly).
-    public SASResponse(SASConnection cn, SASSelectRowsCommand command, String folderPath) throws CommandException, IOException
+    public SASSelectRowsResponse(SASConnection cn, SASSelectRowsCommand command, String folderPath) throws CommandException, IOException
     {
         _resp = command.execute(cn, folderPath);
     }
 
-    public SASResponse(SASConnection cn, SASExecuteSqlCommand command, String folderPath) throws CommandException, IOException
+    public SASSelectRowsResponse(SASConnection cn, SASExecuteSqlCommand command, String folderPath) throws CommandException, IOException
     {
         _resp = command.execute(cn, folderPath);
     }
 
-    public SASResponse(String key)
+    public SASSelectRowsResponse(String key)
     {
         _resp = _stash.get(key);
         _rowIterator = _resp.getRows().iterator();

@@ -19,25 +19,25 @@
  	the connection, executes the command, handles the meta data, sets a default title, and creates a SAS data set
 	containing all the data rows.
 */
-%macro sharedQueryHandling();
+%macro sharedSelectRowsHandling();
 		/*
 			If maxRows or rowOffset params have been specified then set them on the command.
 		*/
 		%if &maxRows ne %then %do;
-			sasCommand.callVoidMethod('setMaxRows', &maxRows);
+			command.callVoidMethod('setMaxRows', &maxRows);
 		%end;
 
 		%if &rowOffset ne %then %do;
-			sasCommand.callVoidMethod('setOffset', &rowOffset);
+			command.callVoidMethod('setOffset', &rowOffset);
 		%end;
 
 		/*
 			Create the connection, issue the command, and retrieve the response.
 		*/
 		declare javaobj cn ('org/labkey/remoteapi/sas/SASConnection', &baseUrl);
-		declare javaobj sasResponse ('org/labkey/remoteapi/sas/SASResponse', cn, sasCommand, &folderPath);
+		declare javaobj response ('org/labkey/remoteapi/sas/SASSelectRowsResponse', cn, command, &folderPath);
 
-		sasResponse.callIntMethod('getColumnCount', columnCount);
+		response.callIntMethod('getColumnCount', columnCount);
 
 		/*
 			Initialize the variables that will hold code to execute in the next data step. 
@@ -64,11 +64,11 @@
 			*/
 			isHidden = 0;
 
-			if (not &showHidden) then sasResponse.callBooleanMethod('isHidden', index, isHidden);
+			if (not &showHidden) then response.callBooleanMethod('isHidden', index, isHidden);
 
 			if (not isHidden) then do;
-				sasResponse.callStringMethod('getColumnName', index, column);
-				sasResponse.callStringMethod('getType', strip(column), type);
+				response.callStringMethod('getColumnName', index, column);
+				response.callStringMethod('getType', strip(column), type);
 
 				/*
 					Based on each column type, add the code to prepare, format, and retrieve
@@ -77,14 +77,14 @@
 				if (type = 'STRING') then
 					do;
 						call cats(pre, 'length ' || column || ' $100;');
-						call cats(row, "sasResponse.callStringMethod('getCharacter', '", column, "', ", column, ");");
+						call cats(row, "response.callStringMethod('getCharacter', '", column, "', ", column, ");");
 					end;
 				else
 					do;
 						/*
 							If value is null set to missing
 						*/
-						call cats(row, "call missing(", column, ");sasResponse.callBooleanMethod('isNull', '", column, "', isNull);if not isNull then sasResponse.callDoubleMethod('");
+						call cats(row, "call missing(", column, ");response.callBooleanMethod('isNull', '", column, "', isNull);if not isNull then response.callDoubleMethod('");
 
 						if (type = 'DATE') then
 							do;
@@ -117,7 +117,7 @@
 		*/
 		length key $8;
 	
-		sasResponse.callStringMethod('stash', key);
+		response.callStringMethod('stash', key);
 
 		/*
 			Save the stash key so it's availalbe in the next data step.
@@ -127,8 +127,8 @@
 		/*
 			Delete all the java objects created.
 		*/
-		sasResponse.delete();
-		sasCommand.delete();
+		response.delete();
+		command.delete();
 		cn.delete();
 	run;
 
@@ -140,14 +140,14 @@
 		/*
 			Retrieve the stashed response.
 		*/
-		declare javaobj sasResponse ('org/labkey/remoteapi/sas/SASResponse', "&key");
+		declare javaobj response ('org/labkey/remoteapi/sas/SASSelectRowsResponse', "&key");
 
 		/*
 			Run the code that initializes all character variables.
 		*/
 		&preCode;
 
-		sasResponse.callBooleanMethod('getRow', hasAnother);
+		response.callBooleanMethod('getRow', hasAnother);
 
 		/*
 			For each row, run the code that retrieves the value of each column and output the row.
@@ -157,7 +157,7 @@
 
 			output;
 
-			sasResponse.callBooleanMethod('getRow', hasAnother);
+			response.callBooleanMethod('getRow', hasAnother);
 		end;
 
 		/*
@@ -172,6 +172,6 @@
 
 		title &title;
 
-		sasResponse.delete();
+		response.delete();
 	run
-%mend sharedQueryHandling;
+%mend sharedSelectRowsHandling;

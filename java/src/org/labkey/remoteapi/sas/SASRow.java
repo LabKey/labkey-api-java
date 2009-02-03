@@ -13,20 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.labkey.remoteapi.sas;
 
-/*
-	Executes a SQL query against the instance of LabKey Server previously specified in %setConnection.
-*/
-%macro executeSql(baseUrl=&lk_baseUrl, folderPath=&lk_folderPath, schemaName=&lk_schemaName, sql=, dsn=, rowOffset=, maxRows=, showHidden=0);
-	data _null_;
-		declare javaobj command ('org/labkey/remoteapi/sas/SASExecuteSqlCommand', &schemaName, &sql);
+import java.util.Map;
+import java.util.HashMap;
 
-		length title $1000;
+/**
+ * User: adam
+ * Date: Feb 2, 2009
+ * Time: 2:54:45 PM
+ */
+public class SASRow
+{
+    private Map<String, Object> _map = new HashMap<String, Object>();
 
-		title = cat("Schema: '", &schemaName, "', SQL: '", &sql, "'");
+    public void clear()
+    {
+        _map.clear();
+    }
 
-		/*
-			Set the shared params, issue the query, and create the data set
-		*/
-		%sharedSelectRowsHandling();
-%mend executeSql;
+    // TODO: Special put for Date?
+
+    public void add(String key, String object)
+    {
+        _map.put(key, object);
+    }
+
+    Map<String, Object> getMap()
+    {
+        return _map;
+    }
+}

@@ -125,5 +125,4 @@ public abstract class RowsResponse extends CommandResponse
             } //for each date field
         } //for each row
     } //fixupParsedData()
-
 }
