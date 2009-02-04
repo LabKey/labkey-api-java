@@ -17,9 +17,9 @@ proc print data=all2; run;
 proc compare base=all compare=all2; run;
 
 /*  Specify two filters: only males less than a certain height. */
-%selectRows(dsn=shortMales, filter=%makeFilter("Sex", "EQUALS", "1", "Height", "LESS_THAN", 1.7));
+%selectRows(dsn=shortGuys, filter=%makeFilter("Sex", "EQUALS", "1", "Height", "LESS_THAN", 1.2));
 
-proc print data=shortMales; run;
+proc print data=shortGuys; run;
 
 /*  Demonstrate an IN filter: only people whose age is specified.  */
 %selectRows(dsn=lateThirties, filter=%makeFilter("Age", "EQUALS_ONE_OF", "36;37;38;39"));
@@ -47,17 +47,21 @@ proc print data=groups; run;
 proc print data=nab; run;
 */
 
+%setDefaults(baseUrl="http://localhost:8080/labkey", folderPath="/home", schemaName="lists", queryName="People");
+
+title "Children";
+
 data children;
-	input first $ last $ height;
+	input First : $25. Last : $25. Appearance : mmddyy10. Age Sex Height ;
+	format Appearance DATE9.;
 	datalines;
-Pebbles Flintstone .5
-Bamm-Bamm Rubble .5
+Pebbles Flintstone 022263 1 2 .5
+Bamm-Bamm Rubble 100163 1 1 .6
 ;
 
+proc contents data=children; run;
+
 %insertRows(dsn=children);
-%selectRows(dsn=moreRows);
+%selectRows(dsn=everybody);
 
-proc print data=moreRows; run;
-
-/* Pebbles: February 22, 1963 */
-/* Bamm-Bamm: October 1, 1963 */
+proc print data=everybody; run;

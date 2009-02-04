@@ -145,5 +145,4 @@ public class Test
         SelectRowsResponse resp = cmd.execute(cn, "Api Test");
         System.out.println(resp.getRows());
     }
-
 }

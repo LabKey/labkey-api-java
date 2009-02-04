@@ -95,6 +95,9 @@ public class SASSelectRowsResponse
         return hasNext;
     }
 
+
+    /*  TODO: Move the remaining methods to SASRow and return (new up) a SASRow instead of using getRow() */
+
     public boolean isNull(String key)
     {
         return null == _currentRow.get(key);
@@ -110,16 +113,8 @@ public class SASSelectRowsResponse
         return ((Number)_currentRow.get(key)).doubleValue();
     }
 
-    private static final double MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
-
-    // Java dates are based on days since 1/1/1970; SAS Dates are based on days since 1/1/1960
-    private static final double DAYS_BETWEEN_19700101_AND_19600101 = 3653;
-
-    // TODO: Adjust to GMT?   d.setTime(d.getTime()-TimeZone.getDefault().getRawOffset());
     public double getDate(String key)
     {
-        Date d = (Date)_currentRow.get(key);
-        double javaDays = d.getTime() / MILLISECONDS_PER_DAY;
-        return javaDays + DAYS_BETWEEN_19700101_AND_19600101;
+        return SASDate.convertToSASDate((Date)_currentRow.get(key));
     }
 }

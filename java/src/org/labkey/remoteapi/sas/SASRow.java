@@ -17,6 +17,9 @@ package org.labkey.remoteapi.sas;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 /**
  * User: adam
@@ -27,16 +30,24 @@ public class SASRow
 {
     private Map<String, Object> _map = new HashMap<String, Object>();
 
-    public void clear()
+    public void putDate(String key, double sasDate)
     {
-        _map.clear();
+        Date date = SASDate.convertToJavaDate(sasDate);
+
+        DateFormat format = new SimpleDateFormat("d MMM yyyy");
+        String value = format.format(date);
+
+        _map.put(key, value);
     }
 
-    // TODO: Special put for Date?
-
-    public void add(String key, String object)
+    public void put(String key, String value)
     {
-        _map.put(key, object);
+        _map.put(key, value);
+    }
+
+    public void put(String key, double value)
+    {
+        _map.put(key, value);
     }
 
     Map<String, Object> getMap()

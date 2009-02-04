@@ -15,42 +15,81 @@
  */
 
 /*
-	Retrieves data from the instance of LabKey Server previously specified in %setConnection.
+	Inserts observations in a data set into the specified LabKey Server, schema, and query.
 */
 %macro insertRows(baseUrl=&lk_baseUrl, folderPath=&lk_folderPath, schemaName=&lk_schemaName, queryName=&lk_queryName, dsn=);
-    proc contents data = &dsn
-        out = vars(keep = varnum name type format)
-        noprint;
-    run;
-
 	data _null_;
-		declare javaobj command ('org/labkey/remoteapi/sas/SASInsertRowsCommand', &schemaName, &queryName);
+        set &dsn;
 
         /*
-            TODO: Enumerate the data set and add all rows
+            Create the command on the first observation.
         */
-		declare javaobj row ('org/labkey/remoteapi/sas/SASRow');
+		if _N_ = 1 then do;
+		    declare javaobj command ('org/labkey/remoteapi/sas/SASInsertRowsCommand', &schemaName, &queryName);
+		end;
 
-		row.callVoidMethod('clear');
-		row.callVoidMethod('add', 'First', 'Pebbles');
-		row.callVoidMethod('add', 'Last', 'Flintstone');
+        /*
+            Create a new row.
+        */
+        declare javaobj row ('org/labkey/remoteapi/sas/SASRow');
 
+        /*
+            Determine the number of observations and output the code that puts the observation values into the row.
+        */
+        %let dsid = %sysfunc(open(&dsn, i));
+        %let nobs = %sysfunc(attrn(&dsid, nobs));
+
+        %do i = 1 %to %sysfunc(attrn(&dsid, nvars));
+            %let name = %sysfunc(varname(&dsid, &i));
+            %let type = %sysfunc(vartype(&dsid, &i));
+
+            %if (&type = N) %then
+                %do;
+                    %let fmt = %sysfunc(varfmt(&dsid, &i));
+                    %put &name " has format " &fmt;
+
+                    /* TODO: also look for DDMMYY and other variants */
+                    %if %index("DATE9." "DATE7." "MMDDYY10." "MMDDYY8." "WORDDATE18." "WEEKDATE29.", "&fmt") %then
+                        %do;
+                            row.callVoidMethod("putDate", "&name", &name);
+                            %put &name is a date!!;
+                        %end;
+                    %else
+                        %do;
+                            row.callVoidMethod("put", "&name", &name);
+                            %put &name is a number!!;
+                        %end;
+                %end;
+            %else
+                %do;
+                    row.callVoidMethod("put", "&name", &name);
+                    %put &name is a string!!;
+                %end;
+        %end;
+
+        %let ret = %sysfunc(close(&dsid));
+
+        /*
+            Add the row to the command.
+        */
         command.callVoidMethod('addRow', row);
 
 		/*
-			Create the connection, issue the command, and retrieve the response.
+			If we just handled the last observation, create the connection, issue the command, and retrieve the response.
 		*/
-		declare javaobj cn ('org/labkey/remoteapi/sas/SASConnection', &baseUrl);
-		declare javaobj response ('org/labkey/remoteapi/sas/SASSaveRowsResponse', cn, command, &folderPath);
+		if _N_ = &nobs then do;
+            declare javaobj cn ('org/labkey/remoteapi/sas/SASConnection', &baseUrl);
+            declare javaobj response ('org/labkey/remoteapi/sas/SASSaveRowsResponse', cn, command, &folderPath);
 
-		response.callIntMethod('getRowsAffected', columnCount);
+            response.callIntMethod('getRowsAffected', columnCount);
 
-		put columnCount "rows were added";
+            put columnCount "rows were added";
 
-		response.delete();
-		cn.delete();
-        row.delete();
-		command.delete();
+            response.delete();
+            cn.delete();
+            row.delete();
+            command.delete();
+        end;
 	run;
 %mend insertRows;
 

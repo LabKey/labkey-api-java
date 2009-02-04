@@ -83,9 +83,9 @@ public class Main
         System.out.println();
         SASInsertRowsCommand insert = new SASInsertRowsCommand("lists", "People");
         SASRow row = new SASRow();
-        row.clear();
-        row.add("First", "Pebbles");
-        row.add("Last", "Flintstone");
+
+        row.put("First", "Pebbles");
+        row.put("Last", "Flintstone");
 
         insert.addRow(row);
 
