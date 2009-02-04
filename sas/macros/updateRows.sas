@@ -13,19 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.labkey.remoteapi.sas;
 
-import org.labkey.remoteapi.query.InsertRowsCommand;
+/*
+	Updates a schema/query on an instance of LabKey Server using the keys and values in a data set.
+*/
+%macro updateRows(baseUrl=&lk_baseUrl, folderPath=&lk_folderPath, schemaName=&lk_schemaName, queryName=&lk_queryName, dsn=);
+    %saveRows(SASUpdateRowsCommand, updated, &baseUrl, &folderPath, &schemaName, &queryName, &dsn);
+%mend updateRows;
 
-/**
- * User: adam
- * Date: Feb 2, 2009
- * Time: 2:50:35 PM
- */
-public class SASInsertRowsCommand extends SASSaveRowsCommand
-{
-    public SASInsertRowsCommand(String schema, String query)
-    {
-        super(new InsertRowsCommand(schema, query));
-    }
-}

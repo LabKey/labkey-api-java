@@ -15,17 +15,17 @@
  */
 package org.labkey.remoteapi.sas;
 
-import org.labkey.remoteapi.query.InsertRowsCommand;
+import org.labkey.remoteapi.query.UpdateRowsCommand;
 
 /**
  * User: adam
- * Date: Feb 2, 2009
- * Time: 2:50:35 PM
+ * Date: Feb 3, 2009
+ * Time: 7:25:54 PM
  */
-public class SASInsertRowsCommand extends SASSaveRowsCommand
+public class SASUpdateRowsCommand extends SASSaveRowsCommand
 {
-    public SASInsertRowsCommand(String schema, String query)
+    public SASUpdateRowsCommand(String schema, String query)
     {
-        super(new InsertRowsCommand(schema, query));
+        super(new UpdateRowsCommand(schema, query));
     }
 }

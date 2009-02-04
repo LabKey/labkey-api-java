@@ -47,7 +47,22 @@ public class SASRow
 
     public void put(String key, double value)
     {
-        _map.put(key, value);
+        // Missing values are passed as NaN
+        if (Double.isNaN(value))
+        {
+            _map.put(key, null);
+        }
+        else
+        {
+            // Temp hack to handle fact that SAS only sets doubles, but server-side bean converters will throw for integer fields
+            // TODO: Make server more lenient in this case (accept double format when expecting integer)
+            Double fractional = (value >= 0 ? value - Math.floor(value) : value - Math.ceil(value));
+
+            if (fractional < 0.000000001)
+                _map.put(key, new Double(value).longValue());
+            else
+                _map.put(key, value);
+        }
     }
 
     Map<String, Object> getMap()

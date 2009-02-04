@@ -15,34 +15,17 @@
  */
 package org.labkey.remoteapi.sas;
 
-import org.labkey.remoteapi.CommandException;
-import org.labkey.remoteapi.query.InsertRowsCommand;
-import org.labkey.remoteapi.query.SaveRowsResponse;
 import org.labkey.remoteapi.query.DeleteRowsCommand;
-
-import java.io.IOException;
 
 /**
  * User: adam
  * Date: Feb 2, 2009
  * Time: 2:50:35 PM
  */
-public class SASDeleteRowsCommand
+public class SASDeleteRowsCommand extends SASSaveRowsCommand
 {
-    private final DeleteRowsCommand _command;
-
     public SASDeleteRowsCommand(String schema, String query)
     {
-        _command = new DeleteRowsCommand(schema, query);
-    }
-
-    public void addRow(SASRow row)
-    {
-        _command.addRow(row.getMap());
-    }
-
-    SaveRowsResponse execute(SASConnection cn, String folderPath) throws CommandException, IOException
-    {
-        return _command.execute(cn, folderPath);
+        super(new DeleteRowsCommand(schema, query));
     }
 }

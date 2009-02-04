@@ -29,14 +29,24 @@ public class SASSaveRowsResponse
 {
     private final SaveRowsResponse _resp;
 
-    public SASSaveRowsResponse(SASConnection cn, SASInsertRowsCommand command, String folderPath) throws CommandException, IOException
+    private SASSaveRowsResponse(SASConnection cn, SASSaveRowsCommand command, String folderPath) throws CommandException, IOException
     {
         _resp = command.execute(cn, folderPath);
     }
 
+    public SASSaveRowsResponse(SASConnection cn, SASInsertRowsCommand command, String folderPath) throws CommandException, IOException
+    {
+        this(cn, (SASSaveRowsCommand)command, folderPath);
+    }
+
     public SASSaveRowsResponse(SASConnection cn, SASDeleteRowsCommand command, String folderPath) throws CommandException, IOException
     {
-        _resp = command.execute(cn, folderPath);
+        this(cn, (SASSaveRowsCommand)command, folderPath);
+    }
+
+    public SASSaveRowsResponse(SASConnection cn, SASUpdateRowsCommand command, String folderPath) throws CommandException, IOException
+    {
+        this(cn, (SASSaveRowsCommand)command, folderPath);
     }
 
     public int getRowsAffected()

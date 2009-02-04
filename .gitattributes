@@ -37,9 +37,11 @@ java/src/org/labkey/remoteapi/sas/SASDeleteRowsCommand.java -text
 java/src/org/labkey/remoteapi/sas/SASExecuteSqlCommand.java -text
 java/src/org/labkey/remoteapi/sas/SASInsertRowsCommand.java -text
 java/src/org/labkey/remoteapi/sas/SASRow.java -text
+java/src/org/labkey/remoteapi/sas/SASSaveRowsCommand.java -text
 java/src/org/labkey/remoteapi/sas/SASSaveRowsResponse.java -text
 java/src/org/labkey/remoteapi/sas/SASSelectRowsCommand.java -text
 java/src/org/labkey/remoteapi/sas/SASSelectRowsResponse.java -text
+java/src/org/labkey/remoteapi/sas/SASUpdateRowsCommand.java -text
 java/src/org/labkey/remoteapi/sas/Stash.java -text
 java/src/org/labkey/remoteapi/security/ACL.java -text
 java/src/org/labkey/remoteapi/security/GetContainersCommand.java -text
@@ -57,3 +59,4 @@ sas/macros/saveRows.sas -text
 sas/macros/selectRows.sas -text
 sas/macros/setDefaults.sas -text
 sas/macros/sharedSelectRowsHandling.sas -text
+sas/macros/updateRows.sas -text
