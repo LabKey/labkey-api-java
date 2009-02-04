@@ -65,3 +65,7 @@ proc contents data=children; run;
 %selectRows(dsn=everybody);
 
 proc print data=everybody; run;
+
+%selectRows(dsn=babies, filter=%makeFilter("Age", "LESS_THAN_OR_EQUAL_TO", 2), showHidden=1);
+
+proc print data=babies; run;

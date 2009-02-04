@@ -15,9 +15,9 @@
  */
 
 /*
-	Inserts observations in a data set into the specified LabKey Server, schema, and query.
+	Deletes rows in the specified schema and query based on the keys in the specified data set.
 */
-%macro insertRows(baseUrl=&lk_baseUrl, folderPath=&lk_folderPath, schemaName=&lk_schemaName, queryName=&lk_queryName, dsn=);
-    %saveRows(SASInsertRowsCommand, inserted, &baseUrl, &folderPath, &schemaName, &queryName, &dsn);
-%mend insertRows;
+%macro deleteRows(baseUrl=&lk_baseUrl, folderPath=&lk_folderPath, schemaName=&lk_schemaName, queryName=&lk_queryName, dsn=);
+    %saveRows(SASDeleteRowsCommand, deleted, &baseUrl, &folderPath, &schemaName, &queryName, &dsn);
+%mend deleteRows;
 

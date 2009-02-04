@@ -33,6 +33,7 @@ java/src/org/labkey/remoteapi/sas/Main.java -text
 java/src/org/labkey/remoteapi/sas/NetrcFileParser.java -text
 java/src/org/labkey/remoteapi/sas/SASConnection.java -text
 java/src/org/labkey/remoteapi/sas/SASDate.java -text
+java/src/org/labkey/remoteapi/sas/SASDeleteRowsCommand.java -text
 java/src/org/labkey/remoteapi/sas/SASExecuteSqlCommand.java -text
 java/src/org/labkey/remoteapi/sas/SASInsertRowsCommand.java -text
 java/src/org/labkey/remoteapi/sas/SASRow.java -text
@@ -48,9 +49,11 @@ java/src/org/labkey/remoteapi/security/GetGroupPermsResponse.java -text
 sas/deleteMacros.sas -text
 sas/demo.sas -text
 sas/demo.xls -text
+sas/macros/deleteRows.sas -text
 sas/macros/executeSql.sas -text
 sas/macros/insertRows.sas -text
 sas/macros/makeFilter.sas -text
+sas/macros/saveRows.sas -text
 sas/macros/selectRows.sas -text
 sas/macros/setDefaults.sas -text
 sas/macros/sharedSelectRowsHandling.sas -text

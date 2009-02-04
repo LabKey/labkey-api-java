@@ -6,6 +6,7 @@ proc catalog cat=WORK.SASMACR;
 	delete executeSql / et=macro;
 	delete insertRows / et=macro;
 	delete makeFilter / et=macro;
+	delete saveRows / et=macro;
 	delete selectRows / et=macro;
 	delete setDefaults / et=macro;
 	delete sharedSelectRowsHandling / et=macro;
