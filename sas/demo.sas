@@ -66,7 +66,7 @@ proc print data=updateTest; run;
 
 /* Demonstrate UNION between two different data sets.  */
 %executeSql(dsn=combined, sql="SELECT MorePeople.First, MorePeople.Last FROM MorePeople UNION
-						   SELECT People.First, People.Last FROM People"); 
+						   SELECT People.First, People.Last FROM People ORDER BY 2"); 
 proc print data=combined; run;
 
 /*  Clean up -- clear the AgeToday column and delete Pebbles & Bamm-Bamm rows  */

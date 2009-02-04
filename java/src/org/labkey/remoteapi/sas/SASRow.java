@@ -56,9 +56,9 @@ public class SASRow
         {
             // Temp hack to handle fact that SAS only sets doubles, but server-side bean converters will throw for integer fields
             // TODO: Make server more lenient in this case (accept double format when expecting integer)
-            Double fractional = (value >= 0 ? value - Math.floor(value) : value - Math.ceil(value));
+            Double delta = Math.abs(value - Math.round(value));
 
-            if (fractional < 0.000000001)
+            if (delta < 0.000000001)
                 _map.put(key, new Double(value).longValue());
             else
                 _map.put(key, value);
