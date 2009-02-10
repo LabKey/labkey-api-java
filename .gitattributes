@@ -48,6 +48,7 @@ java/src/org/labkey/remoteapi/security/GetContainersCommand.java -text
 java/src/org/labkey/remoteapi/security/GetContainersResponse.java -text
 java/src/org/labkey/remoteapi/security/GetGroupPermsCommand.java -text
 java/src/org/labkey/remoteapi/security/GetGroupPermsResponse.java -text
+sas/MorePeople.xls -text
 sas/deleteMacros.sas -text
 sas/demo.sas -text
 sas/demo.xls -text
