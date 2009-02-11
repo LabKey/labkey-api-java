@@ -15,9 +15,13 @@
  */
 
 /*
-	Deletes rows in the specified schema and query based on the keys in the specified data set.
+	Set default values for commonly used parameters.  Subsequent calls to %labkeySelectRows, %labkeyExecuteSql, etc. will use the
+	values specified here by default.
 */
-%macro deleteRows(baseUrl=&lk_baseUrl, folderPath=&lk_folderPath, schemaName=&lk_schemaName, queryName=&lk_queryName, dsn=);
-    %saveRows(SASDeleteRowsCommand, deleted, &baseUrl, &folderPath, &schemaName, &queryName, &dsn);
-%mend deleteRows;
-
+%macro labkeySetDefaults(baseUrl=, folderPath=, schemaName=, queryName=);
+	%global lk_baseUrl lk_folderPath lk_schemaName lk_queryName;
+	%let lk_baseUrl = &baseUrl;
+	%let lk_folderPath = &folderPath;
+	%let lk_schemaName = &schemaName;
+	%let lk_queryName = &queryName;
+%mend labkeySetDefaults;

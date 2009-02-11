@@ -15,9 +15,9 @@
  */
 
 /*
-	Updates a schema/query on an instance of LabKey Server using the keys and values in a data set.
+	Inserts observations in a data set into the specified LabKey Server, schema, and query.
 */
-%macro updateRows(baseUrl=&lk_baseUrl, folderPath=&lk_folderPath, schemaName=&lk_schemaName, queryName=&lk_queryName, dsn=);
-    %saveRows(SASUpdateRowsCommand, updated, &baseUrl, &folderPath, &schemaName, &queryName, &dsn);
-%mend updateRows;
+%macro labkeyInsertRows(baseUrl=&lk_baseUrl, folderPath=&lk_folderPath, schemaName=&lk_schemaName, queryName=&lk_queryName, dsn=);
+    %labkeySaveRows(SASInsertRowsCommand, inserted, &baseUrl, &folderPath, &schemaName, &queryName, &dsn);
+%mend labkeyInsertRows;
 

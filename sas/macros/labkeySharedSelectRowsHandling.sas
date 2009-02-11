@@ -15,11 +15,11 @@
  */
 
 /*
-	Common code used by %executeSql and %selectRows.  Handles maxRows & rowOffset params (if present), initializes
+	Common code used by %labkeyExecuteSql and %labkeySelectRows.  Handles maxRows & rowOffset params (if present), initializes
  	the connection, executes the command, handles the meta data, sets a default title, and creates a SAS data set
 	containing all the data rows.
 */
-%macro sharedSelectRowsHandling();
+%macro labkeySharedSelectRowsHandling();
 		/*
 			If maxRows or rowOffset params have been specified then set them on the command.
 		*/
@@ -174,4 +174,4 @@
 
 		response.delete();
 	run
-%mend sharedSelectRowsHandling;
+%mend labkeySharedSelectRowsHandling;

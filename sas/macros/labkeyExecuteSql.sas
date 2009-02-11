@@ -15,13 +15,18 @@
  */
 
 /*
-	Set default values for commonly used parameters.  Subsequent calls to %selectRows, %executeSql, etc. will use the
-	values specified here by default.
+	Executes a SQL query against the instance of LabKey Server previously specified in %setConnection.
 */
-%macro setDefaults(baseUrl=, folderPath=, schemaName=, queryName=);
-	%global lk_baseUrl lk_folderPath lk_schemaName lk_queryName;
-	%let lk_baseUrl = &baseUrl;
-	%let lk_folderPath = &folderPath;
-	%let lk_schemaName = &schemaName;
-	%let lk_queryName = &queryName;
-%mend setDefaults;
+%macro labkeyExecuteSql(baseUrl=&lk_baseUrl, folderPath=&lk_folderPath, schemaName=&lk_schemaName, sql=, dsn=, rowOffset=, maxRows=, showHidden=0);
+	data _null_;
+		declare javaobj command ('org/labkey/remoteapi/sas/SASExecuteSqlCommand', &schemaName, &sql);
+
+		length title $1000;
+
+		title = cat("Schema: '", &schemaName, "', SQL: '", &sql, "'");
+
+		/*
+			Set the shared params, issue the query, and create the data set
+		*/
+		%labkeySharedSelectRowsHandling();
+%mend labkeyExecuteSql;

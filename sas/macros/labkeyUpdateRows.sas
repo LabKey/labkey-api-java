@@ -15,18 +15,9 @@
  */
 
 /*
-	Executes a SQL query against the instance of LabKey Server previously specified in %setConnection.
+	Updates a schema/query on an instance of LabKey Server using the keys and values in a data set.
 */
-%macro executeSql(baseUrl=&lk_baseUrl, folderPath=&lk_folderPath, schemaName=&lk_schemaName, sql=, dsn=, rowOffset=, maxRows=, showHidden=0);
-	data _null_;
-		declare javaobj command ('org/labkey/remoteapi/sas/SASExecuteSqlCommand', &schemaName, &sql);
+%macro labkeyUpdateRows(baseUrl=&lk_baseUrl, folderPath=&lk_folderPath, schemaName=&lk_schemaName, queryName=&lk_queryName, dsn=);
+    %labkeySaveRows(SASUpdateRowsCommand, updated, &baseUrl, &folderPath, &schemaName, &queryName, &dsn);
+%mend labkeyUpdateRows;
 
-		length title $1000;
-
-		title = cat("Schema: '", &schemaName, "', SQL: '", &sql, "'");
-
-		/*
-			Set the shared params, issue the query, and create the data set
-		*/
-		%sharedSelectRowsHandling();
-%mend executeSql;

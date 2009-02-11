@@ -15,10 +15,10 @@
  */
 
 /*
-	Initializes a SAS command object with data set observations and executes the command.  Used by %insertRows,
-	%updateRows, and %deleteRows.
+	Initializes a SAS command object with data set observations and executes the command.  Used by %labkeyInsertRows,
+	%labkeyUpdateRows, and %labkeyDeleteRows.
 */
-%macro saveRows(commandClass, verb, baseUrl, folderPath, schemaName, queryName, dsn);
+%macro labkeySaveRows(commandClass, verb, baseUrl, folderPath, schemaName, queryName, dsn);
 	data _null_;
         set &dsn;
 
@@ -89,5 +89,5 @@
             command.delete();
         end;
 	run;
-%mend saveRows;
+%mend labkeySaveRows;
 
