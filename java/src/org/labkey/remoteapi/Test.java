@@ -37,10 +37,10 @@ public class Test
         try
         {
             //selectTest(cn);
-            //crudTest(cn);
+            crudTest(cn);
             //execSqlTest(cn);
             //assayTest(cn);
-            schemasTest(cn);
+            //schemasTest(cn);
         }
         catch(CommandException e)
         {
@@ -101,8 +101,8 @@ public class Test
         InsertRowsCommand cmdins = new InsertRowsCommand("lists", "People");
 
         Map<String,Object> row = new HashMap<String,Object>();
-        row.put("FirstName", "Insert");
-        row.put("LastName", "Test");
+        row.put("FirstName", "To Be Inserted");
+        row.put("LastName", "Test Inserted Value");
 
         cmdins.addRow(row);
         SaveRowsResponse resp = cmdins.execute(cn, "Api Test");
@@ -110,6 +110,7 @@ public class Test
         //make sure row count is one greater
         srresp = cmdsel.execute(cn, "Api Test");
         assert srresp.getRowCount().intValue() == rowCount + 1;
+        assert srresp.getRows().get(0).get("FirstName").equals("To Be Inserted");
 
         //update the newly-added row
         UpdateRowsCommand cmdupd = new UpdateRowsCommand("lists", "People");

@@ -16,15 +16,15 @@
 package org.labkey.remoteapi.query;
 
 import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
 import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.PostCommand;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.text.SimpleDateFormat;
 
 /*
 * User: Dave
@@ -183,7 +183,37 @@ public abstract class SaveRowsCommand extends PostCommand
         JSONObject json = new JSONObject();
         json.put("schemaName", getSchemaName());
         json.put("queryName", getQueryName());
-        json.put("rows", null != getRows() ? getRows() : new ArrayList());
+
+        //unfortunately, JSON simple is so simple that it doesn't
+        //encode maps into JSON objects on the fly,
+        //nor dates into property JSON format
+        JSONArray jsonRows = new JSONArray();
+        if(null != getRows())
+        {
+            SimpleDateFormat fmt = new SimpleDateFormat("d MMM yyyy HH:mm:ss Z");
+            for(Map<String,Object> row : getRows())
+            {
+                JSONObject jsonRow;
+                if(row instanceof JSONObject) //optimization
+                    jsonRow = (JSONObject)row;
+                else
+                {
+                    jsonRow = new JSONObject();
+                    //row map entries must be scalar values (no embedded maps or arrays)
+                    for(Map.Entry<String,Object> entry : row.entrySet())
+                    {
+                        Object value = entry.getValue();
+
+                        if(value instanceof Date)
+                            value = fmt.format((Date)value);
+
+                        jsonRow.put(entry.getKey(), value);
+                    }
+                }
+                jsonRows.add(jsonRow);
+            }
+        }
+        json.put("rows", jsonRows);
         return json;
     }
 
