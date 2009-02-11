@@ -49,9 +49,10 @@ java/src/org/labkey/remoteapi/security/GetContainersResponse.java -text
 java/src/org/labkey/remoteapi/security/GetGroupPermsCommand.java -text
 java/src/org/labkey/remoteapi/security/GetGroupPermsResponse.java -text
 sas/MorePeople.xls -text
+sas/People.xls -text
+sas/build.xml -text
 sas/deleteMacros.sas -text
 sas/demo.sas -text
-sas/demo.xls -text
 sas/macros/labkeyDeleteRows.sas -text
 sas/macros/labkeyExecuteSql.sas -text
 sas/macros/labkeyInsertRows.sas -text
