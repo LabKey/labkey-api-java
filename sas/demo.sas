@@ -2,7 +2,7 @@ options mprint;
 
 /* Simple example specifying all required parameters.  */
 
-%labkeySelectRows(dsn=all, baseUrl="http://localhost:8080/labkey", folderPath="/home", schemaName="Lists", queryName="People");
+%labkeySelectRows(dsn=all, baseUrl="http://localhost:8080/labkey", folderPath="/home", schemaName="lists", queryName="People");
 proc print data=all; run;
 
 /*	Set default parameter values to use in subsequent calls.  */
