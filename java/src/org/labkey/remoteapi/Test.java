@@ -110,16 +110,16 @@ public class Test
         //make sure row count is one greater
         srresp = cmdsel.execute(cn, "Api Test");
         assert srresp.getRowCount().intValue() == rowCount + 1;
-        assert srresp.getRows().get(0).get("FirstName").equals("To Be Inserted");
+        assert srresp.getRows().get(srresp.getRows().size() - 1).get("FirstName").equals("To Be Inserted");
 
         //update the newly-added row
         UpdateRowsCommand cmdupd = new UpdateRowsCommand("lists", "People");
-        row = resp.getRows().get(0);
+        row = resp.getRows().get(resp.getRows().size() - 1);
         row.put("LastName", "Test UPDATED");
         cmdupd.addRow(row);
         resp = cmdupd.execute(cn, "Api Test");
         assert resp.getRowsAffected().intValue() == 1;
-        assert resp.getRows().get(0).get("LastName").equals("Test UPDATED");
+        assert resp.getRows().get(resp.getRows().size() - 1).get("LastName").equals("Test UPDATED");
 
         //delete the newly added row
         DeleteRowsCommand cmddel = new DeleteRowsCommand("lists", "People");

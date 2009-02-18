@@ -71,6 +71,7 @@ public class Command
     private String _actionName = null;
     private Map<String,Object> _parameters = null;
     private int _timeout = 60000; //default timeout to 60 seconds
+    private double _requiredVersion = 8.3;
 
     /**
      * Constructs a new Command object for calling the specified
@@ -410,11 +411,23 @@ public class Command
 
     /**
      * Returns the required version number of this API call.
-     * Override this method to require a version other than the default
      * @return The required version number
      */
-    protected double getRequiredVersion()
+    public double getRequiredVersion()
     {
-        return 8.3;
+        return _requiredVersion;
+    }
+
+    /**
+     * Sets the required version number for this API call.
+     * By default, the required version is 8.3, meaning that
+     * this call requires LabKey Server version 8.3 or higher.
+     * Set this to a higher number to required a later
+     * version of the server.
+     * @param requiredVersion The new required version
+     */
+    public void setRequiredVersion(double requiredVersion)
+    {
+        _requiredVersion = requiredVersion;
     }
 }
