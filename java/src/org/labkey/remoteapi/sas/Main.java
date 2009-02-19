@@ -150,6 +150,10 @@ public class Main
                         {
                             line.append(dataResponse.getDate(column));
                         }
+                        else if ("BOOLEAN".equals(type))
+                        {
+                            line.append(dataResponse.getBoolean(column));
+                        }
                         else
                         {
                             line.append(dataResponse.getNumeric(column));

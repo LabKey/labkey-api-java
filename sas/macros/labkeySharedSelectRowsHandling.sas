@@ -84,16 +84,20 @@
 						/*
 							If value is null set to missing
 						*/
-						call cats(row, "call missing(", column, ");response.callBooleanMethod('isNull', '", column, "', isNull);if not isNull then response.callDoubleMethod('");
+						call cats(row, "call missing(", column, ");response.callBooleanMethod('isNull', '", column, "', isNull);if not isNull then response.");
 
 						if (type = 'DATE') then
 							do;
-								call cats(row, "getDate");
+								call cats(row, "callDoubleMethod('getDate");
 								call cats(post, "format " || column || " DATE9.;");
 							end;
+					    else if (type = 'BOOLEAN') then
+					        do;
+					            call cats(row, "callBooleanMethod('getBoolean");
+					        end;
 						else
 							do;
-								call cats(row, "getNumeric");
+								call cats(row, "callDoubleMethod('getNumeric");
 							end;
 
 						call cats(row, "', '", column, "', ", column, ");");

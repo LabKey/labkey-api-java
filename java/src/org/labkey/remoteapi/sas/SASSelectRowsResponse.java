@@ -113,6 +113,11 @@ public class SASSelectRowsResponse
         return ((Number)_currentRow.get(key)).doubleValue();
     }
 
+    public boolean getBoolean(String key)
+    {
+        return (Boolean)_currentRow.get(key);
+    }
+
     public double getDate(String key)
     {
         return SASDate.convertToSASDate((Date)_currentRow.get(key));
