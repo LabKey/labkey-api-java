@@ -26,7 +26,7 @@ import java.io.IOException;
  * Date: Jan 13, 2009
  * Time: 3:52:10 PM
  */
-public class SASExecuteSqlCommand
+public class SASExecuteSqlCommand extends SASBaseSelectCommand
 {
     private ExecuteSqlCommand _command;
 
@@ -49,6 +49,6 @@ public class SASExecuteSqlCommand
 
     SelectRowsResponse execute(SASConnection cn, String folderPath) throws CommandException, IOException
     {
-        return _command.execute(cn, folderPath);
+        return execute(_command, cn, folderPath);
     }
 }

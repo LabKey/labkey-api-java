@@ -15,12 +15,11 @@
  */
 package org.labkey.remoteapi.query;
 
-import org.apache.commons.codec.EncoderException;
 import org.json.simple.JSONObject;
+import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.PostCommand;
-import org.labkey.remoteapi.CommandException;
 
 import java.io.IOException;
 

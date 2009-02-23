@@ -77,7 +77,9 @@
 				*/
 				if (type = 'STRING') then
 					do;
-						call cats(pre, 'length ' || column || ' $100;');
+					    length scale 4;
+        				response.callIntMethod('getScale', index, scale);
+						call cats(pre, 'length ' || column || ' $' || scale || ';');
 						call cats(row, "response.callStringMethod('getCharacter', '", column, "', ", column, ");");
 					end;
 				else

@@ -59,7 +59,7 @@ public class Main
         SASSelectRowsResponse response = new SASSelectRowsResponse(cn, command, "home");
         logResponse(response);
 
-        command.addFilter("Age", "GREATER_THAN_OR_EQUAL_TO", "11");
+        command.addFilter("Age", "GREATER_THAN_OR_EQUAL_TO", "12");
         response = new SASSelectRowsResponse(cn, command, "home");
         System.out.println();
         System.out.println("Old people");
@@ -76,6 +76,13 @@ public class Main
         command.setMaxRows(3.0);
         command.setOffset(1.0);
         response = new SASSelectRowsResponse(cn, command, "home");
+        logResponse(response);
+
+        System.out.println();
+        System.out.println("Test executeSql");
+        System.out.println();
+        SASExecuteSqlCommand execSql = new SASExecuteSqlCommand("lists", "SELECT People.Last, COUNT(People.First) AS Number, AVG(People.Height) AS AverageHeight, AVG(People.Age) AS AverageAge FROM People GROUP BY People.Last");
+        response = new SASSelectRowsResponse(cn, execSql, "home");
         logResponse(response);
 
         System.out.println();
@@ -139,7 +146,7 @@ public class Main
             if (!response.isHidden(i))
             {
                 String column = response.getColumnName(i);
-                System.out.println(column + ": " + response.getType(column));
+                System.out.println(column + ": " + response.getType(column) + " " + response.getScale(i));
             }
         }
 
@@ -186,10 +193,13 @@ public class Main
                     }
                 }
 
-                String qc = dataResponse.getQCValue(column);
+                if (dataResponse.allowsQC(column))
+                {
+                    String qc = dataResponse.getQCIndicator(column);
 
-                if (null != qc)
-                    line.append(" (").append(qc).append(")");
+                    if (null != qc)
+                        line.append(" (").append(qc).append(")");
+                }
 
                 line.append(" ");
             }

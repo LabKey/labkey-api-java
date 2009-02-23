@@ -5,6 +5,7 @@ java/remoteapi.iml -text
 java/remoteapi.ipr -text
 java/src/org/apache/commons/httpclient/contrib/ssl/EasySSLProtocolSocketFactory.java -text
 java/src/org/apache/commons/httpclient/contrib/ssl/EasyX509TrustManager.java -text
+java/src/org/labkey/remoteapi/ApiVersionException.java -text
 java/src/org/labkey/remoteapi/Command.java -text
 java/src/org/labkey/remoteapi/CommandException.java -text
 java/src/org/labkey/remoteapi/CommandResponse.java -text
@@ -31,6 +32,7 @@ java/src/org/labkey/remoteapi/query/Sort.java -text
 java/src/org/labkey/remoteapi/query/UpdateRowsCommand.java -text
 java/src/org/labkey/remoteapi/sas/Main.java -text
 java/src/org/labkey/remoteapi/sas/NetrcFileParser.java -text
+java/src/org/labkey/remoteapi/sas/SASBaseSelectCommand.java -text
 java/src/org/labkey/remoteapi/sas/SASConnection.java -text
 java/src/org/labkey/remoteapi/sas/SASDate.java -text
 java/src/org/labkey/remoteapi/sas/SASDeleteRowsCommand.java -text

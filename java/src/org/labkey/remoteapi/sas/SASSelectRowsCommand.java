@@ -16,10 +16,10 @@
 package org.labkey.remoteapi.sas;
 
 import org.labkey.remoteapi.CommandException;
+import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.remoteapi.query.Sort;
-import org.labkey.remoteapi.query.Filter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ import java.util.List;
     Return types must be void, primitives, or String.  This class is a wrapper around SelectRowsCommand that provides an
     interface that can be used from SAS.
  */
-public class SASSelectRowsCommand
+public class SASSelectRowsCommand extends SASBaseSelectCommand
 {
     private final SelectRowsCommand _command;
 
@@ -120,20 +120,6 @@ public class SASSelectRowsCommand
 
     SelectRowsResponse execute(SASConnection cn, String folderPath) throws CommandException, IOException
     {
-        // "Require" 9.1 first, which is needed for QC, but fall back to 8.3
-        _command.setRequiredVersion(9.1);
-
-        try
-        {
-            return _command.execute(cn, folderPath);
-        }
-        catch (CommandException e)    // TODO: Create & catch CommandVersionException
-        {
-            if (!e.getMessage().contains("version of this API"))
-                throw e;
-        }
-
-        _command.setRequiredVersion(8.3);
-        return _command.execute(cn, folderPath);
+        return execute(_command, cn, folderPath);
     }
 }

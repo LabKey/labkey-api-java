@@ -236,8 +236,13 @@ public class Command
 
             //if the content-type is json, try to parse the response text
             //and extract the "exception" property from the root-level object
-            if(null != contentType && contentType.contains(CONTENT_TYPE_JSON) && null != json && json.containsKey("exception"))
+            if (null != contentType && contentType.contains(CONTENT_TYPE_JSON) && null != json && json.containsKey("exception"))
+            {
                 message = (String)json.get("exception");
+
+                if ("org.labkey.api.action.ApiVersionException".equals(json.get("exceptionClass")))
+                    throw new ApiVersionException(message, status, json);
+            }
 
             throw new CommandException(message, status, json);
         }

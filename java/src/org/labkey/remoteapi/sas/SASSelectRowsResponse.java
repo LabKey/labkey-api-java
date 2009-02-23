@@ -38,7 +38,7 @@ public class SASSelectRowsResponse
 
     private static final Stash<SelectRowsResponse> _stash = new Stash<SelectRowsResponse>(60000);  // Stash entries for up to 60 seconds
 
-    // We need one constructor per command class because of SAS's method calling limitations (object parameters must match expected class exactly).
+    // We need one constructor per command class because of SAS's method-calling limitations (object parameters must match expected class exactly).
     public SASSelectRowsResponse(SASConnection cn, SASSelectRowsCommand command, String folderPath) throws CommandException, IOException
     {
         _resp = command.execute(cn, folderPath);
@@ -74,18 +74,28 @@ public class SASSelectRowsResponse
         return type.toString();
     }
 
-    public boolean isHidden(double index)
+    private Object getColumnModelProperty(double index, String propName)
     {
         int i = (int)Math.round(index);
-        Map<String,Object> columnModel = _resp.getColumnModel().get(i);
-        return (Boolean)columnModel.get("hidden");
+        Map<String, Object> columnModel = _resp.getColumnModel().get(i);
+        return columnModel.get(propName);
     }
 
-    public boolean hasQC(double index)
+    public boolean isHidden(double index)
     {
-        int i = (int)Math.round(index);
-        Map<String,Object> columnModel = _resp.getColumnModel().get(i);
-        return (Boolean)columnModel.get("hidden");         // TODO: retrieve QC indicator
+        return (Boolean)getColumnModelProperty(index, "hidden");
+    }
+
+    public int getScale(double index)
+    {
+        return ((Long)getColumnModelProperty(index, "scale")).intValue();
+    }
+
+    public boolean allowsQC(String columnName)
+    {
+        Boolean allowsQC = (Boolean)_resp.getMetaData(columnName).get("allowsQC");
+
+        return (null != allowsQC && allowsQC);
     }
 
     public String stash()
@@ -139,18 +149,16 @@ public class SASSelectRowsResponse
 
     public double getDate(String key)
     {
-        // TODO: Remove this temp hack once 9.1 format handles dates correctly
-        Object value = getValue(key);
-        Date d = value instanceof Date ? (Date)value : new Date((String)value);
+        Date d = (Date)getValue(key);
         return SASDate.convertToSASDate(d);
     }
 
-    public String getQCValue(String key)
+    public String getQCIndicator(String key)
     {
         Object o = _currentRow.get(key);
 
         if (!(o instanceof JSONObject))
-            throw new IllegalStateException("QC values are only available from LabKey 9.1 or later servers");
+            throw new IllegalStateException("QC values are only available when requiring LabKey 9.1 or later version");
 
         return (String)((JSONObject)o).get("qcValue");
     }
