@@ -18,6 +18,7 @@ package org.labkey.remoteapi;
 import org.labkey.remoteapi.query.*;
 import org.labkey.remoteapi.assay.AssayListCommand;
 import org.labkey.remoteapi.assay.AssayListResponse;
+import org.json.simple.JSONObject;
 
 import java.util.HashMap;
 import java.util.List;
@@ -41,10 +42,27 @@ public class Test
             //execSqlTest(cn);
             //assayTest(cn);
             //schemasTest(cn);
+            extendedFormatTest(cn);
         }
         catch(CommandException e)
         {
             System.out.println("Command Exception: " + e.getMessage());
+        }
+    }
+
+    private static void extendedFormatTest(Connection cn) throws Exception
+    {
+        SelectRowsCommand cmd = new SelectRowsCommand("lists", "People");
+        cmd.setRequiredVersion(9.1);
+        SelectRowsResponse resp = cmd.execute(cn, "Api Test/My Subfolder");
+
+        for(Map<String,Object> row : resp.getRows())
+        {
+            for(Map.Entry<String,Object> entry : row.entrySet())
+            {
+                Object value = ((JSONObject)entry.getValue()).get("value");
+                System.out.println(entry.getKey() + " = " + value + " (type: " + (null == value ? "null" : value.getClass().getName()) + ")");
+            }
         }
     }
 

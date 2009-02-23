@@ -301,7 +301,7 @@ public class SelectRowsCommand extends Command
      */
     protected CommandResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new SelectRowsResponse(text, status, contentType, json);
+        return new SelectRowsResponse(text, status, contentType, json, getRequiredVersion());
     }
 
     public Map<String, Object> getParameters()

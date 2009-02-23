@@ -66,7 +66,7 @@ public class GetGroupPermsCommand extends Command
 
     protected GetGroupPermsResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new GetGroupPermsResponse(text, status, contentType, json);
+        return new GetGroupPermsResponse(text, status, contentType, json, getRequiredVersion());
     }
 
     public Map<String, Object> getParameters()

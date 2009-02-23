@@ -44,10 +44,11 @@ public abstract class RowsResponse extends CommandResponse
      * @param statusCode The HTTP status code.
      * @param contentType the Content-Type header value.
      * @param json The parsed JSONObject (or null if JSON was not returned.
+     * @param requiredVersion The required API Version
      */
-    protected RowsResponse(String text, int statusCode, String contentType, JSONObject json)
+    protected RowsResponse(String text, int statusCode, String contentType, JSONObject json, double requiredVersion)
     {
-        super(text, statusCode, contentType, json);
+        super(text, statusCode, contentType, json, requiredVersion);
         fixupParsedData();
     }
 
@@ -100,11 +101,16 @@ public abstract class RowsResponse extends CommandResponse
         //changes, we'll need to change the format string used here.
         //CONSIDER: use a library like ConvertUtils to avoid this dependency?
         SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy HH:mm:ss Z");
+
+        boolean expandedFormat = getRequiredVersion() == 9.1;
         for(Map<String,Object> row : rows)
         {
             for(String field : dateFields)
             {
-                Object dateString = row.get(field);
+                //in expanded format, the value is another JSONObject with several
+                //possible properites, including "value" which is the column's value
+                Object dateString = expandedFormat ? ((JSONObject)row.get(field)).get("value") : row.get(field);
+
                 if(null != dateString && dateString instanceof String)
                 {
                     //parse the string into a Java Date and
@@ -113,7 +119,12 @@ public abstract class RowsResponse extends CommandResponse
                     {
                         Date date = dateFormat.parse((String)dateString);
                         if(null != date)
-                            row.put(field, date);
+                        {
+                            if(expandedFormat)
+                                ((JSONObject)row.get(field)).put("value", date);
+                            else
+                                row.put(field, date);
+                        }
                     }
                     catch(ParseException e)
                     {

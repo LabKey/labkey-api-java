@@ -39,10 +39,11 @@ public class AssayListResponse extends CommandResponse
      * @param statusCode The HTTP status code.
      * @param contentType The HTTP response content type
      * @param json The parsed JSONObject (or null if JSON was not returned)
+     * @param requiredVersion The required API version
      */
-    public AssayListResponse(String text, int statusCode, String contentType, JSONObject json)
+    public AssayListResponse(String text, int statusCode, String contentType, JSONObject json, double requiredVersion)
     {
-        super(text, statusCode, contentType, json);
+        super(text, statusCode, contentType, json, requiredVersion);
     }
 
     /**

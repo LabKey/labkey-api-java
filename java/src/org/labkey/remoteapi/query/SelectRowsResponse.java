@@ -69,10 +69,11 @@ public class SelectRowsResponse extends RowsResponse
      * @param statusCode The HTTP status code.
      * @param contentType The Content-Type header value.
      * @param json The parsed JSONObject (or null if no JSON was returned
+     * @param requiredVersion The required API version
      */
-    public SelectRowsResponse(String text, int statusCode, String contentType, JSONObject json)
+    public SelectRowsResponse(String text, int statusCode, String contentType, JSONObject json, double requiredVersion)
     {
-        super(text, statusCode, contentType, json);
+        super(text, statusCode, contentType, json, requiredVersion);
     }
 
     /**

@@ -113,6 +113,6 @@ public class GetQueriesCommand extends Command
 
     protected CommandResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new GetQueriesResponse(text, status, contentType, json);
+        return new GetQueriesResponse(text, status, contentType, json, getRequiredVersion());
     }
 }

@@ -30,9 +30,9 @@ import java.util.List;
  */
 public class GetSchemasResponse extends CommandResponse
 {
-    public GetSchemasResponse(String text, int statusCode, String contentType, JSONObject json)
+    public GetSchemasResponse(String text, int statusCode, String contentType, JSONObject json, double requiredVersion)
     {
-        super(text, statusCode, contentType, json);
+        super(text, statusCode, contentType, json, requiredVersion);
     }
 
     /**

@@ -47,6 +47,6 @@ public class GetSchemasCommand extends Command
 
     protected CommandResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new GetSchemasResponse(text, status, contentType, json);
+        return new GetSchemasResponse(text, status, contentType, json, getRequiredVersion());
     }
 }

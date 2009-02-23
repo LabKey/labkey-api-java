@@ -51,7 +51,7 @@ public class GetContainersCommand extends Command
 
     protected CommandResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new GetContainersResponse(text, status, contentType, json);
+        return new GetContainersResponse(text, status, contentType, json, getRequiredVersion());
     }
 
     @SuppressWarnings("unchecked")

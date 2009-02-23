@@ -34,9 +34,9 @@ import java.util.ArrayList;
  */
 public class GetQueriesResponse extends CommandResponse
 {
-    public GetQueriesResponse(String text, int statusCode, String contentType, JSONObject json)
+    public GetQueriesResponse(String text, int statusCode, String contentType, JSONObject json, double requiredVersion)
     {
-        super(text, statusCode, contentType, json);
+        super(text, statusCode, contentType, json, requiredVersion);
     }
 
     /**

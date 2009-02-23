@@ -45,6 +45,7 @@ public class CommandResponse
     private int _statusCode;
     private String _contentType;
     private JSONObject _data = null;
+    private double _requiredVersion = 0;
 
     /**
      * Constructs a new CommandResponse, initialized with the provided
@@ -52,14 +53,16 @@ public class CommandResponse
      * @param text The response text
      * @param statusCode The HTTP status code
      * @param contentType The response content type
-     * @param json The parsed JSONObject (or null if JSON was not returned.
+     * @param json The parsed JSONObject (or null if JSON was not returned).
+     * @param requiredVersion The required version number of the source command
      */
-    public CommandResponse(String text, int statusCode, String contentType, JSONObject json)
+    public CommandResponse(String text, int statusCode, String contentType, JSONObject json, double requiredVersion)
     {
         _text = text;
         _statusCode = statusCode;
         _contentType = contentType;
         _data = json;
+        _requiredVersion = requiredVersion;
     }
 
     /**
@@ -96,6 +99,16 @@ public class CommandResponse
     public String getContentType()
     {
         return _contentType;
+    }
+
+    /**
+     * Returns the API version number required by the source command.
+     * Some APIs may return data in a different format depending on the required version
+     * @return the requried API version number
+     */
+    public double getRequiredVersion()
+    {
+        return _requiredVersion;
     }
 
     /**

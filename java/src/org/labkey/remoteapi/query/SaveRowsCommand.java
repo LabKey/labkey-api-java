@@ -224,6 +224,6 @@ public abstract class SaveRowsCommand extends PostCommand
 
     protected CommandResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new SaveRowsResponse(text, status, contentType, json);
+        return new SaveRowsResponse(text, status, contentType, json, getRequiredVersion());
     }
 }

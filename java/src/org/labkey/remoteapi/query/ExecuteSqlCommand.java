@@ -159,7 +159,7 @@ public class ExecuteSqlCommand extends PostCommand
 
     protected CommandResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new SelectRowsResponse(text, status, contentType, json);
+        return new SelectRowsResponse(text, status, contentType, json, getRequiredVersion());
     }
 
     @SuppressWarnings("unchecked")
