@@ -1,7 +1,6 @@
 options mprint;
 
-/* Simple example specifying all required parameters.  */
-
+/*  Simple example specifying all required parameters.  */
 %labkeySelectRows(dsn=all, baseUrl="http://localhost:8080/labkey", folderPath="/home", schemaName="lists", queryName="People");
 proc print data=all; run;
 
@@ -27,7 +26,7 @@ proc print data=lateThirties; run;
 %labkeySelectRows(dsn=namesByAge, viewName="namesByAge", filter=%labkeyMakeFilter("Age", "IS_NOT_MISSING"));
 proc print data=namesByAge; run;
 
-/*  Demostrate column list, sort, row limiting, and row offset.  */
+/*  Demonstrate column list, sort, row limiting, and row offset.  */
 %labkeySelectRows(dsn=limitRows, colSelect="First, Last, Age", colSort="Last, -First", maxRows=3, rowOffset=1);
 proc print data=limitRows; run;
 
@@ -47,12 +46,16 @@ Bamm-Bamm Rubble 100163 1 1 .6
 /*  Insert the rows defined in the children data set.  */
 %labkeyInsertRows(dsn=children);
 
-/*  Select a subset of columns (including the key), calculate a new column, and update the column on the server.  */
-%labkeySelectRows(dsn=everybody, colSelect="Appearance, Age", showHidden=1);
+/*  Select all rows, including newly added.  */
+%labkeySelectRows(dsn=everybody);
 proc print data=everybody; run;
 
+/*  Select a subset of columns (including the key), calculate a new column, and update the column on the server.  */
+%labkeySelectRows(dsn=modify, colSelect="Appearance, Age", showHidden=1);
+proc print data=modify; run;
+
 data updateTest;
-	set everybody;
+	set modify;
 
 	AgeToday = round((today() - Appearance)/365 + Age);
 
@@ -64,6 +67,10 @@ proc print data=updateTest; run;
 
 %labkeyUpdateRows(dsn=updateTest);
 
+/*  Select result including updates.  */
+%labkeySelectRows(dsn=updated);
+proc print data=updated; run;
+
 /* Demonstrate UNION between two different data sets.  */
 %labkeyExecuteSql(dsn=combined, sql="SELECT MorePeople.First, MorePeople.Last FROM MorePeople UNION
 						   SELECT People.First, People.Last FROM People ORDER BY 2"); 
@@ -71,7 +78,7 @@ proc print data=combined; run;
 
 /*  Clean up -- clear the AgeToday column and delete Pebbles & Bamm-Bamm rows  */
 data clearAgeToday;
-	set everybody;
+	set modify;
 	call missing(AgeToday);
 	keep Key AgeToday;
 run;

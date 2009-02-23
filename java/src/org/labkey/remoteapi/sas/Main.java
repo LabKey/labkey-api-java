@@ -82,27 +82,52 @@ public class Main
         System.out.println("Insert new rows");
         System.out.println();
         SASInsertRowsCommand insert = new SASInsertRowsCommand("lists", "People");
-        SASRow row = new SASRow();
 
+        SASRow row = new SASRow();
         row.put("First", "Pebbles");
         row.put("Last", "Flintstone");
+        row.put("Age", 1);
+        row.putDate("Appearance", 1148);
+        insert.addRow(row);
 
+        row = new SASRow();
+        row.put("First", "Bamm-Bamm");
+        row.put("Last", "Rubble");
+        row.put("Age", 1);
+        row.putDate("Appearance", 1369);
         insert.addRow(row);
 
         SASSaveRowsResponse resp = new SASSaveRowsResponse(cn, insert, "home");
 
         System.out.println("Inserted " + resp.getRowsAffected() + " rows.");
 
-/*
         System.out.println();
-        System.out.println("NAB data from Atlas");
+        System.out.println("Display new rows");
         System.out.println();
-        cn = new SASConnection("https://atlas.scharp.org/cpas");
-        command = new SASSelectRowsCommand("study", "Monogram NAb");
-        command.setColumns("ConcentrationValue, PercentInhibition");
-        response = new SASSelectRowsResponse(cn, command, "/VISC/Zolla-Pazner-VDC/Neut Data Analysis Project");
+        command = new SASSelectRowsCommand("lists", "People");
+        response = new SASSelectRowsResponse(cn, command, "home");
         logResponse(response);
-*/
+
+        System.out.println();
+        System.out.println("Delete new rows");
+        System.out.println();
+        command.setColumns("Key");
+        command.addFilter("Age", "LESS_THAN_OR_EQUAL_TO", "1");
+        response = new SASSelectRowsResponse(cn, command, "home");
+        SASDeleteRowsCommand delete = new SASDeleteRowsCommand("lists", "People");
+
+        String key = response.stash();
+        response = new SASSelectRowsResponse(key);
+
+        while (response.getRow())
+        {
+            row = new SASRow();
+            row.put("Key", response.getNumeric("Key"));
+            delete.addRow(row);
+        }
+
+        resp = new SASSaveRowsResponse(cn, delete, "home");
+        System.out.println("Deleted " + resp.getRowsAffected() + " rows.");
     }
 
     private static void logResponse(SASSelectRowsResponse response)
@@ -160,6 +185,11 @@ public class Main
                         }
                     }
                 }
+
+                String qc = dataResponse.getQCValue(column);
+
+                if (null != qc)
+                    line.append(" (").append(qc).append(")");
 
                 line.append(" ");
             }

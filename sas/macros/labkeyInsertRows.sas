@@ -17,7 +17,7 @@
 /*
 	Inserts observations in a data set into the specified LabKey Server, schema, and query.
 */
-%macro labkeyInsertRows(baseUrl=&lk_baseUrl, folderPath=&lk_folderPath, schemaName=&lk_schemaName, queryName=&lk_queryName, dsn=);
-    %labkeySaveRows(SASInsertRowsCommand, inserted, &baseUrl, &folderPath, &schemaName, &queryName, &dsn);
+%macro labkeyInsertRows(dsn=, baseUrl=&lk_baseUrl, folderPath=&lk_folderPath, schemaName=&lk_schemaName, queryName=&lk_queryName, userName=, password=);
+    %_labkeySaveRows(SASInsertRowsCommand, inserted);
 %mend labkeyInsertRows;
 

@@ -28,6 +28,14 @@ import java.net.URISyntaxException;
  */
 public class SASConnection extends Connection
 {
+    public SASConnection(String baseUrl, String userName, String password) throws IOException, URISyntaxException
+    {
+        super(baseUrl);
+
+        setEmail(userName);
+        setPassword(password);
+    }
+
     public SASConnection(String baseUrl) throws IOException, URISyntaxException
     {
         super(baseUrl);

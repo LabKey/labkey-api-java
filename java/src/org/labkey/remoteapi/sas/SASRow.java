@@ -15,11 +15,9 @@
  */
 package org.labkey.remoteapi.sas;
 
-import java.util.Map;
-import java.util.HashMap;
 import java.util.Date;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * User: adam
@@ -33,11 +31,7 @@ public class SASRow
     public void putDate(String key, double sasDate)
     {
         Date date = SASDate.convertToJavaDate(sasDate);
-
-        DateFormat format = new SimpleDateFormat("d MMM yyyy");
-        String value = format.format(date);
-
-        _map.put(key, value);
+        _map.put(key, date);
     }
 
     public void put(String key, String value)

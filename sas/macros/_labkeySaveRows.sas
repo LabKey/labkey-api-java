@@ -18,7 +18,7 @@
 	Initializes a SAS command object with data set observations and executes the command.  Used by %labkeyInsertRows,
 	%labkeyUpdateRows, and %labkeyDeleteRows.
 */
-%macro labkeySaveRows(commandClass, verb, baseUrl, folderPath, schemaName, queryName, dsn);
+%macro _labkeySaveRows(commandClass, verb);
 	data _null_;
         set &dsn;
 
@@ -76,7 +76,8 @@
 			If we just handled the last observation, create the connection, issue the command, and retrieve the response.
 		*/
 		if _N_ = &nobs then do;
-            declare javaobj cn ('org/labkey/remoteapi/sas/SASConnection', &baseUrl);
+            %_labkeyCreateConnection();
+
             declare javaobj response ('org/labkey/remoteapi/sas/SASSaveRowsResponse', cn, command, &folderPath);
 
             response.callIntMethod('getRowsAffected', columnCount);
@@ -89,5 +90,5 @@
             command.delete();
         end;
 	run;
-%mend labkeySaveRows;
+%mend _labkeySaveRows;
 

@@ -53,12 +53,13 @@ sas/People.xls -text
 sas/build.xml -text
 sas/deleteMacros.sas -text
 sas/demo.sas -text
+sas/macros/_labkeyCreateConnection.sas -text
+sas/macros/_labkeySaveRows.sas -text
+sas/macros/_labkeySharedSelectRowsHandling.sas -text
 sas/macros/labkeyDeleteRows.sas -text
 sas/macros/labkeyExecuteSql.sas -text
 sas/macros/labkeyInsertRows.sas -text
 sas/macros/labkeyMakeFilter.sas -text
-sas/macros/labkeySaveRows.sas -text
 sas/macros/labkeySelectRows.sas -text
 sas/macros/labkeySetDefaults.sas -text
-sas/macros/labkeySharedSelectRowsHandling.sas -text
 sas/macros/labkeyUpdateRows.sas -text

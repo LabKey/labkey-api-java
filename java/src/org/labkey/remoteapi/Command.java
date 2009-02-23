@@ -193,7 +193,7 @@ public class Command
 
         int status = 0;
         String responseText = null;
-        Header contentTypeHeader = null;
+        Header contentTypeHeader;
         String contentType = null;
         JSONObject json = null;
 

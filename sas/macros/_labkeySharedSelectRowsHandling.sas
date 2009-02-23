@@ -19,7 +19,7 @@
  	the connection, executes the command, handles the meta data, sets a default title, and creates a SAS data set
 	containing all the data rows.
 */
-%macro labkeySharedSelectRowsHandling();
+%macro _labkeySharedSelectRowsHandling();
 		/*
 			If maxRows or rowOffset params have been specified then set them on the command.
 		*/
@@ -34,7 +34,8 @@
 		/*
 			Create the connection, issue the command, and retrieve the response.
 		*/
-		declare javaobj cn ('org/labkey/remoteapi/sas/SASConnection', &baseUrl);
+        %_labkeyCreateConnection();
+
 		declare javaobj response ('org/labkey/remoteapi/sas/SASSelectRowsResponse', cn, command, &folderPath);
 
 		response.callIntMethod('getColumnCount', columnCount);
@@ -178,4 +179,4 @@
 
 		response.delete();
 	run
-%mend labkeySharedSelectRowsHandling;
+%mend _labkeySharedSelectRowsHandling;

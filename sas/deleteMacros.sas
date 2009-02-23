@@ -6,8 +6,10 @@ proc catalog cat=WORK.SASMACR;
 	delete labkeyExecuteSql / et=macro;
 	delete labkeyInsertRows / et=macro;
 	delete labkeyMakeFilter / et=macro;
-	delete labkeySaveRows / et=macro;
 	delete labkeySelectRows / et=macro;
 	delete labkeySetDefaults / et=macro;
-	delete labkeySharedSelectRowsHandling / et=macro;
+
+	delete _labkeySaveRows / et=macro;
+	delete _labkeySharedSelectRowsHandling / et=macro;
+	delete _labkeyCreateConnection / et=macro;
 quit;

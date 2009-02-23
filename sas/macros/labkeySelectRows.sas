@@ -17,7 +17,7 @@
 /*
 	Retrieves data from the instance of LabKey Server previously specified in %setConnection.
 */
-%macro labkeySelectRows(baseUrl=&lk_baseUrl, folderPath=&lk_folderPath, schemaName=&lk_schemaName, queryName=&lk_queryName, dsn=, viewName=, filter=, colSelect=, colSort=, rowOffset=, maxRows=, showHidden=0);
+%macro labkeySelectRows(baseUrl=&lk_baseUrl, folderPath=&lk_folderPath, schemaName=&lk_schemaName, queryName=&lk_queryName, userName=, password=, dsn=, viewName=, filter=, colSelect=, colSort=, rowOffset=, maxRows=, showHidden=0);
 	data _null_;
 		declare javaobj command ('org/labkey/remoteapi/sas/SASSelectRowsCommand', &schemaName, &queryName);
 
@@ -41,12 +41,12 @@
 			command.callVoidMethod('setColumns', &colSelect);
 		%end;
 
-		%if &colSort ne %then	%do;
+		%if &colSort ne %then %do;
 			command.callVoidMethod('setSorts', &colSort);
 		%end;
 
 		/*
 			Set the shared params, issue the query, and create the data set
 		*/
-		%labkeySharedSelectRowsHandling();
+		%_labkeySharedSelectRowsHandling();
 %mend labkeySelectRows;

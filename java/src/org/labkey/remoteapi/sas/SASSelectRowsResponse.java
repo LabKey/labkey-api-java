@@ -17,6 +17,7 @@ package org.labkey.remoteapi.sas;
 
 import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.query.SelectRowsResponse;
+import org.json.simple.JSONObject;
 
 import java.io.IOException;
 import java.util.Date;
@@ -80,6 +81,13 @@ public class SASSelectRowsResponse
         return (Boolean)columnModel.get("hidden");
     }
 
+    public boolean hasQC(double index)
+    {
+        int i = (int)Math.round(index);
+        Map<String,Object> columnModel = _resp.getColumnModel().get(i);
+        return (Boolean)columnModel.get("hidden");         // TODO: retrieve QC indicator
+    }
+
     public String stash()
     {
         return _stash.put(_resp);
@@ -98,28 +106,52 @@ public class SASSelectRowsResponse
 
     /*  TODO: Move the remaining methods to SASRow and return (new up) a SASRow instead of using getRow() */
 
+    // Detect and handle both LabKey 8.3 and 9.1 formats
+    private Object getValue(String key)
+    {
+        Object o = _currentRow.get(key);
+
+        if (o instanceof JSONObject)
+            return ((JSONObject)o).get("value");
+        else
+            return o;
+    }
+
     public boolean isNull(String key)
     {
-        return null == _currentRow.get(key);
+        return null == getValue(key);
     }
 
     public String getCharacter(String key)
     {
-        return (String)_currentRow.get(key);
+        return (String)getValue(key);
     }
 
     public double getNumeric(String key)
     {
-        return ((Number)_currentRow.get(key)).doubleValue();
+        return ((Number)getValue(key)).doubleValue();
     }
 
     public boolean getBoolean(String key)
     {
-        return (Boolean)_currentRow.get(key);
+        return (Boolean)getValue(key);
     }
 
     public double getDate(String key)
     {
-        return SASDate.convertToSASDate((Date)_currentRow.get(key));
+        // TODO: Remove this temp hack once 9.1 format handles dates correctly
+        Object value = getValue(key);
+        Date d = value instanceof Date ? (Date)value : new Date((String)value);
+        return SASDate.convertToSASDate(d);
+    }
+
+    public String getQCValue(String key)
+    {
+        Object o = _currentRow.get(key);
+
+        if (!(o instanceof JSONObject))
+            throw new IllegalStateException("QC values are only available from LabKey 9.1 or later servers");
+
+        return (String)((JSONObject)o).get("qcValue");
     }
 }

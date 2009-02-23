@@ -17,7 +17,7 @@
 /*
 	Updates a schema/query on an instance of LabKey Server using the keys and values in a data set.
 */
-%macro labkeyUpdateRows(baseUrl=&lk_baseUrl, folderPath=&lk_folderPath, schemaName=&lk_schemaName, queryName=&lk_queryName, dsn=);
-    %labkeySaveRows(SASUpdateRowsCommand, updated, &baseUrl, &folderPath, &schemaName, &queryName, &dsn);
+%macro labkeyUpdateRows(baseUrl=&lk_baseUrl, folderPath=&lk_folderPath, schemaName=&lk_schemaName, queryName=&lk_queryName, userName=, password=, dsn=);
+    %_labkeySaveRows(SASUpdateRowsCommand, updated);
 %mend labkeyUpdateRows;
 

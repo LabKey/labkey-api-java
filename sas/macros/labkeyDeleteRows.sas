@@ -17,7 +17,7 @@
 /*
 	Deletes rows in the specified schema and query based on the keys in the specified data set.
 */
-%macro labkeyDeleteRows(baseUrl=&lk_baseUrl, folderPath=&lk_folderPath, schemaName=&lk_schemaName, queryName=&lk_queryName, dsn=);
-    %labkeySaveRows(SASDeleteRowsCommand, deleted, &baseUrl, &folderPath, &schemaName, &queryName, &dsn);
+%macro labkeyDeleteRows(baseUrl=&lk_baseUrl, folderPath=&lk_folderPath, schemaName=&lk_schemaName, queryName=&lk_queryName, userName=, password=, dsn=);
+    %_labkeySaveRows(SASDeleteRowsCommand, deleted);
 %mend labkeyDeleteRows;
 

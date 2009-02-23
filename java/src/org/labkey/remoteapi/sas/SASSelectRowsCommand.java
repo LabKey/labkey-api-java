@@ -66,7 +66,7 @@ public class SASSelectRowsCommand
         addFilter(columnName, operator, null);
     }
 
-    // TODO: Convert date values for DATE_EQUALS / DATE_NOT_EQUALS.  Create addDateFilter?  What about ><, etc.
+    // TODO: Convert date values for DATE_EQUALS / DATE_NOT_EQUALS.  Create addDateFilter?  What about ><, etc.?
 
     // Values must always come in as Strings.  If we accepted numeric values they'd all arrive as doubles (that's
     // all SAS supports) and the server chokes on int columns filtered on double values.
@@ -120,6 +120,20 @@ public class SASSelectRowsCommand
 
     SelectRowsResponse execute(SASConnection cn, String folderPath) throws CommandException, IOException
     {
+        // "Require" 9.1 first, which is needed for QC, but fall back to 8.3
+        _command.setRequiredVersion(9.1);
+
+        try
+        {
+            return _command.execute(cn, folderPath);
+        }
+        catch (CommandException e)    // TODO: Create & catch CommandVersionException
+        {
+            if (!e.getMessage().contains("version of this API"))
+                throw e;
+        }
+
+        _command.setRequiredVersion(8.3);
         return _command.execute(cn, folderPath);
     }
 }

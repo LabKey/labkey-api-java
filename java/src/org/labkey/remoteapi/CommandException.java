@@ -15,8 +15,6 @@
  */
 package org.labkey.remoteapi;
 
-import org.apache.commons.httpclient.HttpException;
-
 import java.util.Map;
 
 /**
