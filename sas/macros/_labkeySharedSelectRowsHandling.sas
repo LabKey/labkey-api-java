@@ -54,6 +54,7 @@
 
 		length column $100;
 		length type $10;
+	    length scale 4;
 
 		/*
 			Enumerate the columns and build up macro variables that contain code that will be used
@@ -77,9 +78,8 @@
 				*/
 				if (type = 'STRING') then
 					do;
-					    length scale 4;
         				response.callIntMethod('getScale', index, scale);
-						call cats(pre, 'length ' || column || ' $' || scale || ';');
+						call cats(pre, 'length ' || column || ' $', put(scale, 6.), ';');
 						call cats(row, "response.callStringMethod('getCharacter', '", column, "', ", column, ");");
 					end;
 				else

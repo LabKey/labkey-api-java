@@ -146,7 +146,8 @@ public class Main
             if (!response.isHidden(i))
             {
                 String column = response.getColumnName(i);
-                System.out.println(column + ": " + response.getType(column) + " " + response.getScale(i));
+                String type = response.getType(column);
+                System.out.println(column + ": " + type + ("STRING".equals(type) ? " " + response.getScale(i) : ""));
             }
         }
 
