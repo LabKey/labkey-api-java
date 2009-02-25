@@ -73,6 +73,7 @@ public class SelectRowsCommand extends Command
     private int _offset = 0;
     private List<Sort> _sorts = new ArrayList<Sort>();
     private List<Filter> _filters = new ArrayList<Filter>();
+    private ContainerFilter _containerFilter;
 
     /**
      * Constructs a new SelectRowsCommand for the given schema
@@ -286,6 +287,25 @@ public class SelectRowsCommand extends Command
         addFilter(new Filter(columnName, value, operator));
     }
 
+    /**
+     * Returns the container filter set for this command
+     * @return the container filter (may be null)
+     */
+    public ContainerFilter getContainerFilter()
+    {
+        return _containerFilter;
+    }
+
+    /**
+     * Sets the container filter for the sql to be executed.
+     * This will cause the query to be executed over more than one container.
+     * @param containerFilter the filter to apply to the query (may be null)
+     */
+    public void setContainerFilter(ContainerFilter containerFilter)
+    {
+        this._containerFilter = containerFilter;
+    }
+
     public SelectRowsResponse execute(Connection connection, String folderPath) throws IOException, CommandException
     {
         return (SelectRowsResponse)(super.execute(connection, folderPath));
@@ -337,6 +357,9 @@ public class SelectRowsCommand extends Command
             for(Filter filter : getFilters())
                 params.put("query." + filter.getQueryStringParamName(), filter.getQueryStringParamValue());
         }
+
+        if (getContainerFilter() != null)
+            params.put("containerFilter", getContainerFilter().name());
 
         return params;
     }

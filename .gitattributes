@@ -15,6 +15,7 @@ java/src/org/labkey/remoteapi/PostCommand.java -text
 java/src/org/labkey/remoteapi/Test.java -text
 java/src/org/labkey/remoteapi/assay/AssayListCommand.java -text
 java/src/org/labkey/remoteapi/assay/AssayListResponse.java -text
+java/src/org/labkey/remoteapi/query/ContainerFilter.java -text
 java/src/org/labkey/remoteapi/query/DeleteRowsCommand.java -text
 java/src/org/labkey/remoteapi/query/ExecuteSqlCommand.java -text
 java/src/org/labkey/remoteapi/query/Filter.java -text
