@@ -122,7 +122,7 @@ public class SASSelectRowsResponse
         if (values.length() > 0)
             return "missing" + values + ";\n" + footnotes;
         else
-            return "";
+            return "footnote;";
     }
 
     public String stash()
