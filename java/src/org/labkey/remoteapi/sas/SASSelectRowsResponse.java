@@ -92,11 +92,37 @@ public class SASSelectRowsResponse
         return 0 == scale ? 100 : scale;  // TODO: Temp hack -- 8.3 servers return different scale values than 9.1 -- for strings, scale == 0 at times
     }
 
-    public boolean allowsQC(String columnName)
+    public boolean allowsMissingValues(String columnName)
     {
         Boolean allowsQC = (Boolean)_resp.getMetaData(columnName).get("allowsQC");
 
         return (null != allowsQC && allowsQC);
+    }
+
+    public String getMissingValuesCode()
+    {
+        Map<String, String> qcInfo = (Map<String, String>)_resp.getParsedData().get("qcInfo");
+
+        StringBuilder values = new StringBuilder();
+        StringBuilder footnotes = new StringBuilder();
+
+        if (null != qcInfo)
+        {
+            int count = 1;
+
+            for (Map.Entry<String, String> missing : qcInfo.entrySet())
+            {
+                values.append(" ").append(missing.getKey());
+
+                if (count <= 10)
+                    footnotes.append("footnote").append(count++).append(" \"").append(missing.getKey()).append(" - ").append(missing.getValue()).append("\";\n");
+            }
+        }
+
+        if (values.length() > 0)
+            return "missing" + values + ";\n" + footnotes;
+        else
+            return "";
     }
 
     public String stash()
@@ -154,12 +180,12 @@ public class SASSelectRowsResponse
         return SASDate.convertToSASDate(d);
     }
 
-    public String getQCIndicator(String key)
+    public String getMissingValue(String key)
     {
         Object o = _currentRow.get(key);
 
         if (!(o instanceof JSONObject))
-            throw new IllegalStateException("QC values are only available when requiring LabKey 9.1 or later version");
+            throw new IllegalStateException("Missing values are only available when requiring LabKey 9.1 or later version");
 
         return (String)((JSONObject)o).get("qcValue");
     }

@@ -42,7 +42,7 @@ import java.io.IOException;
  * {@link org.labkey.remoteapi.query.SelectRowsCommand}, so the response object
  * will be of type {@link org.labkey.remoteapi.query.SelectRowsResponse}.
  */
-public class ExecuteSqlCommand extends PostCommand
+public class ExecuteSqlCommand extends PostCommand implements BaseSelect
 {
     private String _schemaName;
     private String _sql;

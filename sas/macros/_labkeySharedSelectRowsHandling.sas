@@ -15,13 +15,13 @@
  */
 
 /*
-	Common code used by %labkeyExecuteSql and %labkeySelectRows.  Handles maxRows & rowOffset params (if present), initializes
- 	the connection, executes the command, handles the meta data, sets a default title, and creates a SAS data set
-	containing all the data rows.
+	Common code used by %labkeyExecuteSql and %labkeySelectRows.  Handles maxRows, rowOffset, and containerFilter
+	params (if present), initializes the connection, executes the command, handles the meta data, sets a default title,
+	and creates a SAS data set containing all the data rows.
 */
 %macro _labkeySharedSelectRowsHandling();
 		/*
-			If maxRows or rowOffset params have been specified then set them on the command.
+			If maxRows, rowOffset, or containerFilter params have been specified then set them on the command.
 		*/
 		%if &maxRows ne %then %do;
 			command.callVoidMethod('setMaxRows', &maxRows);
@@ -29,6 +29,13 @@
 
 		%if &rowOffset ne %then %do;
 			command.callVoidMethod('setOffset', &rowOffset);
+		%end;
+
+        /*  Container filter is totally optional, so we check here instead of setting containerFilter = &lk_containerFilter in the params list. */
+		%if (&containerFilter eq) and %symexist(lk_containerFilter) %then %let containerFilter = &lk_containerFilter;
+
+        %if &containerFilter ne %then %do;
+			command.callVoidMethod('setContainerFilter', &containerFilter);
 		%end;
 
 		/*
@@ -48,13 +55,15 @@
 		length row $20000;
 		length post $20000;
 
-		pre = '';
 		row = '';
-		post = 'isNull = 0;';
+		post = '';
 
 		length column $100;
 		length type $10;
 	    length scale 4;
+
+	    response.callStringMethod('getMissingValuesCode', pre);
+		call cats(pre, 'isNull = 0; length missingValue $2; missingValue = "";');
 
 		/*
 			Enumerate the columns and build up macro variables that contain code that will be used
@@ -65,6 +74,7 @@
 				Skip all hidden columns, unless showHidden = 1
 			*/
 			isHidden = 0;
+			allowsMissing = 0;
 
 			if (not &showHidden) then response.callBooleanMethod('isHidden', index, isHidden);
 
@@ -104,6 +114,10 @@
 							end;
 
 						call cats(row, "', '", column, "', ", column, ");");
+
+					    response.callBooleanMethod('allowsMissingValues', column, allowsMissing);
+
+					    if (allowsMissing) then call cats(row, "else do; response.callStringMethod('getMissingValue', '", column, "', missingValue); ", column, "= missingValue; end;");
 					end;
 				output;
 			end;
@@ -127,7 +141,7 @@
 		response.callStringMethod('stash', key);
 
 		/*
-			Save the stash key so it's availalbe in the next data step.
+			Save the stash key so it's available in the next data step.
 		*/
 		call symput('key', key);
 
@@ -175,7 +189,7 @@
 		/*
 			Drop temporary variables.
 		*/
-		drop hasAnother isNull;
+		drop hasAnother isNull missingValue;
 
 		title &title;
 

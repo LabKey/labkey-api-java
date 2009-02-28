@@ -63,7 +63,7 @@ import java.util.Map;
  * </code>
  * <p>
  */
-public class SelectRowsCommand extends Command
+public class SelectRowsCommand extends Command implements BaseSelect
 {
     private String _schemaName;
     private String _queryName;

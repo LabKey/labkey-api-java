@@ -15,11 +15,7 @@
  */
 package org.labkey.remoteapi.sas;
 
-import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.query.ExecuteSqlCommand;
-import org.labkey.remoteapi.query.SelectRowsResponse;
-
-import java.io.IOException;
 
 /**
  * User: adam
@@ -28,27 +24,8 @@ import java.io.IOException;
  */
 public class SASExecuteSqlCommand extends SASBaseSelectCommand
 {
-    private ExecuteSqlCommand _command;
-
     public SASExecuteSqlCommand(String schema, String sql)
     {
-        _command = new ExecuteSqlCommand(schema, sql);
-    }
-
-    public void setMaxRows(double maxRows)
-    {
-        int max = (int)Math.round(maxRows);
-        _command.setMaxRows(max);
-    }
-
-    public void setOffset(double offset)
-    {
-        int off = (int)Math.round(offset);
-        _command.setOffset(off);
-    }
-
-    SelectRowsResponse execute(SASConnection cn, String folderPath) throws CommandException, IOException
-    {
-        return execute(_command, cn, folderPath);
+        super(new ExecuteSqlCommand(schema, sql));
     }
 }

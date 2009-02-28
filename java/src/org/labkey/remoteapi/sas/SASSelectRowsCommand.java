@@ -15,13 +15,10 @@
  */
 package org.labkey.remoteapi.sas;
 
-import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.SelectRowsCommand;
-import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.remoteapi.query.Sort;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,16 +35,19 @@ import java.util.List;
  */
 public class SASSelectRowsCommand extends SASBaseSelectCommand
 {
-    private final SelectRowsCommand _command;
-
     public SASSelectRowsCommand(String schema, String query)
     {
-        _command = new SelectRowsCommand(schema, query);
+        super(new SelectRowsCommand(schema, query));
+    }
+
+    private SelectRowsCommand getCommand()
+    {
+        return (SelectRowsCommand)_command;
     }
 
     public void setViewName(String viewName)
     {
-        _command.setViewName(viewName);
+        getCommand().setViewName(viewName);
     }
 
     public void setColumns(String columns)
@@ -58,7 +58,7 @@ public class SASSelectRowsCommand extends SASBaseSelectCommand
         for (String name : array)
             list.add(name.trim());
 
-        _command.setColumns(list);
+        getCommand().setColumns(list);
     }
 
     public void addFilter(String columnName, String operator)
@@ -88,7 +88,7 @@ public class SASSelectRowsCommand extends SASBaseSelectCommand
                 throw new RuntimeException("A value must not be specified for operator " + op.getProgrammaticName());
         }
 
-        _command.addFilter(columnName, value, op);
+        getCommand().addFilter(columnName, value, op);
     }
 
     public void setSorts(String columns)
@@ -103,23 +103,6 @@ public class SASSelectRowsCommand extends SASBaseSelectCommand
             list.add(sort);
         }
 
-        _command.setSorts(list);
-    }
-
-    public void setMaxRows(double maxRows)
-    {
-        int max = (int)Math.round(maxRows);
-        _command.setMaxRows(max);
-    }
-
-    public void setOffset(double offset)
-    {
-        int off = (int)Math.round(offset);
-        _command.setOffset(off);
-    }
-
-    SelectRowsResponse execute(SASConnection cn, String folderPath) throws CommandException, IOException
-    {
-        return execute(_command, cn, folderPath);
+        getCommand().setSorts(list);
     }
 }

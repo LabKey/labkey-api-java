@@ -139,6 +139,9 @@ public class Main
 
     private static void logResponse(SASSelectRowsResponse response)
     {
+        String missingCode = response.getMissingValuesCode();
+        System.out.println(missingCode);
+
         int columnCount = response.getColumnCount();
 
         for (int i = 0; i < columnCount; i++)
@@ -194,9 +197,9 @@ public class Main
                     }
                 }
 
-                if (dataResponse.allowsQC(column))
+                if (dataResponse.allowsMissingValues(column))
                 {
-                    String qc = dataResponse.getQCIndicator(column);
+                    String qc = dataResponse.getMissingValue(column);
 
                     if (null != qc)
                         line.append(" (").append(qc).append(")");

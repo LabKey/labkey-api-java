@@ -17,7 +17,7 @@
 /*
 	Executes a SQL query against the instance of LabKey Server previously specified in %setConnection.
 */
-%macro labkeyExecuteSql(baseUrl=&lk_baseUrl, folderPath=&lk_folderPath, schemaName=&lk_schemaName, userName=, password=, sql=, dsn=, rowOffset=, maxRows=, showHidden=0);
+%macro labkeyExecuteSql(dsn=, sql=, baseUrl=&lk_baseUrl, folderPath=&lk_folderPath, schemaName=&lk_schemaName, rowOffset=, maxRows=, showHidden=0, userName=, password=, containerFilter=);
 	data _null_;
 		declare javaobj command ('org/labkey/remoteapi/sas/SASExecuteSqlCommand', &schemaName, &sql);
 
