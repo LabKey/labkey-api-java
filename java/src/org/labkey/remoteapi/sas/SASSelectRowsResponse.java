@@ -141,17 +141,17 @@ public class SASSelectRowsResponse
     }
 
 
-    /*  TODO: Move the remaining methods to SASRow and return (new up) a SASRow instead of using getRow() */
+    /*  TODO: Move the following methods to SASRow and return (new up) a SASRow instead of using getRow()? */
 
     // Detect and handle both LabKey 8.3 and 9.1 formats
     private Object getValue(String key)
     {
         Object o = _currentRow.get(key);
 
-        if (o instanceof JSONObject)
-            return ((JSONObject)o).get("value");
-        else
+        if (_resp.getRequiredVersion() < 9.1)
             return o;
+        else
+            return ((JSONObject)o).get("value");
     }
 
     public boolean isNull(String key)
@@ -182,10 +182,10 @@ public class SASSelectRowsResponse
 
     public String getMissingValue(String key)
     {
-        Object o = _currentRow.get(key);
-
-        if (!(o instanceof JSONObject))
+        if (_resp.getRequiredVersion() < 9.1)
             throw new IllegalStateException("Missing values are only available when requiring LabKey 9.1 or later version");
+
+        Object o = _currentRow.get(key);
 
         return (String)((JSONObject)o).get("qcValue");
     }
