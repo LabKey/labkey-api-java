@@ -98,7 +98,10 @@ public class PostCommand extends Command
         {
             try
             {
-                method.setRequestEntity(new StringRequestEntity(getJsonObject().toString(),
+                JSONObject json = getJsonObject();
+                if(!json.containsKey("apiVersion"))
+                    json.put("apiVersion", getRequiredVersion());
+                method.setRequestEntity(new StringRequestEntity(json.toString(),
                         Command.CONTENT_TYPE_JSON, "UTF-8"));
             }
             catch(UnsupportedEncodingException e)
