@@ -78,13 +78,14 @@ public class Main
         response = new SASSelectRowsResponse(cn, command, "home");
         logResponse(response);
 
+/*      TODO: re-enable this once #7493 is fixed
         System.out.println();
         System.out.println("Test executeSql");
         System.out.println();
         SASExecuteSqlCommand execSql = new SASExecuteSqlCommand("lists", "SELECT People.Last, COUNT(People.First) AS Number, AVG(People.Height) AS AverageHeight, AVG(People.Age) AS AverageAge FROM People GROUP BY People.Last");
         response = new SASSelectRowsResponse(cn, execSql, "home");
         logResponse(response);
-
+*/
         System.out.println();
         System.out.println("Insert new rows");
         System.out.println();

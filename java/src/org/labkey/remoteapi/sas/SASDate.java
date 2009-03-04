@@ -24,23 +24,19 @@ import java.util.Date;
  */
 public class SASDate
 {
-    // TODO: Adjust to GMT?   d.setTime(d.getTime()-TimeZone.getDefault().getRawOffset());
-
+    // SAS Dates are based on days since 1/1/1960; compute the offset.
+    private static long MILLISECOND_OFFSET = new Date("1/1/1960").getTime();
     private static final long MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
 
-    // Java dates are based on days since 1/1/1970; SAS Dates are based on days since 1/1/1960
-    private static final double DAYS_BETWEEN_19700101_AND_19600101 = 3653;
 
     static Date convertToJavaDate(double sasDate)
     {
-        double javaDays = sasDate - DAYS_BETWEEN_19700101_AND_19600101;
-        long javaTime = Math.round(javaDays) * MILLISECONDS_PER_DAY;
+        long javaTime = MILLISECOND_OFFSET + Math.round(sasDate * MILLISECONDS_PER_DAY);
         return new Date(javaTime);
     }
 
     static double convertToSASDate(Date javaDate)
     {
-        double javaDays = javaDate.getTime() / MILLISECONDS_PER_DAY;
-        return javaDays + DAYS_BETWEEN_19700101_AND_19600101;
+        return Math.round(((double)(javaDate.getTime() - MILLISECOND_OFFSET)) / MILLISECONDS_PER_DAY);
     }
 }
