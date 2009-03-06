@@ -343,7 +343,7 @@ public class SelectRowsCommand extends Command implements BaseSelect
             }
             params.put("query.columns", collist);
         }
-        if(getMaxRows() > 0)
+        if(getMaxRows() >= 0)
             params.put("query.maxRows", getMaxRows());
         else
             params.put("query.showRows", "all");
