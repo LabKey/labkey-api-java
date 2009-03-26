@@ -58,6 +58,8 @@ sas/demo.sas -text
 sas/macros/_labkeyCreateConnection.sas -text
 sas/macros/_labkeySaveRows.sas -text
 sas/macros/_labkeySharedSelectRowsHandling.sas -text
+sas/macros/_labkeyexceptiondescribe.sas -text
+sas/macros/_labkeysendcommand.sas -text
 sas/macros/labkeyDeleteRows.sas -text
 sas/macros/labkeyExecuteSql.sas -text
 sas/macros/labkeyInsertRows.sas -text
