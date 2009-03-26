@@ -20,10 +20,10 @@ import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.regex.Pattern;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 /**
  * User: adam
@@ -55,6 +55,134 @@ public class SASSelectRowsResponse
         _rowIterator = _resp.getRows().iterator();
     }
 
+<<<<<<< .working
+=======
+    private List<Map<String, String>> getFields()
+    {
+        return (List<Map<String, String>>)_resp.getMetaData().get("fields");
+    }
+
+    // Translate all api fields names into legal SAS identifiers.  We'll report these names to SAS and lookup through
+    //  these maps when we retrieve data or meta data via name.
+    private void createNameMapping(List<Map<String, String>> fields)
+    {
+        _sasToApiNames = new HashMap<String, String>(fields.size());
+        _apiToSasNames = new HashMap<String, String>(fields.size());
+
+        for (Map<String, String> field : fields)
+        {
+            String apiName = field.get("name");
+            String sasName = makeLegal(apiName, _sasToApiNames.keySet());
+
+            _apiToSasNames.put(apiName, sasName);
+            _sasToApiNames.put(sasName, apiName);
+        }
+    }
+
+    private static final Pattern SAS_IDENTIFIER = Pattern.compile("[a-zA-Z_][\\w]{0,31}");
+    private static final String LEGAL_FIRST_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+    private static final String LEGAL_CHARS = LEGAL_FIRST_CHARS + "0123456789";
+
+    public static void testMakeLegal()
+    {
+        List<String> testNames = new ArrayList<String>(120);
+        testNames.addAll(Arrays.asList("Foo", "Foo", "1Foo", "_Foo", "$56TS", "this/that", "howdeedoo_", "howdeedoo#"));
+
+        for (int i = 0; i < 102; i++)
+            testNames.add("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghi");
+
+        Set<String> identifiers = new HashSet<String>(testNames.size());
+
+        for (String apiName : testNames)
+        {
+            String sasName = makeLegal(apiName, identifiers);
+            if (!isLegal(sasName))
+                throw new IllegalStateException(apiName + " translated to " + sasName + ", which is not a legal SAS identifier");
+
+            System.out.println(apiName + " " + sasName);
+            identifiers.add(sasName);
+        }
+
+        int testCount = 100000;
+        identifiers = new HashSet<String>(testCount);
+        Random random = new Random();
+
+        for (int i = 0; i < testCount; i++)
+        {
+            StringBuilder sb = new StringBuilder();
+            int length = 1 + random.nextInt(40);
+
+            for (int j = 0; j < length; j++)
+                sb.append((char)(32 + random.nextInt(95)));
+
+            String sasName = makeLegal(sb.toString(), identifiers);
+            if (!isLegal(sasName))
+                throw new IllegalStateException("\"" + sb.toString() + "\" translated to \"" + sasName + "\", which is not a legal SAS identifier");
+            if (!identifiers.add(sasName))
+                throw new IllegalStateException("\"" + sasName + "\"" + " already exists");
+        }
+    }
+
+    private static String makeLegal(String apiName, Set<String> currentNames)
+    {
+        String legalName = apiName;
+
+        if (!isLegal(apiName))
+        {
+            // Max length is 32 characters
+            StringBuilder sasName = new StringBuilder(apiName.substring(0, Math.min(32, apiName.length())));
+
+            // Can't start with a number
+            String chars = LEGAL_FIRST_CHARS;
+
+            for (int i = 0; i < sasName.length(); i++)
+            {
+                // Replace each illegal character with an underscore
+                if (-1 == chars.indexOf(sasName.charAt(i)))
+                    sasName.setCharAt(i, '_');
+
+                chars = LEGAL_CHARS;
+            }
+
+            legalName = sasName.toString();
+        }
+
+        // It's legal, but we may have a clash with an earlier identifier
+
+        int i = 1;
+        String candidateName = legalName;
+
+        // Append (or replace last chars if 32 chars) with 2, 3, 4, 5, etc. until we have a unique identifier
+        while (currentNames.contains(candidateName))
+        {
+            i++;
+            String suffix = String.valueOf(i);
+
+            if (legalName.length() + suffix.length() > 32)
+                candidateName = legalName.substring(0, 32 - suffix.length()) + suffix;
+            else
+                candidateName = legalName + suffix;
+        }
+
+        return candidateName;
+    }
+
+    private static boolean isLegal(String identifier)
+    {
+        return identifier.length() <= 32 && SAS_IDENTIFIER.matcher(identifier).matches();
+    }
+
+    private String getSasName(String apiName)
+    {
+        return _apiToSasNames.get(apiName);
+    }
+
+    private String getApiName(String apiName)
+    {
+        return _sasToApiNames.get(apiName.trim());
+    }
+
+>>>>>>> .merge-right.r10720
     public int getColumnCount()
     {
         List<Map> fields = (List<Map>)_resp.getMetaData().get("fields");
@@ -92,7 +220,12 @@ public class SASSelectRowsResponse
         return 0 == scale ? 100 : scale;  // TODO: Temp hack -- 8.3 servers return different scale values than 9.1 -- for strings, scale == 0 at times
     }
 
-    public boolean allowsMissingValues(String columnName)
+    public String getLabel(double index)
+    {
+        return (String)getColumnModelProperty(index, "header");
+    }
+
+    public boolean allowsMissingValues(String sasName)
     {
         Boolean allowsQC = (Boolean)_resp.getMetaData(columnName).get("allowsQC");
 
@@ -174,10 +307,12 @@ public class SASSelectRowsResponse
         return (Boolean)getValue(key);
     }
 
-    public double getDate(String key)
+    private DateFormat _df = new SimpleDateFormat("yyyy-MM-dd");
+
+    public String getDate(String sasName)
     {
-        Date d = (Date)getValue(key);
-        return SASDate.convertToSASDate(d);
+        Date d = (Date)getValue(sasName);
+        return _df.format(d);
     }
 
     public String getMissingValue(String key)

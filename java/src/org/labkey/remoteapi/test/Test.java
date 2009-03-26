@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.labkey.remoteapi;
+package org.labkey.remoteapi.test;
 
 import org.labkey.remoteapi.query.*;
 import org.labkey.remoteapi.assay.AssayListCommand;
 import org.labkey.remoteapi.assay.AssayListResponse;
+import org.labkey.remoteapi.Connection;
+import org.labkey.remoteapi.CommandException;
 import org.json.simple.JSONObject;
 
 import java.util.HashMap;

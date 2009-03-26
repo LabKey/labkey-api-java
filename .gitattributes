@@ -10,9 +10,7 @@ java/src/org/labkey/remoteapi/Command.java -text
 java/src/org/labkey/remoteapi/CommandException.java -text
 java/src/org/labkey/remoteapi/CommandResponse.java -text
 java/src/org/labkey/remoteapi/Connection.java -text
-java/src/org/labkey/remoteapi/Demo.java -text
 java/src/org/labkey/remoteapi/PostCommand.java -text
-java/src/org/labkey/remoteapi/Test.java -text
 java/src/org/labkey/remoteapi/assay/AssayListCommand.java -text
 java/src/org/labkey/remoteapi/assay/AssayListResponse.java -text
 java/src/org/labkey/remoteapi/query/BaseSelect.java -text
@@ -36,7 +34,6 @@ java/src/org/labkey/remoteapi/sas/Main.java -text
 java/src/org/labkey/remoteapi/sas/NetrcFileParser.java -text
 java/src/org/labkey/remoteapi/sas/SASBaseSelectCommand.java -text
 java/src/org/labkey/remoteapi/sas/SASConnection.java -text
-java/src/org/labkey/remoteapi/sas/SASDate.java -text
 java/src/org/labkey/remoteapi/sas/SASDeleteRowsCommand.java -text
 java/src/org/labkey/remoteapi/sas/SASExecuteSqlCommand.java -text
 java/src/org/labkey/remoteapi/sas/SASInsertRowsCommand.java -text
@@ -46,12 +43,13 @@ java/src/org/labkey/remoteapi/sas/SASSaveRowsResponse.java -text
 java/src/org/labkey/remoteapi/sas/SASSelectRowsCommand.java -text
 java/src/org/labkey/remoteapi/sas/SASSelectRowsResponse.java -text
 java/src/org/labkey/remoteapi/sas/SASUpdateRowsCommand.java -text
-java/src/org/labkey/remoteapi/sas/Stash.java -text
 java/src/org/labkey/remoteapi/security/ACL.java -text
 java/src/org/labkey/remoteapi/security/GetContainersCommand.java -text
 java/src/org/labkey/remoteapi/security/GetContainersResponse.java -text
 java/src/org/labkey/remoteapi/security/GetGroupPermsCommand.java -text
 java/src/org/labkey/remoteapi/security/GetGroupPermsResponse.java -text
+java/src/org/labkey/remoteapi/test/Demo.java -text
+java/src/org/labkey/remoteapi/test/Test.java -text
 sas/MorePeople.xls -text
 sas/People.xls -text
 sas/build.xml -text
