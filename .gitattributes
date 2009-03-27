@@ -61,3 +61,10 @@ sas/macros/_labkeyexceptiondescribe.sas -text
 sas/macros/_labkeysaverows.sas -text
 sas/macros/_labkeysendcommand.sas -text
 sas/macros/_labkeysharedselectrowshandling.sas -text
+sas/macros/labkeydeleterows.sas -text
+sas/macros/labkeyexecutesql.sas -text
+sas/macros/labkeyinsertrows.sas -text
+sas/macros/labkeymakefilter.sas -text
+sas/macros/labkeyselectrows.sas -text
+sas/macros/labkeysetdefaults.sas -text
+sas/macros/labkeyupdaterows.sas -text
