@@ -27,12 +27,14 @@
         */
 		if _N_ = 1 then do;
 		    declare javaobj command ("org/labkey/remoteapi/sas/&commandClass", &schemaName, &queryName);
+            %_labkeyExceptionDescribe(command);
 		end;
 
         /*
             Create a new row.
         */
         declare javaobj row ('org/labkey/remoteapi/sas/SASRow');
+        %_labkeyExceptionDescribe(row);
 
         /*
             Determine the number of observations and output the code that puts the observation values into the row.
@@ -52,7 +54,7 @@
                     /* TODO: also look for DDMMYY and other variants */
                     %if %index("DATE9." "DATE7." "MMDDYY10." "MMDDYY8." "WORDDATE18." "WEEKDATE29.", "&fmt") %then
                         %do;
-                            row.callVoidMethod("putDate", "&name", &name);
+                            row.callVoidMethod("put", "&name", put(&name, YYMMDD10.));   /* Send all dates in YYYY-MM-DD format */
                         %end;
                     %else
                         %do;
@@ -61,7 +63,7 @@
                 %end;
             %else
                 %do;
-                    row.callVoidMethod("put", "&name", &name);
+                    row.callVoidMethod("put", "&name", trim(&name));   /* Remove trailing blanks when passing character variables. */
                 %end;
         %end;
 
@@ -79,6 +81,7 @@
             %_labkeyCreateConnection();
 
             declare javaobj response ('org/labkey/remoteapi/sas/SASSaveRowsResponse', cn, command, &folderPath);
+            %_labkeyExceptionDescribe(response);
 
             response.callIntMethod('getRowsAffected', columnCount);
 

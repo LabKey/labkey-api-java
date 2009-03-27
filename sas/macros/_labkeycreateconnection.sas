@@ -27,11 +27,13 @@
 
         %if &userName ne %then
             %do;
-                declare javaobj cn ('org/labkey/remoteapi/sas/SASConnection', &baseUrl, &userName, &password)
+                declare javaobj cn ('org/labkey/remoteapi/sas/SASConnection', &baseUrl, &userName, &password);
             %end;
         %else
             %do;
-                declare javaobj cn ('org/labkey/remoteapi/sas/SASConnection', &baseUrl)
+                declare javaobj cn ('org/labkey/remoteapi/sas/SASConnection', &baseUrl);
             %end;
+
+        %_labkeyExceptionDescribe(cn);
 %mend _labkeyCreateConnection;
 

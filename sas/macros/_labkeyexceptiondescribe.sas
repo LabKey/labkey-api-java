@@ -15,9 +15,10 @@
  */
 
 /*
-	Deletes rows in the specified schema and query based on the keys in the specified data set.
+	Outputs code that turns on ExceptionDescribe for the specified java object if this instance of SAS supports it (>= 9.2)
 */
-%macro labkeyDeleteRows(baseUrl=&lk_baseUrl, folderPath=&lk_folderPath, schemaName=&lk_schemaName, queryName=&lk_queryName, userName=, password=, dsn=);
-    %_labkeySaveRows(SASDeleteRowsCommand, deleted);
-%mend labkeyDeleteRows;
-
+%macro _labkeyExceptionDescribe(object);
+	%if (&sysver >= 9.2) %then %do;
+		&object..ExceptionDescribe(1);
+	%end;
+%mend _labkeyExceptionDescribe;

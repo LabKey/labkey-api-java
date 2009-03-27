@@ -45,8 +45,6 @@ public class Main
 
         - Local, running LabKey Server with a list called People defined in /home and either guest read
           permissions to /home or .netrc/_netrc configured with localhost credentials.
-        - Access to https://atlas.scharp.org and .netrc/_netrc configured with Atlas credentials that have
-          read permissions to the specified folder.
      */
     private static void test() throws CommandException, IOException, URISyntaxException
     {
@@ -56,10 +54,11 @@ public class Main
         System.out.println("All People");
         System.out.println();
         SASSelectRowsCommand command = new SASSelectRowsCommand("lists", "People");
+        command.setMaxRows(1);
         SASSelectRowsResponse response = new SASSelectRowsResponse(cn, command, "home");
         logResponse(response);
 
-        command.addFilter("Age", "GREATER_THAN_OR_EQUAL_TO", "12");
+        command.addFilter("Age", "GREATER_THAN_OR_EQUAL", "12");
         response = new SASSelectRowsResponse(cn, command, "home");
         System.out.println();
         System.out.println("Old people");
@@ -78,14 +77,13 @@ public class Main
         response = new SASSelectRowsResponse(cn, command, "home");
         logResponse(response);
 
-/*      TODO: re-enable this once #7493 is fixed
         System.out.println();
         System.out.println("Test executeSql");
         System.out.println();
         SASExecuteSqlCommand execSql = new SASExecuteSqlCommand("lists", "SELECT People.Last, COUNT(People.First) AS Number, AVG(People.Height) AS AverageHeight, AVG(People.Age) AS AverageAge FROM People GROUP BY People.Last");
         response = new SASSelectRowsResponse(cn, execSql, "home");
         logResponse(response);
-*/
+
         System.out.println();
         System.out.println("Insert new rows");
         System.out.println();
@@ -95,14 +93,14 @@ public class Main
         row.put("First", "Pebbles");
         row.put("Last", "Flintstone");
         row.put("Age", 1);
-        row.putDate("Appearance", 1148);
+        row.put("Appearance", "1963-02-22");
         insert.addRow(row);
 
         row = new SASRow();
         row.put("First", "Bamm-Bamm");
         row.put("Last", "Rubble");
         row.put("Age", 1);
-        row.putDate("Appearance", 1369);
+        row.put("Appearance", "1963-10-01");
         insert.addRow(row);
 
         SASSaveRowsResponse resp = new SASSaveRowsResponse(cn, insert, "home");
@@ -120,12 +118,9 @@ public class Main
         System.out.println("Delete new rows");
         System.out.println();
         command.setColumns("Key");
-        command.addFilter("Age", "LESS_THAN_OR_EQUAL_TO", "1");
+        command.addFilter("Age", "LESS_THAN_OR_EQUAL", "1");
         response = new SASSelectRowsResponse(cn, command, "home");
         SASDeleteRowsCommand delete = new SASDeleteRowsCommand("lists", "People");
-
-        String key = response.stash();
-        response = new SASSelectRowsResponse(key);
 
         while (response.getRow())
         {
@@ -151,15 +146,11 @@ public class Main
             {
                 String column = response.getColumnName(i);
                 String type = response.getType(column);
-                System.out.println(column + ": " + type + ("STRING".equals(type) ? " " + response.getScale(i) : ""));
+                System.out.println(column + " (" + response.getLabel(i) + ")" + ": " + type + ("STRING".equals(type) ? " " + response.getScale(i) : ""));
             }
         }
 
-        String key = response.stash();
-
-        SASSelectRowsResponse dataResponse = new SASSelectRowsResponse(key);
-
-        while (dataResponse.getRow())
+        while (response.getRow())
         {
             StringBuilder line = new StringBuilder();
 
@@ -168,16 +159,16 @@ public class Main
                 if (response.isHidden(i))
                     continue;
 
-                String column = dataResponse.getColumnName(i);
-                String type = dataResponse.getType(column);
+                String column = response.getColumnName(i);
+                String type = response.getType(column);
 
                 if ("STRING".equals(type))
                 {
-                    line.append(dataResponse.getCharacter(column));
+                    line.append(response.getCharacter(column));
                 }
                 else
                 {
-                    if (dataResponse.isNull(column))
+                    if (response.isNull(column))
                     {
                         line.append("null");
                     }
@@ -185,22 +176,22 @@ public class Main
                     {
                         if ("DATE".equals(type))
                         {
-                            line.append(dataResponse.getDate(column));
+                            line.append(response.getDate(column));
                         }
                         else if ("BOOLEAN".equals(type))
                         {
-                            line.append(dataResponse.getBoolean(column));
+                            line.append(response.getBoolean(column));
                         }
                         else
                         {
-                            line.append(dataResponse.getNumeric(column));
+                            line.append(response.getNumeric(column));
                         }
                     }
                 }
 
-                if (dataResponse.allowsMissingValues(column))
+                if (response.allowsMissingValues(column))
                 {
-                    String qc = dataResponse.getMissingValue(column);
+                    String qc = response.getMissingValue(column);
 
                     if (null != qc)
                         line.append(" (").append(qc).append(")");

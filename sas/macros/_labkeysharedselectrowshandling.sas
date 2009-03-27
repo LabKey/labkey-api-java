@@ -19,31 +19,8 @@
 	params (if present), initializes the connection, executes the command, handles the meta data, sets a default title,
 	and creates a SAS data set containing all the data rows.
 */
-%macro _labkeySharedSelectRowsHandling();
-		/*
-			If maxRows, rowOffset, or containerFilter params have been specified then set them on the command.
-		*/
-		%if &maxRows ne %then %do;
-			command.callVoidMethod('setMaxRows', &maxRows);
-		%end;
-
-		%if &rowOffset ne %then %do;
-			command.callVoidMethod('setOffset', &rowOffset);
-		%end;
-
-        /*  Container filter is totally optional, so we check here instead of setting containerFilter = &lk_containerFilter in the params list. */
-		%if (&containerFilter eq) and %symexist(lk_containerFilter) %then %let containerFilter = &lk_containerFilter;
-
-        %if &containerFilter ne %then %do;
-			command.callVoidMethod('setContainerFilter', &containerFilter);
-		%end;
-
-		/*
-			Create the connection, issue the command, and retrieve the response.
-		*/
-        %_labkeyCreateConnection();
-
-		declare javaobj response ('org/labkey/remoteapi/sas/SASSelectRowsResponse', cn, command, &folderPath);
+%macro _labkeySharedSelectRowsHandling(selectRows);
+        %_labkeySendCommand(&selectRows, 1);
 
 		response.callIntMethod('getColumnCount', columnCount);
 
@@ -59,11 +36,12 @@
 		post = '';
 
 		length column $100;
+		length labelText $100;
 		length type $10;
 	    length scale 4;
 
 	    response.callStringMethod('getMissingValuesCode', pre);
-		call cats(pre, 'isNull = 0; length missingValue $2; missingValue = "";');
+		call cats(pre, 'isNull = 0;length missingValue $2;missingValue = "";');
 
 		/*
 			Enumerate the columns and build up macro variables that contain code that will be used
@@ -75,8 +53,11 @@
 			*/
 			isHidden = 0;
 			allowsMissing = 0;
+			hasDate = 0;
 
-			if (not &showHidden) then response.callBooleanMethod('isHidden', index, isHidden);
+			%if (not &showHidden) %then %do;
+			    response.callBooleanMethod('isHidden', index, isHidden);
+			%end;
 
 			if (not isHidden) then do;
 				response.callStringMethod('getColumnName', index, column);
@@ -89,36 +70,48 @@
 				if (type = 'STRING') then
 					do;
         				response.callIntMethod('getScale', index, scale);
-						call cats(pre, 'length ' || column || ' $', put(scale, 6.), ';');
+						call cats(pre, 'length ' || trim(column) || ' $', strip(put(scale, 6.)), ';');
 						call cats(row, "response.callStringMethod('getCharacter', '", column, "', ", column, ");");
 					end;
 				else
 					do;
 						/*
-							If value is null set to missing
+							If value is null then set to missing
 						*/
-						call cats(row, "call missing(", column, ");response.callBooleanMethod('isNull', '", column, "', isNull);if not isNull then response.");
+						call cats(row, "call missing(", column, ");response.callBooleanMethod('isNull', '", column, "', isNull);if not isNull the");
 
 						if (type = 'DATE') then
 							do;
-								call cats(row, "callDoubleMethod('getDate");
-								call cats(post, "format " || column || " DATE9.;");
+        						call cats(pre, 'length ' || strip(column) || ' 8;');
+
+        						if (not hasDate) then do;
+        						    call cats(pre, 'length ____date $10;');
+        						    call cats(post, 'drop ____date;');
+        						    hasDate = 1;
+        						end;
+
+								call cats(row, "n do;response.callStringMethod('getDate', '", column, "', ____date);", trim(column) || " = input(____date, YYMMDD10.);end;");
+								call cats(post, "format " || strip(column) || " DATE9.;");
 							end;
 					    else if (type = 'BOOLEAN') then
 					        do;
-					            call cats(row, "callBooleanMethod('getBoolean");
+        						call cats(pre, 'length ' || strip(column) || ' 4;');
+					            call cats(row, "n response.callBooleanMethod('getBoolean', '", column, "', ", column, ");");
 					        end;
 						else
 							do;
-								call cats(row, "callDoubleMethod('getNumeric");
+        						call cats(pre, 'length ' || strip(column) || ' 8;');
+								call cats(row, "n response.callDoubleMethod('getNumeric', '", column, "', ", column, ");");
 							end;
-
-						call cats(row, "', '", column, "', ", column, ");");
 
 					    response.callBooleanMethod('allowsMissingValues', column, allowsMissing);
 
-					    if (allowsMissing) then call cats(row, "else do; response.callStringMethod('getMissingValue', '", column, "', missingValue); ", column, "= missingValue; end;");
+					    if (allowsMissing) then call cats(row, "else do; response.callStringMethod('getMissingValue', '", column, "', missingValue); ", trim(column) || " = input(missingValue, 2.); end;");
 					end;
+
+				response.callStringMethod('getLabel', index, labelText);
+    		    call cats(pre, "label " || trim(column) || " = '", trim(labelText), "';");
+
 				output;
 			end;
 		end;
@@ -131,19 +124,6 @@
 		call symput('rowCode', row);
 		call symput('postCode', post);
 		call symput('title', quote(strip(title)));
-
-		/*
-			Stash the response object in the java vm so we can use it in the next data step without
-			setting up and reissuing the query.
-		*/
-		length key $8;
-	
-		response.callStringMethod('stash', key);
-
-		/*
-			Save the stash key so it's available in the next data step.
-		*/
-		call symput('key', key);
 
 		/*
 			Delete all the java objects created.
@@ -159,9 +139,9 @@
 	*/
 	data &dsn;
 		/*
-			Retrieve the stashed response.
+			Issue the query again to retrieve the data.
 		*/
-		declare javaobj response ('org/labkey/remoteapi/sas/SASSelectRowsResponse', "&key");
+        %_labkeySendCommand(&selectRows, 0);
 
 		/*
 			Run the code that initializes all character variables.
@@ -194,5 +174,7 @@
 		title &title;
 
 		response.delete();
+		command.delete();
+		cn.delete();
 	run
 %mend _labkeySharedSelectRowsHandling;

@@ -15,15 +15,15 @@
  */
 package org.labkey.remoteapi.sas;
 
+import org.json.simple.JSONObject;
 import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.query.SelectRowsResponse;
-import org.json.simple.JSONObject;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.regex.Pattern;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 /**
  * User: adam
@@ -33,44 +33,170 @@ import java.util.Map;
 public class SASSelectRowsResponse
 {
     private final SelectRowsResponse _resp;
-    private Iterator<Map<String, Object>> _rowIterator;
+    private final Iterator<Map<String, Object>> _rowIterator;
+    private Map<String, String> _sasToApiNames;
+    private Map<String, String> _apiToSasNames;
     private Map<String, Object> _currentRow;
-
-    private static final Stash<SelectRowsResponse> _stash = new Stash<SelectRowsResponse>(60000);  // Stash entries for up to 60 seconds
 
     // We need one constructor per command class because of SAS's method-calling limitations (object parameters must match expected class exactly).
     public SASSelectRowsResponse(SASConnection cn, SASSelectRowsCommand command, String folderPath) throws CommandException, IOException
     {
-        _resp = command.execute(cn, folderPath);
+        this(cn, (SASBaseSelectCommand)command, folderPath);
     }
 
     public SASSelectRowsResponse(SASConnection cn, SASExecuteSqlCommand command, String folderPath) throws CommandException, IOException
     {
-        _resp = command.execute(cn, folderPath);
+        this(cn, (SASBaseSelectCommand)command, folderPath);
     }
 
-    public SASSelectRowsResponse(String key)
+    private SASSelectRowsResponse(SASConnection cn, SASBaseSelectCommand command, String folderPath) throws CommandException, IOException
     {
-        _resp = _stash.get(key);
+        _resp = command.execute(cn, folderPath);
         _rowIterator = _resp.getRows().iterator();
+        createNameMapping(getFields());
+    }
+
+    private List<Map<String, String>> getFields()
+    {
+        return (List<Map<String, String>>)_resp.getMetaData().get("fields");
+    }
+
+    // Translate all api fields names into legal SAS identifiers.  We'll report these names to SAS and lookup through
+    //  these maps when we retrieve data or meta data via name.
+    private void createNameMapping(List<Map<String, String>> fields)
+    {
+        _sasToApiNames = new HashMap<String, String>(fields.size());
+        _apiToSasNames = new HashMap<String, String>(fields.size());
+
+        for (Map<String, String> field : fields)
+        {
+            String apiName = field.get("name");
+            String sasName = makeLegal(apiName, _sasToApiNames.keySet());
+
+            _apiToSasNames.put(apiName, sasName);
+            _sasToApiNames.put(sasName, apiName);
+        }
+    }
+
+    private static final Pattern SAS_IDENTIFIER = Pattern.compile("[a-zA-Z_][\\w]{0,31}");
+    private static final String LEGAL_FIRST_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+    private static final String LEGAL_CHARS = LEGAL_FIRST_CHARS + "0123456789";
+
+    public static void testMakeLegal()
+    {
+        List<String> testNames = new ArrayList<String>(120);
+        testNames.addAll(Arrays.asList("Foo", "Foo", "1Foo", "_Foo", "$56TS", "this/that", "howdeedoo_", "howdeedoo#"));
+
+        for (int i = 0; i < 102; i++)
+            testNames.add("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghi");
+
+        Set<String> identifiers = new HashSet<String>(testNames.size());
+
+        for (String apiName : testNames)
+        {
+            String sasName = makeLegal(apiName, identifiers);
+            if (!isLegal(sasName))
+                throw new IllegalStateException(apiName + " translated to " + sasName + ", which is not a legal SAS identifier");
+
+            System.out.println(apiName + " " + sasName);
+            identifiers.add(sasName);
+        }
+
+        int testCount = 100000;
+        identifiers = new HashSet<String>(testCount);
+        Random random = new Random();
+
+        for (int i = 0; i < testCount; i++)
+        {
+            StringBuilder sb = new StringBuilder();
+            int length = 1 + random.nextInt(40);
+
+            for (int j = 0; j < length; j++)
+                sb.append((char)(32 + random.nextInt(95)));
+
+            String sasName = makeLegal(sb.toString(), identifiers);
+            if (!isLegal(sasName))
+                throw new IllegalStateException("\"" + sb.toString() + "\" translated to \"" + sasName + "\", which is not a legal SAS identifier");
+            if (!identifiers.add(sasName))
+                throw new IllegalStateException("\"" + sasName + "\"" + " already exists");
+        }
+    }
+
+    private static String makeLegal(String apiName, Set<String> currentNames)
+    {
+        String legalName = apiName;
+
+        if (!isLegal(apiName))
+        {
+            // Max length is 32 characters
+            StringBuilder sasName = new StringBuilder(apiName.substring(0, Math.min(32, apiName.length())));
+
+            // Can't start with a number
+            String chars = LEGAL_FIRST_CHARS;
+
+            for (int i = 0; i < sasName.length(); i++)
+            {
+                // Replace each illegal character with an underscore
+                if (-1 == chars.indexOf(sasName.charAt(i)))
+                    sasName.setCharAt(i, '_');
+
+                chars = LEGAL_CHARS;
+            }
+
+            legalName = sasName.toString();
+        }
+
+        // It's legal, but we may have a clash with an earlier identifier
+
+        int i = 1;
+        String candidateName = legalName;
+
+        // Append (or replace last chars if 32 chars) with 2, 3, 4, 5, etc. until we have a unique identifier
+        while (currentNames.contains(candidateName))
+        {
+            i++;
+            String suffix = String.valueOf(i);
+
+            if (legalName.length() + suffix.length() > 32)
+                candidateName = legalName.substring(0, 32 - suffix.length()) + suffix;
+            else
+                candidateName = legalName + suffix;
+        }
+
+        return candidateName;
+    }
+
+    private static boolean isLegal(String identifier)
+    {
+        return identifier.length() <= 32 && SAS_IDENTIFIER.matcher(identifier).matches();
+    }
+
+    private String getSasName(String apiName)
+    {
+        return _apiToSasNames.get(apiName);
+    }
+
+    private String getApiName(String apiName)
+    {
+        return _sasToApiNames.get(apiName.trim());
     }
 
     public int getColumnCount()
     {
-        List<Map> fields = (List<Map>)_resp.getMetaData().get("fields");
-        return fields.size();
+        return getFields().size();
     }
 
     public String getColumnName(double index)
     {
         int i = (int)Math.round(index);
-        List<Map<String, String>> fields = (List<Map<String, String>>)_resp.getMetaData().get("fields");
-        return fields.get(i).get("name");
+        String apiName = getFields().get(i).get("name");
+        return getSasName(apiName);
     }
 
-    public String getType(String columnName)
+    public String getType(String sasName)
     {
-        SelectRowsResponse.ColumnDataType type = _resp.getColumnDataType(columnName);
+        String apiName = getApiName(sasName);
+        SelectRowsResponse.ColumnDataType type = _resp.getColumnDataType(apiName);
         return type.toString();
     }
 
@@ -92,9 +218,15 @@ public class SASSelectRowsResponse
         return 0 == scale ? 100 : scale;  // TODO: Temp hack -- 8.3 servers return different scale values than 9.1 -- for strings, scale == 0 at times
     }
 
-    public boolean allowsMissingValues(String columnName)
+    public String getLabel(double index)
     {
-        Boolean allowsQC = (Boolean)_resp.getMetaData(columnName).get("allowsQC");
+        return (String)getColumnModelProperty(index, "header");
+    }
+
+    public boolean allowsMissingValues(String sasName)
+    {
+        String apiName = getApiName(sasName);
+        Boolean allowsQC = (Boolean)_resp.getMetaData(apiName).get("allowsQC");
 
         return (null != allowsQC && allowsQC);
     }
@@ -125,11 +257,6 @@ public class SASSelectRowsResponse
             return "footnote;";
     }
 
-    public String stash()
-    {
-        return _stash.put(_resp);
-    }
-
     public boolean getRow()
     {
         boolean hasNext = _rowIterator.hasNext();
@@ -144,9 +271,10 @@ public class SASSelectRowsResponse
     /*  TODO: Move the following methods to SASRow and return (new up) a SASRow instead of using getRow()? */
 
     // Detect and handle both LabKey 8.3 and 9.1 formats
-    private Object getValue(String key)
+    private Object getValue(String sasName)
     {
-        Object o = _currentRow.get(key);
+        String apiName = getApiName(sasName);
+        Object o = _currentRow.get(apiName);
 
         if (_resp.getRequiredVersion() < 9.1)
             return o;
@@ -154,38 +282,42 @@ public class SASSelectRowsResponse
             return ((JSONObject)o).get("value");
     }
 
-    public boolean isNull(String key)
+    public boolean isNull(String sasName)
     {
-        return null == getValue(key);
+        return null == getValue(sasName);
     }
 
-    public String getCharacter(String key)
+    public String getCharacter(String sasName)
     {
-        return (String)getValue(key);
+        return (String)getValue(sasName);
     }
 
-    public double getNumeric(String key)
+    public double getNumeric(String sasName)
     {
-        return ((Number)getValue(key)).doubleValue();
+        return ((Number)getValue(sasName)).doubleValue();
     }
 
-    public boolean getBoolean(String key)
+    public boolean getBoolean(String sasName)
     {
-        return (Boolean)getValue(key);
+        return (Boolean)getValue(sasName);
     }
 
-    public double getDate(String key)
+    private DateFormat _df = new SimpleDateFormat("yyyy-MM-dd");
+
+    public String getDate(String sasName)
     {
-        Date d = (Date)getValue(key);
-        return SASDate.convertToSASDate(d);
+        Date d = (Date)getValue(sasName);
+        return _df.format(d);
     }
 
-    public String getMissingValue(String key)
+    public String getMissingValue(String sasName)
     {
         if (_resp.getRequiredVersion() < 9.1)
             throw new IllegalStateException("Missing values are only available when requiring LabKey 9.1 or later version");
 
-        Object o = _currentRow.get(key);
+        String apiName = getApiName(sasName);
+
+        Object o = _currentRow.get(apiName);
 
         return (String)((JSONObject)o).get("qcValue");
     }
