@@ -61,7 +61,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/build/jar/labkey-remote-api-9.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/dist/jar/labkey-remote-api-1.0/labkey-remote-api-1.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

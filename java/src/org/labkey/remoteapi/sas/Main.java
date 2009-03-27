@@ -56,11 +56,10 @@ public class Main
         System.out.println("All People");
         System.out.println();
         SASSelectRowsCommand command = new SASSelectRowsCommand("lists", "People");
-        command.setMaxRows(1);
         SASSelectRowsResponse response = new SASSelectRowsResponse(cn, command, "home");
         logResponse(response);
 
-        command.addFilter("Age", "GREATER_THAN_OR_EQUAL", "12");
+        command.addFilter("Age", "GREATER_THAN_OR_EQUAL_TO", "12");
         response = new SASSelectRowsResponse(cn, command, "home");
         System.out.println();
         System.out.println("Old people");
@@ -96,14 +95,14 @@ public class Main
         row.put("First", "Pebbles");
         row.put("Last", "Flintstone");
         row.put("Age", 1);
-        row.put("Appearance", "1963-02-22");
+        row.putDate("Appearance", 1148);
         insert.addRow(row);
 
         row = new SASRow();
         row.put("First", "Bamm-Bamm");
         row.put("Last", "Rubble");
         row.put("Age", 1);
-        row.put("Appearance", "1963-10-01");
+        row.putDate("Appearance", 1369);
         insert.addRow(row);
 
         SASSaveRowsResponse resp = new SASSaveRowsResponse(cn, insert, "home");
@@ -121,7 +120,7 @@ public class Main
         System.out.println("Delete new rows");
         System.out.println();
         command.setColumns("Key");
-        command.addFilter("Age", "LESS_THAN_OR_EQUAL", "1");
+        command.addFilter("Age", "LESS_THAN_OR_EQUAL_TO", "1");
         response = new SASSelectRowsResponse(cn, command, "home");
         SASDeleteRowsCommand delete = new SASDeleteRowsCommand("lists", "People");
 
@@ -152,7 +151,7 @@ public class Main
             {
                 String column = response.getColumnName(i);
                 String type = response.getType(column);
-                System.out.println(column + " (" + response.getLabel(i) + ")" + ": " + type + ("STRING".equals(type) ? " " + response.getScale(i) : ""));
+                System.out.println(column + ": " + type + ("STRING".equals(type) ? " " + response.getScale(i) : ""));
             }
         }
 

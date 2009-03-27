@@ -1,6 +1,6 @@
 <project name="sas" basedir="." default="dist">
-    <property name="sas.api.version" value="9.1"/>
-    <property name="remote.api.version" value="9.1"/>
+    <property name="sas.api.version" value="0.9"/>
+    <property name="remote.api.version" value="1.0"/>
 
     <property name="macros.dir" value="${basedir}/macros"/>
     <property name="dist.dir" value="${basedir}/dist"/>

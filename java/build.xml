@@ -1,6 +1,6 @@
 <project name="remoteapi" basedir="." default="build">
 
-    <property name="version" value="9.1"/>
+    <property name="version" value="1.0"/>
     <property name="source.dir" value="${basedir}/src"/>
     <property name="build.dir" value="${basedir}/build"/>
     <property name="build.classes.dir" value="${build.dir}/classes"/>
@@ -34,7 +34,6 @@
                classpathref="component.class.path"
                target="1.5"
                debug="true"/>
-        <copy file="${source.dir}/log4j.xml" todir="${build.classes.dir}"/>
     </target>
 
     <target name="jar" depends="compile">
@@ -45,7 +44,7 @@
     <target name="javadoc">
         <javadoc sourcepath="${source.dir}" destdir="${doc.dir}" classpathref="component.class.path"
                  windowtitle="LabKey Remote API Library for Java Documentation"
-                 author="true" version="true" packagenames="org.labkey.remoteapi.*" excludepackagenames="org.labkey.remoteapi.sas,org.labkey.remoteapi.test"/>
+                 author="true" version="true" packagenames="org.labkey.remoteapi.*"/>
     </target>
 
     <target name="dist" depends="compile,jar,javadoc">

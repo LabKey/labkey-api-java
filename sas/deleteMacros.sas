@@ -27,6 +27,4 @@ proc catalog cat=WORK.SASMACR;
 	delete _labkeySaveRows / et=macro;
 	delete _labkeySharedSelectRowsHandling / et=macro;
 	delete _labkeyCreateConnection / et=macro;
-	delete _labkeyExceptionDescribe / et=macro;
-	delete _labkeyExceptionDescribe / et=macro;
 quit;
