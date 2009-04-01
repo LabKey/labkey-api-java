@@ -39,6 +39,11 @@ public class GetSchemasCommand extends Command
         super("query", "getSchemas");
     }
 
+    public GetSchemasCommand(GetSchemasCommand source)
+    {
+        super(source);
+    }
+
     @SuppressWarnings("unchecked")
     public GetSchemasResponse execute(Connection connection, String folderPath) throws IOException, CommandException
     {
@@ -47,6 +52,12 @@ public class GetSchemasCommand extends Command
 
     protected CommandResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new GetSchemasResponse(text, status, contentType, json, getRequiredVersion());
+        return new GetSchemasResponse(text, status, contentType, json, this.copy());
+    }
+
+    @Override
+    public GetSchemasCommand copy()
+    {
+        return new GetSchemasCommand(this);
     }
 }

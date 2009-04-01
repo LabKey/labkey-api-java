@@ -108,6 +108,19 @@ public abstract class SaveRowsCommand extends PostCommand
         _queryName = queryName;
     }
 
+    protected SaveRowsCommand(SaveRowsCommand source)
+    {
+        super(source);
+        _queryName = source._queryName;
+        _schemaName = source._schemaName;
+        //deep copy rows
+        _rows = new ArrayList<Map<String,Object>>();
+        for(Map<String,Object> row : source._rows)
+        {
+            _rows.add(new HashMap<String,Object>(row));
+        }
+    }
+
     /**
      * Returns the schema name.
      * @return The schema name.
@@ -224,6 +237,8 @@ public abstract class SaveRowsCommand extends PostCommand
 
     protected CommandResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new SaveRowsResponse(text, status, contentType, json, getRequiredVersion());
+        return new SaveRowsResponse(text, status, contentType, json, this.copy());
     }
+
+    public abstract SaveRowsCommand copy();
 }

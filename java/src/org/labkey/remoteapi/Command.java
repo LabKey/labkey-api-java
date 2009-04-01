@@ -89,6 +89,20 @@ public class Command
     }
 
     /**
+     * Constructs a new Command from an existing command
+     * @param source A source Command
+     */
+    public Command(Command source)
+    {
+        _actionName = source.getActionName();
+        _controllerName = source.getControllerName();
+        if(null != source.getParameters())
+            _parameters = new HashMap<String,Object>(source.getParameters());
+        _timeout = source.getTimeout();
+        _requiredVersion = source.getRequiredVersion();
+    }
+
+    /**
      * Returns the controller name specified when constructing this object.
      * @return The controller name.
      */
@@ -264,7 +278,7 @@ public class Command
      */
     protected CommandResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new CommandResponse(text, status, contentType, json, getRequiredVersion());
+        return new CommandResponse(text, status, contentType, json, this.copy());
     }
 
     /**
@@ -434,5 +448,15 @@ public class Command
     public void setRequiredVersion(double requiredVersion)
     {
         _requiredVersion = requiredVersion;
+    }
+
+    /**
+     * Returns a copy of this object. Derived classes should override this
+     * to copy their own data members
+     * @return A copy of this object
+     */
+    public Command copy()
+    {
+        return new Command(this);
     }
 }

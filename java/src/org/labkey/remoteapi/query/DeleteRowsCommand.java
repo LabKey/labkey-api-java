@@ -35,4 +35,15 @@ public class DeleteRowsCommand extends SaveRowsCommand
     {
         super(schemaName, queryName, "deleteRows");
     }
+
+    public DeleteRowsCommand(DeleteRowsCommand source)
+    {
+        super(source);
+    }
+
+    @Override
+    public DeleteRowsCommand copy()
+    {
+        return new DeleteRowsCommand(this);
+    }
 }

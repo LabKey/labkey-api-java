@@ -63,6 +63,16 @@ public class ExecuteSqlCommand extends PostCommand implements BaseSelect
         _schemaName = schemaName;
     }
 
+    public ExecuteSqlCommand(ExecuteSqlCommand source)
+    {
+        super(source);
+        _schemaName = source._schemaName;
+        _sql = source._sql;
+        _maxRows = source._maxRows;
+        _offset = source._offset;
+        _containerFilter = source._containerFilter;
+    }
+
     /**
      * Constructs an ExecuteSqlCommand, initialized with a schema name and SQL query.
      * @param schemaName The schema name ot query.
@@ -178,7 +188,7 @@ public class ExecuteSqlCommand extends PostCommand implements BaseSelect
 
     protected CommandResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new SelectRowsResponse(text, status, contentType, json, getRequiredVersion());
+        return new SelectRowsResponse(text, status, contentType, json, this.copy());
     }
 
     @SuppressWarnings("unchecked")
@@ -194,5 +204,11 @@ public class ExecuteSqlCommand extends PostCommand implements BaseSelect
         if(getContainerFilter() != null)
             json.put("containerFilter", getContainerFilter().name());
         return json;
+    }
+
+    @Override
+    public ExecuteSqlCommand copy()
+    {
+        return new ExecuteSqlCommand(this);
     }
 }

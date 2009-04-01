@@ -130,6 +130,13 @@ public class Filter
         _operator = operator;
     }
 
+    public Filter(Filter source)
+    {
+        _columnName = source._columnName;
+        _operator = source._operator;
+        _value = source._value; //might be a shallow copy
+    }
+
     public String getColumnName()
     {
         return _columnName;

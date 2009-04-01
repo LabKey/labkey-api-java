@@ -60,6 +60,13 @@ public class PostCommand extends Command
         super(controllerName, actionName);
     }
 
+    public PostCommand(PostCommand source)
+    {
+        super(source);
+        if(null != source.getJsonObject())
+            _jsonObject = source.getJsonObject();
+    }
+
     /**
      * Returns the JSON object to post, or null if the JSON object
      * has not yet been set. Override this method to provide the
@@ -111,5 +118,11 @@ public class PostCommand extends Command
         }
 
         return method;
+    }
+
+    @Override
+    public PostCommand copy()
+    {
+        return new PostCommand(this);
     }
 }

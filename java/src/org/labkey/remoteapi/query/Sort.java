@@ -47,6 +47,12 @@ public class Sort
         _direction = direction;
     }
 
+    public Sort(Sort source)
+    {
+        _columnName = source._columnName;
+        _direction = source._direction;
+    }
+
     public String getColumnName()
     {
         return _columnName;

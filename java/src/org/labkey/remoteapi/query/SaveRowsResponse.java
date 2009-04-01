@@ -35,11 +35,11 @@ public class SaveRowsResponse extends RowsResponse
      * @param statusCode The HTTP status code.
      * @param contentType The Content-Type header value.
      * @param json The parsed JSONObject (or null if JSON was not returned).
-     * @param requiredVersion The required API version
+     * @param sourceCommand A copy of the command that created this response
      */
-    public SaveRowsResponse(String text, int statusCode, String contentType, JSONObject json, double requiredVersion)
+    public SaveRowsResponse(String text, int statusCode, String contentType, JSONObject json, SaveRowsCommand sourceCommand)
     {
-        super(text, statusCode, contentType, json, requiredVersion);
+        super(text, statusCode, contentType, json, sourceCommand);
     }
 
     /**

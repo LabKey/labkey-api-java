@@ -15,15 +15,15 @@
  */
 package org.labkey.remoteapi.security;
 
+import org.json.simple.JSONObject;
 import org.labkey.remoteapi.Command;
+import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.Connection;
-import org.labkey.remoteapi.CommandException;
-import org.json.simple.JSONObject;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /*
 * User: Dave
@@ -39,6 +39,12 @@ public class GetContainersCommand extends Command
         super("project", "getContainers");
     }
 
+    public GetContainersCommand(GetContainersCommand source)
+    {
+        super(source);
+        _includeSubfolders = source._includeSubfolders;
+    }
+
     public boolean isIncludeSubfolders()
     {
         return _includeSubfolders;
@@ -51,7 +57,7 @@ public class GetContainersCommand extends Command
 
     protected CommandResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new GetContainersResponse(text, status, contentType, json, getRequiredVersion());
+        return new GetContainersResponse(text, status, contentType, json, this.copy());
     }
 
     @SuppressWarnings("unchecked")
@@ -65,5 +71,11 @@ public class GetContainersCommand extends Command
         Map<String,Object> params = new HashMap<String,Object>();
         params.put("includeSubfolders", _includeSubfolders);
         return params;
+    }
+
+    @Override
+    public GetContainersCommand copy()
+    {
+        return new GetContainersCommand(this);
     }
 }

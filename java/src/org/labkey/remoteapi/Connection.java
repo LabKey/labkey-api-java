@@ -213,7 +213,16 @@ public class Connection
                                 AuthScope.ANY_PORT, AuthScope.ANY_REALM),
                         new UsernamePasswordCredentials(getEmail(), getPassword())
                 );
+
+                //send basic auth header on first request
+                _client.getParams().setAuthenticationPreemptive(true);
             }
+        }
+        else
+        {
+            //clear preemptive auth setting for subsequent requests
+            //as the HttpClient library will send the session id cookie
+            _client.getParams().setAuthenticationPreemptive(false);
         }
 
         return _client;

@@ -28,9 +28,9 @@ import java.util.List;
 */
 public class GetContainersResponse extends CommandResponse
 {
-    public GetContainersResponse(String text, int statusCode, String contentType, JSONObject json, double requiredVersion)
+    public GetContainersResponse(String text, int statusCode, String contentType, JSONObject json, GetContainersCommand sourceCommand)
     {
-        super(text, statusCode, contentType, json, requiredVersion);
+        super(text, statusCode, contentType, json, sourceCommand);
     }
 
     public String getContainerId()

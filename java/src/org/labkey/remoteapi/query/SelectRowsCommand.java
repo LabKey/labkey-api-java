@@ -91,6 +91,33 @@ public class SelectRowsCommand extends Command implements BaseSelect
     }
 
     /**
+     * Constructs a new SelectRowsCommand that is a copy of the source command
+     * @param source The source command
+     */
+    public SelectRowsCommand(SelectRowsCommand source)
+    {
+        super(source);
+        _schemaName = source._schemaName;
+        _queryName = source._queryName;
+        _viewName = source._viewName;
+        _columns.addAll(source._columns);
+        _maxRows = source._maxRows;
+        _offset = source._offset;
+        _containerFilter = source._containerFilter;
+
+        //deep copy sorts and filters lists
+        for(Sort sort : source._sorts)
+        {
+            _sorts.add(new Sort(sort));
+        }
+
+        for(Filter filter : source._filters)
+        {
+            _filters.add(new Filter(filter));
+        }
+    }
+
+    /**
      * Returns the current schema name this command will query.
      * @return The schema name.
      */
@@ -321,7 +348,7 @@ public class SelectRowsCommand extends Command implements BaseSelect
      */
     protected CommandResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new SelectRowsResponse(text, status, contentType, json, getRequiredVersion());
+        return new SelectRowsResponse(text, status, contentType, json, this.copy());
     }
 
     public Map<String, Object> getParameters()
@@ -384,5 +411,11 @@ public class SelectRowsCommand extends Command implements BaseSelect
             sep = ",";
         }
         return param.toString();
+    }
+
+    @Override
+    public SelectRowsCommand copy()
+    {
+        return new SelectRowsCommand(this);
     }
 }

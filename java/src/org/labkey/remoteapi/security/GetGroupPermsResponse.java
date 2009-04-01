@@ -25,9 +25,9 @@ import org.json.simple.JSONObject;
 */
 public class GetGroupPermsResponse extends CommandResponse
 {
-    public GetGroupPermsResponse(String text, int statusCode, String contentType, JSONObject json, double requiredVersion)
+    public GetGroupPermsResponse(String text, int statusCode, String contentType, JSONObject json, GetGroupPermsCommand sourceCommand)
     {
-        super(text, statusCode, contentType, json, requiredVersion);
+        super(text, statusCode, contentType, json, sourceCommand);
     }
     
 }

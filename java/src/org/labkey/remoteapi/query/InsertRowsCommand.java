@@ -15,6 +15,8 @@
  */
 package org.labkey.remoteapi.query;
 
+import org.labkey.remoteapi.PostCommand;
+
 /*
 * User: Dave
 * Date: Jul 11, 2008
@@ -41,5 +43,16 @@ public class InsertRowsCommand extends SaveRowsCommand
     public InsertRowsCommand(String schemaName, String queryName)
     {
         super(schemaName, queryName, "insertRows");
+    }
+
+    public InsertRowsCommand(InsertRowsCommand source)
+    {
+        super(source);
+    }
+
+    @Override
+    public InsertRowsCommand copy()
+    {
+        return new InsertRowsCommand(this);
     }
 }

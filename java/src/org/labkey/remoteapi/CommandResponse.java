@@ -45,7 +45,7 @@ public class CommandResponse
     private int _statusCode;
     private String _contentType;
     private JSONObject _data = null;
-    private double _requiredVersion = 0;
+    private Command _sourceCommand;
 
     /**
      * Constructs a new CommandResponse, initialized with the provided
@@ -54,15 +54,15 @@ public class CommandResponse
      * @param statusCode The HTTP status code
      * @param contentType The response content type
      * @param json The parsed JSONObject (or null if JSON was not returned).
-     * @param requiredVersion The required version number of the source command
+     * @param sourceCommand A copy of the command that created this response
      */
-    public CommandResponse(String text, int statusCode, String contentType, JSONObject json, double requiredVersion)
+    public CommandResponse(String text, int statusCode, String contentType, JSONObject json, Command sourceCommand)
     {
         _text = text;
         _statusCode = statusCode;
         _contentType = contentType;
         _data = json;
-        _requiredVersion = requiredVersion;
+        _sourceCommand = sourceCommand;
     }
 
     /**
@@ -108,7 +108,16 @@ public class CommandResponse
      */
     public double getRequiredVersion()
     {
-        return _requiredVersion;
+        return _sourceCommand.getRequiredVersion();
+    }
+
+    /**
+     * Returns a reference to a copy of the command that created this response
+     * @return The command that created this response
+     */
+    public Command getSourceCommand()
+    {
+        return _sourceCommand;
     }
 
     /**
