@@ -1,14 +1,13 @@
 <project name="sas" basedir="." default="dist">
-    <property name="sas.api.version" value="9.1"/>
-    <property name="remote.api.version" value="9.1"/>
+    <property name="server.dir" value="${basedir}/../../server"/>
+    <property file="${server.dir}/version.properties" />
 
     <property name="macros.dir" value="${basedir}/macros"/>
     <property name="dist.dir" value="${basedir}/dist"/>
     <property name="lib.dir" value="${basedir}/../java/lib"/>
-    <property name="remote.api.dir" value="${basedir}/../java/dist/jar/labkey-remote-api-${remote.api.version}"/>
-    <property name="remote.api.filename" value="labkey-remote-api-${remote.api.version}.jar"/>
-
-    <property name="zip.name" value="labkey-sas-api-${sas.api.version}.zip"/>
+    <property name="remote.api.dir" value="${basedir}/../java/dist/jar/labkey-remote-api-${product.version}"/>
+    <property name="remote.api.filename" value="labkey-remote-api-${product.version}.jar"/>
+    <property name="zip.name" value="labkey-sas-api-${product.version}.zip"/>
 
     <target name="dist">
         <delete file="${dist.dir}/${zip.name}"/>

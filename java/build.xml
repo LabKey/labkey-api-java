@@ -1,6 +1,8 @@
 <project name="remoteapi" basedir="." default="build">
+    <property name="server.dir" value="../../server"/>
+    <property file="${server.dir}/version.properties" />
+    <property name="version" value="${product.version}"/>
 
-    <property name="version" value="9.1"/>
     <property name="source.dir" value="${basedir}/src"/>
     <property name="build.dir" value="${basedir}/build"/>
     <property name="build.classes.dir" value="${build.dir}/classes"/>
@@ -14,7 +16,7 @@
     <property name="doc.dir" value="${dist.jar.ver.dir}/doc"/>
     <property name="zip.name" value="labkey-remote-api-java-${version}.zip"/>
     <property name="source.zip.name" value="labkey-remote-api-java-${version}-source.zip"/>
-    <property name="license.source.path" value="../../server/installer/license.rtf"/>
+    <property name="license.source.path" value="${server.dir}/installer/license.rtf"/>
     <property name="license.dest.file" value="license.rtf"/>
     <property name="readme.file" value="README.html"/>
 
