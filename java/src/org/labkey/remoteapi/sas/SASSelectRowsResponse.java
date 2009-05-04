@@ -226,9 +226,9 @@ public class SASSelectRowsResponse
     public boolean allowsMissingValues(String sasName)
     {
         String apiName = getApiName(sasName);
-        Boolean allowsQC = (Boolean)_resp.getMetaData(apiName).get("allowsQC");
+        Boolean mvEnabled = (Boolean)_resp.getMetaData(apiName).get("mvEnabled");
 
-        return (null != allowsQC && allowsQC);
+        return (null != mvEnabled && mvEnabled);
     }
 
     public String getMissingValuesCode()
