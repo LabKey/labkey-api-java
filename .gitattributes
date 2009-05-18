@@ -14,6 +14,15 @@ java/src/org/labkey/remoteapi/Connection.java -text
 java/src/org/labkey/remoteapi/PostCommand.java -text
 java/src/org/labkey/remoteapi/assay/AssayListCommand.java -text
 java/src/org/labkey/remoteapi/assay/AssayListResponse.java -text
+java/src/org/labkey/remoteapi/assay/nab/NAbRunsCommand.java -text
+java/src/org/labkey/remoteapi/assay/nab/NAbRunsResponse.java -text
+java/src/org/labkey/remoteapi/assay/nab/model/NAbCurveParameters.java -text
+java/src/org/labkey/remoteapi/assay/nab/model/NAbNeutralizationResult.java -text
+java/src/org/labkey/remoteapi/assay/nab/model/NAbReplicate.java -text
+java/src/org/labkey/remoteapi/assay/nab/model/NAbRun.java -text
+java/src/org/labkey/remoteapi/assay/nab/model/NAbSample.java -text
+java/src/org/labkey/remoteapi/assay/nab/model/NAbWell.java -text
+java/src/org/labkey/remoteapi/assay/nab/model/NAbWellGroup.java -text
 java/src/org/labkey/remoteapi/query/BaseSelect.java -text
 java/src/org/labkey/remoteapi/query/ContainerFilter.java -text
 java/src/org/labkey/remoteapi/query/DeleteRowsCommand.java -text

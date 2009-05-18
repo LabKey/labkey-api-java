@@ -18,6 +18,11 @@ package org.labkey.remoteapi.test;
 import org.labkey.remoteapi.query.*;
 import org.labkey.remoteapi.assay.AssayListCommand;
 import org.labkey.remoteapi.assay.AssayListResponse;
+import org.labkey.remoteapi.assay.nab.NAbRunsCommand;
+import org.labkey.remoteapi.assay.nab.NAbRunsResponse;
+import org.labkey.remoteapi.assay.nab.model.NAbRun;
+import org.labkey.remoteapi.assay.nab.model.NAbSample;
+import org.labkey.remoteapi.assay.nab.model.NAbNeutralizationResult;
 import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.CommandException;
 import org.json.simple.JSONObject;
@@ -25,6 +30,7 @@ import org.json.simple.JSONObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.io.IOException;
 
 /*
 * User: Dave
@@ -39,6 +45,7 @@ public class Test
 
         try
         {
+            //nabTest(cn);
             //selectTest(cn);
             crudTest(cn);
             //execSqlTest(cn);
@@ -106,6 +113,42 @@ public class Test
         {
             System.out.println(row);
         }
+    }
+
+    public static void nabTest(Connection cn) throws Exception
+    {
+       // Connection conn = new Connection("http://localhost/labkey", "brittp@labkey.com", "rew31may");
+        double avg = getAverageNeutralization(cn, "/home", "NAB", 50);
+    }
+
+    public static double getAverageNeutralization(Connection cn, String folderPath, String assayName, int cutoff) throws CommandException, IOException
+    {
+        NAbRunsCommand nabCommand = new NAbRunsCommand();
+        nabCommand.setAssayName(assayName);
+        nabCommand.setCalculateNeut(true);
+        nabCommand.setIncludeFitParameters(false);
+        nabCommand.setIncludeStats(false);
+        nabCommand.setIncludeWells(false);
+        NAbRunsResponse runResponse = nabCommand.execute(cn, folderPath);
+        NAbRun[] runs = runResponse.getRuns();
+        int totalSamples = 0;
+        double totalIC50CurveNeutralization = 0;
+        for (NAbRun run : runs)
+        {
+            for (NAbSample sample : run.getSamples())
+            {
+                for (NAbNeutralizationResult neutResult : sample.getNeutralizationResults())
+                {
+                    // only total non-infinite values (that is, results where we found a neutralizing dilution:
+                    if (neutResult.getCutoff() == cutoff && !Double.isInfinite(neutResult.getCurveBasedDilution()))
+                    {
+                        totalSamples++;
+                        totalIC50CurveNeutralization += neutResult.getCurveBasedDilution();
+                    }
+                }
+            }
+        }
+        return totalIC50CurveNeutralization/totalSamples;
     }
 
     public static void crudTest(Connection cn) throws Exception
