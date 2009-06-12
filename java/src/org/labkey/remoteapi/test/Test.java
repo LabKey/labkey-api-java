@@ -118,12 +118,13 @@ public class Test
     public static void nabTest(Connection cn) throws Exception
     {
        // Connection conn = new Connection("http://localhost/labkey", "brittp@labkey.com", "rew31may");
-        double avg = getAverageNeutralization(cn, "/home", "NAB", 50);
+        double avg = getAverageNeutralization(cn, "/Lab X/NAb 1", "Project NAb", 50);
     }
 
     public static double getAverageNeutralization(Connection cn, String folderPath, String assayName, int cutoff) throws CommandException, IOException
     {
         NAbRunsCommand nabCommand = new NAbRunsCommand();
+        nabCommand.setContainerFilter(ContainerFilter.CurrentAndParents);
         nabCommand.setAssayName(assayName);
         nabCommand.setCalculateNeut(true);
         nabCommand.setIncludeFitParameters(false);

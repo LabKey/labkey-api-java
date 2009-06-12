@@ -19,6 +19,7 @@ import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.CommandResponse;
+import org.labkey.remoteapi.query.ContainerFilter;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
@@ -50,6 +51,7 @@ public class NAbRunsCommand extends Command
     private Integer _maxRows;
     private String _sort;
     private String _sortDirection;
+    private ContainerFilter _containerFilter;
 
     /**
      * Constructs a new AssayListCommand object.
@@ -75,6 +77,7 @@ public class NAbRunsCommand extends Command
         _maxRows = source._maxRows;
         _sort = source._sort;
         _sortDirection = source._sortDirection;
+        _containerFilter = source._containerFilter;
     }
 
     public NAbRunsResponse execute(Connection connection, String folderPath) throws IOException, CommandException
@@ -105,6 +108,8 @@ public class NAbRunsCommand extends Command
             params.put("sort", getSort());
         if (null != getSortDirection())
             params.put("dir", getSortDirection());
+        if(getContainerFilter() != null)
+            params.put("containerFilter", getContainerFilter().name());
         return params;
     }
 
@@ -114,6 +119,25 @@ public class NAbRunsCommand extends Command
         return new NAbRunsCommand(this);
     }
 
+
+    /**
+     * Returns the container filter set for this command
+     * @return the container filter (may be null)
+     */
+    public ContainerFilter getContainerFilter()
+    {
+        return _containerFilter;
+    }
+
+    /**
+     * Sets the container filter for the sql to be executed.
+     * This will cause the query to be executed over more than one container.
+     * @param containerFilter the filter to apply to the query (may be null)
+     */
+    public void setContainerFilter(ContainerFilter containerFilter)
+    {
+        this._containerFilter = containerFilter;
+    }
 
     public String getAssayName()
     {
