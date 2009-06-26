@@ -16,7 +16,6 @@
 package org.labkey.remoteapi.query;
 
 import org.json.simple.JSONObject;
-import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.Connection;
@@ -63,17 +62,12 @@ import java.util.Map;
  * </code>
  * <p>
  */
-public class SelectRowsCommand extends Command implements BaseSelect
+public class SelectRowsCommand extends BaseQueryCommand implements BaseSelect
 {
     private String _schemaName;
     private String _queryName;
     private String _viewName;
     private List<String> _columns = new ArrayList<String>();
-    private int _maxRows = -1;
-    private int _offset = 0;
-    private List<Sort> _sorts = new ArrayList<Sort>();
-    private List<Filter> _filters = new ArrayList<Filter>();
-    private ContainerFilter _containerFilter;
 
     /**
      * Constructs a new SelectRowsCommand for the given schema
@@ -101,20 +95,6 @@ public class SelectRowsCommand extends Command implements BaseSelect
         _queryName = source._queryName;
         _viewName = source._viewName;
         _columns.addAll(source._columns);
-        _maxRows = source._maxRows;
-        _offset = source._offset;
-        _containerFilter = source._containerFilter;
-
-        //deep copy sorts and filters lists
-        for(Sort sort : source._sorts)
-        {
-            _sorts.add(new Sort(sort));
-        }
-
-        for(Filter filter : source._filters)
-        {
-            _filters.add(new Filter(filter));
-        }
     }
 
     /**
@@ -194,145 +174,6 @@ public class SelectRowsCommand extends Command implements BaseSelect
         _columns = columns;
     }
 
-    /**
-     * Returns the current row limit value. Defaults to -1, meaning return all rows.
-     * @return The current row limit value.
-     */
-    public int getMaxRows()
-    {
-        return _maxRows;
-    }
-
-    /**
-     * Sets the current row limit value. If this is set to a positive value, only
-     * the first <code>maxRows</code> rows will be returned from the server.
-     * @param maxRows The maximum number of rows to return, or -1 to get all rows (default)
-     */
-    public void setMaxRows(int maxRows)
-    {
-        _maxRows = maxRows;
-    }
-
-    /**
-     * Returns the index of the first row in the resultset to return (defaults to 0).
-     * @return The current offset index.
-     */
-    public int getOffset()
-    {
-        return _offset;
-    }
-
-    /**
-     * Sets the index of the first row in the resultset to return from the server.
-     * Use this in conjunction with {@link #setMaxRows(int)} to return pages of
-     * rows at a time from the server.
-     * @param offset The current offset index.
-     */
-    public void setOffset(int offset)
-    {
-        _offset = offset;
-    }
-
-    /**
-     * Returns the current list of sort definitions.
-     * @return The current list of sort definitions, or null if none are defined.
-     */
-    public List<Sort> getSorts()
-    {
-        return _sorts;
-    }
-
-    /**
-     * Sets the current set of sort definitions.
-     * @param sorts The new list of sort definitions.
-     */
-    public void setSorts(List<Sort> sorts)
-    {
-        _sorts = sorts;
-    }
-
-    /**
-     * Adds a new sort definition to the current list.
-     * @param sort The new sort definition.
-     */
-    public void addSort(Sort sort)
-    {
-        if(_sorts == null)
-            _sorts = new ArrayList<Sort>();
-        _sorts.add(sort);
-    }
-
-    /**
-     * Constructs and adds a new sort definition to the current list.
-     * This is equivallent to calling <code>addSort(new Sort(columnName, direction))</code>
-     * @param columnName The column name.
-     * @param direction The sort direction.
-     * @see Sort
-     */
-    public void addSort(String columnName, Sort.Direction direction)
-    {
-        addSort(new Sort(columnName, direction));
-    }
-
-    /**
-     * Returns the current list of filters, or null if none are defined.
-     * @return The current list of filters.
-     */
-    public List<Filter> getFilters()
-    {
-        return _filters;
-    }
-
-    /**
-     * Sets the current list of filters.
-     * @param filters The new list of filters.
-     */
-    public void setFilters(List<Filter> filters)
-    {
-        _filters = filters;
-    }
-
-    /**
-     * Adds a new filter to the list.
-     * @param filter The new filter definition.
-     */
-    public void addFilter(Filter filter)
-    {
-        getFilters().add(filter);
-    }
-
-    /**
-     * Constructs and adds a new filter to the list. This is equivallent to
-     * <code>addFilter(new Filter(columnName, value, operator))</code>
-     * @param columnName The column name.
-     * @param value The filter value. 
-     * @param operator The filter operator.
-     * @see Filter
-     */
-    public void addFilter(String columnName, Object value, Filter.Operator operator)
-    {
-        addFilter(new Filter(columnName, value, operator));
-    }
-
-    /**
-     * Returns the container filter set for this command
-     * @return the container filter (may be null)
-     */
-    public ContainerFilter getContainerFilter()
-    {
-        return _containerFilter;
-    }
-
-    /**
-     * Sets the container filter for the sql to be executed.
-     * This will cause the query to be executed over more than one container.
-     * @param containerFilter the filter to apply to the query (may be null)
-     */
-    public void setContainerFilter(ContainerFilter containerFilter)
-    {
-        this._containerFilter = containerFilter;
-    }
-
     public SelectRowsResponse execute(Connection connection, String folderPath) throws IOException, CommandException
     {
         return (SelectRowsResponse)(super.execute(connection, folderPath));
@@ -389,28 +230,6 @@ public class SelectRowsCommand extends Command implements BaseSelect
             params.put("containerFilter", getContainerFilter().name());
 
         return params;
-    }
-
-    /**
-     * Constructs the sort query string parameter from the current list of
-     * sort definitions. The sort query string parameter is in the form of
-     * <i>[-]column,[-]column,...</i> where the optional - is used for
-     * a descending sort direction.
-     * @return The sort query string parameter.
-     */
-    protected String getSortQueryStringParam()
-    {
-        StringBuilder param = new StringBuilder();
-        String sep = "";
-        for(Sort sort : getSorts())
-        {
-            param.append(sep);
-            if(sort.getDirection() == Sort.Direction.DESCENDING)
-                param.append("-");
-            param.append(sort.getColumnName());
-            sep = ",";
-        }
-        return param.toString();
     }
 
     @Override

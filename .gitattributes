@@ -23,6 +23,7 @@ java/src/org/labkey/remoteapi/assay/nab/model/NAbRun.java -text
 java/src/org/labkey/remoteapi/assay/nab/model/NAbSample.java -text
 java/src/org/labkey/remoteapi/assay/nab/model/NAbWell.java -text
 java/src/org/labkey/remoteapi/assay/nab/model/NAbWellGroup.java -text
+java/src/org/labkey/remoteapi/query/BaseQueryCommand.java -text
 java/src/org/labkey/remoteapi/query/BaseSelect.java -text
 java/src/org/labkey/remoteapi/query/ContainerFilter.java -text
 java/src/org/labkey/remoteapi/query/DeleteRowsCommand.java -text

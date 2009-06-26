@@ -41,7 +41,7 @@ public class Test
 {
     public static void main(String[] args) throws Exception
     {
-        Connection cn = new Connection("http://localhost:8080/labkey", args[0], args[1]);
+        Connection cn = new Connection("http://localhost/labkey", args[0], args[1]);
 
         try
         {
@@ -117,19 +117,20 @@ public class Test
 
     public static void nabTest(Connection cn) throws Exception
     {
-       // Connection conn = new Connection("http://localhost/labkey", "brittp@labkey.com", "rew31may");
-        double avg = getAverageNeutralization(cn, "/Lab X/NAb 1", "Project NAb", 50);
+        double avg = getAverageNeutralization(cn, "/Assay Security Test", "NAb", 50);
     }
 
     public static double getAverageNeutralization(Connection cn, String folderPath, String assayName, int cutoff) throws CommandException, IOException
     {
         NAbRunsCommand nabCommand = new NAbRunsCommand();
-        nabCommand.setContainerFilter(ContainerFilter.CurrentAndParents);
+        nabCommand.setContainerFilter(ContainerFilter.CurrentAndSubfolders);
         nabCommand.setAssayName(assayName);
         nabCommand.setCalculateNeut(true);
         nabCommand.setIncludeFitParameters(false);
         nabCommand.setIncludeStats(false);
         nabCommand.setIncludeWells(false);
+        nabCommand.addFilter(new Filter("Name", "m0902051", Filter.Operator.STARTS_WITH));
+        nabCommand.addSort(new Sort("RunProperties/VirusName", Sort.Direction.ASCENDING));
         NAbRunsResponse runResponse = nabCommand.execute(cn, folderPath);
         NAbRun[] runs = runResponse.getRuns();
         int totalSamples = 0;
