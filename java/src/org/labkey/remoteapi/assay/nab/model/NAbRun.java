@@ -39,7 +39,7 @@ public class NAbRun
 
     public NAbRun(Map<String, Object> properties)
     {
-        _runId = (Long) properties.get("runId");
+        _runId = ((Number) properties.get("runId")).longValue();
         _properties = (Map<String, Object>) properties.get("properties");
         _containerPath = (String) properties.get("containerPath");
         _containerId = (String) properties.get("containerId");

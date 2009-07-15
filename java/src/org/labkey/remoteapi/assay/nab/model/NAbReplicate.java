@@ -26,16 +26,18 @@ import java.util.Map;
 
 public class NAbReplicate extends NAbWellGroup
 {
-    private long _dilution;
+    private double _dilution;
     private Double _neutPercent;
     private Double _neutPlusMinus;
 
     public NAbReplicate(Map<String, Object> properties)
     {
         super(properties);
-        _dilution = (Long) properties.get("dilution");
-        _neutPercent = (Double) properties.get("neutPercent");
-        _neutPlusMinus = (Double) properties.get("neutPlusMinus");
+        _dilution = ((Number) properties.get("dilution")).doubleValue();
+        if (properties.get("neutPercent") != null)
+            _neutPercent = ((Number) properties.get("neutPercent")).doubleValue();
+        if (properties.get("neutPlusMinus") != null)
+            _neutPlusMinus = ((Number) properties.get("neutPlusMinus")).doubleValue();
     }
 
     public double getDilution()

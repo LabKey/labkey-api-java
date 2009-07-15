@@ -33,11 +33,11 @@ public class NAbCurveParameters
 
     public NAbCurveParameters(Map<String, Object> properties)
     {
-        _asymmetry = (Double) properties.get("asymmetry");
-        _inflection = (Double) properties.get("inflection");
-        _slope = (Double) properties.get("slope");
-        _max = (Double) properties.get("max");
-        _min = (Double) properties.get("min");
+        _asymmetry = ((Number) properties.get("asymmetry")).doubleValue();
+        _inflection = ((Number) properties.get("inflection")).doubleValue();
+        _slope = ((Number) properties.get("slope")).doubleValue();
+        _max = ((Number) properties.get("max")).doubleValue();
+        _min = ((Number) properties.get("min")).doubleValue();
     }
 
     public double getAsymmetry()
