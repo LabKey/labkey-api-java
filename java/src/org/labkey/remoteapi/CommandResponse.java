@@ -121,7 +121,7 @@ public class CommandResponse
     }
 
     /**
-     * Attemtps to parse the response text and return the a property Map.
+     * Attempts to parse the response text and return a property Map.
      * <p>
      * If the response text cannot be parsed, a runtime error will be thrown.
      * <p>

@@ -54,7 +54,7 @@ public class Main
         System.out.println("All People");
         System.out.println();
         SASSelectRowsCommand command = new SASSelectRowsCommand("lists", "People");
-        command.setMaxRows(1);
+        command.setMaxRows(0);
         SASSelectRowsResponse response = new SASSelectRowsResponse(cn, command, "home");
         logResponse(response);
 
