@@ -36,13 +36,10 @@ public class NAbWellGroup
     {
         if (properties.containsKey("min"))
         {
-            _min = (Long) properties.get("min");
-            _max = (Long) properties.get("max");
-            if (properties.get("mean") instanceof Double)
-                _mean = (Double) properties.get("mean");
-            else
-                _mean = ((Long) properties.get("mean")).doubleValue();
-            _stddev = (Double) properties.get("stddev");
+            _min = ((Number) properties.get("min")).longValue();
+            _max = ((Number) properties.get("max")).longValue();
+            _mean = ((Number) properties.get("mean")).doubleValue();
+            _stddev = ((Number) properties.get("stddev")).doubleValue();
         }
 
         if (properties.keySet().contains("wells"))

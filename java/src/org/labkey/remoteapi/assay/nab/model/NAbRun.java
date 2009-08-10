@@ -46,7 +46,7 @@ public class NAbRun
         List<Object> cutoffs = (List<Object>) properties.get("cutoffs");
         _cutoffs = new long[cutoffs.size()];
         for (int i = 0; i < cutoffs.size(); i++)
-            _cutoffs[i] = (Long) cutoffs.get(i);
+            _cutoffs[i] = ((Number) cutoffs.get(i)).longValue();
 
         List<Map<String, Object>> samples = (List<Map<String, Object>>) properties.get("samples");
         _samples = new NAbSample[samples.size()];

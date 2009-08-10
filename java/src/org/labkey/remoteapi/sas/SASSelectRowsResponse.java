@@ -214,7 +214,7 @@ public class SASSelectRowsResponse
 
     public int getScale(double index)
     {
-        int scale = ((Long)getColumnModelProperty(index, "scale")).intValue();
+        int scale = ((Number)getColumnModelProperty(index, "scale")).intValue();
         return 0 == scale ? 100 : scale;  // TODO: Temp hack -- 8.3 servers return different scale values than 9.1 -- for strings, scale == 0 at times
     }
 

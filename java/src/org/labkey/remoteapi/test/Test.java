@@ -45,7 +45,7 @@ public class Test
 
         try
         {
-            //nabTest(cn);
+            nabTest(cn);
             //selectTest(cn);
             crudTest(cn);
             //execSqlTest(cn);
@@ -117,7 +117,7 @@ public class Test
 
     public static void nabTest(Connection cn) throws Exception
     {
-        double avg = getAverageNeutralization(cn, "/Assay Security Test", "NAb", 50);
+        double avg = getAverageNeutralization(cn, "/NabVerifyProject", "NAb", 50);
     }
 
     public static double getAverageNeutralization(Connection cn, String folderPath, String assayName, int cutoff) throws CommandException, IOException
@@ -129,7 +129,7 @@ public class Test
         nabCommand.setIncludeFitParameters(false);
         nabCommand.setIncludeStats(false);
         nabCommand.setIncludeWells(false);
-        nabCommand.addFilter(new Filter("Name", "m0902051", Filter.Operator.STARTS_WITH));
+       // nabCommand.addFilter(new Filter("Name", "m0902051", Filter.Operator.STARTS_WITH));
         nabCommand.addSort(new Sort("RunProperties/VirusName", Sort.Direction.ASCENDING));
         NAbRunsResponse runResponse = nabCommand.execute(cn, folderPath);
         NAbRun[] runs = runResponse.getRuns();
@@ -139,6 +139,7 @@ public class Test
         {
             for (NAbSample sample : run.getSamples())
             {
+                long objectId = sample.getObjectId();
                 for (NAbNeutralizationResult neutResult : sample.getNeutralizationResults())
                 {
                     // only total non-infinite values (that is, results where we found a neutralizing dilution:

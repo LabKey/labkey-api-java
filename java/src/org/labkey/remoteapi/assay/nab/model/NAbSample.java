@@ -28,6 +28,7 @@ public class NAbSample
     private String _wellgroupName;
     private Long _minDilution;
     private Long _maxDilution;
+    private long _objectId;
     private Double _fitError;
     private NAbCurveParameters _fitParameters;
     private NAbReplicate[] _replicates;
@@ -37,14 +38,15 @@ public class NAbSample
     {
         _properties = (Map<String, Object>) properties.get("properties");
         _wellgroupName = (String) properties.get("wellgroupName");
+        _objectId = ((Number) properties.get("objectId")).longValue();
         if (properties.containsKey("minDilution"))
         {
-            _minDilution = (Long) properties.get("minDilution");
-            _maxDilution = (Long) properties.get("maxDilution");
+            _minDilution = ((Number) properties.get("minDilution")).longValue();
+            _maxDilution = ((Number) properties.get("maxDilution")).longValue();
         }
 
         if (properties.containsKey("fitError"))
-            _fitError = (Double) properties.get("fitError");
+            _fitError = ((Number) properties.get("fitError")).doubleValue();
 
         if (properties.containsKey("fitParameters"))
             _fitParameters = new NAbCurveParameters((Map<String, Object>) properties.get("fitParameters"));
@@ -66,8 +68,8 @@ public class NAbSample
                 for (int i = 0; i < cutoffs.length; i++)
                 {
                     long cutoff = cutoffs[i];
-                    double curveBasedDilution = (Double) properties.get("curveIC" + cutoff);
-                    double pointBasedDilution = (Double) properties.get("pointIC" + cutoff);
+                    double curveBasedDilution = ((Number) properties.get("curveIC" + cutoff)).doubleValue();
+                    double pointBasedDilution = ((Number) properties.get("pointIC" + cutoff)).doubleValue();
                     _neutralizationResults[i] = new NAbNeutralizationResult(cutoff, curveBasedDilution, pointBasedDilution);
                 }
             }
@@ -112,5 +114,10 @@ public class NAbSample
     public NAbNeutralizationResult[] getNeutralizationResults()
     {
         return _neutralizationResults;
+    }
+
+    public long getObjectId()
+    {
+        return _objectId;
     }
 }

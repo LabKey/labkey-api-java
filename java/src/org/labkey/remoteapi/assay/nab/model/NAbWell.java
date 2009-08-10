@@ -31,9 +31,9 @@ public class NAbWell
 
     public NAbWell(Map<String, Object> properties)
     {
-        _row = (Long) properties.get("row");
-        _column = (Long) properties.get("column");
-        _value = (Long) properties.get("value");
+        _row = ((Number) properties.get("row")).longValue();
+        _column = ((Number) properties.get("column")).longValue();
+        _value = ((Number) properties.get("value")).longValue();
     }
 
     public long getRow()
