@@ -1,36 +1,40 @@
 <project name="remoteapi" basedir="." default="build">
-    <property name="server.dir" value="../../server"/>
-    <property file="${server.dir}/version.properties" />
-    <property name="version" value="${product.version}"/>
 
-    <property name="source.dir" value="${basedir}/src"/>
-    <property name="build.dir" value="${basedir}/build"/>
-    <property name="build.classes.dir" value="${build.dir}/classes"/>
-    <property name="build.jar.dir" value="${build.dir}/jar"/>
-    <property name="build.jar.name" value="labkey-remote-api-${version}.jar"/>
-    <property name="dist.dir" value="${basedir}/dist"/>
-    <property name="dist.jar.dir" value="${dist.dir}/jar"/>
-    <property name="dist.source.dir" value="${dist.dir}/src"/>
-    <property name="dist.jar.ver.dir" value="${dist.jar.dir}/labkey-remote-api-${version}"/>
-    <property name="dist.source.dir" value="${dist.source.dir}/labkey-remote-api-${version}-source"/>
-    <property name="doc.dir" value="${dist.jar.ver.dir}/doc"/>
-    <property name="zip.name" value="labkey-remote-api-java-${version}.zip"/>
-    <property name="source.zip.name" value="labkey-remote-api-java-${version}-source.zip"/>
-    <property name="license.source.path" value="${server.dir}/installer/license.rtf"/>
-    <property name="license.dest.file" value="license.rtf"/>
-    <property name="readme.file" value="README.html"/>
+    <target name="init">
+        <property name="server.dir" value="../../server"/>
+        <property file="${server.dir}/version.properties" />
 
-    <path id="component.class.path">
-        <fileset dir="lib" includes="*.jar"/>
-    </path>
+        <property name="source.dir" value="${basedir}/src"/>
+        <property name="build.dir" value="${basedir}/../../build/client-api/java"/>
+        <property name="build.classes.dir" value="${build.dir}/classes"/>
+        <property name="build.jar.dir" value="${build.dir}/jar"/>
+        <property name="build.jar.name" value="labkey-client-api-${product.version}.jar"/>
+        <property name="dist.dir" value="${basedir}/../../dist/client-api/java"/>
+        <property name="exploded.dir" value="${build.dir}/exploded"/>
+        <property name="build.source.dir" value="${build.dir}/src"/>
+        <!-- If we're being called from the installer's build.xml, labkey.version will already be set to the right build number -->
+        <property name="labkey.version" value="${product.version}" />
+        <property name="dist.source.name" value="LabKey${labkey.version}-ClientAPI-Java" />
+        <property name="exploded.ver.dir" value="${exploded.dir}/LabKey${labkey.version}-ClientAPI-Java"/>
+        <property name="dist.source.dir" value="${build.source.dir}/LabKey${labkey.version}-ClientAPI-Java-src"/>
+        <property name="doc.dir" value="${exploded.ver.dir}/doc"/>
+        <property name="zip.name" value="LabKey${labkey.version}-ClientAPI-Java.zip"/>
+        <property name="source.zip.name" value="LabKey${labkey.version}-ClientAPI-Java-src.zip"/>
+        <property name="license.source.path" value="${server.dir}/installer/license.rtf"/>
+        <property name="license.dest.file" value="license.rtf"/>
+        <property name="readme.file" value="README.html"/>
 
+        <path id="component.class.path">
+            <fileset dir="lib" includes="*.jar"/>
+        </path>
+    </target>
 
-    <target name="clean">
+    <target name="clean" depends="init">
         <delete dir="${build.dir}"/>
         <delete dir="${dist.dir}"/>
     </target>
 
-    <target name="compile">
+    <target name="compile" depends="init">
         <mkdir dir="${build.classes.dir}"/>
         <javac srcdir="${source.dir}" destdir="${build.classes.dir}"
                classpathref="component.class.path"
@@ -39,27 +43,29 @@
         <copy file="${source.dir}/log4j.xml" todir="${build.classes.dir}"/>
     </target>
 
-    <target name="jar" depends="compile">
+    <target name="jar" depends="compile, init">
         <mkdir dir="${build.jar.dir}"/>
         <jar destfile="${build.jar.dir}/${build.jar.name}" basedir="${build.classes.dir}"/>
     </target>
 
-    <target name="javadoc">
+    <target name="javadoc" depends="init">
         <javadoc sourcepath="${source.dir}" destdir="${doc.dir}" classpathref="component.class.path"
-                 windowtitle="LabKey Remote API Library for Java Documentation"
+                 windowtitle="LabKey Client API Library for Java Documentation"
                  author="true" version="true" packagenames="org.labkey.remoteapi.*" excludepackagenames="org.labkey.remoteapi.sas,org.labkey.remoteapi.test"/>
     </target>
 
-    <target name="dist" depends="compile,jar,javadoc">
+    <target name="dist" depends="init,compile,jar,javadoc">
         <delete file="${dist.dir}/${zip.name}"/>
-        <mkdir dir="${dist.jar.ver.dir}"/>
-        <copy file="${build.jar.dir}/${build.jar.name}" tofile="${dist.jar.ver.dir}/${build.jar.name}"/>
-        <copy todir="${dist.jar.ver.dir}/lib/">
+        <mkdir dir="${dist.dir}"/>
+        <mkdir dir="${exploded.dir}"/>
+        <mkdir dir="${exploded.ver.dir}"/>
+        <copy file="${build.jar.dir}/${build.jar.name}" tofile="${exploded.ver.dir}/${build.jar.name}"/>
+        <copy todir="${exploded.ver.dir}/lib/">
             <fileset dir="lib" includes="*.jar"/>
         </copy>
-        <copy file="${license.source.path}" tofile="${dist.jar.ver.dir}/${license.dest.file}"/>
-        <copy file="${readme.file}" tofile="${dist.jar.ver.dir}/${readme.file}"/>
-        <zip basedir="${dist.jar.dir}" destfile="${dist.dir}/${zip.name}"/>
+        <copy file="${license.source.path}" tofile="${exploded.ver.dir}/${license.dest.file}"/>
+        <copy file="${readme.file}" tofile="${exploded.ver.dir}/${readme.file}"/>
+        <zip basedir="${exploded.dir}" destfile="${dist.dir}/${zip.name}"/>
 
         <delete file="${dist.dir}/${source.zip.name}"/>
         <mkdir dir="${dist.source.dir}"/>
@@ -67,9 +73,9 @@
         <copy todir="${dist.source.dir}">
             <fileset dir="src"/>
         </copy>
-        <zip basedir="${dist.source.dir}" destfile="${dist.dir}/${source.zip.name}"/>
+        <zip basedir="${build.source.dir}" destfile="${dist.dir}/${source.zip.name}"/>
     </target>
 
-    <target name="build" depends="dist"/>
-    <target name="rebuild" depends="clean,build"/>
+    <target name="build" depends="init,dist"/>
+    <target name="rebuild" depends="init,clean,build"/>
 </project>

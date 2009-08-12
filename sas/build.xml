@@ -1,21 +1,32 @@
 <project name="sas" basedir="." default="dist">
-    <property name="server.dir" value="${basedir}/../../server"/>
-    <property file="${server.dir}/version.properties" />
+    
+    <target name="init">
+        <property name="server.dir" value="${basedir}/../../server"/>
+        <property file="${server.dir}/version.properties" />
 
-    <property name="macros.dir" value="${basedir}/macros"/>
-    <property name="dist.dir" value="${basedir}/dist"/>
-    <property name="lib.dir" value="${basedir}/../java/lib"/>
-    <property name="remote.api.dir" value="${basedir}/../java/dist/jar/labkey-remote-api-${product.version}"/>
-    <property name="remote.api.filename" value="labkey-remote-api-${product.version}.jar"/>
-    <property name="zip.name" value="labkey-sas-api-${product.version}.zip"/>
+        <!-- If we're being called from the installer's build.xml, labkey.version will already be set to the right build number -->
+        <property name="labkey.version" value="${product.version}" />
+        
+        <property name="macros.dir" value="${basedir}/macros"/>
+        <property name="dist.dir" value="${basedir}/../../dist/client-api/sas"/>
+        <property name="lib.dir" value="${basedir}/../java/lib"/>
+        <property name="client.api.dir" value="${basedir}/../../build/client-api/java/jar"/>
+        <property name="client.api.filename" value="labkey-client-api-${product.version}.jar"/>
+        <property name="dist.name" value="LabKey${labkey.version}-ClientAPI-SAS"/>
+    </target>
 
-    <target name="dist">
-        <delete file="${dist.dir}/${zip.name}"/>
+    <target name="dist" depends="init">
+        <ant antfile="${basedir}/../java/build.xml" target="jar" inheritall="false">
+            <property name="labkey.version" value="${labkey.version}" />
+        </ant>
+
+        <delete dir="${dist.dir}"/>
         <mkdir dir="${dist.dir}"/>
-        <zip destfile="${dist.dir}/${zip.name}">
-            <zipfileset dir="${macros.dir}"/>
-            <zipfileset dir="${remote.api.dir}" includes="${remote.api.filename}"/>
-            <zipfileset dir="${lib.dir}"/>
+        <echo message="JAR = ${client.api.dir}/${client.api.filename}" />
+        <zip destfile="${dist.dir}/${dist.name}.zip" >
+            <zipfileset prefix="${dist.name}" dir="${macros.dir}"/>
+            <zipfileset prefix="${dist.name}" dir="${client.api.dir}" includes="${client.api.filename}"/>
+            <zipfileset prefix="${dist.name}" dir="${lib.dir}"/>
         </zip>
     </target>
 </project>
