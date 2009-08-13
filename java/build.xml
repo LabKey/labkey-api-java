@@ -74,6 +74,9 @@
             <fileset dir="src"/>
         </copy>
         <zip basedir="${build.source.dir}" destfile="${dist.dir}/${source.zip.name}"/>
+
+        <!-- Create a stable file name so that TeamCity can serve it up directly through its own UI -->
+        <zip basedir="${doc.dir}" destfile="${basedir}/../../dist/TeamCity-ClientAPI-Java-Docs.zip"/>
     </target>
 
     <target name="build" depends="init,dist"/>
