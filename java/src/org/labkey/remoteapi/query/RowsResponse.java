@@ -18,6 +18,7 @@ package org.labkey.remoteapi.query;
 import org.apache.commons.logging.LogFactory;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.Command;
+import org.labkey.remoteapi.collections.CaseInsensitiveHashMap;
 import org.json.simple.JSONObject;
 
 import java.text.ParseException;
@@ -97,6 +98,9 @@ public abstract class RowsResponse extends CommandResponse
         if(null == rows || rows.size() == 0)
             return;
 
+        //while we're doing that, copy the row maps into case-insensitive hash maps
+        List<Map<String,Object>> ciRows = new ArrayList<Map<String,Object>>();
+
         //The selectRows.api returns dates in a very particular format so that
         //JavaScript can parse them into actual date classes. If this format ever
         //changes, we'll need to change the format string used here.
@@ -135,6 +139,13 @@ public abstract class RowsResponse extends CommandResponse
                     }
                 } //if the value is present and a string
             } //for each date field
+
+            //copy the row map into a case-insensitive hash map
+            ciRows.add(new CaseInsensitiveHashMap<Object>(row));
         } //for each row
+
+        //reset the rows array
+        getParsedData().put("rows", ciRows);
+
     } //fixupParsedData()
 }
