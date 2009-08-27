@@ -52,6 +52,7 @@ public abstract class RowsResponse extends CommandResponse
     {
         super(text, statusCode, contentType, json, sourceCommand);
         fixupParsedData();
+        caseInsensitizeRowMaps();
     }
 
     /**
@@ -98,9 +99,6 @@ public abstract class RowsResponse extends CommandResponse
         if(null == rows || rows.size() == 0)
             return;
 
-        //while we're doing that, copy the row maps into case-insensitive hash maps
-        List<Map<String,Object>> ciRows = new ArrayList<Map<String,Object>>();
-
         //The selectRows.api returns dates in a very particular format so that
         //JavaScript can parse them into actual date classes. If this format ever
         //changes, we'll need to change the format string used here.
@@ -139,13 +137,21 @@ public abstract class RowsResponse extends CommandResponse
                     }
                 } //if the value is present and a string
             } //for each date field
+        } //for each row
+    } //fixupParsedData()
 
+    protected void caseInsensitizeRowMaps()
+    {
+        //copy the row maps into case-insensitive hash maps
+        List<Map<String,Object>> ciRows = new ArrayList<Map<String,Object>>();
+        
+        for(Map<String,Object> row : getRows())
+        {
             //copy the row map into a case-insensitive hash map
             ciRows.add(new CaseInsensitiveHashMap<Object>(row));
-        } //for each row
+        }
 
         //reset the rows array
         getParsedData().put("rows", ciRows);
-
-    } //fixupParsedData()
+    }
 }
