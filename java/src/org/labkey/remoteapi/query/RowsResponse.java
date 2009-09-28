@@ -103,7 +103,7 @@ public abstract class RowsResponse extends CommandResponse
         //JavaScript can parse them into actual date classes. If this format ever
         //changes, we'll need to change the format string used here.
         //CONSIDER: use a library like ConvertUtils to avoid this dependency?
-        SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy HH:mm:ss Z");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy HH:mm:ss");
 
         boolean expandedFormat = getRequiredVersion() == 9.1;
         for(Map<String,Object> row : rows)
