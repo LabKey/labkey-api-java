@@ -104,6 +104,7 @@ public abstract class RowsResponse extends CommandResponse
         //changes, we'll need to change the format string used here.
         //CONSIDER: use a library like ConvertUtils to avoid this dependency?
         SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy HH:mm:ss");
+        dateFormat.setLenient(true);
 
         boolean expandedFormat = getRequiredVersion() == 9.1;
         for(Map<String,Object> row : rows)
