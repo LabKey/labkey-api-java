@@ -98,6 +98,26 @@ public class SelectRowsCommand extends BaseQueryCommand implements BaseSelect
     }
 
     /**
+     * Set to true to request the extended response format, which includes URLs, Missing-Value indicators and
+     * display values in addition to the raw values. Use the getRowset() method on the response to iterate over the returned
+     * rows in a format-neutral manner.
+     * @param extendedFormat True to get the extended format.
+     */
+    public void setExtendedFormat(boolean extendedFormat)
+    {
+        setRequiredVersion(extendedFormat ? 9.1 : 8.3);
+    }
+
+    /**
+     * Returns whether the extended format will be requested. See setExtendedFormat() for details.
+     * @return true if extended format will be requested.
+     */
+    public boolean isExtendedFormat()
+    {
+        return getRequiredVersion() == 9.1;
+    }
+
+    /**
      * Returns the current schema name this command will query.
      * @return The schema name.
      */

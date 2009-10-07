@@ -90,6 +90,17 @@ public class SelectRowsResponse extends RowsResponse
     }
 
     /**
+     * Returns an iterable Rowset. Use this to iterate over the rows,
+     * working with the Row interface, which hides the differences between
+     * the normal (<9.1) and extended (>=9.1) response formats.
+     * @return An iterable Rowset.
+     */
+    public Rowset getRowset()
+    {
+        return new RowsResponseRowset((List<Map<String,Object>>)getProperty("rows"));
+    }
+
+    /**
      * Returns the meta-data section of the response. This map contains the following
      * entries:
      * <p>

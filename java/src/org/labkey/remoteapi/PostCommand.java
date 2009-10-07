@@ -96,16 +96,17 @@ public class PostCommand extends Command
      * and set the RequestEntity appropriately.
      * @return The PostMethod object.
      */
+    @SuppressWarnings("unchecked")
     protected HttpMethod createMethod()
     {
         PostMethod method = new PostMethod();
 
         //set the post body based on the supplied JSON object
-        if(null != getJsonObject())
+        JSONObject json = getJsonObject();
+        if(null != json)
         {
             try
             {
-                JSONObject json = getJsonObject();
                 if(!json.containsKey("apiVersion"))
                     json.put("apiVersion", getRequiredVersion());
                 method.setRequestEntity(new StringRequestEntity(json.toString(),
