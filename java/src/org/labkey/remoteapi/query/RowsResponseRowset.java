@@ -40,13 +40,13 @@ public class RowsResponseRowset implements Rowset
 
     public Iterator<Row> iterator()
     {
-        return null != _rows ? new Iterator<Row>(){
+        return new Iterator<Row>(){
             private int _idx = 0;
             private RowMap _row = new RowMap();
 
             public boolean hasNext()
             {
-                return _idx < _rows.size();
+                return null != _rows && _idx < _rows.size();
             }
 
             public Row next()
@@ -60,6 +60,6 @@ public class RowsResponseRowset implements Rowset
             {
                 throw new UnsupportedOperationException("You may not remove rows from the rowset.");
             }
-        } : null;
+        };
     }
 }
