@@ -57,6 +57,19 @@ public abstract class RowsResponse extends CommandResponse
 
     /**
      * Returns the list of rows from the parsed response data.
+     * Note that numbers in the map values will be either of type
+     * Double or type Long depedning on the prescence of a decimal point.
+     * The most reliable way to work with them is to use the Number class.
+     * For example:
+     * <p>
+     * <code><pre>
+     * for (Map&lt;String,Object&gt; row : response.getRows())
+     * {
+     *     Number key = (Number)row.get("Key");
+     *     // use Number.intValue(), doubleValue(), longValue(), etc to get various primitive types
+     * }
+     * </pre></code>
+     * </p>
      * @return The list of rows (each row is a Map), or null if
      * the rows list was not included in the response.
      */
