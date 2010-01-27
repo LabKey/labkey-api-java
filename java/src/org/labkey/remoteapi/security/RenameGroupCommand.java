@@ -16,12 +16,7 @@
 package org.labkey.remoteapi.security;
 
 import org.labkey.remoteapi.PostCommand;
-import org.labkey.remoteapi.CommandResponse;
-import org.labkey.remoteapi.Connection;
-import org.labkey.remoteapi.CommandException;
 import org.json.simple.JSONObject;
-
-import java.io.IOException;
 
 /*
 * User: dave
@@ -32,7 +27,7 @@ import java.io.IOException;
 /**
  * Renames an existing group.
  */
-public class RenameGroupCommand extends PostCommand
+public class RenameGroupCommand extends PostCommand<RenameGroupResponse>
 {
     private int _groupId = -1;
     private String _newName;
@@ -76,12 +71,6 @@ public class RenameGroupCommand extends PostCommand
     }
 
     @Override
-    public RenameGroupResponse execute(Connection connection, String folderPath) throws IOException, CommandException
-    {
-        return (RenameGroupResponse)super.execute(connection, folderPath);
-    }
-
-    @Override
     public JSONObject getJsonObject()
     {
         JSONObject obj = new JSONObject();
@@ -91,7 +80,7 @@ public class RenameGroupCommand extends PostCommand
     }
 
     @Override
-    protected CommandResponse createResponse(String text, int status, String contentType, JSONObject json)
+    protected RenameGroupResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
         return new RenameGroupResponse(text, status, contentType, json, this);
     }

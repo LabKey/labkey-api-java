@@ -26,6 +26,8 @@ import org.labkey.remoteapi.assay.nab.model.NAbNeutralizationResult;
 import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.CommandException;
 import org.json.simple.JSONObject;
+import org.labkey.remoteapi.security.GetUsersCommand;
+import org.labkey.remoteapi.security.GetUsersResponse;
 
 import java.util.HashMap;
 import java.util.List;

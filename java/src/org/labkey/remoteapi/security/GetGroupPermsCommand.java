@@ -16,21 +16,17 @@
 package org.labkey.remoteapi.security;
 
 import org.labkey.remoteapi.Command;
-import org.labkey.remoteapi.CommandResponse;
-import org.labkey.remoteapi.Connection;
-import org.labkey.remoteapi.CommandException;
 import org.json.simple.JSONObject;
 
 import java.util.Map;
 import java.util.HashMap;
-import java.io.IOException;
 
 /*
 * User: Dave
 * Date: Sep 9, 2008
 * Time: 2:12:46 PM
 */
-public class GetGroupPermsCommand extends Command
+public class GetGroupPermsCommand extends Command<GetGroupPermsResponse>
 {
     private boolean _includeSubfolders = false;
 
@@ -63,11 +59,6 @@ public class GetGroupPermsCommand extends Command
     public void setIncludeSubfolders(boolean includeSubfolders)
     {
         _includeSubfolders = includeSubfolders;
-    }
-
-    public GetGroupPermsResponse execute(Connection connection, String folderPath) throws IOException, CommandException
-    {
-        return (GetGroupPermsResponse)super.execute(connection, folderPath);
     }
 
     protected GetGroupPermsResponse createResponse(String text, int status, String contentType, JSONObject json)

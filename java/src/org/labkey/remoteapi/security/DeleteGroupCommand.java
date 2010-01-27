@@ -15,6 +15,7 @@
  */
 package org.labkey.remoteapi.security;
 
+import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.PostCommand;
 import org.json.simple.JSONObject;
 
@@ -29,7 +30,7 @@ import org.json.simple.JSONObject;
  * Note that the response to the command contains nothing meaningful.
  * If it executed without exception, the group has been deleted.
  */
-public class DeleteGroupCommand extends PostCommand
+public class DeleteGroupCommand extends PostCommand<CommandResponse>
 {
     private int _groupId = -1;
 

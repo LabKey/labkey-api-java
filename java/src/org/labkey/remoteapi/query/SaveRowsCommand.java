@@ -87,7 +87,7 @@ import java.text.SimpleDateFormat;
  *  resp = cmdDel.execute(cn, "Api Test");
  * </pre></code>
  */
-public abstract class SaveRowsCommand extends PostCommand
+public abstract class SaveRowsCommand extends PostCommand<SaveRowsResponse>
 {
     private String _schemaName;
     private String _queryName;
@@ -230,12 +230,7 @@ public abstract class SaveRowsCommand extends PostCommand
         return json;
     }
 
-    public SaveRowsResponse execute(Connection connection, String folderPath) throws IOException, CommandException
-    {
-        return (SaveRowsResponse)super.execute(connection, folderPath);
-    }
-
-    protected CommandResponse createResponse(String text, int status, String contentType, JSONObject json)
+    protected SaveRowsResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
         return new SaveRowsResponse(text, status, contentType, json, this.copy());
     }

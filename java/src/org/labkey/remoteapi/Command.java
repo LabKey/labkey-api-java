@@ -52,7 +52,7 @@ import java.util.HashMap;
  * @author Dave Stearns, LabKey Corporation
  * @version 1.0
  */
-public class Command
+public class Command<ResponseType extends CommandResponse>
 {
     /**
      * A constant for the official JSON content type ("application/json")
@@ -92,7 +92,7 @@ public class Command
      * Constructs a new Command from an existing command
      * @param source A source Command
      */
-    public Command(Command source)
+    public Command(Command<ResponseType> source)
     {
         _actionName = source.getActionName();
         _controllerName = source.getControllerName();
@@ -194,7 +194,7 @@ public class Command
      * @throws IOException Thrown if there was an IO problem.
      */
     @SuppressWarnings("unchecked")
-    public CommandResponse execute(Connection connection, String folderPath) throws IOException, CommandException
+    public final ResponseType execute(Connection connection, String folderPath) throws IOException, CommandException
     {
         assert null != getControllerName() : "You must set the controller name before executing the command!";
         assert null != getActionName() : "You must set the action name before executing the command!";
@@ -276,9 +276,9 @@ public class Command
      * @param json The parsed JSONObject (or null if no JSON was returned).
      * @return An instance of the response object.
      */
-    protected CommandResponse createResponse(String text, int status, String contentType, JSONObject json)
+    protected ResponseType createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new CommandResponse(text, status, contentType, json, this.copy());
+        return (ResponseType)new CommandResponse(text, status, contentType, json, this.copy());
     }
 
     /**

@@ -42,7 +42,7 @@ import java.io.IOException;
  * {@link org.labkey.remoteapi.query.SelectRowsCommand}, so the response object
  * will be of type {@link org.labkey.remoteapi.query.SelectRowsResponse}.
  */
-public class ExecuteSqlCommand extends PostCommand implements BaseSelect
+public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implements BaseSelect
 {
     private String _schemaName;
     private String _sql;
@@ -199,15 +199,10 @@ public class ExecuteSqlCommand extends PostCommand implements BaseSelect
         this._containerFilter = containerFilter;
     }
 
-    public SelectRowsResponse execute(Connection connection, String folderPath) throws IOException, CommandException
+    protected SelectRowsResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
         assert null != _schemaName : "You must set the schemaName before executing!";
         assert null != _sql : "You must set the Sql before executing!";
-        return (SelectRowsResponse)super.execute(connection, folderPath);
-    }
-
-    protected CommandResponse createResponse(String text, int status, String contentType, JSONObject json)
-    {
         return new SelectRowsResponse(text, status, contentType, json, this.copy());
     }
 

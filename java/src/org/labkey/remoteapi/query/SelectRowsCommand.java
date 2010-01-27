@@ -16,11 +16,7 @@
 package org.labkey.remoteapi.query;
 
 import org.json.simple.JSONObject;
-import org.labkey.remoteapi.CommandException;
-import org.labkey.remoteapi.CommandResponse;
-import org.labkey.remoteapi.Connection;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -62,7 +58,7 @@ import java.util.Map;
  * </code>
  * <p>
  */
-public class SelectRowsCommand extends BaseQueryCommand implements BaseSelect
+public class SelectRowsCommand extends BaseQueryCommand<SelectRowsResponse> implements BaseSelect
 {
     private String _schemaName;
     private String _queryName;
@@ -194,11 +190,6 @@ public class SelectRowsCommand extends BaseQueryCommand implements BaseSelect
         _columns = columns;
     }
 
-    public SelectRowsResponse execute(Connection connection, String folderPath) throws IOException, CommandException
-    {
-        return (SelectRowsResponse)(super.execute(connection, folderPath));
-    }
-
     /**
      * Overridden to create a SelectRowsResponse object.
      * @param text The response text
@@ -207,7 +198,7 @@ public class SelectRowsCommand extends BaseQueryCommand implements BaseSelect
      * @param json The parsed JSONObject (or null if JSON was not returned).
      * @return A SelectRowsResponse object.
      */
-    protected CommandResponse createResponse(String text, int status, String contentType, JSONObject json)
+    protected SelectRowsResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
         return new SelectRowsResponse(text, status, contentType, json, this.copy());
     }

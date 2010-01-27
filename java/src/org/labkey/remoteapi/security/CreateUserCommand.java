@@ -16,12 +16,7 @@
 package org.labkey.remoteapi.security;
 
 import org.labkey.remoteapi.PostCommand;
-import org.labkey.remoteapi.CommandResponse;
-import org.labkey.remoteapi.Connection;
-import org.labkey.remoteapi.CommandException;
 import org.json.simple.JSONObject;
-
-import java.io.IOException;
 
 /*
 * User: dave
@@ -32,7 +27,7 @@ import java.io.IOException;
 /**
  * Create a new user account on the server.
  */
-public class CreateUserCommand extends PostCommand
+public class CreateUserCommand extends PostCommand<CreateUserResponse>
 {
     private String _email;
     private boolean _sendEmail;
@@ -79,13 +74,7 @@ public class CreateUserCommand extends PostCommand
     }
 
     @Override
-    public CreateUserResponse execute(Connection connection, String folderPath) throws IOException, CommandException
-    {
-        return (CreateUserResponse)super.execute(connection, folderPath);
-    }
-
-    @Override
-    protected CommandResponse createResponse(String text, int status, String contentType, JSONObject json)
+    protected CreateUserResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
         return new CreateUserResponse(text, status, contentType, json, this);
     }

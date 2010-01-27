@@ -32,7 +32,7 @@ import java.io.IOException;
 /**
  * Command to obtain the list of schemas available in a given folder path.
  */
-public class GetSchemasCommand extends Command
+public class GetSchemasCommand extends Command<GetSchemasResponse>
 {
     public GetSchemasCommand()
     {
@@ -44,13 +44,7 @@ public class GetSchemasCommand extends Command
         super(source);
     }
 
-    @SuppressWarnings("unchecked")
-    public GetSchemasResponse execute(Connection connection, String folderPath) throws IOException, CommandException
-    {
-        return (GetSchemasResponse)super.execute(connection, folderPath);
-    }
-
-    protected CommandResponse createResponse(String text, int status, String contentType, JSONObject json)
+    protected GetSchemasResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
         return new GetSchemasResponse(text, status, contentType, json, this.copy());
     }

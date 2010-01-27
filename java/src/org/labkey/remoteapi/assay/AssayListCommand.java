@@ -39,7 +39,7 @@ import java.util.Map;
  * you may use the various setters to filter this list to assays of a given
  * name, type or id.
  */
-public class AssayListCommand extends Command
+public class AssayListCommand extends Command<AssayListResponse>
 {
     private String _name;
     private String _type;
@@ -122,12 +122,7 @@ public class AssayListCommand extends Command
         _id = id;
     }
 
-    public AssayListResponse execute(Connection connection, String folderPath) throws IOException, CommandException
-    {
-        return (AssayListResponse)super.execute(connection, folderPath);
-    }
-
-    protected CommandResponse createResponse(String text, int status, String contentType, JSONObject json)
+    protected AssayListResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
         return new AssayListResponse(text, status, contentType, json, this.copy());
     }

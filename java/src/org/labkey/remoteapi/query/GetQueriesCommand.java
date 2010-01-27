@@ -16,14 +16,10 @@
 package org.labkey.remoteapi.query;
 
 import org.labkey.remoteapi.Command;
-import org.labkey.remoteapi.CommandResponse;
-import org.labkey.remoteapi.Connection;
-import org.labkey.remoteapi.CommandException;
 import org.json.simple.JSONObject;
 
 import java.util.Map;
 import java.util.HashMap;
-import java.io.IOException;
 
 /*
 * User: Dave
@@ -34,7 +30,7 @@ import java.io.IOException;
 /**
  *  Command for obtaining the list of queries available within a given schema.
  */
-public class GetQueriesCommand extends Command
+public class GetQueriesCommand extends Command<GetQueriesResponse>
 {
     private String _schemaName;
     private boolean _includeUserQueries = true;
@@ -113,13 +109,7 @@ public class GetQueriesCommand extends Command
         return params;
     }
 
-    @SuppressWarnings("unchecked")
-    public GetQueriesResponse execute(Connection connection, String folderPath) throws IOException, CommandException
-    {
-        return (GetQueriesResponse)super.execute(connection, folderPath);
-    }
-
-    protected CommandResponse createResponse(String text, int status, String contentType, JSONObject json)
+    protected GetQueriesResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
         return new GetQueriesResponse(text, status, contentType, json, this.copy());
     }

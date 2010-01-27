@@ -38,7 +38,7 @@ import java.util.Map;
  * you may use the various setters to filter this list to assays of a given
  * name, type or id.
  */
-public class NAbRunsCommand extends BaseQueryCommand
+public class NAbRunsCommand extends BaseQueryCommand<NAbRunsResponse>
 {
     private String _assayName;
     private boolean _includeStats = true;
@@ -68,12 +68,7 @@ public class NAbRunsCommand extends BaseQueryCommand
         _calculateNeut = source._calculateNeut;
     }
 
-    public NAbRunsResponse execute(Connection connection, String folderPath) throws IOException, CommandException
-    {
-        return (NAbRunsResponse)super.execute(connection, folderPath);
-    }
-
-    protected CommandResponse createResponse(String text, int status, String contentType, JSONObject json)
+    protected NAbRunsResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
         return new NAbRunsResponse(text, status, contentType, json, this.copy());
     }

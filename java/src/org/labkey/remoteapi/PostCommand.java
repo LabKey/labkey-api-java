@@ -46,7 +46,7 @@ import java.io.UnsupportedEncodingException;
  * @author Dave Stearns, LabKey Corporation
  * @version 1.0
  */
-public class PostCommand extends Command
+public class PostCommand<ResponseType extends CommandResponse> extends Command<ResponseType>
 {
     private JSONObject _jsonObject = null;
 

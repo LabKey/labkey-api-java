@@ -15,6 +15,7 @@
  */
 package org.labkey.remoteapi.security;
 
+import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.PostCommand;
 import org.json.simple.JSONObject;
 
@@ -30,18 +31,18 @@ import java.util.ArrayList;
 /**
  * Base class for AddGroupMembersCommand and RemoveGroupMembersCommand
  */
-public abstract class GroupMembersCommand extends PostCommand
+public abstract class GroupMembersCommand extends PostCommand<CommandResponse>
 {
     private int _groupId = -1;
     private List<Integer> _principals = new ArrayList<Integer>();
 
-    public GroupMembersCommand(String actionName, int groupId)
+    protected GroupMembersCommand(String actionName, int groupId)
     {
         super("security", actionName);
         _groupId = groupId;
     }
 
-    public GroupMembersCommand(GroupMembersCommand source)
+    protected GroupMembersCommand(GroupMembersCommand source)
     {
         super(source);
         _groupId = source.getGroupId();
@@ -53,9 +54,20 @@ public abstract class GroupMembersCommand extends PostCommand
         return _principals;
     }
 
-    public void addPrincipalId(int id)
+    public void addPrincipalId(int... ids)
     {
-        _principals.add(new Integer(id));
+        for (int id : ids)
+        {
+            _principals.add(new Integer(id));
+        }
+    }
+
+    public void addPrincipalId(List<Integer> ids)
+    {
+        for (int id : ids)
+        {
+            _principals.add(new Integer(id));
+        }
     }
 
     public void clearPrincipalIds()

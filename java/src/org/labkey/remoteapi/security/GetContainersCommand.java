@@ -30,7 +30,7 @@ import java.util.Map;
 * Date: Oct 27, 2008
 * Time: 1:26:05 PM
 */
-public class GetContainersCommand extends Command
+public class GetContainersCommand extends Command<GetContainersResponse>
 {
     private boolean _includeSubfolders = false;
 
@@ -55,15 +55,9 @@ public class GetContainersCommand extends Command
         _includeSubfolders = includeSubfolders;
     }
 
-    protected CommandResponse createResponse(String text, int status, String contentType, JSONObject json)
+    protected GetContainersResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
         return new GetContainersResponse(text, status, contentType, json, this.copy());
-    }
-
-    @SuppressWarnings("unchecked")
-    public GetContainersResponse execute(Connection connection, String folderPath) throws IOException, CommandException
-    {
-        return (GetContainersResponse)super.execute(connection, folderPath);
     }
 
     public Map<String, Object> getParameters()

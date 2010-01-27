@@ -16,12 +16,7 @@
 package org.labkey.remoteapi.security;
 
 import org.labkey.remoteapi.PostCommand;
-import org.labkey.remoteapi.CommandResponse;
-import org.labkey.remoteapi.Connection;
-import org.labkey.remoteapi.CommandException;
 import org.json.simple.JSONObject;
-
-import java.io.IOException;
 
 /*
 * User: dave
@@ -34,7 +29,7 @@ import java.io.IOException;
  * the group at the project level. When executed at the root level, it will create
  * a new site group.
  */
-public class CreateGroupCommand extends PostCommand
+public class CreateGroupCommand extends PostCommand<CreateGroupResponse>
 {
     private String _name;
 
@@ -61,7 +56,7 @@ public class CreateGroupCommand extends PostCommand
     }
 
     @Override
-    protected CommandResponse createResponse(String text, int status, String contentType, JSONObject json)
+    protected CreateGroupResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
         return new CreateGroupResponse(text, status, contentType, json, this);
     }
@@ -70,12 +65,6 @@ public class CreateGroupCommand extends PostCommand
     public PostCommand copy()
     {
         return new CreateGroupCommand(this);
-    }
-
-    @Override
-    public CreateGroupResponse execute(Connection connection, String folderPath) throws IOException, CommandException
-    {
-        return (CreateGroupResponse)super.execute(connection, folderPath);
     }
 
     @Override
