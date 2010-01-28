@@ -91,8 +91,13 @@ public abstract class RowsResponse extends CommandResponse
         //we need to fixup date values in the response rows for columns
         //of type date.
 
+        //we also should convert numeric values to their proper Java types
+        //based on the meta-data type name (int vs float)
+
         //build up the list of date fields
         List<String> dateFields = new ArrayList<String>();
+        List<String> intFields = new ArrayList<String>();
+        List<String> floatFields = new ArrayList<String>();
         List<Map<String,Object>> fields = getProperty("metaData.fields");
         if(null == fields)
             return;
@@ -102,9 +107,14 @@ public abstract class RowsResponse extends CommandResponse
             String type = (String)field.get("type");
             if("date".equalsIgnoreCase(type))
                 dateFields.add((String)field.get("name"));
+            else if ("float".equalsIgnoreCase(type))
+                floatFields.add((String)field.get("name"));
+            else if ("int".equalsIgnoreCase(type))
+                intFields.add((String)field.get("name"));
         }
 
-        if(dateFields.size() == 0)
+        //if no fields to fixup, just return
+        if(dateFields.size() == 0 && floatFields.size() == 0 && intFields.size() == 0)
             return;
 
         //run the rows array and fixup date fields
@@ -151,6 +161,36 @@ public abstract class RowsResponse extends CommandResponse
                     }
                 } //if the value is present and a string
             } //for each date field
+
+            //floats
+            for (String field : floatFields)
+            {
+                Object value = expandedFormat ? ((JSONObject)row.get(field)).get("value") : row.get(field);
+                if (value instanceof Number)
+                {
+                    Double number = new Double(((Number)value).doubleValue());
+                    if(expandedFormat)
+                        ((JSONObject)row.get(field)).put("value", number);
+                    else
+                        row.put(field, number);
+                }
+            }
+
+            //ints
+            for (String field : intFields)
+            {
+                Object value = expandedFormat ? ((JSONObject)row.get(field)).get("value") : row.get(field);
+                if (value instanceof Number)
+                {
+                    Integer number = new Integer(((Number)value).intValue());
+                    if(expandedFormat)
+                        ((JSONObject)row.get(field)).put("value", number);
+                    else
+                        row.put(field, number);
+                }
+
+            }
+
         } //for each row
     } //fixupParsedData()
 
