@@ -38,7 +38,7 @@
         <mkdir dir="${build.classes.dir}"/>
         <javac srcdir="${source.dir}" destdir="${build.classes.dir}"
                classpathref="component.class.path"
-               target="1.5"
+               target="1.6"
                debug="true"/>
         <copy file="${source.dir}/log4j.xml" todir="${build.classes.dir}"/>
     </target>
