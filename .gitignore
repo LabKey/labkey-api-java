@@ -1,5 +1,6 @@
 java/build
 java/dist
+java/out
 java/remoteapi.iws
 sas/authTest.sas
 sas/dist

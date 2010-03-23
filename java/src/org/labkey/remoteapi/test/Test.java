@@ -15,24 +15,23 @@
  */
 package org.labkey.remoteapi.test;
 
-import org.labkey.remoteapi.query.*;
+import org.json.simple.JSONObject;
+import org.labkey.remoteapi.CommandException;
+import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.assay.AssayListCommand;
 import org.labkey.remoteapi.assay.AssayListResponse;
 import org.labkey.remoteapi.assay.nab.NAbRunsCommand;
 import org.labkey.remoteapi.assay.nab.NAbRunsResponse;
+import org.labkey.remoteapi.assay.nab.model.NAbNeutralizationResult;
 import org.labkey.remoteapi.assay.nab.model.NAbRun;
 import org.labkey.remoteapi.assay.nab.model.NAbSample;
-import org.labkey.remoteapi.assay.nab.model.NAbNeutralizationResult;
-import org.labkey.remoteapi.Connection;
-import org.labkey.remoteapi.CommandException;
-import org.json.simple.JSONObject;
-import org.labkey.remoteapi.security.GetUsersCommand;
-import org.labkey.remoteapi.security.GetUsersResponse;
+import org.labkey.remoteapi.query.*;
 
+import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.io.IOException;
 
 /*
 * User: Dave
@@ -43,17 +42,18 @@ public class Test
 {
     public static void main(String[] args) throws Exception
     {
-        Connection cn = new Connection("http://localhost/labkey", args[0], args[1]);
+        Connection cn = new Connection("http://localhost:8080/labkey", args[0], args[1]);
 
         try
         {
-            nabTest(cn);
+            //nabTest(cn);
             //selectTest(cn);
-            crudTest(cn);
+            //crudTest(cn);
             //execSqlTest(cn);
             //assayTest(cn);
             //schemasTest(cn);
-            extendedFormatTest(cn);
+            //extendedFormatTest(cn);
+            datasetTest(cn);
         }
         catch(CommandException e)
         {
@@ -213,5 +213,52 @@ public class Test
         cmd.setSql("select People.FirstName, count(People.FirstName) as Num from People group by People.FirstName");
         SelectRowsResponse resp = cmd.execute(cn, "Api Test");
         System.out.println(resp.getRows());
+    }
+
+    // Uses the StudyTest artifacts with security changed to editable datasets
+    public static void datasetTest(Connection cn) throws Exception
+    {
+        SelectRowsCommand select = new SelectRowsCommand("study", "DataSets");
+        SelectRowsResponse response = select.execute(cn, "StudyVerifyProject/My Study");
+
+        List<Map<String, Object>> rows = response.getRows();
+
+        for (Map<String, Object> row : rows)
+            System.out.println(row);
+
+        for (String queryName : new String[]{"DEM-1", "DEM-1: Demographics"})
+        {
+            SelectRowsCommand datasetRowSelect = new SelectRowsCommand("study", queryName);
+            datasetRowSelect.addFilter(new Filter("MouseId", "999320565"));
+            SelectRowsResponse datasetRow = datasetRowSelect.execute(cn, "StudyVerifyProject/My Study");
+            Map<String, Object> row = datasetRow.getRows().get(0);
+            System.out.println(row);
+            if (!row.get("DEMracox").equals("Brazilian"))
+                throw new RuntimeException("Race is not 'Brazilian' before update");
+
+            UpdateRowsCommand update = new UpdateRowsCommand("study", queryName);
+            row.put("DEMracox", "Martian");
+            update.setRows(Collections.singletonList(row));
+            update.execute(cn, "StudyVerifyProject/My Study");
+            datasetRowSelect = new SelectRowsCommand("study", queryName);
+            datasetRowSelect.addFilter(new Filter("MouseId", "999320565"));
+            datasetRow = datasetRowSelect.execute(cn, "StudyVerifyProject/My Study");
+            row = datasetRow.getRows().get(0);
+            System.out.println(row);
+            if (!row.get("DEMracox").equals("Martian"))
+                throw new RuntimeException("Race is not 'Martian' after first update");
+
+            update = new UpdateRowsCommand("study", queryName);
+            row.put("DEMracox", "Brazilian");
+            update.setRows(Collections.singletonList(row));
+            update.execute(cn, "StudyVerifyProject/My Study");
+            datasetRowSelect = new SelectRowsCommand("study", queryName);
+            datasetRowSelect.addFilter(new Filter("MouseId", "999320565"));
+            datasetRow = datasetRowSelect.execute(cn, "StudyVerifyProject/My Study");
+            row = datasetRow.getRows().get(0);
+            System.out.println(row);
+            if (!row.get("DEMracox").equals("Brazilian"))
+                throw new RuntimeException("Race is not 'Brazilian' after second update");
+        }
     }
 }
