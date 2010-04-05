@@ -12,6 +12,7 @@ java/src/org/labkey/remoteapi/CommandException.java -text
 java/src/org/labkey/remoteapi/CommandResponse.java -text
 java/src/org/labkey/remoteapi/Connection.java -text
 java/src/org/labkey/remoteapi/PostCommand.java -text
+java/src/org/labkey/remoteapi/ResponseObject.java -text
 java/src/org/labkey/remoteapi/assay/AssayListCommand.java -text
 java/src/org/labkey/remoteapi/assay/AssayListResponse.java -text
 java/src/org/labkey/remoteapi/assay/nab/NAbRunsCommand.java -text
@@ -32,6 +33,8 @@ java/src/org/labkey/remoteapi/query/ExecuteSqlCommand.java -text
 java/src/org/labkey/remoteapi/query/Filter.java -text
 java/src/org/labkey/remoteapi/query/GetQueriesCommand.java -text
 java/src/org/labkey/remoteapi/query/GetQueriesResponse.java -text
+java/src/org/labkey/remoteapi/query/GetQueryDetailsCommand.java -text
+java/src/org/labkey/remoteapi/query/GetQueryDetailsResponse.java -text
 java/src/org/labkey/remoteapi/query/GetSchemasCommand.java -text
 java/src/org/labkey/remoteapi/query/GetSchemasResponse.java -text
 java/src/org/labkey/remoteapi/query/InsertRowsCommand.java -text

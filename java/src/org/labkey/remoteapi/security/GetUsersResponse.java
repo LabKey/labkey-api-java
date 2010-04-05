@@ -17,6 +17,7 @@ package org.labkey.remoteapi.security;
 
 import org.json.simple.JSONObject;
 import org.labkey.remoteapi.CommandResponse;
+import org.labkey.remoteapi.ResponseObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,25 +36,18 @@ public class GetUsersResponse extends CommandResponse
     }
 
     /** Information about a single user that matched the request */
-    public static class UserInfo
+    public static class UserInfo extends ResponseObject
     {
         private final int _userId;
         private final String _displayName;
         private final String _email;
-        private final Map<String, Object> _allProperties;
 
         private UserInfo(Map<String, Object> map)
         {
-            _allProperties = map;
+            super(map);
             _userId = ((Number)map.get("userId")).intValue();
             _displayName = (String)map.get("displayName");
             _email = (String)map.get("email");
-        }
-
-        /** @return the full set of properties returned by the server */
-        public Map<String, Object> getAllProperties()
-        {
-            return _allProperties;
         }
 
         /** @return the display name for the user */
