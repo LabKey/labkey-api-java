@@ -1,0 +1,284 @@
+package org.labkey.remoteapi.query.jdbc;
+
+
+import java.sql.*;
+import java.util.Map;
+import java.util.Properties;
+
+/**
+ * User: jeckels
+ * Date: Apr 2, 2010
+ */
+public class LabKeyConnection extends BaseJDBC implements java.sql.Connection
+{
+    private final org.labkey.remoteapi.Connection _conn;
+    private String _folderPath;
+    private Properties _clientInfo;
+    private boolean _closed = false;
+
+    public LabKeyConnection(org.labkey.remoteapi.Connection conn)
+    {
+        _conn = conn;
+    }
+
+    public org.labkey.remoteapi.Connection getConnection()
+    {
+        return _conn;
+    }
+
+    public String getFolderPath()
+    {
+        return _folderPath;
+    }
+
+    public void clearWarnings() throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public Statement createStatement() throws SQLException
+    {
+        return new LabKeyStatement(this);
+    }
+
+    public PreparedStatement prepareStatement(String sql) throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public CallableStatement prepareCall(String sql) throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public String nativeSQL(String sql) throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public void setAutoCommit(boolean autoCommit) throws SQLException
+    {
+        validateOpen();
+        if (!autoCommit)
+        {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    public boolean getAutoCommit() throws SQLException
+    {
+        return true;
+    }
+
+    private void validateOpen() throws SQLException
+    {
+        if (_closed)
+        {
+            throw new SQLException("Connection has already been closed");
+        }
+    }
+
+    public void commit() throws SQLException
+    {
+        validateOpen();
+        throw new UnsupportedOperationException();
+    }
+
+    public void rollback() throws SQLException
+    {
+        validateOpen();
+        throw new UnsupportedOperationException();
+    }
+
+    public void close() throws SQLException
+    {
+        _closed = true;
+    }
+
+    public boolean isClosed() throws SQLException
+    {
+        return _closed;
+    }
+
+    public DatabaseMetaData getMetaData() throws SQLException
+    {
+        validateOpen();
+        return new LabKeyDatabaseMetaData(this);
+    }
+
+    public void setReadOnly(boolean readOnly) throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public boolean isReadOnly() throws SQLException
+    {
+        return false;
+    }
+
+    public void setCatalog(String catalog) throws SQLException
+    {
+        _folderPath = catalog;
+    }
+
+    public String getCatalog() throws SQLException
+    {
+        validateOpen();
+        return _folderPath;
+    }
+
+    public void setTransactionIsolation(int level) throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public int getTransactionIsolation() throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public SQLWarning getWarnings() throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency) throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency) throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public Map<String, Class<?>> getTypeMap() throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public void setTypeMap(Map<String, Class<?>> map) throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public void setHoldability(int holdability) throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public int getHoldability() throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public Savepoint setSavepoint() throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public Savepoint setSavepoint(String name) throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public void rollback(Savepoint savepoint) throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public void releaseSavepoint(Savepoint savepoint) throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public PreparedStatement prepareStatement(String sql, int autoGeneratedKeys) throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public PreparedStatement prepareStatement(String sql, int[] columnIndexes) throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public PreparedStatement prepareStatement(String sql, String[] columnNames) throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public Clob createClob() throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public Blob createBlob() throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public NClob createNClob() throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public SQLXML createSQLXML() throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public boolean isValid(int timeout) throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public void setClientInfo(String name, String value) throws SQLClientInfoException
+    {
+        _clientInfo.put(name, value);
+    }
+
+    public void setClientInfo(Properties properties) throws SQLClientInfoException
+    {
+        _clientInfo = properties;
+    }
+
+    public String getClientInfo(String name) throws SQLException
+    {
+        return _clientInfo.getProperty(name);
+    }
+
+    public Properties getClientInfo() throws SQLException
+    {
+        return _clientInfo;
+    }
+
+    public Array createArrayOf(String typeName, Object[] elements) throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public Struct createStruct(String typeName, Object[] attributes) throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+}

@@ -49,6 +49,15 @@ java/src/org/labkey/remoteapi/query/SelectRowsCommand.java -text
 java/src/org/labkey/remoteapi/query/SelectRowsResponse.java -text
 java/src/org/labkey/remoteapi/query/Sort.java -text
 java/src/org/labkey/remoteapi/query/UpdateRowsCommand.java -text
+java/src/org/labkey/remoteapi/query/jdbc/BaseJDBC.java -text
+java/src/org/labkey/remoteapi/query/jdbc/LabKeyConnection.java -text
+java/src/org/labkey/remoteapi/query/jdbc/LabKeyDatabaseMetaData.java -text
+java/src/org/labkey/remoteapi/query/jdbc/LabKeyDriver.java -text
+java/src/org/labkey/remoteapi/query/jdbc/LabKeyResultSet.java -text
+java/src/org/labkey/remoteapi/query/jdbc/LabKeyResultSetMetaData.java -text
+java/src/org/labkey/remoteapi/query/jdbc/LabKeyStatement.java -text
+java/src/org/labkey/remoteapi/query/jdbc/ResultSetData.java -text
+java/src/org/labkey/remoteapi/query/jdbc/Test.java -text
 java/src/org/labkey/remoteapi/sas/Main.java -text
 java/src/org/labkey/remoteapi/sas/NetrcFileParser.java -text
 java/src/org/labkey/remoteapi/sas/SASBaseSelectCommand.java -text
