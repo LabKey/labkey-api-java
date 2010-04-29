@@ -30,7 +30,7 @@ public class ResponseObject
         _allProperties = allProperties;
     }
 
-    /** @return the full set of properties returned by the server */
+    /** @return the full set of JSON properties returned by the server */
     public Map<String, Object> getAllProperties()
     {
         return _allProperties;

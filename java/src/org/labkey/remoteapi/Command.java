@@ -452,7 +452,7 @@ public class Command<ResponseType extends CommandResponse>
 
     /**
      * Returns a copy of this object. Derived classes should override this
-     * to copy their own data members
+     * to copy their own data members   
      * @return A copy of this object
      */
     public Command copy()
