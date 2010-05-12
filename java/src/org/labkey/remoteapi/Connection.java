@@ -18,6 +18,7 @@ package org.labkey.remoteapi;
 import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.contrib.ssl.EasySSLProtocolSocketFactory;
+import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 
@@ -201,7 +202,7 @@ public class Connection
      */
     public HttpClient getHttpClient() throws URIException
     {
-        if(null == _client)
+        if (null == _client)
         {
             _client = new HttpClient(getConnectionManager());
 
@@ -227,6 +228,52 @@ public class Connection
 
         return _client;
     }
+
+
+    private String csrf = null;
+
+    protected synchronized void beforeExecute(HttpClient client, HttpMethod method)
+    {
+        if (null == csrf && method instanceof PostMethod)
+        {
+            // need to preemptively login
+            // we're not really using the login form, just getting a JSESSIONID
+            try
+            {
+                new Command("login","login").execute(this,"/");
+            }
+            catch (Exception x)
+            {
+            }
+        }
+        if (null != csrf)
+            method.setRequestHeader("X-LABKEY-CSRF", csrf);
+    }
+
+
+    protected void afterExecute(HttpClient client, HttpMethod method, int status)
+    {
+        if (null == csrf)
+        {
+            for (Cookie c : client.getState().getCookies())
+            {
+                if ("JSESSIONID".equals(c.getName()))
+                    csrf = c.getValue();
+            }
+        }
+    }
+
+    
+    public int executeMethod(HttpMethod method) throws java.io.IOException, org.apache.commons.httpclient.HttpException
+    {
+        HttpClient client = getHttpClient();
+        beforeExecute(client, method);
+        int status = client.executeMethod(method);
+        afterExecute(client, method, status);
+        return status;
+    }
+    
+
 
     /**
      * Returns the connection manager to use when initializing the

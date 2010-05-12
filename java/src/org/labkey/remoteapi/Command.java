@@ -199,9 +199,6 @@ public class Command<ResponseType extends CommandResponse>
         assert null != getControllerName() : "You must set the controller name before executing the command!";
         assert null != getActionName() : "You must set the action name before executing the command!";
 
-        //construct and initialize the HttpClient
-        HttpClient client = connection.getHttpClient();
-
         //construct and initialize the HttpMethod
         HttpMethod method = getHttpMethod(connection, folderPath);
 
@@ -214,8 +211,9 @@ public class Command<ResponseType extends CommandResponse>
         try
         {
             LogFactory.getLog(Command.class).info("Requesting URL: " + method.getURI().toString());
+
             //execute the method
-            status = client.executeMethod(method);
+            status = connection.executeMethod(method);
 
             //get the content-type header
             contentTypeHeader = method.getResponseHeader("Content-Type");
