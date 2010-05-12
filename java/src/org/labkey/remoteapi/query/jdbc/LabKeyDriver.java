@@ -34,7 +34,17 @@ public class LabKeyDriver implements Driver
 
     public Connection connect(String url, Properties info) throws SQLException
     {
-        org.labkey.remoteapi.Connection connection = new org.labkey.remoteapi.Connection(url);
+        String user = info.getProperty("user");
+        String password = info.getProperty("password");
+        org.labkey.remoteapi.Connection connection;
+        if (user != null && password != null)
+        {
+            connection = new org.labkey.remoteapi.Connection(url, user, password);
+        }
+        else
+        {
+            connection = new org.labkey.remoteapi.Connection(url);
+        }
         return new LabKeyConnection(connection);
     }
 
