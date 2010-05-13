@@ -23,10 +23,15 @@ import org.labkey.remoteapi.assay.SaveAssayBatchCommand;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
+ * Five command line args:
+ * 1. File name
+ * 2. Description string
+ * 3. GPAT protocol's assayid/rowid
+ * 4. Server base URL (http://www.myserver.com/labkey)
+ * 5. Path to target folder on server
  * User: jeckels
  * Date: Apr 28, 2010
  */
@@ -34,21 +39,69 @@ public class SaveAssayBatchDemo
 {
     public static void main(String... args) throws Exception
     {
-        if (args.length == 0)
+        if (args.length != 5 && args.length != 7)
         {
-            System.err.println("You must include at least one file as a command-line argument");
+            if (args.length == 6)
+            {
+                System.err.println("If you specify a username, you must also specify a password");
+            }
+            
+            printUsage();
             System.exit(1);
+        }
+        
+        File file = new File(args[0]);
+        if (!file.exists())
+        {
+            System.err.println("Could not find file " + args[0]);
+            printUsage();
+            System.exit(1);
+        }
+        
+        String description = args[1].trim();
+        if (description.length() == 0)
+        {
+            System.err.println("Invalid usage description");
+            printUsage();
+            System.exit(1);
+        }
+        
+        int assayId;
+        try
+        {
+            assayId = Integer.parseInt(args[2]);
+        }
+        catch (NumberFormatException e)
+        {
+            System.err.println("Could not parse assayId " + args[2]);
+            printUsage();
+            System.exit(1);
+            return;
+        }
+        
+        String baseServerURL = args[3];
+        if (!baseServerURL.toLowerCase().startsWith("http"))
+        {
+            System.err.println("Invalid base server URL, expected it to start with http or https " + args[3]);
+            printUsage();
+            System.exit(1);
+        }
+        
+        String folderPath = args[4];
+        if (!folderPath.startsWith("/"))
+        {
+            folderPath = "/" + folderPath;
         }
 
         // Create a batch
         Batch batch = new Batch();
-        batch.setName("Test " + new Date());
+        batch.setName("Batch " + description);
         // Optionally set batch properties
 //        run.getProperties().put("MyBatchProperty", "BatchPropertyValue");
 
         // Create a run, add it to the batch
         Run run = new Run();
-        run.setName("External usage from " + new Date());
+        run.setName(description);
         // Optionally set run properties
 //        run.getProperties().put("MyRunProperty", "RunPropertyValue");
         batch.getRuns().add(run);
@@ -56,27 +109,38 @@ public class SaveAssayBatchDemo
         // Add each of the files to the run
         System.out.println("Adding a usage of: ");
         List<Data> inputFiles = new ArrayList<Data>();
-        for (String arg : args)
-        {
-            Data data = new Data();
-            File file = new File(arg);
-            if (!file.exists())
-            {
-                System.err.println("Could not find file " + arg);
-                System.exit(1);
-            }
-            data.setAbsolutePath(file.getAbsolutePath());
-            inputFiles.add(data);
-            System.out.println("\t" + arg);
-        }
+        Data data = new Data();
+        data.setAbsolutePath(file.getAbsolutePath());
+        inputFiles.add(data);
         run.setDataInputs(inputFiles);
 
-        SaveAssayBatchCommand command = new SaveAssayBatchCommand(17486, batch);
-
-        // Execute the command in the /Assay project on the local server
-        Connection connection = new Connection("http://localhost/labkey", "assayuser@labkey.com", "testpassword");
-        command.execute(connection, "/Assay");
+        SaveAssayBatchCommand command = new SaveAssayBatchCommand(assayId, batch);
+        
+        // Execute the command
+        Connection connection; 
+        if (args.length == 7)
+        {
+            connection = new Connection(baseServerURL, args[5], args[6]);
+        }
+        else
+        {
+            connection = new Connection(baseServerURL);
+        }
+        command.execute(connection, folderPath);
         System.out.println("Success!");
+    }
+
+    private static void printUsage()
+    {
+        System.err.println();
+        System.err.println("Expected usage: java " + SaveAssayBatchDemo.class.getName() + " [FILE_NAME] [DESCRIPTION] [ASSAY_ID] [BASE_SERVER_URL] [TARGET_FOLDER] <USERNAME> <PASSWORD>");
+        System.err.println("\t[FILE_NAME]:       relative path to the file to be marked by this usage; the web server must see the file at the same path");
+        System.err.println("\t[DESCRIPTION]:     string to be used as the name of this usage");
+        System.err.println("\t[ASSAY_ID]:        the assay ID (RowID) of the assay definition to be used for this usage");
+        System.err.println("\t[BASE_SERVER_URL]: URL of the LabKey Server instance in which to store the usage, for example: https://www.myserver.com/labkey");
+        System.err.println("\t[TARGET_FOLDER]:   target project and folder where the usage should be stored, for example: /MyProject/MyFolder");
+        System.err.println("\t<USERNAME>:        (optional) username with which to authenticate");
+        System.err.println("\t<PASSWORD>:        (optional) password with which to authenticate");
     }
 
 }
