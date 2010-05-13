@@ -1,6 +1,7 @@
 * text=auto !eol
 java/README.html -text
 java/build.xml -text
+java/manifest.mf -text
 java/remoteapi.iml -text
 java/remoteapi.ipr -text
 java/src/log4j.xml -text

@@ -1,5 +1,8 @@
 <project name="remoteapi" basedir="." default="build">
 
+    <taskdef name="one-jar" classname="com.simontuffs.onejar.ant.OneJarTask"
+        classpath="../../external/lib/build/one-jar-ant-task-0.96.jar" onerror="report"/>
+
     <target name="init">
         <property name="server.dir" value="../../server"/>
         <property file="${server.dir}/version.properties" />
@@ -9,6 +12,7 @@
         <property name="build.classes.dir" value="${build.dir}/classes"/>
         <property name="build.jar.dir" value="${build.dir}/jar"/>
         <property name="build.jar.name" value="labkey-client-api-${product.version}.jar"/>
+        <property name="build.jar.complete.name" value="labkey-client-api-${product.version}-complete.jar"/>
         <property name="dist.dir" value="${basedir}/../../dist/client-api/java"/>
         <property name="exploded.dir" value="${build.dir}/exploded"/>
         <property name="build.source.dir" value="${build.dir}/src"/>
@@ -77,6 +81,16 @@
 
         <!-- Create a stable file name so that TeamCity can serve it up directly through its own UI -->
         <zip basedir="${doc.dir}" destfile="${basedir}/../../dist/TeamCity-ClientAPI-Java-Docs.zip"/>
+
+        <one-jar destfile="${dist.dir}/${build.jar.complete.name}" manifest="manifest.mf">
+            <main>
+                <!-- Construct main.jar from classes and source code -->
+                <fileset dir="${build.dir}/classes"/>
+            </main>
+            <lib>
+                <fileset file="./lib/*.jar" />
+            </lib>
+        </one-jar>
     </target>
 
     <target name="build" depends="init,dist"/>
