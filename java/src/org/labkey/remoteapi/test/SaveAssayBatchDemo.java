@@ -15,13 +15,13 @@
  */
 package org.labkey.remoteapi.test;
 
+import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.assay.Batch;
 import org.labkey.remoteapi.assay.Data;
 import org.labkey.remoteapi.assay.Run;
 import org.labkey.remoteapi.assay.SaveAssayBatchCommand;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +41,7 @@ public class SaveAssayBatchDemo
     {
         if (args.length != 5 && args.length != 7)
         {
+            System.err.println("Invalid arguments");
             if (args.length == 6)
             {
                 System.err.println("If you specify a username, you must also specify a password");
@@ -49,14 +50,8 @@ public class SaveAssayBatchDemo
             printUsage();
             System.exit(1);
         }
-        
-        File file = new File(args[0]);
-        if (!file.exists())
-        {
-            System.err.println("Could not find file " + args[0]);
-            printUsage();
-            System.exit(1);
-        }
+
+        String fileName = args[0];
         
         String description = args[1].trim();
         if (description.length() == 0)
@@ -107,10 +102,10 @@ public class SaveAssayBatchDemo
         batch.getRuns().add(run);
 
         // Add each of the files to the run
-        System.out.println("Adding a usage of: ");
         List<Data> inputFiles = new ArrayList<Data>();
         Data data = new Data();
-        data.setAbsolutePath(file.getAbsolutePath());
+        data.setAbsolutePath(fileName);
+        System.out.println("Adding usage \"" + description + " \" for file \"" + fileName + "\"");
         inputFiles.add(data);
         run.setDataInputs(inputFiles);
 
@@ -126,8 +121,22 @@ public class SaveAssayBatchDemo
         {
             connection = new Connection(baseServerURL);
         }
-        command.execute(connection, folderPath);
-        System.out.println("Success!");
+        try
+        {
+            command.execute(connection, folderPath);
+            System.out.println("Success!");
+        }
+        catch (CommandException e)
+        {
+            System.err.println("Failure! Response code: " + e.getStatusCode());
+            e.printStackTrace();
+            System.err.println();
+            if (e.getResponseText() != null)
+            {
+                System.err.println("Response text: ");
+                System.err.println(e.getResponseText());
+            }
+        }
     }
 
     private static void printUsage()

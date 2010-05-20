@@ -35,15 +35,16 @@ public class CommandException extends Exception
 {
     private int _statusCode;
     private Map<String,Object> _properties;
+    private final String _responseText;
 
     /**
      * Constructs a new CommandException given a message only.
-     * The status code and properties map will be set to 0 and null repsectively
+     * The status code and properties map will be set to 0 and null respectively
      * @param message The message text (should not be null).
      */
     public CommandException(String message)
     {
-        super(message);
+        this(message, 0, null, null);
     }
 
     /**
@@ -52,12 +53,14 @@ public class CommandException extends Exception
      * @param message The message text (should not be null).
      * @param statusCode The HTTP status code.
      * @param properties The exception property map (may be null)
+     * @param responseText The full response text (may be null)
      */
-    public CommandException(String message, int statusCode, Map<String,Object> properties)
+    public CommandException(String message, int statusCode, Map<String,Object> properties, String responseText)
     {
         super(message);
         _statusCode = statusCode;
         _properties = properties;
+        _responseText = responseText;
     }
 
     /**
@@ -67,6 +70,15 @@ public class CommandException extends Exception
     public int getStatusCode()
     {
         return _statusCode;
+    }
+
+    /**
+     * Returns the text of the response
+     * @return The text of the response
+     */
+    public String getResponseText()
+    {
+        return _responseText;
     }
 
     /**
