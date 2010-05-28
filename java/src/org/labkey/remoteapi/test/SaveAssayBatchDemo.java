@@ -39,6 +39,11 @@ public class SaveAssayBatchDemo
 {
     public static void main(String... args) throws Exception
     {
+//        System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
+//        System.setProperty("org.apache.commons.logging.simplelog.showdatetime", "true");
+//        System.setProperty("org.apache.commons.logging.simplelog.log.httpclient.wire.header", "debug");
+//        System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.commons.httpclient", "debug");
+        
         if (args.length != 5 && args.length != 7)
         {
             System.err.println("Invalid arguments");
