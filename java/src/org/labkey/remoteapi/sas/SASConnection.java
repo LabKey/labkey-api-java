@@ -28,6 +28,8 @@ import java.net.URISyntaxException;
  */
 public class SASConnection extends Connection
 {
+    @SuppressWarnings({"UnusedDeclaration"})
+    // Called from SAS macros via reflective JavaObj interface
     public SASConnection(String baseUrl, String userName, String password) throws IOException, URISyntaxException
     {
         super(baseUrl);
@@ -36,6 +38,8 @@ public class SASConnection extends Connection
         setPassword(password);
     }
 
+    @SuppressWarnings({"UnusedDeclaration"})
+    // Called from SAS macros via reflective JavaObj interface
     public SASConnection(String baseUrl) throws IOException, URISyntaxException
     {
         super(baseUrl);
