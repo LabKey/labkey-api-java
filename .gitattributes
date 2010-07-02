@@ -98,6 +98,8 @@ java/src/org/labkey/remoteapi/security/RenameGroupResponse.java -text
 java/src/org/labkey/remoteapi/test/Demo.java -text
 java/src/org/labkey/remoteapi/test/SaveAssayBatchDemo.java -text
 java/src/org/labkey/remoteapi/test/Test.java -text
+perl/_lkpass -text
+perl/src/Labkey/query.pm -text
 sas/MorePeople.xls -text
 sas/People.xls -text
 sas/build.xml -text
