@@ -2,14 +2,14 @@
 
 =head1 NAME
 
-PROGRAM  : labkey.pm
+PROGRAM  : query.pm
 
 =head1 SYNOPSIS
 
 
 =head1 DESCRIPTION
 
-PURPOSE  : This module contains functions to simplify querying and inserting data to and from LabKey Server.  The functions more or less replicate LABKEY.query.selectRows() and .insertRows() 
+PURPOSE  : This module contains functions to simplify querying and inserting data to and from LabKey Server.  The functions more or less replicate LABKEY.query.selectRows(), .updateRows() and .insertRows() 
 
 =head1 AUTHOR 
 
@@ -20,156 +20,373 @@ Ben Bimber
 package Labkey::query;
 
 use strict;
-use Config::Abstract::Ini;
-use LWP::UserAgent; 
-use HTTP::Request; 
+use LWP::UserAgent;
+use HTTP::Request;
 use JSON;
 use Data::Dumper;
 use File::Spec;
+use File::HomeDir;
+use Carp;
+
+
 
 =head1 selectRows()
 
 	my $results = Labkey::query::selectRows(
-		-containerPath => '/WNPRC_Units/Research_Services/Research_Computing',
-		-project => 'WNPRC',
+		-baseUrl => 'http://labkey.com:8080/labkey/',
+		-containerPath => '/myFolder',
+		-project => 'shared',
 		-schemaName => 'lists',
 		-queryName => 'mid_tags',
 		);
 
 	#also supported:
 	-viewName => 'view1',
-	-filterArray => [['file_active', 'eq', 1], ['species', 'neq', 'zebra']],
+	-filterArray => [['file_active', 'eq', 1], ['species', 'neq', 'zebra']], 
+	-debug => 1,  #will result in a more vebose output
  
 =cut
 
 sub selectRows {
-	#This should allow it to work on linux and newer windows: 	
-	my $configFile = File::Spec->catfile($ENV{HOME}, '.lkpass');
-	if (! -e $configFile){
-		$configFile = File::Spec->catfile($ENV{USERPROFILE},'_lkpass');
-	}
-	
-	my $settings = new Config::Abstract::Ini($configFile);
-	my %lk_config = $settings->get_entry('lkconfig');
-		die "ERROR: Unable to find .lkpass or file not properly formatted" unless %lk_config;
-	
+
 	my %args = @_;
 
-	#sanity checking
-	my @required = ('-project', '-queryName', '-schemaName');	
-	foreach (@required){
-		if (!$args{$_}){die "ERROR: Missing required param: $_"};		
-	}
-
-	my @ini_required = qw(baseURL login password);	
-	foreach (@ini_required){
-		if (!$lk_config{$_}){die "ERROR: INI file missing required param: $_"};		
-	}
-			
-	my $ua = new LWP::UserAgent; 
-	$ua->agent("Perl API Client/1.0");
-	$args{'-containerPath'} ||= '';
-			
-	my $url = $lk_config{'baseURL'} . "query/" . $args{'-project'} . $args{'-containerPath'} . "/getQuery.api?schemaName=" . $args{'-schemaName'} . "&query.queryName=" . $args{'-queryName'};
-
-	foreach (@{$args{-filterArray}}){
-		$url .= "&query.".@{$_}[0]."~".@{$_}[1]."=".@{$_}[2];	
-	}
+	#allow baseUrl as environment variable
+	$args{'-baseUrl'} ||= $ENV{LABKEY_URL};
 	
-	if ($args{'-viewName'}){
-		$url .= "&query.viewName=".$args{'-viewName'};	
-	}	
+	#sanity checking
+	my @required = ( '-project', '-queryName', '-schemaName', '-baseUrl' );
+	foreach (@required) {
+		if ( !$args{$_} ) { die "ERROR: Missing required param: $_" }
+	}
+
+	#if no machine supplied, extract domain from baseUrl 
+	if (!$args{'-machine'}){
+		my $url = URI->new($args{'-baseUrl'});
+		$args{'-machine'} = $url->host;
+	}
+
+	my $lk_config = _readrc( $args{-machine} );
+
+	my $ua = new LWP::UserAgent;
+	$ua->agent("Perl API Client/1.0");
+
+	my $url =
+	    $args{'-baseUrl'} 
+	  . "query/"
+	  . $args{'-project'}
+	  . ($args{'-containerPath'} ? $args{'-containerPath'} : '')
+	  . "/getQuery.api?schemaName="
+	  . $args{'-schemaName'}
+	  . "&query.queryName="
+	  . $args{'-queryName'};
+
+	foreach ( @{ $args{-filterArray} } ) {
+		$url .= "&query." . ( @{$_}[0] ) . "~" . @{$_}[1] . "=" . ( @{$_}[2] );
+	}
+
+	if ( $args{'-viewName'} ) {
+		$url .= "&query.viewName=" . ( $args{'-viewName'} );
+	}
+
 	print $url if $args{-debug};
 
 	#Fetch the actual data from the query
-	my $request = HTTP::Request->new("GET" => $url); 
-	$request->authorization_basic($lk_config{'login'}, $lk_config{'password'}); 
-	my $response = $ua->request($request);					
+	my $request = HTTP::Request->new( "GET" => $url );
+	$request->authorization_basic( $$lk_config{'login'}, $$lk_config{'password'} );
+	my $response = $ua->request($request);
 
-	# Simple error checking 
-	if ($response->is_error){
-		die $response->status_line;			
+	# Simple error checking
+	if ( $response->is_error ) {
+		die( $response->status_line );
 	}
 
-	#print Dumper($response);
-	my $json_obj = JSON->new->utf8->decode($response->content) || die "ERROR: Unable to decode JSON.\n$url\n";
+	my $json_obj = JSON->new->utf8->decode( $response->content )
+	  || die "ERROR: Unable to decode JSON.\n$url\n";
 
-	return $json_obj;	
-	
+	return $json_obj;
+
 }
+
 
 =head1 insertRows()
 
 	my $insert = Labkey::query::insertRows(
-		-containerPath => '/WNPRC_Units/Research_Services/Research_Computing',
-		-project => 'WNPRC',
+		-baseUrl => 'http://labkey.com:8080/labkey/',
+		-containerPath => '/myFolder',
+		-project => 'home',
 		-schemaName => 'lists',
-		-queryName => 'mid_tags',
-		-rows => $rows,
+		-queryName => 'backup',
+		-rows => [
+			{"JobName" => $lk_config{'jobName'}, "Status" => $status, "Log" => $log, "Date" => $date}
+			],
 		);
  
+	#also supported:
+	-debug => 1,  #will result in a more vebose output 
 =cut
 
-sub insertRows {	
-	#This should allow it to work on linux and newer windows: 	
-	my $configFile = File::Spec->catfile($ENV{HOME}, '.lkpass');
-	if (! -e $configFile){
-		$configFile = File::Spec->catfile($ENV{USERPROFILE},'_lkpass');
-	}
-	my $settings = new Config::Abstract::Ini($configFile);
-	
-	my %lk_config = $settings->get_entry('lkconfig');
-		die "ERROR: Unable to find .lkpass or file not properly formatted" unless %lk_config;
-
+sub insertRows {
 	my %args = @_;
 
-	#sanity checking
-	my @required = ('-project', '-queryName', '-schemaName', '-rows');	
-	foreach (@required){
-		if (!$args{$_}){die "ERROR: Missing required param: $_"};		
-	}
+	#allow baseUrl as an environment variable
+	$args{'-baseUrl'} ||= $ENV{LABKEY_URL};
 
-	my @ini_required = qw(baseURL login password);	
-	foreach (@ini_required){
-		if (!$lk_config{$_}){die "ERROR: INI file missing required param: $_"};		
+	#sanity checking
+	my @required = ( '-project', '-queryName', '-schemaName', '-baseUrl', '-rows' );
+	foreach (@required) {
+		if ( !$args{$_} ) { die "ERROR: Missing required param: $_" }
+	}	
+
+	#if no machine supplied, extract domain from baseUrl 
+	if (!$args{'-machine'}){
+		my $url = URI->new($args{'-baseUrl'});
+		$args{'-machine'} = $url->host;
 	}
 	
-	$args{'-containerPath'} ||= '';
-						
-	my $ua = new LWP::UserAgent; 
+	my $lk_config = _readrc( $args{-machine} );
+
+	my $ua = new LWP::UserAgent;
 	$ua->agent("Perl API Client/1.0");
 
-	my $url = $lk_config{'baseURL'} . "query/" . $args{'-project'} . $args{'-containerPath'} . "/insertRows.api";
- 	print $url if $args{-debug};
- 	
+	my $url =
+	    $args{'-baseUrl'} 
+	  . "query/"
+	  . $args{'-project'}
+	  . ($args{'-containerPath'} ? $args{'-containerPath'} : '')
+	  . "/insertRows.api";
+
+	print $url if $args{-debug};
+
 	my $data = {
 		"schemaName" => $args{'-schemaName'},
- 		"queryName"=> $args{'-queryName'},
- 		"command" => "insert",
- 		"rows" => $args{'-rows'}
-		};
-		
+		"queryName"  => $args{'-queryName'},
+		"command"    => "insert",
+		"rows"       => $args{'-rows'}
+	};
+
 	my $json_obj = JSON->new->utf8->encode($data);
-	 
-	#insert the row	
+
+	#insert the row
 	my $req = new HTTP::Request;
 	$req->method('POST');
 	$req->url($url);
 	$req->content_type('application/json');
 	$req->content($json_obj);
-						
-	$req->authorization_basic($lk_config{'login'}, $lk_config{'password'}); 
-	my $response = $ua->request($req);					
+	$req->authorization_basic( $$lk_config{'login'}, $$lk_config{'password'} );
+	my $response = $ua->request($req);
 
-	# Simple error checking 
-	if ($response->is_error){
-		die $response->status_line;			
+	# Simple error checking
+	if ( $response->is_error ) {
+		die $response->status_line;
 	}
 
 	#print Dumper($response);
-	$json_obj = JSON->new->utf8->decode($response->content) || die "ERROR: Unable to decode JSON.\n$url\n";	
+	$json_obj = JSON->new->utf8->decode( $response->content )
+	  || die "ERROR: Unable to decode JSON.\n$url\n";
+
+	return $json_obj;
+
+}
+
+
+=head1 updateRows()
+
+	my $update = Labkey::query::updateRows(
+		-baseUrl => 'http://labkey.com:8080/labkey/',
+		-containerPath => '/myFolder',
+		-project => 'home',
+		-schemaName => 'lists',
+		-queryName => 'backup',
+		-rows => [
+			{"JobName" => $lk_config{'jobName'}, "Status" => $status, "Log" => $log, "Date" => $date}
+			],
+		);
+		
+	#also supported:
+	-debug => 1,  #will result in a more vebose output
+ 
+=cut
+
+sub updateRows {
+	my %args = @_;
+
+	#allow baseUrl as environment variable
+	$args{'-baseUrl'} ||= $ENV{LABKEY_URL};
+
+	#sanity checking
+	my @required = ( '-project', '-queryName', '-schemaName', '-baseUrl', '-rows' );
+	foreach (@required) {
+		if ( !$args{$_} ) { die "ERROR: Missing required param: $_" }
+	}
+
+	#if no machine supplied, extract domain from baseUrl 
+	if (!$args{'-machine'}){
+		my $url = URI->new($args{'-baseUrl'});
+		$args{'-machine'} = $url->host;
+	}
+	my $lk_config = _readrc( $args{-machine} );
+
+	my $ua = new LWP::UserAgent;
+	$ua->agent("Perl API Client/1.0");
+
+	my $url =
+	    $args{'-baseUrl'} 
+	  . "query/"
+	  . $args{'-project'}
+	  . ($args{'-containerPath'} ? $args{'-containerPath'} : '')
+	  . "/updateRows.api";
+
+	print $url if $args{-debug};
+
+	my $data = {
+		"schemaName" => $args{'-schemaName'},
+		"queryName"  => $args{'-queryName'},
+		"command"    => "update",
+		"rows"       => $args{'-rows'}
+	};
+
+	my $json_obj = JSON->new->utf8->encode($data);
+
+	my $req = new HTTP::Request;
+	$req->method('POST');
+	$req->url($url);
+	$req->content_type('application/json');
+	$req->content($json_obj);
+	$req->authorization_basic( $$lk_config{'login'}, $$lk_config{'password'} );
+	my $response = $ua->request($req);
+
+	# Simple error checking
+	if ( $response->is_error ) {
+		die $response->status_line;
+	}
+
+	#print Dumper($response);
+	$json_obj = JSON->new->utf8->decode( $response->content )
+	  || die "ERROR: Unable to decode JSON.\n$url\n";
+
+	return $json_obj;
+
+}
+
+
+
+# this code adapted from Net::Netrc module.  I do not use netrc b/c it assumes a filename of .netrc, which is not PC compatible.
+# NOTE: I put in a bug on CPAN about this.  If Net::Netrc is changed, should use that instead.
+sub _readrc() {
+
+	my $host = shift || 'default';
+
+	#This should allow it to work on linux and newer windows:
+	my $file = File::Spec->catfile( File::HomeDir::home(), '.netrc' );
+	if ( !-e $file ) {
+		$file = File::Spec->catfile( File::HomeDir::home(), '_netrc' );
+	}
+
+	my %netrc = ();
+	my ( $login, $pass, $acct ) = ( undef, undef, undef );
+	my $fh;
+	local $_;
+
+	$netrc{default} = undef;
+
+	# OS/2 and Win32 do not handle stat in a way compatable with this check :-(
+	unless ( $^O eq 'os2'
+		|| $^O eq 'MSWin32'
+		|| $^O eq 'MacOS'
+		|| $^O =~ /^cygwin/ )
+	{
+		my @stat = stat($file);
+
+		if (@stat) {
+			if ( $stat[2] & 077 ) {
+				carp "Bad permissions: $file";
+				return;
+			}
+			if ( $stat[4] != $< ) {
+				carp "Not owner: $file";
+				return;
+			}
+		}
+	}
+
+	if ( $fh = FileHandle->new( $file, "r" ) ) {
+		my ( $mach, $macdef, $tok, @tok ) = ( 0, 0 );
+
+		while (<$fh>) {
+			undef $macdef if /\A\n\Z/;
+
+			if ($macdef) {
+				push( @$macdef, $_ );
+				next;
+			}
+
+			s/^\s*//;
+			chomp;
+
+			while ( length && s/^("((?:[^"]+|\\.)*)"|((?:[^\\\s]+|\\.)*))\s*// )
+			{
+				( my $tok = $+ ) =~ s/\\(.)/$1/g;
+				push( @tok, $tok );
+			}
+
+		  TOKEN:
+			while (@tok) {
+				if ( $tok[0] eq "default" ) {
+					shift(@tok);
+					$mach = bless {};
+					$netrc{default} = [$mach];
+
+					next TOKEN;
+				}
+
+				last TOKEN
+				  unless @tok > 1;
+
+				$tok = shift(@tok);
+
+				if ( $tok eq "machine" ) {
+					my $host = shift @tok;
+					$mach = { machine => $host };
+
+					$netrc{$host} = []
+					  unless exists( $netrc{$host} );
+					push( @{ $netrc{$host} }, $mach );
+				}
+				elsif ( $tok =~ /^(login|password|account)$/ ) {
+					next TOKEN unless $mach;
+					my $value = shift @tok;
+
+		  # Following line added by rmerrell to remove '/' escape char in .netrc
+					$value =~ s/\/\\/\\/g;
+					$mach->{$1} = $value;
+				}
+				elsif ( $tok eq "macdef" ) {
+					next TOKEN unless $mach;
+					my $value = shift @tok;
+					$mach->{macdef} = {}
+					  unless exists $mach->{macdef};
+					$macdef = $mach->{machdef}{$value} = [];
+				}
+			}
+		}
+		$fh->close();
+	}
 	
+	my $auth = $netrc{$host}[0];
+	
+	#if no machine is specified and there is only 1 machine in netrc, we use that one
+	if (!$auth && length((keys %netrc))==1){
+		$auth = $netrc{(keys %netrc)[0]}[0];	
+	}	 
+
+	die "Unable to find entry for host: $host" unless $auth;
+	die "Missing password for host: $host"     unless $auth->{password};
+	die "Missing login for host: $host"        unless $auth->{login};
+
+	return $auth;
 }
 
 
 1;
+
