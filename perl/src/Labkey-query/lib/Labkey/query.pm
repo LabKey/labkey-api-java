@@ -2,18 +2,47 @@
 
 =head1 NAME
 
-PROGRAM  : query.pm
+Labkey::query
 
 =head1 SYNOPSIS
 
+use Labkey::query;
+
+my $results = Labkey::query::selectRows(
+	-baseUrl => 'http://labkey.com:8080/labkey/',
+	-containerPath => '/myFolder',
+	-project => 'shared',
+	-schemaName => 'lists',
+	-queryName => 'mid_tags',
+	);
+		
 
 =head1 DESCRIPTION
 
-PURPOSE  : This module contains functions to simplify querying and inserting data to and from LabKey Server.  The functions more or less replicate LABKEY.query.selectRows(), .updateRows() and .insertRows() 
+This module is deisgned to simplify querying and inserting data to and from LabKey Server.  It should more or less replicate the javascript APIs LABKEY.query.selectRows(), .updateRows() and .insertRows() 
+
+After the module is installed, you will need to create a .netrc file in the home directory of the user
+running the perl script.  Documentation on .netrc can be found here:
+https://www.labkey.org/wiki/home/Documentation/page.view?name=netrc
+
+=head1 SEE ALSO
+
+The LabKey client APIs are described in great detail here:
+https://www.labkey.org/wiki/home/Documentation/page.view?name=viewAPIs
+
+Support questions should be directed to the LabKey forum:
+https://www.labkey.org/announcements/home/Server/Forum/list.view?
 
 =head1 AUTHOR 
 
 Ben Bimber
+
+
+=head1 COPYRIGHT AND LICENSE
+ 
+Copyright (c) 2010 Ben Bimber
+
+Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
 
 =cut
 
@@ -27,23 +56,28 @@ use Data::Dumper;
 use File::Spec;
 use File::HomeDir;
 use Carp;
+use vars qw($VERSION);
+
+our $VERSION = "0.1";
 
 
 
 =head1 selectRows()
 
-	my $results = Labkey::query::selectRows(
-		-baseUrl => 'http://labkey.com:8080/labkey/',
-		-containerPath => '/myFolder',
-		-project => 'shared',
-		-schemaName => 'lists',
-		-queryName => 'mid_tags',
-		);
+selectRows() can be used to query data from LabKey server
+	
+my $results = Labkey::query::selectRows(
+	-baseUrl => 'http://labkey.com:8080/labkey/',
+	-containerPath => '/myFolder',
+	-project => 'shared',
+	-schemaName => 'lists',
+	-queryName => 'mid_tags',
+	);
 
-	#also supported:
-	-viewName => 'view1',
-	-filterArray => [['file_active', 'eq', 1], ['species', 'neq', 'zebra']], 
-	-debug => 1,  #will result in a more vebose output
+#also supported:
+-viewName => 'view1',
+-filterArray => [['file_active', 'eq', 1], ['species', 'neq', 'zebra']], 
+-debug => 1,  #will result in a more vebose output
  
 =cut
 
@@ -57,7 +91,7 @@ sub selectRows {
 	#sanity checking
 	my @required = ( '-project', '-queryName', '-schemaName', '-baseUrl' );
 	foreach (@required) {
-		if ( !$args{$_} ) { die "ERROR: Missing required param: $_" }
+		if ( !$args{$_} ) { croak("ERROR: Missing required param: $_") }
 	}
 
 	#if no machine supplied, extract domain from baseUrl 
@@ -98,11 +132,11 @@ sub selectRows {
 
 	# Simple error checking
 	if ( $response->is_error ) {
-		die( $response->status_line );
+		croak( $response->status_line );
 	}
 
 	my $json_obj = JSON->new->utf8->decode( $response->content )
-	  || die "ERROR: Unable to decode JSON.\n$url\n";
+	  || croak("ERROR: Unable to decode JSON.\n$url\n");
 
 	return $json_obj;
 
@@ -111,19 +145,22 @@ sub selectRows {
 
 =head1 insertRows()
 
-	my $insert = Labkey::query::insertRows(
-		-baseUrl => 'http://labkey.com:8080/labkey/',
-		-containerPath => '/myFolder',
-		-project => 'home',
-		-schemaName => 'lists',
-		-queryName => 'backup',
-		-rows => [
-			{"JobName" => $lk_config{'jobName'}, "Status" => $status, "Log" => $log, "Date" => $date}
-			],
-		);
+insertRows() can be used to insert records into a LabKey table
+
+my $insert = Labkey::query::insertRows(
+	-baseUrl => 'http://labkey.com:8080/labkey/',
+	-containerPath => '/myFolder',
+	-project => 'home',
+	-schemaName => 'lists',
+	-queryName => 'backup',
+	-rows => [
+		{"JobName" => 'jobName', "Status" => $status, "Log" => $log, "Date" => $date}
+		],
+	);
  
-	#also supported:
-	-debug => 1,  #will result in a more vebose output 
+#also supported:
+-debug => 1,  #will result in a more vebose output 
+
 =cut
 
 sub insertRows {
@@ -135,7 +172,7 @@ sub insertRows {
 	#sanity checking
 	my @required = ( '-project', '-queryName', '-schemaName', '-baseUrl', '-rows' );
 	foreach (@required) {
-		if ( !$args{$_} ) { die "ERROR: Missing required param: $_" }
+		if ( !$args{$_} ) { croak("ERROR: Missing required param: $_") }
 	}	
 
 	#if no machine supplied, extract domain from baseUrl 
@@ -178,12 +215,12 @@ sub insertRows {
 
 	# Simple error checking
 	if ( $response->is_error ) {
-		die $response->status_line;
+		croak($response->status_line);
 	}
 
 	#print Dumper($response);
 	$json_obj = JSON->new->utf8->decode( $response->content )
-	  || die "ERROR: Unable to decode JSON.\n$url\n";
+	  || croak("ERROR: Unable to decode JSON.\n$url\n");
 
 	return $json_obj;
 
@@ -192,19 +229,21 @@ sub insertRows {
 
 =head1 updateRows()
 
-	my $update = Labkey::query::updateRows(
-		-baseUrl => 'http://labkey.com:8080/labkey/',
-		-containerPath => '/myFolder',
-		-project => 'home',
-		-schemaName => 'lists',
-		-queryName => 'backup',
-		-rows => [
-			{"JobName" => $lk_config{'jobName'}, "Status" => $status, "Log" => $log, "Date" => $date}
-			],
-		);
+updateRows() can be used to update records in a LabKey table
+
+my $update = Labkey::query::updateRows(
+	-baseUrl => 'http://labkey.com:8080/labkey/',
+	-containerPath => '/myFolder',
+	-project => 'home',
+	-schemaName => 'lists',
+	-queryName => 'backup',
+	-rows => [
+		{"JobName" => 'jobName', "Status" => $status, "Log" => $log, "Date" => $date}
+		],
+	);
 		
-	#also supported:
-	-debug => 1,  #will result in a more vebose output
+#also supported:
+-debug => 1,  #will result in a more vebose output
  
 =cut
 
@@ -217,7 +256,7 @@ sub updateRows {
 	#sanity checking
 	my @required = ( '-project', '-queryName', '-schemaName', '-baseUrl', '-rows' );
 	foreach (@required) {
-		if ( !$args{$_} ) { die "ERROR: Missing required param: $_" }
+		if ( !$args{$_} ) { croak("ERROR: Missing required param: $_") }
 	}
 
 	#if no machine supplied, extract domain from baseUrl 
@@ -258,12 +297,12 @@ sub updateRows {
 
 	# Simple error checking
 	if ( $response->is_error ) {
-		die $response->status_line;
+		croak($response->status_line);
 	}
 
 	#print Dumper($response);
 	$json_obj = JSON->new->utf8->decode( $response->content )
-	  || die "ERROR: Unable to decode JSON.\n$url\n";
+	  || croak("ERROR: Unable to decode JSON.\n$url\n");
 
 	return $json_obj;
 
@@ -271,8 +310,8 @@ sub updateRows {
 
 
 
-# this code adapted from Net::Netrc module.  I do not use netrc b/c it assumes a filename of .netrc, which is not PC compatible.
-# NOTE: I put in a bug on CPAN about this.  If Net::Netrc is changed, should use that instead.
+# NOTE: this code adapted from Net::Netrc module.  I do not use netrc b/c it assumes a filename of .netrc, which is not PC compatible.
+# If Net::Netrc is changed, should use that instead.
 sub _readrc() {
 
 	my $host = shift || 'default';
@@ -380,13 +419,12 @@ sub _readrc() {
 		$auth = $netrc{(keys %netrc)[0]}[0];	
 	}	 
 
-	die "Unable to find entry for host: $host" unless $auth;
-	die "Missing password for host: $host"     unless $auth->{password};
-	die "Missing login for host: $host"        unless $auth->{login};
+	croak("Unable to find entry for host: $host") unless $auth;
+	croak("Missing password for host: $host") unless $auth->{password};
+	croak("Missing login for host: $host") unless $auth->{login};
 
 	return $auth;
 }
 
 
 1;
-

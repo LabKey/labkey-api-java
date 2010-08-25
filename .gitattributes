@@ -99,7 +99,11 @@ java/src/org/labkey/remoteapi/test/Demo.java -text
 java/src/org/labkey/remoteapi/test/SaveAssayBatchDemo.java -text
 java/src/org/labkey/remoteapi/test/Test.java -text
 perl/_lkpass -text
-perl/src/Labkey/query.pm -text
+perl/src/Labkey-query/Changes -text
+perl/src/Labkey-query/MANIFEST -text
+perl/src/Labkey-query/Makefile.PL -text
+perl/src/Labkey-query/README -text
+perl/src/Labkey-query/lib/Labkey/query.pm -text
 sas/MorePeople.xls -text
 sas/People.xls -text
 sas/build.xml -text
