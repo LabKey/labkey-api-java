@@ -16,6 +16,9 @@ my $results = Labkey::query::selectRows(
 	-queryName => 'mid_tags',
 	);
 		
+=head1 ABSTRACT
+
+For interacting with data in LabKey Server
 
 =head1 DESCRIPTION
 
@@ -38,7 +41,7 @@ https://www.labkey.org/announcements/home/Server/Forum/list.view?
 Ben Bimber
 
 
-=head1 COPYRIGHT AND LICENSE
+=head1 COPYRIGHT
  
 Copyright (c) 2010 Ben Bimber
 
@@ -58,7 +61,7 @@ use File::HomeDir;
 use Carp;
 use vars qw($VERSION);
 
-our $VERSION = "0.1";
+our $VERSION = "0.01";
 
 
 
@@ -428,3 +431,4 @@ sub _readrc() {
 
 
 1;
+

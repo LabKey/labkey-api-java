@@ -1,6 +1,0 @@
-Revision history for Perl extension Labkey::query.
-
-0.01  Wed Aug 25 17:29:44 2010
-	- original version; created by h2xs 1.23 with options
-		-AXc -n Labkey::query
-

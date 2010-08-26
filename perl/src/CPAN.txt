@@ -1,0 +1,7 @@
+Preparing module for CPAN:
+
+perl Build.PL
+perl Build manifest
+perl Build dist
+
+This will make a tar file which you should upload.

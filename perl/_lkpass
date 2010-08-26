@@ -1,8 +1,0 @@
-#example only.  should be located in the user's home directory
-#stores the username/password for your labkey server
-[lkconfig]
-login = youEmail@wisc.edu 
-password = yourPassword
-baseURL = https://localhost:8443/labkey/
-
-

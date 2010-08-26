@@ -1,0 +1,23 @@
+---
+abstract: 'For interacting with data in LabKey Server'
+author: []
+configure_requires:
+  Module::Build: 0.36
+generated_by: 'Module::Build version 0.3607'
+license: unknown
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Labkey-query
+provides:
+  Labkey::query:
+    file: lib/Labkey/query.pm
+    version: 0.01
+requires:
+  Data::Dumper: 0
+  File::HomeDir: 0
+  File::Spec: 0
+  HTTP::Request: 0
+  JSON: 0
+  LWP::UserAgent: 0
+version: 0.01

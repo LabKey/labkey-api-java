@@ -1,0 +1,74 @@
+NAME
+    Labkey::query
+
+SYNOPSIS
+    use Labkey::query;
+
+    my $results = Labkey::query::selectRows( -baseUrl =>
+    'http://labkey.com:8080/labkey/', -containerPath => '/myFolder',
+    -project => 'shared', -schemaName => 'lists', -queryName => 'mid_tags',
+    );
+
+ABSTRACT
+    For interacting with data in LabKey Server
+
+DESCRIPTION
+    This module is deisgned to simplify querying and inserting data to and
+    from LabKey Server. It should more or less replicate the javascript APIs
+    LABKEY.query.selectRows(), .updateRows() and .insertRows()
+
+    After the module is installed, you will need to create a .netrc file in
+    the home directory of the user running the perl script. Documentation on
+    .netrc can be found here:
+    https://www.labkey.org/wiki/home/Documentation/page.view?name=netrc
+
+SEE ALSO
+    The LabKey client APIs are described in great detail here:
+    https://www.labkey.org/wiki/home/Documentation/page.view?name=viewAPIs
+
+    Support questions should be directed to the LabKey forum:
+    https://www.labkey.org/announcements/home/Server/Forum/list.view?
+
+AUTHOR
+    Ben Bimber
+
+COPYRIGHT
+    Copyright (c) 2010 Ben Bimber
+
+    Licensed under the Apache License, Version 2.0:
+    http://www.apache.org/licenses/LICENSE-2.0
+
+selectRows()
+    selectRows() can be used to query data from LabKey server
+
+    my $results = Labkey::query::selectRows( -baseUrl =>
+    'http://labkey.com:8080/labkey/', -containerPath => '/myFolder',
+    -project => 'shared', -schemaName => 'lists', -queryName => 'mid_tags',
+    );
+
+    #also supported: -viewName => 'view1', -filterArray => [['file_active',
+    'eq', 1], ['species', 'neq', 'zebra']], -debug => 1, #will result in a
+    more vebose output
+
+insertRows()
+    insertRows() can be used to insert records into a LabKey table
+
+    my $insert = Labkey::query::insertRows( -baseUrl =>
+    'http://labkey.com:8080/labkey/', -containerPath => '/myFolder',
+    -project => 'home', -schemaName => 'lists', -queryName => 'backup',
+    -rows => [ {"JobName" => 'jobName', "Status" => $status, "Log" => $log,
+    "Date" => $date} ], );
+
+    #also supported: -debug => 1, #will result in a more vebose output
+
+updateRows()
+    updateRows() can be used to update records in a LabKey table
+
+    my $update = Labkey::query::updateRows( -baseUrl =>
+    'http://labkey.com:8080/labkey/', -containerPath => '/myFolder',
+    -project => 'home', -schemaName => 'lists', -queryName => 'backup',
+    -rows => [ {"JobName" => 'jobName', "Status" => $status, "Log" => $log,
+    "Date" => $date} ], );
+
+    #also supported: -debug => 1, #will result in a more vebose output
+
