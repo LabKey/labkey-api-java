@@ -98,6 +98,7 @@ java/src/org/labkey/remoteapi/security/RenameGroupResponse.java -text
 java/src/org/labkey/remoteapi/test/Demo.java -text
 java/src/org/labkey/remoteapi/test/SaveAssayBatchDemo.java -text
 java/src/org/labkey/remoteapi/test/Test.java -text
+perl/.project -text
 perl/src/CPAN.txt -text
 perl/src/Labkey/query/Build.PL -text
 perl/src/Labkey/query/Changes -text
@@ -110,6 +111,7 @@ perl/src/Labkey/query/Todo -text
 perl/src/Labkey/query/lib/Labkey/query.pm -text
 perl/src/Labkey/query/t/001_load.t -text
 perl/src/latest/Labkey-query-0.01.tar.gz -text
+perl/src/latest/Labkey-query-0.02.tar.gz -text
 sas/MorePeople.xls -text
 sas/People.xls -text
 sas/build.xml -text

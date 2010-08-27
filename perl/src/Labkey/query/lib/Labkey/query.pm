@@ -8,12 +8,12 @@ Labkey::query
 
 use Labkey::query;
 
-my $results = Labkey::query::selectRows(
-	-baseUrl => 'http://labkey.com:8080/labkey/',
-	-containerPath => '/myFolder',
-	-project => 'shared',
-	-schemaName => 'lists',
-	-queryName => 'mid_tags',
+	my $results = Labkey::query::selectRows(
+		-baseUrl => 'http://labkey.com:8080/labkey/',
+		-containerPath => '/myFolder',
+		-project => 'shared',
+		-schemaName => 'lists',
+		-queryName => 'mid_tags',
 	);
 		
 =head1 ABSTRACT
@@ -61,7 +61,7 @@ use File::HomeDir;
 use Carp;
 use vars qw($VERSION);
 
-our $VERSION = "0.01";
+our $VERSION = "0.02";
 
 
 
@@ -69,18 +69,21 @@ our $VERSION = "0.01";
 
 selectRows() can be used to query data from LabKey server
 	
-my $results = Labkey::query::selectRows(
-	-baseUrl => 'http://labkey.com:8080/labkey/',
-	-containerPath => '/myFolder',
-	-project => 'shared',
-	-schemaName => 'lists',
-	-queryName => 'mid_tags',
+	my $results = Labkey::query::selectRows(
+		-baseUrl => 'http://labkey.com:8080/labkey/',
+		-containerPath => '/myFolder',
+		-project => 'shared',
+		-schemaName => 'lists',
+		-queryName => 'mid_tags',
 	);
 
-#also supported:
--viewName => 'view1',
--filterArray => [['file_active', 'eq', 1], ['species', 'neq', 'zebra']], 
--debug => 1,  #will result in a more vebose output
+	also supported:
+	-viewName => 'view1',
+	-filterArray => [
+		['file_active', 'eq', 1], 
+		['species', 'neq', 'zebra']
+	], 
+	-debug => 1,  #will result in a more verbose output
  
 =cut
 
@@ -150,19 +153,22 @@ sub selectRows {
 
 insertRows() can be used to insert records into a LabKey table
 
-my $insert = Labkey::query::insertRows(
-	-baseUrl => 'http://labkey.com:8080/labkey/',
-	-containerPath => '/myFolder',
-	-project => 'home',
-	-schemaName => 'lists',
-	-queryName => 'backup',
-	-rows => [
-		{"JobName" => 'jobName', "Status" => $status, "Log" => $log, "Date" => $date}
-		],
+	my $insert = Labkey::query::insertRows(
+		-baseUrl => 'http://labkey.com:8080/labkey/',
+		-containerPath => '/myFolder',
+		-project => 'home',
+		-schemaName => 'lists',
+		-queryName => 'backup',
+		-rows => [{
+			"JobName" => 'jobName', 
+			"Status" => $status, 
+			"Log" => $log, 
+			"Date" => $date
+		}],
 	);
  
-#also supported:
--debug => 1,  #will result in a more vebose output 
+	also supported:
+	-debug => 1,  #will result in a more verbose output 
 
 =cut
 
@@ -234,19 +240,22 @@ sub insertRows {
 
 updateRows() can be used to update records in a LabKey table
 
-my $update = Labkey::query::updateRows(
-	-baseUrl => 'http://labkey.com:8080/labkey/',
-	-containerPath => '/myFolder',
-	-project => 'home',
-	-schemaName => 'lists',
-	-queryName => 'backup',
-	-rows => [
-		{"JobName" => 'jobName', "Status" => $status, "Log" => $log, "Date" => $date}
-		],
+	my $update = Labkey::query::updateRows(
+		-baseUrl => 'http://labkey.com:8080/labkey/',
+		-containerPath => '/myFolder',
+		-project => 'home',
+		-schemaName => 'lists',
+		-queryName => 'backup',
+		-rows => [{
+			"JobName" => 'jobName', 
+			"Status" => $status, 
+			"Log" => $log, 
+			"Date" => $date
+		}],
 	);
 		
-#also supported:
--debug => 1,  #will result in a more vebose output
+	also supported:
+	-debug => 1,  #will result in a more verbose output
  
 =cut
 
