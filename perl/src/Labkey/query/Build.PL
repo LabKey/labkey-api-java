@@ -9,9 +9,10 @@ Module::Build->new
                  'LWP::UserAgent' => 0,
                  'HTTP::Request' => 0,
                  'Data::Dumper' => 0,
-                 'JSON' => 0,
+                 'JSON' => 2,
                  'File::Spec' => 0,
                  'File::HomeDir' => 0,
+                 'FileHandle' => 0,
                },	
 	dist_abstract => 'For interacting with data in LabKey Server',
     )->create_build_script;

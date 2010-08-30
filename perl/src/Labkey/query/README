@@ -17,7 +17,7 @@ ABSTRACT
     For interacting with data in LabKey Server
 
 DESCRIPTION
-    This module is deisgned to simplify querying and inserting data to and
+    This module is designed to simplify querying and inserting data to and
     from LabKey Server. It should more or less replicate the javascript APIs
     LABKEY.query.selectRows(), .updateRows() and .insertRows()
 
