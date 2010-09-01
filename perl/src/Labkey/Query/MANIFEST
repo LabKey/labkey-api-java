@@ -4,6 +4,5 @@ LICENSE
 Todo
 Changes
 Build.PL
-lib/Labkey/query.pm
+lib/Labkey/Query.pm
 t/001_load.t
-META.yml

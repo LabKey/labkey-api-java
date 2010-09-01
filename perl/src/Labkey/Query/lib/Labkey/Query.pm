@@ -2,13 +2,12 @@
 
 =head1 NAME
 
-Labkey::query
+Labkey::Query
 
 =head1 SYNOPSIS
 
-use Labkey::query;
-
-	my $results = Labkey::query::selectRows(
+	use Labkey::Query;
+	my $results = Labkey::Query::selectRows(
 		-baseUrl => 'http://labkey.com:8080/labkey/',
 		-containerPath => '/myFolder',
 		-project => 'shared',
@@ -49,7 +48,7 @@ Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/L
 
 =cut
 
-package Labkey::query;
+package Labkey::Query;
 
 use strict;
 use LWP::UserAgent;
@@ -62,7 +61,7 @@ use File::HomeDir;
 use Carp;
 use vars qw($VERSION);
 
-our $VERSION = "0.02";
+our $VERSION = "0.04";
 
 
 
@@ -70,7 +69,7 @@ our $VERSION = "0.02";
 
 selectRows() can be used to query data from LabKey server
 	
-	my $results = Labkey::query::selectRows(
+	my $results = Labkey::Query::selectRows(
 		-baseUrl => 'http://labkey.com:8080/labkey/',
 		-containerPath => '/myFolder',
 		-project => 'shared',
@@ -154,7 +153,7 @@ sub selectRows {
 
 insertRows() can be used to insert records into a LabKey table
 
-	my $insert = Labkey::query::insertRows(
+	my $insert = Labkey::Query::insertRows(
 		-baseUrl => 'http://labkey.com:8080/labkey/',
 		-containerPath => '/myFolder',
 		-project => 'home',
@@ -241,7 +240,7 @@ sub insertRows {
 
 updateRows() can be used to update records in a LabKey table
 
-	my $update = Labkey::query::updateRows(
+	my $update = Labkey::Query::updateRows(
 		-baseUrl => 'http://labkey.com:8080/labkey/',
 		-containerPath => '/myFolder',
 		-project => 'home',

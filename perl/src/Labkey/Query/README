@@ -1,10 +1,16 @@
 NAME
-    Labkey::query
+    Labkey::Query
 
 SYNOPSIS
 
-    use Labkey::query;
-
+    use Labkey::Query;
+    my $results = Labkey::Query::selectRows( 
+	    -baseUrl => 'http://labkey.com:8080/labkey/', 
+	    -containerPath => '/myFolder',
+	    -project => 'shared', 
+	    -schemaName => 'lists', 
+	    -queryName => 'mid_tags',
+	    );
     my $results = Labkey::query::selectRows( 
 	    -baseUrl => 'http://labkey.com:8080/labkey/', 
 	    -containerPath => '/myFolder',
@@ -19,7 +25,7 @@ ABSTRACT
 DESCRIPTION
     This module is designed to simplify querying and inserting data to and
     from LabKey Server. It should more or less replicate the javascript APIs
-    LABKEY.query.selectRows(), .updateRows() and .insertRows()
+    LABKEY.Query.selectRows(), .updateRows() and .insertRows()
 
     After the module is installed, you will need to create a .netrc file in
     the home directory of the user running the perl script. Documentation on
@@ -46,7 +52,7 @@ selectRows()
 
     Can be used to query data from LabKey server
 
-    my $results = Labkey::query::selectRows( 
+    my $results = Labkey::Query::selectRows( 
 	    -baseUrl => 'http://labkey.com:8080/labkey/', 
 	    -containerPath => '/myFolder',
 	    -project => 'shared', 
@@ -63,7 +69,7 @@ insertRows()
 
     Can be used to insert records into a LabKey table
 
-    my $insert = Labkey::query::insertRows( 
+    my $insert = Labkey::Query::insertRows( 
     	-baseUrl => 'http://labkey.com:8080/labkey/', 
     	-containerPath => '/myFolder',
     	-project => 'home', 
@@ -79,7 +85,7 @@ updateRows()
     
     Can be used to update records in a LabKey table
 
-    my $update = Labkey::query::updateRows( 
+    my $update = Labkey::Query::updateRows( 
     	-baseUrl => 'http://labkey.com:8080/labkey/', 
     	-containerPath => '/myFolder',
     	-project => 'home', 

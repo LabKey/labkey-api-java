@@ -4,7 +4,7 @@
 
 use Test::More tests => 2;
 
-BEGIN { use_ok( 'Labkey::query' ); }
+BEGIN { use_ok( 'Labkey::Query' ); }
 
 ok (Labkey::query->can('selectRows'));
 
