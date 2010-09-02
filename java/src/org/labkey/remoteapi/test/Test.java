@@ -132,7 +132,7 @@ public class Test
         nabCommand.setIncludeStats(false);
         nabCommand.setIncludeWells(false);
        // nabCommand.addFilter(new Filter("Name", "m0902051", Filter.Operator.STARTS_WITH));
-        nabCommand.addSort(new Sort("RunProperties/VirusName", Sort.Direction.ASCENDING));
+        nabCommand.addSort(new Sort("VirusName", Sort.Direction.ASCENDING));
         NAbRunsResponse runResponse = nabCommand.execute(cn, folderPath);
         NAbRun[] runs = runResponse.getRuns();
         int totalSamples = 0;
