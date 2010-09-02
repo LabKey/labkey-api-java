@@ -5,3 +5,6 @@ perl Build manifest
 perl Build dist
 
 This will make a tar file which you should upload.
+
+To create README from POD:
+pod2text [input file] [output file]

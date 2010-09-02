@@ -9,3 +9,6 @@ Revision history for Perl module Labkey::Query
 	- typo in documentation	 
 0.04 Thu Aug 31 2010
 	- capitalized 'Query' to better follow conventions	 
+0.05 Fri Sept 1 2010
+	- Added deleteRows() and executeSql().  
+	- Switched all APIs to use single '-containerPath' param instead of '-project' and '-containerPath' 	

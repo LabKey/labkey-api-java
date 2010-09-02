@@ -2,30 +2,21 @@ NAME
     Labkey::Query
 
 SYNOPSIS
-
-    use Labkey::Query;
-    my $results = Labkey::Query::selectRows( 
-	    -baseUrl => 'http://labkey.com:8080/labkey/', 
-	    -containerPath => '/myFolder',
-	    -project => 'shared', 
-	    -schemaName => 'lists', 
-	    -queryName => 'mid_tags',
-	    );
-    my $results = Labkey::query::selectRows( 
-	    -baseUrl => 'http://labkey.com:8080/labkey/', 
-	    -containerPath => '/myFolder',
-	    -project => 'shared', 
-	    -schemaName => 'lists', 
-	    -queryName => 'mid_tags',
-	    );
+            use Labkey::Query;
+            my $results = Labkey::Query::selectRows(
+                    -baseUrl => 'http://labkey.com:8080/labkey/',
+                    -containerPath => 'myFolder/',
+                    -schemaName => 'lists',
+                    -queryName => 'mid_tags',
+            );
 
 ABSTRACT
     For interacting with data in LabKey Server
 
 DESCRIPTION
-    This module is designed to simplify querying and inserting data to and
-    from LabKey Server. It should more or less replicate the javascript APIs
-    LABKEY.Query.selectRows(), .updateRows() and .insertRows()
+    This module is designed to simplify querying and manipulating data in
+    LabKey Server. It should more or less replicate the javascript APIs of
+    the same names.
 
     After the module is installed, you will need to create a .netrc file in
     the home directory of the user running the perl script. Documentation on
@@ -33,7 +24,7 @@ DESCRIPTION
     https://www.labkey.org/wiki/home/Documentation/page.view?name=netrc
 
 SEE ALSO
-    The LabKey client APIs are described in great detail here:
+    The LabKey client APIs are described in greater detail here:
     https://www.labkey.org/wiki/home/Documentation/page.view?name=viewAPIs
 
     Support questions should be directed to the LabKey forum:
@@ -49,51 +40,119 @@ COPYRIGHT
     http://www.apache.org/licenses/LICENSE-2.0
 
 selectRows()
+    selectRows() can be used to query data from LabKey server
 
-    Can be used to query data from LabKey server
+    The following are the minimum required params:
 
-    my $results = Labkey::Query::selectRows( 
-	    -baseUrl => 'http://labkey.com:8080/labkey/', 
-	    -containerPath => '/myFolder',
-	    -project => 'shared', 
-	    -schemaName => 'lists', 
-	    -queryName => 'mid_tags',
-	    );
+            my $results = Labkey::Query::selectRows(
+                    -baseUrl => 'http://labkey.com:8080/labkey/',
+                    -containerPath => 'myFolder/',
+                    -schemaName => 'lists',
+                    -queryName => 'mid_tags',
+            );
 
-    #also supported: 
-    -viewName => 'view1', 
-    -filterArray => [['file_active', 'eq', 1], ['species', 'neq', 'zebra']], 
-    -debug => 1, #will result in a more vebose output
+    The following are optional:
+
+            -viewName => 'view1',
+            -filterArray => [
+                    ['file_active', 'eq', 1], 
+                    ['species', 'neq', 'zebra']
+            ], 
+            -maxRows => 10  #the max number of rows returned
+            -sort => 'ColumnA,ColumnB'      #sort order used for this query
+            -offset => 100  #the offset used when running the query
+            -columns => 'ColumnA,ColumnB'  #A comma-delimited list of column names to include in the results.
+            -debug => 1,    #will result in a more verbose output
+            
+        NOTE: The environment variable 'LABKEY_URL' can be used instead of supplying a '-baseUrl' param
 
 insertRows()
+    insertRows() can be used to insert records into a LabKey table
 
-    Can be used to insert records into a LabKey table
+    The following are the minimum required params:
 
-    my $insert = Labkey::Query::insertRows( 
-    	-baseUrl => 'http://labkey.com:8080/labkey/', 
-    	-containerPath => '/myFolder',
-    	-project => 'home', 
-    	-schemaName => 'lists', 
-    	-queryName => 'backup',
-    	-rows => [ {"JobName" => 'jobName', "Status" => $status, "Log" => $log, "Date" => $date} ], 
-		);
+            my $insert = Labkey::Query::insertRows(
+                    -baseUrl => 'http://labkey.com:8080/labkey/',
+                    -containerPath => 'myFolder/',
+                    -schemaName => 'lists',
+                    -queryName => 'backup',
+                    -rows => [{
+                            "JobName" => 'jobName', 
+                            "Status" => $status, 
+                            "Log" => $log, 
+                            "Date" => $date
+                    }],
+            );
 
-    #also supported: 
-    -debug => 1, #will result in a more vebose output
+    The following are optional:
+
+            -debug => 1,  #will result in a more verbose output
+
+    NOTE: The environment variable 'LABKEY_URL' can be used instead of
+    supplying a '-baseUrl' param
 
 updateRows()
-    
-    Can be used to update records in a LabKey table
+    updateRows() can be used to update records in a LabKey table
 
-    my $update = Labkey::Query::updateRows( 
-    	-baseUrl => 'http://labkey.com:8080/labkey/', 
-    	-containerPath => '/myFolder',
-    	-project => 'home', 
-    	-schemaName => 'lists', 
-    	-queryName => 'backup',
-    	-rows => [ {"JobName" => 'jobName', "Status" => $status, "Log" => $log, "Date" => $date} ], 
-    	);
+    The following are the minimum required params:
 
-    #also supported: 
-    -debug => 1, #will result in a more verbose output
+            my $update = Labkey::Query::updateRows(
+                    -baseUrl => 'http://labkey.com:8080/labkey/',
+                    -containerPath => 'myFolder/',
+                    -schemaName => 'lists',
+                    -queryName => 'backup',
+                    -rows => [{
+                            "JobName" => 'jobName', 
+                            "Status" => $status, 
+                            "Log" => $log, 
+                            "Date" => $date
+                    }],
+            );
 
+    The following are optional:
+
+            -debug => 1,  #will result in a more verbose output
+
+    NOTE: The environment variable 'LABKEY_URL' can be used instead of
+    supplying a '-baseUrl' param
+
+deleteRows()
+    deleteRows() can be used to delete records in a LabKey table
+
+    The following are the minimum required params:
+
+            my $update = Labkey::Query::deleteRows(
+                    -baseUrl => 'http://labkey.com:8080/labkey/',
+                    -containerPath => 'myFolder/',
+                    -schemaName => 'lists',
+                    -queryName => 'backup',
+                    -rows => [{
+                            "Key" => '12', 
+                    }],
+            );
+
+    The following are optional:
+
+            -debug => 1,  #will result in a more verbose output
+
+    NOTE: The environment variable 'LABKEY_URL' can be used instead of
+    supplying a '-baseUrl' param
+
+executeSql()
+    executeSql() can be used to execute arbitrary SQL
+
+    The following are the minimum required params:
+
+            my $result = Labkey::Query::executeSql(
+                    -baseUrl => 'http://labkey.com:8080/labkey/',
+                    -containerPath => 'myFolder/',
+                    -schemaName => 'study',
+                    -sql => 'select MyDataset.foo, MyDataset.bar from MyDataset',
+            );
+
+    The following are optional:
+
+            -debug => 1,  #will result in a more verbose output
+
+    NOTE: The environment variable 'LABKEY_URL' can be used instead of
+    supplying a '-baseUrl' param

@@ -9,8 +9,7 @@ Labkey::Query
 	use Labkey::Query;
 	my $results = Labkey::Query::selectRows(
 		-baseUrl => 'http://labkey.com:8080/labkey/',
-		-containerPath => '/myFolder',
-		-project => 'shared',
+		-containerPath => 'myFolder/',
 		-schemaName => 'lists',
 		-queryName => 'mid_tags',
 	);
@@ -21,7 +20,7 @@ For interacting with data in LabKey Server
 
 =head1 DESCRIPTION
 
-This module is designed to simplify querying and inserting data to and from LabKey Server.  It should more or less replicate the javascript APIs LABKEY.query.selectRows(), .updateRows() and .insertRows() 
+This module is designed to simplify querying and manipulating data in LabKey Server.  It should more or less replicate the javascript APIs of the same names. 
 
 After the module is installed, you will need to create a .netrc file in the home directory of the user
 running the perl script.  Documentation on .netrc can be found here:
@@ -29,7 +28,7 @@ https://www.labkey.org/wiki/home/Documentation/page.view?name=netrc
 
 =head1 SEE ALSO
 
-The LabKey client APIs are described in great detail here:
+The LabKey client APIs are described in greater detail here:
 https://www.labkey.org/wiki/home/Documentation/page.view?name=viewAPIs
 
 Support questions should be directed to the LabKey forum:
@@ -61,30 +60,38 @@ use File::HomeDir;
 use Carp;
 use vars qw($VERSION);
 
-our $VERSION = "0.04";
+our $VERSION = "0.05";
 
 
 
 =head1 selectRows()
 
 selectRows() can be used to query data from LabKey server
-	
+
+The following are the minimum required params:
+		
 	my $results = Labkey::Query::selectRows(
 		-baseUrl => 'http://labkey.com:8080/labkey/',
-		-containerPath => '/myFolder',
-		-project => 'shared',
+		-containerPath => 'myFolder/',
 		-schemaName => 'lists',
 		-queryName => 'mid_tags',
 	);
 
-	also supported:
+The following are optional:
+
 	-viewName => 'view1',
 	-filterArray => [
 		['file_active', 'eq', 1], 
 		['species', 'neq', 'zebra']
 	], 
-	-debug => 1,  #will result in a more verbose output
- 
+	-maxRows => 10	#the max number of rows returned
+	-sort => 'ColumnA,ColumnB'	#sort order used for this query
+	-offset => 100	#the offset used when running the query
+	-columns => 'ColumnA,ColumnB'  #A comma-delimited list of column names to include in the results.
+	-debug => 1,	#will result in a more verbose output
+	
+	NOTE: The environment variable 'LABKEY_URL' can be used instead of supplying a '-baseUrl' param 
+
 =cut
 
 sub selectRows {
@@ -95,7 +102,7 @@ sub selectRows {
 	$args{'-baseUrl'} ||= $ENV{LABKEY_URL};
 	
 	#sanity checking
-	my @required = ( '-project', '-queryName', '-schemaName', '-baseUrl' );
+	my @required = ( '-containerPath', '-queryName', '-schemaName', '-baseUrl' );
 	foreach (@required) {
 		if ( !$args{$_} ) { croak("ERROR: Missing required param: $_") }
 	}
@@ -108,15 +115,11 @@ sub selectRows {
 
 	my $lk_config = _readrc( $args{-machine} );
 
-	my $ua = new LWP::UserAgent;
-	$ua->agent("Perl API Client/1.0");
-
 	my $url =
-	    $args{'-baseUrl'} 
+	    _normalizeSlash($args{'-baseUrl'}) 
 	  . "query/"
-	  . $args{'-project'}
-	  . ($args{'-containerPath'} ? $args{'-containerPath'} : '')
-	  . "/getQuery.api?schemaName="
+	  . _normalizeSlash($args{'-containerPath'})
+	  . "getQuery.api?schemaName="
 	  . $args{'-schemaName'}
 	  . "&query.queryName="
 	  . $args{'-queryName'};
@@ -125,15 +128,19 @@ sub selectRows {
 		$url .= "&query." . ( @{$_}[0] ) . "~" . @{$_}[1] . "=" . ( @{$_}[2] );
 	}
 
-	if ( $args{'-viewName'} ) {
-		$url .= "&query.viewName=" . ( $args{'-viewName'} );
+	foreach ('viewName', 'offset', 'sort', 'maxRows', 'columns'){
+		if ( $args{'-'.$_} ) {
+			$url .= "&query.".$_."=" . ( $args{'-'.$_} );
+		}		
 	}
-
+		
 	print $url if $args{-debug};
 
 	#Fetch the actual data from the query
 	my $request = HTTP::Request->new( "GET" => $url );
 	$request->authorization_basic( $$lk_config{'login'}, $$lk_config{'password'} );
+	my $ua = new LWP::UserAgent;
+	$ua->agent("Perl API Client/1.0");
 	my $response = $ua->request($request);
 
 	# Simple error checking
@@ -153,10 +160,11 @@ sub selectRows {
 
 insertRows() can be used to insert records into a LabKey table
 
+The following are the minimum required params:
+
 	my $insert = Labkey::Query::insertRows(
 		-baseUrl => 'http://labkey.com:8080/labkey/',
-		-containerPath => '/myFolder',
-		-project => 'home',
+		-containerPath => 'myFolder/',
 		-schemaName => 'lists',
 		-queryName => 'backup',
 		-rows => [{
@@ -167,8 +175,11 @@ insertRows() can be used to insert records into a LabKey table
 		}],
 	);
  
-	also supported:
+The following are optional:
+
 	-debug => 1,  #will result in a more verbose output 
+
+NOTE: The environment variable 'LABKEY_URL' can be used instead of supplying a '-baseUrl' param
 
 =cut
 
@@ -179,7 +190,7 @@ sub insertRows {
 	$args{'-baseUrl'} ||= $ENV{LABKEY_URL};
 
 	#sanity checking
-	my @required = ( '-project', '-queryName', '-schemaName', '-baseUrl', '-rows' );
+	my @required = ( '-containerPath', '-queryName', '-schemaName', '-baseUrl', '-rows' );
 	foreach (@required) {
 		if ( !$args{$_} ) { croak("ERROR: Missing required param: $_") }
 	}	
@@ -192,46 +203,22 @@ sub insertRows {
 	
 	my $lk_config = _readrc( $args{-machine} );
 
-	my $ua = new LWP::UserAgent;
-	$ua->agent("Perl API Client/1.0");
-
 	my $url =
-	    $args{'-baseUrl'} 
+	    _normalizeSlash($args{'-baseUrl'}) 
 	  . "query/"
-	  . $args{'-project'}
-	  . ($args{'-containerPath'} ? $args{'-containerPath'} : '')
-	  . "/insertRows.api";
+	  . _normalizeSlash($args{'-containerPath'})
+	  . "insertRows.api";
 
 	print $url if $args{-debug};
 
 	my $data = {
 		"schemaName" => $args{'-schemaName'},
 		"queryName"  => $args{'-queryName'},
-		"command"    => "insert",
 		"rows"       => $args{'-rows'}
 	};
 
-	my $json_obj = JSON->new->utf8->encode($data);
-
-	#insert the row
-	my $req = new HTTP::Request;
-	$req->method('POST');
-	$req->url($url);
-	$req->content_type('application/json');
-	$req->content($json_obj);
-	$req->authorization_basic( $$lk_config{'login'}, $$lk_config{'password'} );
-	my $response = $ua->request($req);
-
-	# Simple error checking
-	if ( $response->is_error ) {
-		croak($response->status_line);
-	}
-
-	#print Dumper($response);
-	$json_obj = JSON->new->utf8->decode( $response->content )
-	  || croak("ERROR: Unable to decode JSON.\n$url\n");
-
-	return $json_obj;
+	my $response = _postData($url, $data, $lk_config);
+	return $response;
 
 }
 
@@ -240,10 +227,11 @@ sub insertRows {
 
 updateRows() can be used to update records in a LabKey table
 
+The following are the minimum required params:
+
 	my $update = Labkey::Query::updateRows(
 		-baseUrl => 'http://labkey.com:8080/labkey/',
-		-containerPath => '/myFolder',
-		-project => 'home',
+		-containerPath => 'myFolder/',
 		-schemaName => 'lists',
 		-queryName => 'backup',
 		-rows => [{
@@ -254,9 +242,12 @@ updateRows() can be used to update records in a LabKey table
 		}],
 	);
 		
-	also supported:
+The following are optional:
+
 	-debug => 1,  #will result in a more verbose output
- 
+
+NOTE: The environment variable 'LABKEY_URL' can be used instead of supplying a '-baseUrl' param
+	 
 =cut
 
 sub updateRows {
@@ -266,7 +257,7 @@ sub updateRows {
 	$args{'-baseUrl'} ||= $ENV{LABKEY_URL};
 
 	#sanity checking
-	my @required = ( '-project', '-queryName', '-schemaName', '-baseUrl', '-rows' );
+	my @required = ( '-containerPath', '-queryName', '-schemaName', '-baseUrl', '-rows' );
 	foreach (@required) {
 		if ( !$args{$_} ) { croak("ERROR: Missing required param: $_") }
 	}
@@ -278,47 +269,147 @@ sub updateRows {
 	}
 	my $lk_config = _readrc( $args{-machine} );
 
-	my $ua = new LWP::UserAgent;
-	$ua->agent("Perl API Client/1.0");
-
 	my $url =
-	    $args{'-baseUrl'} 
+	    _normalizeSlash($args{'-baseUrl'}) 
 	  . "query/"
-	  . $args{'-project'}
-	  . ($args{'-containerPath'} ? $args{'-containerPath'} : '')
-	  . "/updateRows.api";
+	  . _normalizeSlash($args{'-containerPath'})
+	  . "updateRows.api";
 
 	print $url if $args{-debug};
 
 	my $data = {
 		"schemaName" => $args{'-schemaName'},
 		"queryName"  => $args{'-queryName'},
-		"command"    => "update",
 		"rows"       => $args{'-rows'}
 	};
 
-	my $json_obj = JSON->new->utf8->encode($data);
-
-	my $req = new HTTP::Request;
-	$req->method('POST');
-	$req->url($url);
-	$req->content_type('application/json');
-	$req->content($json_obj);
-	$req->authorization_basic( $$lk_config{'login'}, $$lk_config{'password'} );
-	my $response = $ua->request($req);
-
-	# Simple error checking
-	if ( $response->is_error ) {
-		croak($response->status_line);
-	}
-
-	#print Dumper($response);
-	$json_obj = JSON->new->utf8->decode( $response->content )
-	  || croak("ERROR: Unable to decode JSON.\n$url\n");
-
-	return $json_obj;
+	my $response = _postData($url, $data, $lk_config);
+	return $response;
 
 }
+
+
+=head1 deleteRows()
+
+deleteRows() can be used to delete records in a LabKey table
+
+The following are the minimum required params:
+
+	my $update = Labkey::Query::deleteRows(
+		-baseUrl => 'http://labkey.com:8080/labkey/',
+		-containerPath => 'myFolder/',
+		-schemaName => 'lists',
+		-queryName => 'backup',
+		-rows => [{
+			"Key" => '12', 
+		}],
+	);
+		
+The following are optional:
+
+	-debug => 1,  #will result in a more verbose output
+
+NOTE: The environment variable 'LABKEY_URL' can be used instead of supplying a '-baseUrl' param
+	 
+=cut
+
+sub deleteRows {
+	my %args = @_;
+
+	#allow baseUrl as environment variable
+	$args{'-baseUrl'} ||= $ENV{LABKEY_URL};
+
+	#sanity checking
+	my @required = ( '-containerPath', '-queryName', '-schemaName', '-baseUrl', '-rows' );
+	foreach (@required) {
+		if ( !$args{$_} ) { croak("ERROR: Missing required param: $_") }
+	}
+
+	#if no machine supplied, extract domain from baseUrl 
+	if (!$args{'-machine'}){
+		my $url = URI->new($args{'-baseUrl'});
+		$args{'-machine'} = $url->host;
+	}
+	my $lk_config = _readrc( $args{-machine} );
+
+	my $url =
+	    _normalizeSlash($args{'-baseUrl'}) 
+	  . "query/"
+	  . _normalizeSlash($args{'-containerPath'})
+	  . "deleteRows.api";
+
+	print $url if $args{-debug};
+
+	my $data = {
+		"schemaName" => $args{'-schemaName'},
+		"queryName"  => $args{'-queryName'},
+		"rows"       => $args{'-rows'}
+	};
+
+	my $response = _postData($url, $data, $lk_config);
+	return $response;
+
+}
+
+
+=head1 executeSql()
+
+executeSql() can be used to execute arbitrary SQL
+
+The following are the minimum required params:
+
+	my $result = Labkey::Query::executeSql(
+		-baseUrl => 'http://labkey.com:8080/labkey/',
+		-containerPath => 'myFolder/',
+		-schemaName => 'study',
+		-sql => 'select MyDataset.foo, MyDataset.bar from MyDataset',
+	);
+		
+The following are optional:
+
+	-debug => 1,  #will result in a more verbose output
+
+NOTE: The environment variable 'LABKEY_URL' can be used instead of supplying a '-baseUrl' param
+	 
+=cut
+
+sub executeSql {
+	my %args = @_;
+
+	#allow baseUrl as environment variable
+	$args{'-baseUrl'} ||= $ENV{LABKEY_URL};
+
+	#sanity checking
+	my @required = ( '-containerPath', '-baseUrl', '-sql' );
+	foreach (@required) {
+		if ( !$args{$_} ) { croak("ERROR: Missing required param: $_") }
+	}
+
+	#if no machine supplied, extract domain from baseUrl 
+	if (!$args{'-machine'}){
+		my $url = URI->new($args{'-baseUrl'});
+		$args{'-machine'} = $url->host;
+	}
+	my $lk_config = _readrc( $args{-machine} );
+
+	my $url =
+	    _normalizeSlash($args{'-baseUrl'}) 
+	  . "query/"
+	  . _normalizeSlash($args{'-containerPath'})
+	  . "executeSql.api?";
+
+	print $url if $args{-debug};
+	
+	my $data = {
+		"schemaName" => $args{'-schemaName'},
+		"sql" => $args{'-sql'},			
+	};
+	
+	my $response = _postData($url, $data, $lk_config);
+	return $response;
+
+}
+
 
 
 
@@ -436,6 +527,44 @@ sub _readrc() {
 	croak("Missing login for host: $host") unless $auth->{login};
 
 	return $auth;
+}
+
+
+sub _normalizeSlash(){
+	my $containerPath = shift;
+		
+	$containerPath =~ s/^\///;
+	$containerPath =~ s/\/$//;	
+	$containerPath .= '/';
+	return $containerPath;
+}
+
+
+sub _postData(){
+	my ($url, $data, $lk_config) = @_;
+	
+	my $json_obj = JSON->new->utf8->encode($data);
+
+	my $req = new HTTP::Request;
+	$req->method('POST');
+	$req->url($url);
+	$req->content_type('application/json');
+	$req->content($json_obj);
+	$req->authorization_basic( $$lk_config{'login'}, $$lk_config{'password'} );
+	my $ua = new LWP::UserAgent;
+	$ua->agent("Perl API Client/1.0");
+	my $response = $ua->request($req);
+
+	# Simple error checking
+	if ( $response->is_error ) {
+		croak($response->status_line);
+	}
+
+	#print Dumper($response);
+	$json_obj = JSON->new->utf8->decode( $response->content )
+	  || croak("ERROR: Unable to decode JSON.\n$url\n");
+	  
+  	return $json_obj;	
 }
 
 
