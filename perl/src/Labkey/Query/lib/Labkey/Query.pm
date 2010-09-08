@@ -60,7 +60,7 @@ use File::HomeDir;
 use Carp;
 use vars qw($VERSION);
 
-our $VERSION = "0.05";
+our $VERSION = "0.06";
 
 
 
@@ -90,7 +90,7 @@ The following are optional:
 	-columns => 'ColumnA,ColumnB'  #A comma-delimited list of column names to include in the results.
 	-debug => 1,	#will result in a more verbose output
 	
-	NOTE: The environment variable 'LABKEY_URL' can be used instead of supplying a '-baseUrl' param 
+NOTE: The environment variable 'LABKEY_URL' can be used instead of supplying a '-baseUrl' param 
 
 =cut
 
