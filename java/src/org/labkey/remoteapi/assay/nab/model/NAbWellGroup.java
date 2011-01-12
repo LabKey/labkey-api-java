@@ -15,15 +15,14 @@
  */
 package org.labkey.remoteapi.assay.nab.model;
 
-import java.util.Map;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.HashMap;/*
+import java.util.Map;
+
+/*
  * User: brittp
  * Date: May 15, 2009
  * Time: 1:20:49 PM
  */
-
 public class NAbWellGroup
 {
     private Long _min;

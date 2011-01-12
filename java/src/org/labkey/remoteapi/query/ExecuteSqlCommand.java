@@ -16,12 +16,7 @@
 package org.labkey.remoteapi.query;
 
 import org.json.simple.JSONObject;
-import org.labkey.remoteapi.CommandException;
-import org.labkey.remoteapi.CommandResponse;
-import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.PostCommand;
-
-import java.io.IOException;
 
 /*
 * User: Dave

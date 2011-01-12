@@ -15,16 +15,16 @@
  */
 package org.labkey.remoteapi.query;
 
-import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
-import org.labkey.remoteapi.CommandException;
-import org.labkey.remoteapi.CommandResponse;
-import org.labkey.remoteapi.Connection;
+import org.json.simple.JSONObject;
 import org.labkey.remoteapi.PostCommand;
 
-import java.io.IOException;
-import java.util.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /*
 * User: Dave

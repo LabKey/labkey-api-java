@@ -15,14 +15,9 @@
  */
 package org.labkey.remoteapi.assay;
 
-import org.apache.commons.codec.EncoderException;
-import org.labkey.remoteapi.Command;
-import org.labkey.remoteapi.CommandResponse;
-import org.labkey.remoteapi.Connection;
-import org.labkey.remoteapi.CommandException;
 import org.json.simple.JSONObject;
+import org.labkey.remoteapi.Command;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 

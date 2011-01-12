@@ -15,13 +15,9 @@
  */
 package org.labkey.remoteapi.assay.nab;
 
-import org.labkey.remoteapi.Connection;
-import org.labkey.remoteapi.CommandException;
-import org.labkey.remoteapi.CommandResponse;
-import org.labkey.remoteapi.query.BaseQueryCommand;
 import org.json.simple.JSONObject;
+import org.labkey.remoteapi.query.BaseQueryCommand;
 
-import java.io.IOException;
 import java.util.Map;
 
 /*

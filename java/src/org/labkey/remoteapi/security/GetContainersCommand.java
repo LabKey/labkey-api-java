@@ -17,11 +17,7 @@ package org.labkey.remoteapi.security;
 
 import org.json.simple.JSONObject;
 import org.labkey.remoteapi.Command;
-import org.labkey.remoteapi.CommandException;
-import org.labkey.remoteapi.CommandResponse;
-import org.labkey.remoteapi.Connection;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 

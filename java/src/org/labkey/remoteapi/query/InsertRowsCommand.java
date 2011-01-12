@@ -15,8 +15,6 @@
  */
 package org.labkey.remoteapi.query;
 
-import org.labkey.remoteapi.PostCommand;
-
 /*
 * User: Dave
 * Date: Jul 11, 2008
