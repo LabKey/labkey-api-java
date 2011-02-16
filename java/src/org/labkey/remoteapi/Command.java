@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.Collection;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -391,14 +392,16 @@ public class Command<ResponseType extends CommandResponse>
             for(String name : params.keySet())
             {
                 Object value = params.get(name);
-                String strValue = null == value ? null : getParamValueAsString(value, name);
-                if(null != strValue)
+                if (value instanceof Collection)
                 {
-                    if(qstring.length() > 0)
-                        qstring.append('&');
-                    qstring.append(urlCodec.encode(name));
-                    qstring.append('=');
-                    qstring.append(urlCodec.encode(strValue));
+                    for (Object o : ((Collection) value))
+                    {
+                        appendParameter(qstring, urlCodec, name, o);
+                    }
+                }
+                else
+                {
+                    appendParameter(qstring, urlCodec, name, value);
                 }
             }
         }
@@ -408,6 +411,20 @@ public class Command<ResponseType extends CommandResponse>
         }
 
         return qstring.length() > 0 ? qstring.toString() : null;
+    }
+
+    private void appendParameter(StringBuilder qstring, URLCodec urlCodec, String name, Object value)
+            throws EncoderException
+    {
+        String strValue = null == value ? null : getParamValueAsString(value, name);
+        if(null != strValue)
+        {
+            if(qstring.length() > 0)
+                qstring.append('&');
+            qstring.append(urlCodec.encode(name));
+            qstring.append('=');
+            qstring.append(urlCodec.encode(strValue));
+        }
     }
 
     /**

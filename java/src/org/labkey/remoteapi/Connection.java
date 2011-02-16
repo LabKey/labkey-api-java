@@ -219,7 +219,7 @@ public class Connection
                 _client.getParams().setAuthenticationPreemptive(true);
             }
         }
-        else
+        else if (_client.getState().getCookies().length > 0)
         {
             //clear preemptive auth setting for subsequent requests
             //as the HttpClient library will send the session id cookie

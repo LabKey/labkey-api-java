@@ -32,6 +32,10 @@ java/src/org/labkey/remoteapi/assay/nab/model/NAbSample.java -text
 java/src/org/labkey/remoteapi/assay/nab/model/NAbWell.java -text
 java/src/org/labkey/remoteapi/assay/nab/model/NAbWellGroup.java -text
 java/src/org/labkey/remoteapi/collections/CaseInsensitiveHashMap.java -text
+java/src/org/labkey/remoteapi/ms2/StartSearchCommand.java -text
+java/src/org/labkey/remoteapi/ms2/StartSearchResponse.java -text
+java/src/org/labkey/remoteapi/pipeline/FileNotificationCommand.java -text
+java/src/org/labkey/remoteapi/pipeline/FileNotificationResponse.java -text
 java/src/org/labkey/remoteapi/query/BaseQueryCommand.java -text
 java/src/org/labkey/remoteapi/query/BaseSelect.java -text
 java/src/org/labkey/remoteapi/query/ContainerFilter.java -text
