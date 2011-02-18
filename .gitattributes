@@ -99,7 +99,10 @@ java/src/org/labkey/remoteapi/security/GroupMembersCommand.java -text
 java/src/org/labkey/remoteapi/security/RemoveGroupMembersCommand.java -text
 java/src/org/labkey/remoteapi/security/RenameGroupCommand.java -text
 java/src/org/labkey/remoteapi/security/RenameGroupResponse.java -text
+java/src/org/labkey/remoteapi/test/ClientConfig.java -text
 java/src/org/labkey/remoteapi/test/Demo.java -text
+java/src/org/labkey/remoteapi/test/MS2SearchClient.java -text
+java/src/org/labkey/remoteapi/test/PipelineFileAvailableClient.java -text
 java/src/org/labkey/remoteapi/test/SaveAssayBatchDemo.java -text
 java/src/org/labkey/remoteapi/test/Test.java -text
 perl/.project -text

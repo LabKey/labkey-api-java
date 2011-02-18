@@ -56,10 +56,10 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/build/jar/labkey-remote-api-9.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/opencsv-2.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
