@@ -4,14 +4,9 @@
         <property name="server.dir" value="${basedir}/../../server"/>
         <property file="${server.dir}/version.properties" />
 
-        <!-- See if TeamCity has a product version; if not, use value from version.properties file -->
-        <condition property="product.version" value="${teamcity.product.version}" else="${svn.product.version}">
-            <isset property="teamcity.product.version" />
-        </condition>
-
         <!-- If we're being called from the installer's build.xml, labkey.version will already be set to the right build number -->
         <property name="labkey.version" value="${product.version}" />
-
+        
         <property name="macros.dir" value="${basedir}/macros"/>
         <property name="dist.dir" value="${basedir}/../../dist/client-api/sas"/>
         <property name="lib.dir" value="${basedir}/../java/lib"/>
