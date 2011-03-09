@@ -7,6 +7,11 @@
         <property name="server.dir" value="../../server"/>
         <property file="${server.dir}/version.properties" />
 
+        <!-- See if TeamCity has a product version; if not, use value from version.properties file -->
+        <condition property="product.version" value="${teamcity.product.version}" else="${svn.product.version}">
+            <isset property="teamcity.product.version" />
+        </condition>
+
         <property name="source.dir" value="${basedir}/src"/>
         <property name="build.dir" value="${basedir}/../../build/client-api/java"/>
         <property name="build.classes.dir" value="${build.dir}/classes"/>
