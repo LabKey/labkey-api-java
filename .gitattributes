@@ -116,6 +116,7 @@ perl/src/Labkey/Query/README -text
 perl/src/Labkey/Query/Todo -text
 perl/src/Labkey/Query/lib/Labkey/Query.pm -text
 perl/src/Labkey/Query/t/001_load.t -text
+perl/src/labkey_api.pl -text
 perl/src/latest/Labkey-Query-0.04.tar.gz -text
 perl/src/latest/Labkey-Query-0.05.tar.gz -text
 perl/src/latest/Labkey-query-0.01.tar.gz -text

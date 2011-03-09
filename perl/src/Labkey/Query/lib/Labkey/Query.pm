@@ -88,6 +88,7 @@ The following are optional:
 	-sort => 'ColumnA,ColumnB'	#sort order used for this query
 	-offset => 100	#the offset used when running the query
 	-columns => 'ColumnA,ColumnB'  #A comma-delimited list of column names to include in the results.
+	-containerFilter => 'currentAndSubfolders'
 	-debug => 1,	#will result in a more verbose output
 	
 NOTE: The environment variable 'LABKEY_URL' can be used instead of supplying a '-baseUrl' param 
@@ -128,7 +129,7 @@ sub selectRows {
 		$url .= "&query." . ( @{$_}[0] ) . "~" . @{$_}[1] . "=" . ( @{$_}[2] );
 	}
 
-	foreach ('viewName', 'offset', 'sort', 'maxRows', 'columns'){
+	foreach ('viewName', 'offset', 'sort', 'maxRows', 'columns', 'containerFilter'){
 		if ( $args{'-'.$_} ) {
 			$url .= "&query.".$_."=" . ( $args{'-'.$_} );
 		}		
@@ -367,6 +368,10 @@ The following are the minimum required params:
 		
 The following are optional:
 
+	-maxRows => 10	#the max number of rows returned
+	-sort => 'ColumnA,ColumnB'	#sort order used for this query
+	-offset => 100	#the offset used when running the query
+	-containerFilter => 'currentAndSubfolders'
 	-debug => 1,  #will result in a more verbose output
 
 NOTE: The environment variable 'LABKEY_URL' can be used instead of supplying a '-baseUrl' param
@@ -398,12 +403,20 @@ sub executeSql {
 	  . _normalizeSlash($args{'-containerPath'})
 	  . "executeSql.api?";
 
-	print $url if $args{-debug};
+	print $url."\n" if $args{-debug};
 	
 	my $data = {
 		"schemaName" => $args{'-schemaName'},
 		"sql" => $args{'-sql'},			
 	};
+	
+	foreach ('offset', 'sort', 'maxRows', 'containerFilter'){
+		if ( $args{'-'.$_} ) {
+			$$data{$_} = $args{'-'.$_};
+		}		
+	}
+		
+	print Dumper($data) if $args{-debug};
 	
 	my $response = _postData($url, $data, $lk_config);
 	return $response;
