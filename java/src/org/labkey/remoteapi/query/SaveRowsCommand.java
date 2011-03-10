@@ -91,6 +91,7 @@ public abstract class SaveRowsCommand extends PostCommand<SaveRowsResponse>
 {
     private String _schemaName;
     private String _queryName;
+    private Map<String, Object> _extraContext;
     private List<Map<String,Object>> _rows = new ArrayList<Map<String,Object>>();
 
     /**
@@ -113,6 +114,7 @@ public abstract class SaveRowsCommand extends PostCommand<SaveRowsResponse>
         super(source);
         _queryName = source._queryName;
         _schemaName = source._schemaName;
+        _extraContext = source._extraContext;
         //deep copy rows
         _rows = new ArrayList<Map<String,Object>>();
         for(Map<String,Object> row : source._rows)
@@ -158,6 +160,24 @@ public abstract class SaveRowsCommand extends PostCommand<SaveRowsResponse>
     }
 
     /**
+     * Gets the additional extra context.
+     * @return the extra context.
+     */
+    public Map<String, Object> getExtraContext()
+    {
+        return _extraContext;
+    }
+
+    /**
+     * Sets the additional extra context.
+     * @param extraContext The extra context.
+     */
+    public void setExtraContext(Map<String, Object> extraContext)
+    {
+        _extraContext = extraContext;
+    }
+
+    /**
      * Returns the current list of 'rows' (i.e., Maps) that will
      * be sent to the server.
      * @return The list of rows.
@@ -196,6 +216,8 @@ public abstract class SaveRowsCommand extends PostCommand<SaveRowsResponse>
         JSONObject json = new JSONObject();
         json.put("schemaName", getSchemaName());
         json.put("queryName", getQueryName());
+        if (getExtraContext() != null)
+            json.put("extraContext", getExtraContext());
 
         //unfortunately, JSON simple is so simple that it doesn't
         //encode maps into JSON objects on the fly,
