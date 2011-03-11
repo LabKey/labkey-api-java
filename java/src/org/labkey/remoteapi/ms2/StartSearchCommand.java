@@ -110,6 +110,10 @@ public class StartSearchCommand extends Command<StartSearchResponse>
     @Override
     protected StartSearchResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
+        if (text.startsWith("ERROR="))
+        {
+            throw new IllegalArgumentException(text.substring("ERROR=".length()));
+        }
         return new StartSearchResponse(text, status, contentType, json, this);
     }
 }

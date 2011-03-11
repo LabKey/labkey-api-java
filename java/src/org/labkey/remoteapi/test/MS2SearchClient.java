@@ -253,6 +253,22 @@ public class MS2SearchClient
                 for (int i = 1; i < lines.size(); i++)
                 {
                     String[] line = lines.get(i);
+
+                    // Skip lines that are completely empty
+                    boolean blankLink = true;
+                    for (String value : line)
+                    {
+                        if (value != null && !value.trim().isEmpty())
+                        {
+                            blankLink = false;
+                            break;
+                        }
+                    }
+                    if (blankLink)
+                    {
+                        continue;
+                    }
+
                     // Pull out the required values
                     String fileName = getValue(line, headers, "FileName", i);
                     String path = getValue(line, headers, "Path", i);
@@ -317,10 +333,10 @@ public class MS2SearchClient
     {
         int columnIndex = findIndex(headers, columnName);
         if (columnIndex >= line.length)
-            throw new IllegalArgumentException((new StringBuilder()).append("Row ").append(lineNumber - 1).append(" is incomplete in CSV file. It contains fewer columns than the header does.").toString());
+            throw new IllegalArgumentException((new StringBuilder()).append("Row ").append(lineNumber).append(" is incomplete in CSV file. It contains fewer columns than the header does.").toString());
         String result = line[columnIndex];
         if (result == null || result.trim().equals(""))
-            throw new IllegalArgumentException((new StringBuilder()).append("Row ").append(lineNumber - 1).append(" is incomplete in CSV file, it does not include a value for '").append(columnName).append("'").toString());
+            throw new IllegalArgumentException((new StringBuilder()).append("Row ").append(lineNumber).append(" is incomplete in CSV file, it does not include a value for '").append(columnName).append("'").toString());
         else
             return result.trim();
     }
