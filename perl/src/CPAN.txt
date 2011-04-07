@@ -1,6 +1,7 @@
 Preparing module for CPAN:
 
 perl Build.PL
+pod2text lib/Labkey/Query.pm README
 perl Build manifest
 perl Build dist
 
@@ -8,3 +9,4 @@ This will make a tar file which you should upload.
 
 To create README from POD:
 pod2text [input file] [output file]
+

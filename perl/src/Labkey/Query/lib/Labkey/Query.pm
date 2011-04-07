@@ -60,7 +60,7 @@ use File::HomeDir;
 use Carp;
 use vars qw($VERSION);
 
-our $VERSION = "0.06";
+our $VERSION = "0.07";
 
 
 

@@ -6,10 +6,10 @@ use Data::Dumper;
 my $results = Labkey::Query::selectRows(
 	-baseUrl => 'https://xnight.primate.wisc.edu:8443/labkey',
 	-containerPath => 'wnprc/ehr/',
-	-schemaName => 'study',
-	-queryName => 'demographics',
+	-schemaName => 'core',
+	-queryName => 'users',
 	-maxRows => 2,
-	-sort => '-id',
+	-sort => '-userid',
 	-debug => 1,
 	);
 print Dumper($results);
@@ -17,8 +17,8 @@ print Dumper($results);
 my $sql = Labkey::Query::executeSql(
 	-baseUrl => 'https://xnight.primate.wisc.edu:8443/labkey',
 	-containerPath => 'wnprc/ehr/',
-	-schemaName => 'study',
-	-sql => 'SELECT d.id FROM study.demographics d',
+	-schemaName => 'core',
+	-sql => 'SELECT u.userid FROM core.users u',
 	-maxRows => 2,
 	-offset => 100,
 	-debug => 1,
