@@ -12,3 +12,7 @@ Revision history for Perl module Labkey::Query
 0.05 Fri Sept 1 2010
 	- Added deleteRows() and executeSql().  
 	- Switched all APIs to use single '-containerPath' param instead of '-project' and '-containerPath' 	
+0.08 Tue Aug 2 2011
+	- Added support for parameterized queries for selectRows()  
+	- Internal change in selectRows() to use a URI object for the URL, instead of a string   	
+	

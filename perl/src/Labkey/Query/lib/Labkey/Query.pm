@@ -22,9 +22,14 @@ For interacting with data in LabKey Server
 
 This module is designed to simplify querying and manipulating data in LabKey Server.  It should more or less replicate the javascript APIs of the same names. 
 
-After the module is installed, you will need to create a .netrc file in the home directory of the user
+After the module is installed, if you need to login with a specific user you 
+will need to create a .netrc file in the home directory of the user
 running the perl script.  Documentation on .netrc can be found here:
 https://www.labkey.org/wiki/home/Documentation/page.view?name=netrc
+
+In API versions 0.08 and later, you can specify the param '-loginAsGuest'
+which will query the server without any credentials.  The server must permit 
+guest to that folder for this to work though.
 
 =head1 SEE ALSO
 
@@ -58,9 +63,11 @@ use FileHandle;
 use File::Spec;
 use File::HomeDir;
 use Carp;
+use URI;
+
 use vars qw($VERSION);
 
-our $VERSION = "0.07";
+our $VERSION = "0.08";
 
 
 
@@ -83,13 +90,18 @@ The following are optional:
 	-filterArray => [
 		['file_active', 'eq', 1], 
 		['species', 'neq', 'zebra']
-	], 
+	], #allows filters to be applied to the query similar to the labkey Javascript API.
+	-parameters => [
+		['enddate', '2011/01/01'], 
+		['totalDays', 15]
+	], #allows parameters to be applied to the query similar to the labkey Javascript API.	
 	-maxRows => 10	#the max number of rows returned
 	-sort => 'ColumnA,ColumnB'	#sort order used for this query
 	-offset => 100	#the offset used when running the query
 	-columns => 'ColumnA,ColumnB'  #A comma-delimited list of column names to include in the results.
 	-containerFilter => 'currentAndSubfolders'
 	-debug => 1,	#will result in a more verbose output
+	-loginAsGuest => #will not attempt to lookup credentials in netrc
 	
 NOTE: The environment variable 'LABKEY_URL' can be used instead of supplying a '-baseUrl' param 
 
@@ -97,8 +109,8 @@ NOTE: The environment variable 'LABKEY_URL' can be used instead of supplying a '
 
 sub selectRows {
 
-	my %args = @_;
-
+	my %args = @_;	
+	
 	#allow baseUrl as environment variable
 	$args{'-baseUrl'} ||= $ENV{LABKEY_URL};
 	
@@ -108,38 +120,51 @@ sub selectRows {
 		if ( !$args{$_} ) { croak("ERROR: Missing required param: $_") }
 	}
 
-	#if no machine supplied, extract domain from baseUrl 
-	if (!$args{'-machine'}){
-		my $url = URI->new($args{'-baseUrl'});
+	my $url = URI->new(
+		_normalizeSlash($args{'-baseUrl'}) 
+	  . "query/"
+	  . _normalizeSlash($args{'-containerPath'})
+	  . "getQuery.api?"
+  	);	
+	
+	#if no machine supplied, extract domain from baseUrl	
+	if (!$args{'-machine'}){		
 		$args{'-machine'} = $url->host;
 	}
 
-	my $lk_config = _readrc( $args{-machine} );
-
-	my $url =
-	    _normalizeSlash($args{'-baseUrl'}) 
-	  . "query/"
-	  . _normalizeSlash($args{'-containerPath'})
-	  . "getQuery.api?schemaName="
-	  . $args{'-schemaName'}
-	  . "&query.queryName="
-	  . $args{'-queryName'};
+	my $lk_config;
+	if(!$args{'-loginAsGuest'}){
+		$lk_config = _readrc( $args{-machine} );
+	}
+	
+	my %params = (
+  		schemaName => $args{'-schemaName'},
+  		"query.queryName" => $args{'-queryName'}
+  	);
 
 	foreach ( @{ $args{-filterArray} } ) {
-		$url .= "&query." . ( @{$_}[0] ) . "~" . @{$_}[1] . "=" . ( @{$_}[2] );
+		$params{"query." . @{$_}[0] . "~" . @{$_}[1]} = @{$_}[2] ;
 	}
 
+	foreach ( @{ $args{-parameters} } ) {
+		$params{"query.param." . @{$_}[0]} = @{$_}[1];
+	}
+	
 	foreach ('viewName', 'offset', 'sort', 'maxRows', 'columns', 'containerFilter'){
 		if ( $args{'-'.$_} ) {
-			$url .= "&query.".$_."=" . ( $args{'-'.$_} );
+			$params{"query.".$_} = $args{'-'.$_};
 		}		
-	}
+	}	
+	
+	$url->query_form(%params);
 		
-	print $url if $args{-debug};
+	print $url."\n" if $args{-debug};
 
 	#Fetch the actual data from the query
 	my $request = HTTP::Request->new( "GET" => $url );
-	$request->authorization_basic( $$lk_config{'login'}, $$lk_config{'password'} );
+	if($lk_config){
+		$request->authorization_basic( $$lk_config{'login'}, $$lk_config{'password'} );
+	}
 	my $ua = new LWP::UserAgent;
 	$ua->agent("Perl API Client/1.0");
 	my $response = $ua->request($request);
@@ -179,6 +204,7 @@ The following are the minimum required params:
 The following are optional:
 
 	-debug => 1,  #will result in a more verbose output 
+	-loginAsGuest => #will not attempt to lookup credentials in netrc
 
 NOTE: The environment variable 'LABKEY_URL' can be used instead of supplying a '-baseUrl' param
 
@@ -202,7 +228,10 @@ sub insertRows {
 		$args{'-machine'} = $url->host;
 	}
 	
-	my $lk_config = _readrc( $args{-machine} );
+	my $lk_config;
+	if(!$args{'-loginAsGuest'}){
+		$lk_config = _readrc( $args{-machine} );
+	}
 
 	my $url =
 	    _normalizeSlash($args{'-baseUrl'}) 
@@ -210,7 +239,7 @@ sub insertRows {
 	  . _normalizeSlash($args{'-containerPath'})
 	  . "insertRows.api";
 
-	print $url if $args{-debug};
+	print $url."\n" if $args{-debug};
 
 	my $data = {
 		"schemaName" => $args{'-schemaName'},
@@ -246,6 +275,7 @@ The following are the minimum required params:
 The following are optional:
 
 	-debug => 1,  #will result in a more verbose output
+	-loginAsGuest => #will not attempt to lookup credentials in netrc
 
 NOTE: The environment variable 'LABKEY_URL' can be used instead of supplying a '-baseUrl' param
 	 
@@ -268,7 +298,10 @@ sub updateRows {
 		my $url = URI->new($args{'-baseUrl'});
 		$args{'-machine'} = $url->host;
 	}
-	my $lk_config = _readrc( $args{-machine} );
+	my $lk_config;
+	if(!$args{'-loginAsGuest'}){
+		$lk_config = _readrc( $args{-machine} );
+	}
 
 	my $url =
 	    _normalizeSlash($args{'-baseUrl'}) 
@@ -276,7 +309,7 @@ sub updateRows {
 	  . _normalizeSlash($args{'-containerPath'})
 	  . "updateRows.api";
 
-	print $url if $args{-debug};
+	print $url."\n" if $args{-debug};
 
 	my $data = {
 		"schemaName" => $args{'-schemaName'},
@@ -309,6 +342,7 @@ The following are the minimum required params:
 The following are optional:
 
 	-debug => 1,  #will result in a more verbose output
+	-loginAsGuest => #will not attempt to lookup credentials in netrc
 
 NOTE: The environment variable 'LABKEY_URL' can be used instead of supplying a '-baseUrl' param
 	 
@@ -331,7 +365,10 @@ sub deleteRows {
 		my $url = URI->new($args{'-baseUrl'});
 		$args{'-machine'} = $url->host;
 	}
-	my $lk_config = _readrc( $args{-machine} );
+	my $lk_config;
+	if(!$args{'-loginAsGuest'}){
+		$lk_config = _readrc( $args{-machine} );
+	}
 
 	my $url =
 	    _normalizeSlash($args{'-baseUrl'}) 
@@ -339,7 +376,7 @@ sub deleteRows {
 	  . _normalizeSlash($args{'-containerPath'})
 	  . "deleteRows.api";
 
-	print $url if $args{-debug};
+	print $url."\n" if $args{-debug};
 
 	my $data = {
 		"schemaName" => $args{'-schemaName'},
@@ -373,6 +410,7 @@ The following are optional:
 	-offset => 100	#the offset used when running the query
 	-containerFilter => 'currentAndSubfolders'
 	-debug => 1,  #will result in a more verbose output
+	-loginAsGuest => #will not attempt to lookup credentials in netrc
 
 NOTE: The environment variable 'LABKEY_URL' can be used instead of supplying a '-baseUrl' param
 	 
@@ -395,7 +433,10 @@ sub executeSql {
 		my $url = URI->new($args{'-baseUrl'});
 		$args{'-machine'} = $url->host;
 	}
-	my $lk_config = _readrc( $args{-machine} );
+	my $lk_config;
+	if(!$args{'-loginAsGuest'}){
+		$lk_config = _readrc( $args{-machine} );
+	}
 
 	my $url =
 	    _normalizeSlash($args{'-baseUrl'}) 
@@ -535,9 +576,9 @@ sub _readrc() {
 		$auth = $netrc{(keys %netrc)[0]}[0];	
 	}	 
 
-	croak("Unable to find entry for host: $host") unless $auth;
-	croak("Missing password for host: $host") unless $auth->{password};
-	croak("Missing login for host: $host") unless $auth->{login};
+	warn("Unable to find entry for host: $host") unless $auth;
+	warn("Missing password for host: $host") unless $auth->{password};
+	warn("Missing login for host: $host") unless $auth->{login};
 
 	return $auth;
 }
@@ -573,7 +614,7 @@ sub _postData(){
 		croak($response->status_line);
 	}
 
-	#print Dumper($response);
+	print Dumper($response);
 	$json_obj = JSON->new->utf8->decode( $response->content )
 	  || croak("ERROR: Unable to decode JSON.\n$url\n");
 	  
