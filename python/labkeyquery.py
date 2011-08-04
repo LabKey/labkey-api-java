@@ -63,7 +63,7 @@ COMPATIBILITY:
 Tested against Python 2.7 and LabKey Server v11.1.
 
 VERSION:
-LabKey Server Python API v14
+LabKey Server Python API v15
 
 AUTHOR:
 Elizabeth K. Nelson
@@ -72,10 +72,6 @@ COPYRIGHT:
 Copyright (c) 2011 LabKey Software
 Licensed under the Apache License, Version 2.0: 
 http://www.apache.org/licenses/LICENSE-2.0
-
-Remaining open questions:
-- Variable/function naming conventions?
-- Proper way to cite stackoverflow?
 
 ############################################################################
 """
