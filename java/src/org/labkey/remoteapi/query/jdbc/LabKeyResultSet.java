@@ -1158,7 +1158,6 @@ public class LabKeyResultSet extends BaseJDBC implements ResultSet
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public <T> T getObject(String columnLabel, Class<T> type) throws SQLException
     {
         throw new UnsupportedOperationException();
