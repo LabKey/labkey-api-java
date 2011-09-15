@@ -19,7 +19,9 @@ import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 /**
  * User: jeckels
@@ -66,5 +68,12 @@ public class LabKeyDriver implements Driver
     public boolean jdbcCompliant()
     {
         return false;
+    }
+
+    // This JDBC 4.1 method must be "implemented" so JDK 7 can compile this class.
+
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException
+    {
+        throw new UnsupportedOperationException();
     }
 }

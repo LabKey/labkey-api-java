@@ -1150,4 +1150,17 @@ public class LabKeyResultSet extends BaseJDBC implements ResultSet
     {
         throw new UnsupportedOperationException();
     }
+
+    // These JDBC 4.1 methods must be "implemented" so JDK 7 can compile this class.
+
+    public <T> T getObject(int columnIndex, Class<T> type) throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <T> T getObject(String columnLabel, Class<T> type) throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
 }

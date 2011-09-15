@@ -1135,4 +1135,26 @@ public class LabKeyStatement implements CallableStatement
     {
         throw new UnsupportedOperationException();
     }
+
+    // These JDBC 4.1 methods must be "implemented" so JDK 7 can compile this class.
+
+    public <T> T getObject(int parameterIndex, Class<T> type) throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public <T> T getObject(String parameterName, Class<T> type) throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public void closeOnCompletion() throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public boolean isCloseOnCompletion() throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
 }

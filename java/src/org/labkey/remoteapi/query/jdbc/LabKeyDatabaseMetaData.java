@@ -1234,4 +1234,16 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
     {
         return new LabKeyResultSet(Collections.<Map<String, Object>>emptyList(), Collections.<LabKeyResultSet.Column>emptyList(), _connection);
     }
+
+    // These JDBC 4.1 methods must be "implemented" so JDK 7 can compile this class.
+
+    public ResultSet getPseudoColumns(String catalog, String schemaPattern, String tableNamePattern, String columnNamePattern) throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public boolean generatedKeyAlwaysReturned() throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
 }

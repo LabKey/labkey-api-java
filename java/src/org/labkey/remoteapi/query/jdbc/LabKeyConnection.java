@@ -19,6 +19,7 @@ package org.labkey.remoteapi.query.jdbc;
 import java.sql.*;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.Executor;
 
 /**
  * User: jeckels
@@ -293,6 +294,33 @@ public class LabKeyConnection extends BaseJDBC implements java.sql.Connection
     }
 
     public Struct createStruct(String typeName, Object[] attributes) throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    // These JDBC 4.1 methods must be "implemented" so JDK 7 can compile this class.
+
+    public void setSchema(String schema) throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public String getSchema() throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public void abort(Executor executor) throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public int getNetworkTimeout() throws SQLException
     {
         throw new UnsupportedOperationException();
     }
