@@ -67,7 +67,7 @@ use URI;
 
 use vars qw($VERSION);
 
-our $VERSION = "0.08";
+our $VERSION = "0.09";
 
 
 
@@ -614,7 +614,7 @@ sub _postData(){
 		croak($response->status_line);
 	}
 
-	print Dumper($response);
+	#print Dumper($response);
 	$json_obj = JSON->new->utf8->decode( $response->content )
 	  || croak("ERROR: Unable to decode JSON.\n$url\n");
 	  
