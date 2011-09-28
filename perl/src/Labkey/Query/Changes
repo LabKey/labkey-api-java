@@ -15,5 +15,7 @@ Revision history for Perl module Labkey::Query
 0.08 Tue Aug 2 2011
 	- Added support for parameterized queries for selectRows()  
 	- Internal change in selectRows() to use a URI object for the URL, instead of a string   	
-0.09 Fri Sep 2011
-	- Removed accidental Data::Dumper usage in executeSql	
+0.09 Fri Sep 23 2011
+	- Removed accidental Data::Dumper usage in executeSql
+1.00 Thu Sep 29 2011
+	- Switches selectRows() to use LABKEY.Query.ExtendedSelectRowsResults result format	instead of legacy formats		

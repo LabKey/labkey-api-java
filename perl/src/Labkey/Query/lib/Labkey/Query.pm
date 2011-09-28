@@ -67,7 +67,7 @@ use URI;
 
 use vars qw($VERSION);
 
-our $VERSION = "0.09";
+our $VERSION = "1.00";
 
 
 
@@ -102,8 +102,14 @@ The following are optional:
 	-containerFilter => 'currentAndSubfolders'
 	-debug => 1,	#will result in a more verbose output
 	-loginAsGuest => #will not attempt to lookup credentials in netrc
+	-requiredVersion => 9.1 #if 8.3 is selected, it will use Labkey's pre-9.1 format for returning the data.  9.1 is the default.  See documentation of LABKEY.Query.ExtendedSelectRowsResults for more detail here:
+		https://www.labkey.org/download/clientapi_docs/javascript-api/symbols/LABKEY.Query.html
 	
-NOTE: The environment variable 'LABKEY_URL' can be used instead of supplying a '-baseUrl' param 
+	
+NOTE: 
+
+- In version 1.0 and later of the perl API, the default result format is 9.1.  This is different from the LabKey JS, which defaults to the earlier format for legacy purposes.
+- The environment variable 'LABKEY_URL' can be used instead of supplying a '-baseUrl' param 
 
 =cut
 
@@ -139,7 +145,8 @@ sub selectRows {
 	
 	my %params = (
   		schemaName => $args{'-schemaName'},
-  		"query.queryName" => $args{'-queryName'}
+  		"query.queryName" => $args{'-queryName'},
+  		apiVersion => $args{'-requiredVersion'} || 9.1,
   	);
 
 	foreach ( @{ $args{-filterArray} } ) {
