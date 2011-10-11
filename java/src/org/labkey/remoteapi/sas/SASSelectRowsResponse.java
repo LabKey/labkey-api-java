@@ -319,6 +319,6 @@ public class SASSelectRowsResponse
 
         Object o = _currentRow.get(apiName);
 
-        return (String)((JSONObject)o).get("qcValue");
+        return (String)((JSONObject)o).get("mvValue");
     }
 }
