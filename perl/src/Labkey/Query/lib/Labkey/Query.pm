@@ -99,7 +99,7 @@ The following are optional:
 	-sort => 'ColumnA,ColumnB'	#sort order used for this query
 	-offset => 100	#the offset used when running the query
 	-columns => 'ColumnA,ColumnB'  #A comma-delimited list of column names to include in the results.
-	-containerFilter => 'currentAndSubfolders'
+	-containerFilterName => 'currentAndSubfolders'
 	-debug => 1,	#will result in a more verbose output
 	-loginAsGuest => #will not attempt to lookup credentials in netrc
 	-requiredVersion => 9.1 #if 8.3 is selected, it will use Labkey's pre-9.1 format for returning the data.  9.1 is the default.  See documentation of LABKEY.Query.ExtendedSelectRowsResults for more detail here:
@@ -157,7 +157,7 @@ sub selectRows {
 		$params{"query.param." . @{$_}[0]} = @{$_}[1];
 	}
 	
-	foreach ('viewName', 'offset', 'sort', 'maxRows', 'columns', 'containerFilter'){
+	foreach ('viewName', 'offset', 'sort', 'maxRows', 'columns', 'containerFilterName'){
 		if ( $args{'-'.$_} ) {
 			$params{"query.".$_} = $args{'-'.$_};
 		}		
@@ -415,7 +415,7 @@ The following are optional:
 	-maxRows => 10	#the max number of rows returned
 	-sort => 'ColumnA,ColumnB'	#sort order used for this query
 	-offset => 100	#the offset used when running the query
-	-containerFilter => 'currentAndSubfolders'
+	-containerFilterName => 'currentAndSubfolders'
 	-debug => 1,  #will result in a more verbose output
 	-loginAsGuest => #will not attempt to lookup credentials in netrc
 
@@ -458,7 +458,7 @@ sub executeSql {
 		"sql" => $args{'-sql'},			
 	};
 	
-	foreach ('offset', 'sort', 'maxRows', 'containerFilter'){
+	foreach ('offset', 'sort', 'maxRows', 'containerFilterName'){
 		if ( $args{'-'.$_} ) {
 			$$data{$_} = $args{'-'.$_};
 		}		
