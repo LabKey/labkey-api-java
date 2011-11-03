@@ -1,0 +1,23 @@
+How to make changes to the Python API 
+-----------------------------------------
+
+1. Edit the source files in this directory
+2. Bump the version number in the ``setup.py`` file. 
+	- Version format is MAJOR-VERSION.MINOR-VERSION
+	- If you have made a significant change, bump the MAJOR version number
+	- If small bug file, bump the MINOR version number
+3. Update the NEWS.txt file explaining the changes that were made 
+	- This must be done. 
+	- This file gets shipped with the package that a customer will download. It is 
+	  used by the python package management system and can be displayed ot the user 
+	  at their request. 
+
+
+Build the python package for your own testing.
+------------------------------------------
+You can create a new source distribution by running:
+    
+    python setup.py sdist 
+
+This will create a new source distribution (of the LabKey python package) in the dist subdirectory.
+

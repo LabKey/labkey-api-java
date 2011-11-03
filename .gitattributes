@@ -126,6 +126,17 @@ perl/src/latest/Labkey-Query-1.00.tar.gz -text
 perl/src/latest/Labkey-query-0.01.tar.gz -text
 perl/src/latest/Labkey-query-0.02.tar.gz -text
 perl/src/latest/Labkey-query-0.03.tar.gz -text
+python/Labkey/.labkeycredentials.sample -text
+python/Labkey/License.txt -text
+python/Labkey/MANIFEST.in -text
+python/Labkey/NEWS.txt -text
+python/Labkey/README.txt -text
+python/Labkey/labkey/__init__.py -text
+python/Labkey/labkey/messageboard.py -text
+python/Labkey/labkey/query.py -text
+python/Labkey/labkey/wiki.py -text
+python/Labkey/setup.py -text
+python/README -text
 python/labkeycredentials.txt -text
 python/labkeyquery.py -text
 sas/MorePeople.xls -text
