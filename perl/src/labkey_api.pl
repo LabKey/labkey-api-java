@@ -13,7 +13,7 @@ my $results = Labkey::Query::selectRows(
 	-maxRows => 2,
 	#-sort => '-userid',
 	-debug => 1,
-	-loginAsGuest => 1,
+	-loginAsGuest => 1,	
 	);
 print Dumper($results);
 

@@ -18,4 +18,7 @@ Revision history for Perl module Labkey::Query
 0.09 Fri Sep 23 2011
 	- Removed accidental Data::Dumper usage in executeSql
 1.00 Thu Sep 29 2011
-	- Switches selectRows() to use LABKEY.Query.ExtendedSelectRowsResults result format	instead of legacy formats		
+	- Switches selectRows() to use LABKEY.Query.ExtendedSelectRowsResults result format	instead of legacy formats
+1.01 Th Nov 10 2011
+	- Adds optional netrcFile param to all APIs, which specifies the location of a .netrc file, if not in the home directory
+	- Corrects containerFilter to containerFilterName		

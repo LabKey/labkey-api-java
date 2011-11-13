@@ -13,6 +13,8 @@ Module::Build->new
                  'File::Spec' => 0,
                  'File::HomeDir' => 0,
                  'FileHandle' => 0,
+                 'URL' => 0,
+                 'Carp' => 0,
                },	
 	dist_abstract => 'For interacting with data in LabKey Server',
     )->create_build_script;
