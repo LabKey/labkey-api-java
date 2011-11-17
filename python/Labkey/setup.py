@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 #
 # Copyright (c) 2011 LabKey Corporation
 #
@@ -13,7 +15,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-#!/usr/bin/env python
 
 from distutils.core import setup
 setup(name='LabKey',
