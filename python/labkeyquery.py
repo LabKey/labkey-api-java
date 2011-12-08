@@ -18,67 +18,27 @@
 """
 ############################################################################
 SUMMARY:  
-This module provides functions for interacting with data on a LabKey Server.
+This module provides APIs for interacting with data on a LabKey Server.
 
 DESCRIPTION:
-This module is designed to simplify querying and manipulating data in LabKey Server.  
+This module is designed to simplify querying and manipulating data in LabKey Server.
 Its APIs are modeled after the LabKey Server JavaScript APIs of the same names. 
 
-SETUP PREREQUISITE: 
-After the module is installed, you will need to create a labkeycredentials.txt files 
-in the folder where you are running the python script.  To determine that directory,
-you use the following two lines within python:
+DOCUMENTATION:
+Setup, configuration and usage examples for the LabKey Python API:
+https://www.labkey.org/wiki/home/Documentation/page.view?name=python
 
-import os
-os.getcwd()
-
-Sample content for labkeycredentials file (3 separate lines):
-machine https://hosted.labkey.com
-login labkeypython@gmail.com
-password python
-
-This setup has been optimized for simplicity.  As an alternative, you can store the 
-credentials file elsewhere and adjust the path for this file.
-
-FREE, HOSTED TEST SERVER:
-
-The sample login information provided above for the hosted.labkey.com server provides 
-you with read access only.  This level of access is sufficient for only selectRows and 
-executeSql. To test the other APIs on this server, please contact info@labkey.com.  
-LabKey Software will happily provide you with a private, free project on this server 
-to use for testing.
-
-Further details: http://www.labkey.com/hosted/labkey-hosted
-
-USAGE:
-
-import labkeyquery
-myresults = labkeyquery.selectRows(
-    baseUrl = 'https://hosted.labkey.com',
-    containerPath = 'PythonProject',
-    schemaName = 'study',
-    queryName = 'Physical Exam')
-    
-ASSUMPTION:
-  
-You have placed the labkeycredentials.txt file in the folder where you are
-running python.  This file provides authentication credentials.
-       
-SEE ALSO:
 Documentation for the LabKey client APIs:
 https://www.labkey.org/wiki/home/Documentation/page.view?name=viewAPIs
-
-Setup and configuration for the LabKey Python API:
-https://www.labkey.org/wiki/home/Documentation/page.view?name=python
 
 Support questions should be directed to the LabKey forum:
 https://www.labkey.org/announcements/home/Server/Forum/list.view?
 
 COMPATIBILITY:
-Tested against Python 2.7 and LabKey Server v11.1.
+Tested against Python 2.7.2.
 
 VERSION:
-LabKey Server Python API v15
+LabKey Server Python API v16
 
 AUTHOR:
 Elizabeth K. Nelson
