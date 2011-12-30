@@ -886,21 +886,6 @@ public class LabKeyStatement implements CallableStatement
 
     public ResultSet executeQuery(String sql) throws SQLException
     {
-        if (sql.toLowerCase().indexOf(" * from") != -1)
-        {
-            String revisedSQL = "";
-            StringTokenizer st = new StringTokenizer(sql, "*", true);
-            while (st.hasMoreElements())
-            {
-                String token = st.nextToken();
-                if (token.equals("*"))
-                {
-                    token = "x." + token;
-                }
-                revisedSQL += token;
-            }
-            sql = revisedSQL + " x";
-        }
         ExecuteSqlCommand command = new ExecuteSqlCommand("exp", sql);
         try
         {
