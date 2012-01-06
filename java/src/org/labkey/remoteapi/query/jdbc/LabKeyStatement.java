@@ -17,7 +17,6 @@ package org.labkey.remoteapi.query.jdbc;
 
 import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.query.ExecuteSqlCommand;
-import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
 
 import java.io.IOException;
@@ -28,7 +27,6 @@ import java.net.URL;
 import java.sql.*;
 import java.util.Calendar;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 /**
  * User: jeckels
