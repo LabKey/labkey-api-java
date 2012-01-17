@@ -67,7 +67,7 @@ use URI;
 
 use vars qw($VERSION);
 
-our $VERSION = "1.01";
+our $VERSION = "1.02";
 
 
 
@@ -102,7 +102,7 @@ The following are optional:
 	-containerFilterName => 'currentAndSubfolders'
 	-debug => 1,	#will result in a more verbose output
 	-loginAsGuest => #will not attempt to lookup credentials in netrc
-	-netrcFile => optional. the location of a file to use in place of a .netrc file
+	-netrcFile => optional. the location of a file to use in place of a .netrc file.  see also the environment variable LABKEY_NETRC.
 	-requiredVersion => 9.1 #if 8.3 is selected, it will use Labkey's pre-9.1 format for returning the data.  9.1 is the default.  See documentation of LABKEY.Query.ExtendedSelectRowsResults for more detail here:
 		https://www.labkey.org/download/clientapi_docs/javascript-api/symbols/LABKEY.Query.html
 	
@@ -111,6 +111,7 @@ NOTE:
 
 - In version 1.0 and later of the perl API, the default result format is 9.1.  This is different from the LabKey JS, which defaults to the earlier format for legacy purposes.
 - The environment variable 'LABKEY_URL' can be used instead of supplying a '-baseUrl' param 
+- The environment variable 'LABKEY_NETRC' can be used to specify an alternate location of a netrc file, if not in the user's home directory.
 
 =cut
 
@@ -119,7 +120,7 @@ sub selectRows {
 	my %args = @_;	
 	
 	#allow baseUrl as environment variable
-	$args{'-baseUrl'} ||= $ENV{LABKEY_URL};
+	$args{'-baseUrl'} = $args{'-baseUrl'} || $ENV{LABKEY_URL};
 	
 	#sanity checking
 	my @required = ( '-containerPath', '-queryName', '-schemaName', '-baseUrl' );
@@ -140,8 +141,9 @@ sub selectRows {
 	}
 
 	my $lk_config;
+	my $netrc_file = $args{-netrcFile} || $ENV{LABKEY_NETRC};
 	if(!$args{'-loginAsGuest'}){
-		$lk_config = _readrc( $args{-machine}, $args{-netrcFile} );
+		$lk_config = _readrc( $args{-machine}, $netrc_file );
 	}
 	
 	my %params = (
@@ -213,9 +215,11 @@ The following are optional:
 
 	-debug => 1,  #will result in a more verbose output 
 	-loginAsGuest => #will not attempt to lookup credentials in netrc
-	-netrcFile => optional. the location of a file to use in place of a .netrc file.
+	-netrcFile => optional. the location of a file to use in place of a .netrc file.  see also the environment variable LABKEY_NETRC.
 
-NOTE: The environment variable 'LABKEY_URL' can be used instead of supplying a '-baseUrl' param
+NOTE:
+- The environment variable 'LABKEY_URL' can be used instead of supplying a '-baseUrl' param
+- The environment variable 'LABKEY_NETRC' can be used to specify an alternate location of a netrc file, if not in the user's home directory
 
 =cut
 
@@ -223,7 +227,7 @@ sub insertRows {
 	my %args = @_;
 
 	#allow baseUrl as an environment variable
-	$args{'-baseUrl'} ||= $ENV{LABKEY_URL};
+	$args{'-baseUrl'} = $args{'-baseUrl'} || $ENV{LABKEY_URL};
 
 	#sanity checking
 	my @required = ( '-containerPath', '-queryName', '-schemaName', '-baseUrl', '-rows' );
@@ -238,8 +242,9 @@ sub insertRows {
 	}
 	
 	my $lk_config;
+	my $netrc_file = $args{-netrcFile} || $ENV{LABKEY_NETRC};
 	if(!$args{'-loginAsGuest'}){
-		$lk_config = _readrc( $args{-machine}, $args{-netrcFile} );
+		$lk_config = _readrc( $args{-machine}, $netrc_file );
 	}
 
 	my $url =
@@ -285,9 +290,11 @@ The following are optional:
 
 	-debug => 1,  #will result in a more verbose output
 	-loginAsGuest => #will not attempt to lookup credentials in netrc
-	-netrcFile => optional. the location of a file to use in place of a .netrc file
+	-netrcFile => optional. the location of a file to use in place of a .netrc file.  see also the environment variable LABKEY_NETRC.
 
-NOTE: The environment variable 'LABKEY_URL' can be used instead of supplying a '-baseUrl' param
+NOTE:
+- The environment variable 'LABKEY_URL' can be used instead of supplying a '-baseUrl' param
+- The environment variable 'LABKEY_NETRC' can be used to specify an alternate location of a netrc file, if not in the user's home directory
 	 
 =cut
 
@@ -295,7 +302,7 @@ sub updateRows {
 	my %args = @_;
 
 	#allow baseUrl as environment variable
-	$args{'-baseUrl'} ||= $ENV{LABKEY_URL};
+	$args{'-baseUrl'} = $args{'-baseUrl'} || $ENV{LABKEY_URL};
 
 	#sanity checking
 	my @required = ( '-containerPath', '-queryName', '-schemaName', '-baseUrl', '-rows' );
@@ -309,8 +316,9 @@ sub updateRows {
 		$args{'-machine'} = $url->host;
 	}
 	my $lk_config;
+	my $netrc_file = $args{-netrcFile} || $ENV{LABKEY_NETRC};
 	if(!$args{'-loginAsGuest'}){
-		$lk_config = _readrc( $args{-machine}, $args{-netrcFile} );
+		$lk_config = _readrc( $args{-machine}, $netrc_file );
 	}
 
 	my $url =
@@ -353,9 +361,11 @@ The following are optional:
 
 	-debug => 1,  #will result in a more verbose output
 	-loginAsGuest => #will not attempt to lookup credentials in netrc
-	-netrcFile => optional. the location of a file to use in place of a .netrc file.
+	-netrcFile => optional. the location of a file to use in place of a .netrc file.  see also the environment variable LABKEY_NETRC.
 
-NOTE: The environment variable 'LABKEY_URL' can be used instead of supplying a '-baseUrl' param
+NOTE:
+- The environment variable 'LABKEY_URL' can be used instead of supplying a '-baseUrl' param
+- The environment variable 'LABKEY_NETRC' can be used to specify an alternate location of a netrc file, if not in the user's home directory
 	 
 =cut
 
@@ -363,7 +373,7 @@ sub deleteRows {
 	my %args = @_;
 
 	#allow baseUrl as environment variable
-	$args{'-baseUrl'} ||= $ENV{LABKEY_URL};
+	$args{'-baseUrl'} = $args{'-baseUrl'} || $ENV{LABKEY_URL};
 
 	#sanity checking
 	my @required = ( '-containerPath', '-queryName', '-schemaName', '-baseUrl', '-rows' );
@@ -377,8 +387,9 @@ sub deleteRows {
 		$args{'-machine'} = $url->host;
 	}
 	my $lk_config;
+	my $netrc_file = $args{-netrcFile} || $ENV{LABKEY_NETRC};
 	if(!$args{'-loginAsGuest'}){
-		$lk_config = _readrc( $args{-machine}, $args{-netrcFile} );
+		$lk_config = _readrc( $args{-machine}, $netrc_file );
 	}
 
 	my $url =
@@ -422,9 +433,11 @@ The following are optional:
 	-containerFilterName => 'currentAndSubfolders'
 	-debug => 1,  #will result in a more verbose output
 	-loginAsGuest => #will not attempt to lookup credentials in netrc
-	-netrcFile => optional. the location of a file to use in place of a .netrc file
+	-netrcFile => optional. the location of a file to use in place of a .netrc file.  see also the environment variable LABKEY_NETRC.
 
-NOTE: The environment variable 'LABKEY_URL' can be used instead of supplying a '-baseUrl' param
+NOTE:
+- The environment variable 'LABKEY_URL' can be used instead of supplying a '-baseUrl' param
+- The environment variable 'LABKEY_NETRC' can be used to specify an alternate location of a netrc file, if not in the user's home directory
 	 
 =cut
 
@@ -432,7 +445,7 @@ sub executeSql {
 	my %args = @_;
 
 	#allow baseUrl as environment variable
-	$args{'-baseUrl'} ||= $ENV{LABKEY_URL};
+	$args{'-baseUrl'} = $args{'-baseUrl'} || $ENV{LABKEY_URL};
 
 	#sanity checking
 	my @required = ( '-containerPath', '-baseUrl', '-sql' );
@@ -446,8 +459,9 @@ sub executeSql {
 		$args{'-machine'} = $url->host;
 	}
 	my $lk_config;
+	my $netrc_file = $args{-netrcFile} || $ENV{LABKEY_NETRC};
 	if(!$args{'-loginAsGuest'}){
-		$lk_config = _readrc( $args{-machine}, $args{-netrcFile} );
+		$lk_config = _readrc( $args{-machine}, $netrc_file );
 	}
 
 	my $url =

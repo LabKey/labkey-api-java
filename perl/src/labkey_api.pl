@@ -17,13 +17,14 @@ my $results = Labkey::Query::selectRows(
 	);
 print Dumper($results);
 
-my $sql = Labkey::Query::executeSql(
-	-baseUrl => 'https://labkey.org/',
-	-containerPath => 'home/Documentation/',
-	-schemaName => 'issues',
-	-sql => 'SELECT max(i.issueid) as id FROM issues.issues i',
-	-debug => 1,
-	-loginAsGuest => 1,
-	);
-	
-print Dumper($sql);		
+#it seems guests cannot run executeSql
+#my $sql = Labkey::Query::executeSql(
+#	-baseUrl => 'https://labkey.org/',
+#	-containerPath => 'home/Documentation/',
+#	-schemaName => 'issues',
+#	-sql => 'SELECT max(i.issueid) as id FROM issues.issues i',
+#	-debug => 1,
+#	-loginAsGuest => 1,
+#	);
+#	
+#print Dumper($sql);		

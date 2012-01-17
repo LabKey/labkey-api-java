@@ -21,4 +21,7 @@ Revision history for Perl module Labkey::Query
 	- Switches selectRows() to use LABKEY.Query.ExtendedSelectRowsResults result format	instead of legacy formats
 1.01 Th Nov 10 2011
 	- Adds optional netrcFile param to all APIs, which specifies the location of a .netrc file, if not in the home directory
-	- Corrects containerFilter to containerFilterName		
+	- Corrects containerFilter to containerFilterName	
+1.02 Tue Jan 17 2012
+	- Support for LABKEY_NETRC environment variable to specify non-standard location for .netrc file
+	- Fix typo in module dependencies (URL changed to URI)		
