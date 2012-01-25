@@ -52,6 +52,7 @@ import json
 import urllib2
 import urllib
 import pprint
+import base64
 
 
 def postMessage(baseUrl, containerPath, messageTitle, messageBody, renderAs, debug=False):
@@ -156,7 +157,7 @@ def _create_opener():
     except KeyError: 
         credential_file_name = os.environ["HOME"] + '/.labkeycredentials.txt'
     
-    f = open('/home/bconnoll/python/labkeycredentials.txt', 'r')
+    f = open(credential_file_name, 'r')
     mymachine = f.readline().strip().split(' ')[1]
     myusername = f.readline().strip().split(' ')[1]
     mypassword = f.readline().strip().split(' ')[1]
@@ -190,7 +191,7 @@ def _create_post_opener():
     except KeyError: 
         credential_file_name = os.environ["HOME"] + '/.labkeycredentials.txt'
     
-    f = open('/home/bconnoll/python/labkeycredentials.txt', 'r')
+    f = open(credential_file_name, 'r')
     mymachine = f.readline().strip().split(' ')[1]
     myusername = f.readline().strip().split(' ')[1]
     mypassword = f.readline().strip().split(' ')[1]
