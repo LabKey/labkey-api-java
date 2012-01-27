@@ -61,6 +61,7 @@ public class SASSelectRowsCommand extends SASBaseSelectCommand
         getCommand().setColumns(list);
     }
 
+    @SuppressWarnings({"UnusedDeclaration"})  // Called from SAS macros
     public void addFilter(String columnName, String operator)
     {
         addFilter(columnName, operator, null);

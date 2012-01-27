@@ -31,6 +31,8 @@ public class Filter
 {
     public enum Operator
     {
+        // WARNING: If you alter/add/remove these you need to adjust labkeymakefilter.sas and the SAS macro docs
+
         EQUAL("eq", "Equals", "EQUAL", true),
         NEQ("neq", "Does Not Equal", "NOT_EQUAL", true),
         NEQ_OR_NULL("neqornull", "Does Not Equal", "NOT_EQUAL_OR_MISSING", true),
