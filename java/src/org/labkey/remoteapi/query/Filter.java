@@ -29,6 +29,7 @@ import java.util.HashMap;
  */
 public class Filter
 {
+    @SuppressWarnings({"UnusedDeclaration"})
     public enum Operator
     {
         // WARNING: If you alter/add/remove these you need to adjust labkeymakefilter.sas and the SAS macro docs
