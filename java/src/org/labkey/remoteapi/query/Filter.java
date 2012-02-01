@@ -56,10 +56,7 @@ public class Filter
         DOES_NOT_START_WITH("doesnotstartwith", "Does Not Start With", "DOES_NOT_START_WITH", true),
 
         IN("in", "Equals One Of", "EQUALS_ONE_OF", true),
-        IN_OR_NULL("inornull", "Equals One Of (e.g. 'a;b;c')", "EQUALS_ONE_OF_OR_MISSING", true),
-
         NOT_IN("notin", "Does Not Equal Any Of (e.g. 'a;b;c')", "EQUALS_NONE_OF", true),
-        NOT_IN_OR_NULL("notinornull", "Does Not Equal Any Of (e.g. 'a;b;c')", "EQUALS_NONE_OF_OR_MISSING", true),
 
         CONTAINS_ONE_OF("containsoneof", "Contains One Of (e.g. 'a;b;c')", "CONTAINS_ONE_OF", true),
         CONTAINS_NONE_OF("containsnoneof", "Does Not Contain Any Of (e.g. 'a;b;c')", "CONTAINS_NONE_OF", true)
