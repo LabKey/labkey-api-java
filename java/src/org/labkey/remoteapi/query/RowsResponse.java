@@ -22,7 +22,6 @@ import org.labkey.remoteapi.collections.CaseInsensitiveHashMap;
 import org.json.simple.JSONObject;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -126,8 +125,7 @@ public abstract class RowsResponse extends CommandResponse
         //JavaScript can parse them into actual date classes. If this format ever
         //changes, we'll need to change the format string used here.
         //CONSIDER: use a library like ConvertUtils to avoid this dependency?
-        SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy HH:mm:ss");
-        dateFormat.setLenient(true);
+        DateParser dateFormat = new DateParser();
 
         boolean expandedFormat = getRequiredVersion() == 9.1;
         for(Map<String,Object> row : rows)

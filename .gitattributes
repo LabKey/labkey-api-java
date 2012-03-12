@@ -39,6 +39,7 @@ java/src/org/labkey/remoteapi/pipeline/FileNotificationResponse.java -text
 java/src/org/labkey/remoteapi/query/BaseQueryCommand.java -text
 java/src/org/labkey/remoteapi/query/BaseSelect.java -text
 java/src/org/labkey/remoteapi/query/ContainerFilter.java -text
+java/src/org/labkey/remoteapi/query/DateParser.java -text
 java/src/org/labkey/remoteapi/query/DeleteRowsCommand.java -text
 java/src/org/labkey/remoteapi/query/ExecuteSqlCommand.java -text
 java/src/org/labkey/remoteapi/query/Filter.java -text
