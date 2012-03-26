@@ -55,7 +55,7 @@ public class Filter
         STARTS_WITH("startswith", "Starts With", "STARTS_WITH", true),
         DOES_NOT_START_WITH("doesnotstartwith", "Does Not Start With", "DOES_NOT_START_WITH", true),
 
-        IN("in", "Equals One Of", "EQUALS_ONE_OF", true),
+        IN("in", "Equals One Of", "IN", true),
         NOT_IN("notin", "Does Not Equal Any Of (e.g. 'a;b;c')", "NOT_IN", true),
 
         CONTAINS_ONE_OF("containsoneof", "Contains One Of (e.g. 'a;b;c')", "CONTAINS_ONE_OF", true),
