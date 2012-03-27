@@ -42,8 +42,7 @@
 
 		%if %index("EQUAL" "NOT_EQUAL" "NOT_EQUAL_OR_MISSING" "DATE_EQUAL" "DATE_NOT_EQUAL" "GREATER_THAN" "GREATER_THAN_OR_EQUAL"
 		           "LESS_THAN" "LESS_THAN_OR_EQUAL" "CONTAINS" "DOES_NOT_CONTAIN" "STARTS_WITH" "DOES_NOT_START_WITH"
-		           "EQUALS_ONE_OF" "EQUALS_ONE_OF_OR_MISSING" "EQUALS_NONE_OF" "EQUALS_NONE_OF_OR_MISSING" "CONTAINS_ONE_OF"
-		           "CONTAINS_NONE_OF", &operator) %then
+		           "IN" "NOT_IN" "CONTAINS_ONE_OF" "CONTAINS_NONE_OF", &operator) %then
 			%do;
 				/*
 					For operators that require a value, set the column, operator, and value.
