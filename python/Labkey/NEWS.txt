@@ -2,6 +2,14 @@
 LabKey Python Client API News
 +++++++++++
 
+What's New in the LabKey 0.21 package
+==============================
+
+*Release date: 03/30/2012*
+
+- Fixed bug in updateWiki due to changes in LabKey Server v12.1
+
+
 What's New in the LabKey 0.20 package
 ==============================
 

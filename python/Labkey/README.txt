@@ -13,9 +13,9 @@ The LabKey package, currently, can only be installed via source. To install the 
 
 1. Download the distribution from http://www.labkey.com/download-labkey-server
 
-2. The package distribution will be named similar to LabKey-0.19.zip, where 
+2. The package distribution will be named similar to LabKey-0.21.zip, where 
 
-    - 0.19 is the python package number
+    - 0.21 is the python package number
 
 3. Unzip the downloaded package and execute::
     

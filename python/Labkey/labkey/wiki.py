@@ -114,12 +114,13 @@ Test Code:
     # variable named _wikiProps
     dataList = data.split('\n')
     #print data
-    #i = dataList.index('wikiProps')
     v = next((i for i in xrange(len(dataList)) if '_wikiProp' in dataList[i]), None)
-    wikiVars = {}
-    for j in range(11): 
+    wikiVars = {} 
+    for j in range(100):
+        # Read each line, until find a javascript closing bracket. 
+        if '};' in dataList[v+j+1]:
+            break
         wvar = dataList[v+j+1].rstrip().lstrip().replace('\'','').replace(',','')
-        #print wvar
         wikiVars[wvar.split(':')[0]] = wvar.split(':')[1]
     # print "This is the wikiVars {0}".format(wikiVars)
     
