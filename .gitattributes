@@ -19,6 +19,8 @@ java/src/org/labkey/remoteapi/assay/AssayListResponse.java -text
 java/src/org/labkey/remoteapi/assay/Batch.java -text
 java/src/org/labkey/remoteapi/assay/Data.java -text
 java/src/org/labkey/remoteapi/assay/ExpObject.java -text
+java/src/org/labkey/remoteapi/assay/ImportRunCommand.java -text
+java/src/org/labkey/remoteapi/assay/ImportRunResponse.java -text
 java/src/org/labkey/remoteapi/assay/Run.java -text
 java/src/org/labkey/remoteapi/assay/SaveAssayBatchCommand.java -text
 java/src/org/labkey/remoteapi/assay/SaveAssayBatchResponse.java -text
@@ -106,6 +108,7 @@ java/src/org/labkey/remoteapi/security/RenameGroupCommand.java -text
 java/src/org/labkey/remoteapi/security/RenameGroupResponse.java -text
 java/src/org/labkey/remoteapi/test/ClientConfig.java -text
 java/src/org/labkey/remoteapi/test/Demo.java -text
+java/src/org/labkey/remoteapi/test/ImportRunDemo.java -text
 java/src/org/labkey/remoteapi/test/MS2SearchClient.java -text
 java/src/org/labkey/remoteapi/test/PipelineFileAvailableClient.java -text
 java/src/org/labkey/remoteapi/test/SaveAssayBatchDemo.java -text
