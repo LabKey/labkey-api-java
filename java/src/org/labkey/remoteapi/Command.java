@@ -188,7 +188,7 @@ public class Command<ResponseType extends CommandResponse>
      * of the error.
      * @param connection The connection on which this command should be executed.
      * @param folderPath The folder path in which to execute the command (e.g., "My Project/My Folder/My sub-folder").
-     * You may also pass null to execute the command in the root container (usually requires admin permission).
+     * You may also pass null to execute the command in the root container (usually requires site admin permission).
      * @return A CommandResponse (or derived class), which provides access to the returned text/data.
      * @throws CommandException Thrown if the server returned a non-success status code.
      * @throws org.apache.commons.httpclient.HttpException Thrown if the HttpClient library generated an exception.
@@ -304,7 +304,7 @@ public class Command<ResponseType extends CommandResponse>
         //construct a URI from the results of the getActionUrl method
         //note that this method returns an unescaped URL, so pass
         //false for the second parameter to escape it
-        URI uri = new URI(getActionUrl(connection, folderPath), false);
+        URI uri = getActionUrl(connection, folderPath);
 
         //the query string values will need to be escaped as they are
         //put into the query string, and we don't want to re-escape the
@@ -339,35 +339,39 @@ public class Command<ResponseType extends CommandResponse>
      * @param folderPath The folder path to use.
      * @return The URL
      */
-    protected String getActionUrl(Connection connection, String folderPath)
+    protected URI getActionUrl(Connection connection, String folderPath) throws URIException
     {
         //start with the connection's base URL
-        StringBuilder url = new StringBuilder(connection.getBaseUrl().replace('\\','/'));
+        // Use a URI so that it correctly encodes each section of the overall URI
+        URI uri = new URI(connection.getBaseUrl().replace('\\','/'), false);
+
+        StringBuilder path = new StringBuilder(uri.getPath());
 
         //add the controller name
         String controller = getControllerName();
-        if(controller.charAt(0) != '/' && url.charAt(url.length() - 1) != '/')
-            url.append('/');
-        url.append(controller);
+        if(controller.charAt(0) != '/' && path.charAt(path.length() - 1) != '/')
+            path.append('/');
+        path.append(controller);
 
         //add the folderPath (if any)
         if(null != folderPath && folderPath.length() > 0)
         {
             String folderPathNormalized = folderPath.replace('\\', '/');
-            if(folderPathNormalized.charAt(0) != '/' && url.charAt(url.length() - 1) != '/')
-                url.append('/');
-            url.append(folderPathNormalized);
+            if(folderPathNormalized.charAt(0) != '/' && path.charAt(path.length() - 1) != '/')
+                path.append('/');
+            path.append(folderPathNormalized);
         }
 
         //add the action name + ".api"
         String actionName = getActionName();
-        if(actionName.charAt(0) != '/' && url.charAt(url.length() - 1) != '/')
-            url.append('/');
-        url.append(actionName);
+        if(actionName.charAt(0) != '/' && path.charAt(path.length() - 1) != '/')
+            path.append('/');
+        path.append(actionName);
         if(!actionName.endsWith(".api"))
-            url.append(".api");
+            path.append(".api");
 
-        return url.toString();
+        uri.setPath(path.toString());
+        return uri;
     }
 
     /**
