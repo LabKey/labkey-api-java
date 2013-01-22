@@ -345,7 +345,7 @@ public class Command<ResponseType extends CommandResponse>
         // Use a URI so that it correctly encodes each section of the overall URI
         URI uri = new URI(connection.getBaseUrl().replace('\\','/'), false);
 
-        StringBuilder path = new StringBuilder(uri.getPath());
+        StringBuilder path = new StringBuilder(uri.getPath() == null ? "/" : uri.getPath());
 
         //add the controller name
         String controller = getControllerName();

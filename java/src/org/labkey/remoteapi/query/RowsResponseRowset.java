@@ -42,7 +42,6 @@ public class RowsResponseRowset implements Rowset
     {
         return new Iterator<Row>(){
             private int _idx = 0;
-            private RowMap _row = new RowMap();
 
             public boolean hasNext()
             {
@@ -51,9 +50,9 @@ public class RowsResponseRowset implements Rowset
 
             public Row next()
             {
-                _row.setMap(_rows.get(_idx));
+                RowMap row = new RowMap(_rows.get(_idx));
                 ++_idx;
-                return _row;
+                return row;
             }
 
             public void remove()
