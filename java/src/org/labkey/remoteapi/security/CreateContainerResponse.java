@@ -29,4 +29,19 @@ public class CreateContainerResponse extends CommandResponse
     {
         super(text, statusCode, contentType, json, sourceCommand);
     }
+
+    public String getId()
+    {
+        return getProperty("id");
+    }
+
+    public String getPath()
+    {
+        return getProperty("path");
+    }
+
+    public String getName()
+    {
+        return getProperty("name");
+    }
 }
