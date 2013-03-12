@@ -15,8 +15,13 @@
  */
 package org.labkey.remoteapi.query;
 
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.json.simple.JSONObject;
 import org.labkey.remoteapi.PostCommand;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /*
 * User: Dave
@@ -44,6 +49,11 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
     private int _maxRows = -1;
     private int _offset = 0;
     private ContainerFilter _containerFilter;
+    private boolean _includeTotalCount = true;
+    private String _sort;
+    private boolean _saveInSession = false;
+    private boolean _includeDetailsColumn = false;
+    private Map<String, String> _queryParameters = new HashMap<String, String>();
 
     /**
      * Constructs an ExceuteSqlCommand, initialized with a schema name.
@@ -66,6 +76,11 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
         _maxRows = source._maxRows;
         _offset = source._offset;
         _containerFilter = source._containerFilter;
+        _includeTotalCount = source._includeTotalCount;
+        _sort = source._sort;
+        _saveInSession = source._saveInSession;
+        _includeDetailsColumn = source._includeDetailsColumn;
+        _queryParameters = new HashMap<String, String>(source.getQueryParameters());
     }
 
     /**
@@ -176,6 +191,108 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
     }
 
     /**
+     Include the total number of rows available (defaults to true).
+     If false totalCount will equal number of rows returned (equal to maxRows unless maxRows == 0).
+     */
+    public boolean isIncludeTotalCount()
+    {
+        return _includeTotalCount;
+    }
+
+    /**
+     Include the total number of rows available (defaults to true).
+     If false totalCount will equal number of rows returned (equal to maxRows unless maxRows == 0).
+     */
+    public void setIncludeTotalCount(boolean includeTotalCount)
+    {
+        _includeTotalCount = includeTotalCount;
+    }
+
+    /**
+     A sort specification to apply over the rows returned by the SQL. In general, you should either include an
+     ORDER BY clause in your SQL, or specific a sort specification in this config property, but not both.
+     The value of this property should be a comma-delimited list of column names you want to sort by.
+     Use a - prefix to sort a column in descending order
+     (e.g., 'LastName,-Age' to sort first by LastName, then by Age descending).
+     */
+    public String getSort()
+    {
+        return _sort;
+    }
+
+    /**
+     A sort specification to apply over the rows returned by the SQL. In general, you should either include an
+     ORDER BY clause in your SQL, or specific a sort specification in this config property, but not both.
+     The value of this property should be a comma-delimited list of column names you want to sort by.
+     Use a - prefix to sort a column in descending order
+     (e.g., 'LastName,-Age' to sort first by LastName, then by Age descending).
+     */
+    public void setSort(String sort)
+    {
+        _sort = sort;
+    }
+
+    /**
+     * Whether or not the definition of this query should be stored for reuse during the current session.
+     * If true, all information required to recreate the query will be stored on the server and a unique query name
+     * will be passed to the success callback. This temporary query name can be used by all other API methods,
+     * including Query Web Part creation, for as long as the current user's session remains active.
+     */
+    public boolean isSaveInSession()
+    {
+        return _saveInSession;
+    }
+
+    /**
+     * Whether or not the definition of this query should be stored for reuse during the current session.
+     * If true, all information required to recreate the query will be stored on the server and a unique query name
+     * will be passed to the success callback. This temporary query name can be used by all other API methods,
+     * including Query Web Part creation, for as long as the current user's session remains active.
+     */
+    public void setSaveInSession(boolean saveInSession)
+    {
+        _saveInSession = saveInSession;
+    }
+
+    /**
+     Include the Details link column in the set of columns (defaults to false).
+     If included, the column will have the name "~~Details~~".
+     The underlying table/query must support details links or the column will be omitted in the response.
+     */
+    public boolean isIncludeDetailsColumn()
+    {
+        return _includeDetailsColumn;
+    }
+
+    /**
+     Include the Details link column in the set of columns (defaults to false).
+     If included, the column will have the name "~~Details~~".
+     The underlying table/query must support details links or the column will be omitted in the response.
+     */
+    public void setIncludeDetailsColumn(boolean includeDetailsColumn)
+    {
+        _includeDetailsColumn = includeDetailsColumn;
+    }
+
+    /**
+     Map of name (string)/value pairs for the values of parameters if the SQL references underlying queries
+     that are parameterized.
+     */
+    public Map<String, String> getQueryParameters()
+    {
+        return _queryParameters;
+    }
+
+    /**
+     Map of name (string)/value pairs for the values of parameters if the SQL references underlying queries
+     that are parameterized.
+     */
+    public void setQueryParameters(Map<String, String> parameters)
+    {
+        _queryParameters = parameters;
+    }
+
+    /**
      * Returns the container filter set for this command
      * @return the container filter (may be null)
      */
@@ -213,6 +330,9 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
             json.put("offset", getOffset());
         if(getContainerFilter() != null)
             json.put("containerFilter", getContainerFilter().name());
+        json.put("includeTotalCount", isIncludeTotalCount());
+        json.put("includeDetailsColumn", isIncludeDetailsColumn());
+        json.put("saveInSession", isSaveInSession());
         return json;
     }
 
@@ -220,5 +340,19 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
     public ExecuteSqlCommand copy()
     {
         return new ExecuteSqlCommand(this);
+    }
+
+    @Override
+    public Map<String, Object> getParameters()
+    {
+        Map<String,Object> params = new HashMap<String,Object>();
+        if(null != getSort())
+            params.put("query.sort", getSort());
+        for (Map.Entry<String, String> entry : getQueryParameters().entrySet())
+        {
+            params.put("query.param." + entry.getKey(), entry.getValue());
+        }
+
+        return params;
     }
 }
