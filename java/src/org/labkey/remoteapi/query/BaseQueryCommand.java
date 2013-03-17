@@ -213,28 +213,6 @@ public abstract class BaseQueryCommand<ResponseType extends CommandResponse> ext
         this._containerFilter = containerFilter;
     }
 
-    /**
-     * Constructs the sort query string parameter from the current list of
-     * sort definitions. The sort query string parameter is in the form of
-     * <i>[-]column,[-]column,...</i> where the optional - is used for
-     * a descending sort direction.
-     * @return The sort query string parameter.
-     */
-    protected String getSortQueryStringParam()
-    {
-        StringBuilder param = new StringBuilder();
-        String sep = "";
-        for(Sort sort : getSorts())
-        {
-            param.append(sep);
-            if(sort.getDirection() == Sort.Direction.DESCENDING)
-                param.append("-");
-            param.append(sort.getColumnName());
-            sep = ",";
-        }
-        return param.toString();
-    }
-
     @Override
     public Map<String, Object> getParameters()
     {
@@ -245,7 +223,7 @@ public abstract class BaseQueryCommand<ResponseType extends CommandResponse> ext
         if (getMaxRows() >= 0)
             params.put("maxRows", getMaxRows());
         if(null != getSorts() && getSorts().size() > 0)
-            params.put("query.sort", getSortQueryStringParam());
+            params.put("query.sort", Sort.getSortQueryStringParam(getSorts()));
 
         if(null != getFilters())
         {

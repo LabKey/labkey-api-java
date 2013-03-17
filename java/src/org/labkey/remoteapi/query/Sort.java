@@ -21,6 +21,8 @@ package org.labkey.remoteapi.query;
 * Time: 4:00:03 PM
 */
 
+import java.util.List;
+
 /**
  * Represents a particular sort order entry,
  * which consists of a column name and an optional direction
@@ -71,5 +73,34 @@ public class Sort
     public void setDirection(Direction direction)
     {
         _direction = direction;
+    }
+
+    /**
+     * Constructs the sort query string parameter from the current list of
+     * sort definitions. The sort query string parameter is in the form of
+     * <i>[-]column,[-]column,...</i> where the optional - is used for
+     * a descending sort direction.
+     * @return The sort query string parameter.
+     */
+    public static String getSortQueryStringParam(List<Sort> sorts)
+    {
+        StringBuilder param = new StringBuilder();
+        String sep = "";
+        for(Sort sort : sorts)
+        {
+            param.append(sep);
+            param.append(sort.toQueryStringParam());
+            sep = ",";
+        }
+        return param.toString();
+    }
+
+    /**
+     * @return a URL-style representation of this sort parameter. Column names are prefixed with "-" to represent a
+     * descending sort.
+     */
+    public String toQueryStringParam()
+    {
+        return (getDirection() == Sort.Direction.DESCENDING ? "-" : "") + getColumnName();
     }
 }

@@ -15,12 +15,11 @@
  */
 package org.labkey.remoteapi.query;
 
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.json.simple.JSONObject;
 import org.labkey.remoteapi.PostCommand;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /*
@@ -50,7 +49,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
     private int _offset = 0;
     private ContainerFilter _containerFilter;
     private boolean _includeTotalCount = true;
-    private String _sort;
+    private List<Sort> _sorts;
     private boolean _saveInSession = false;
     private boolean _includeDetailsColumn = false;
     private Map<String, String> _queryParameters = new HashMap<String, String>();
@@ -77,7 +76,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
         _offset = source._offset;
         _containerFilter = source._containerFilter;
         _includeTotalCount = source._includeTotalCount;
-        _sort = source._sort;
+        _sorts = source._sorts;
         _saveInSession = source._saveInSession;
         _includeDetailsColumn = source._includeDetailsColumn;
         _queryParameters = new HashMap<String, String>(source.getQueryParameters());
@@ -215,9 +214,9 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
      Use a - prefix to sort a column in descending order
      (e.g., 'LastName,-Age' to sort first by LastName, then by Age descending).
      */
-    public String getSort()
+    public List<Sort> getSorts()
     {
-        return _sort;
+        return _sorts;
     }
 
     /**
@@ -227,9 +226,9 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
      Use a - prefix to sort a column in descending order
      (e.g., 'LastName,-Age' to sort first by LastName, then by Age descending).
      */
-    public void setSort(String sort)
+    public void setSort(List<Sort> sorts)
     {
-        _sort = sort;
+        _sorts = sorts;
     }
 
     /**
@@ -346,8 +345,8 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
     public Map<String, Object> getParameters()
     {
         Map<String,Object> params = new HashMap<String,Object>();
-        if(null != getSort())
-            params.put("query.sort", getSort());
+        if(null != getSorts() && getSorts().size() > 0)
+            params.put("query.sort", Sort.getSortQueryStringParam(getSorts()));
         for (Map.Entry<String, String> entry : getQueryParameters().entrySet())
         {
             params.put("query.param." + entry.getKey(), entry.getValue());

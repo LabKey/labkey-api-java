@@ -229,7 +229,7 @@ public class SelectRowsCommand extends BaseQueryCommand<SelectRowsResponse> impl
         if(getOffset() > 0)
             params.put("query.offset", getOffset());
         if(null != getSorts() && getSorts().size() > 0)
-            params.put("query.sort", getSortQueryStringParam());
+            params.put("query.sort", Sort.getSortQueryStringParam(getSorts()));
 
         if(null != getFilters())
         {
