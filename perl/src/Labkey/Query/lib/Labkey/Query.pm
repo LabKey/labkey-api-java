@@ -67,7 +67,7 @@ use URI;
 
 use vars qw($VERSION);
 
-our $VERSION = "1.02";
+our $VERSION = "1.03";
 
 
 
@@ -105,7 +105,8 @@ The following are optional:
 	-netrcFile => optional. the location of a file to use in place of a .netrc file.  see also the environment variable LABKEY_NETRC.
 	-requiredVersion => 9.1 #if 8.3 is selected, it will use Labkey's pre-9.1 format for returning the data.  9.1 is the default.  See documentation of LABKEY.Query.ExtendedSelectRowsResults for more detail here:
 		https://www.labkey.org/download/clientapi_docs/javascript-api/symbols/LABKEY.Query.html
-	
+	-useragent => an instance of LWP::UserAgent (if not provided, a new instance will be created)
+	-timeout => timeout in seconds (used when creating a new LWP::UserAgent)
 	
 NOTE: 
 
@@ -175,8 +176,7 @@ sub selectRows {
 	if($lk_config){
 		$request->authorization_basic( $$lk_config{'login'}, $$lk_config{'password'} );
 	}
-	my $ua = new LWP::UserAgent;
-	$ua->agent("Perl API Client/1.0");
+	my $ua = $args{'-useragent'} || _createUserAgent( %args );
 	my $response = $ua->request($request);
 
 	# Simple error checking
@@ -216,6 +216,8 @@ The following are optional:
 	-debug => 1,  #will result in a more verbose output 
 	-loginAsGuest => #will not attempt to lookup credentials in netrc
 	-netrcFile => optional. the location of a file to use in place of a .netrc file.  see also the environment variable LABKEY_NETRC.
+	-useragent => an instance of LWP::UserAgent (if not provided, a new instance will be created)
+	-timeout => timeout in seconds (used when creating a new LWP::UserAgent)
 
 NOTE:
 - The environment variable 'LABKEY_URL' can be used instead of supplying a '-baseUrl' param
@@ -261,7 +263,8 @@ sub insertRows {
 		"rows"       => $args{'-rows'}
 	};
 
-	my $response = _postData($url, $data, $lk_config);
+	my $ua = $args{'-useragent'} || _createUserAgent( %args );
+	my $response = _postData($ua, $url, $data, $lk_config);
 	return $response;
 
 }
@@ -291,6 +294,8 @@ The following are optional:
 	-debug => 1,  #will result in a more verbose output
 	-loginAsGuest => #will not attempt to lookup credentials in netrc
 	-netrcFile => optional. the location of a file to use in place of a .netrc file.  see also the environment variable LABKEY_NETRC.
+	-useragent => an instance of LWP::UserAgent (if not provided, a new instance will be created)
+	-timeout => timeout in seconds (used when creating a new LWP::UserAgent)
 
 NOTE:
 - The environment variable 'LABKEY_URL' can be used instead of supplying a '-baseUrl' param
@@ -335,7 +340,8 @@ sub updateRows {
 		"rows"       => $args{'-rows'}
 	};
 
-	my $response = _postData($url, $data, $lk_config);
+	my $ua = $args{'-useragent'} || _createUserAgent( %args );
+	my $response = _postData($ua, $url, $data, $lk_config);
 	return $response;
 
 }
@@ -362,6 +368,8 @@ The following are optional:
 	-debug => 1,  #will result in a more verbose output
 	-loginAsGuest => #will not attempt to lookup credentials in netrc
 	-netrcFile => optional. the location of a file to use in place of a .netrc file.  see also the environment variable LABKEY_NETRC.
+	-useragent => an instance of LWP::UserAgent (if not provided, a new instance will be created)
+	-timeout => timeout in seconds (used when creating a new LWP::UserAgent)
 
 NOTE:
 - The environment variable 'LABKEY_URL' can be used instead of supplying a '-baseUrl' param
@@ -406,7 +414,8 @@ sub deleteRows {
 		"rows"       => $args{'-rows'}
 	};
 
-	my $response = _postData($url, $data, $lk_config);
+	my $ua = $args{'-useragent'} || _createUserAgent( %args );
+	my $response = _postData($ua, $url, $data, $lk_config);
 	return $response;
 
 }
@@ -434,6 +443,8 @@ The following are optional:
 	-debug => 1,  #will result in a more verbose output
 	-loginAsGuest => #will not attempt to lookup credentials in netrc
 	-netrcFile => optional. the location of a file to use in place of a .netrc file.  see also the environment variable LABKEY_NETRC.
+	-useragent => an instance of LWP::UserAgent (if not provided, a new instance will be created)
+	-timeout => timeout in seconds (used when creating a new LWP::UserAgent)
 
 NOTE:
 - The environment variable 'LABKEY_URL' can be used instead of supplying a '-baseUrl' param
@@ -485,7 +496,8 @@ sub executeSql {
 		
 	print Dumper($data) if $args{-debug};
 	
-	my $response = _postData($url, $data, $lk_config);
+	my $ua = $args{'-useragent'} || _createUserAgent( %args );
+	my $response = _postData($ua, $url, $data, $lk_config);
 	return $response;
 
 }
@@ -623,7 +635,7 @@ sub _normalizeSlash(){
 
 
 sub _postData(){
-	my ($url, $data, $lk_config) = @_;
+	my ($ua, $url, $data, $lk_config) = @_;
 	
 	my $json_obj = JSON->new->utf8->encode($data);
 
@@ -633,8 +645,6 @@ sub _postData(){
 	$req->content_type('application/json');
 	$req->content($json_obj);
 	$req->authorization_basic( $$lk_config{'login'}, $$lk_config{'password'} );
-	my $ua = new LWP::UserAgent;
-	$ua->agent("Perl API Client/1.0");
 	my $response = $ua->request($req);
 
 	# Simple error checking
@@ -647,6 +657,18 @@ sub _postData(){
 	  || croak("ERROR: Unable to decode JSON.\n$url\n");
 	  
   	return $json_obj;	
+}
+
+sub _createUserAgent() {
+	my %args = @_;
+
+	my $ua = new LWP::UserAgent;
+	$ua->agent("Perl API Client/1.0");
+	if ($args{'-timeout'}) {
+		print "setting timeout to " . $args{'-timeout'} . "\n";
+		$ua->timeout($args{'-timeout'});
+	}
+	return $ua;
 }
 
 

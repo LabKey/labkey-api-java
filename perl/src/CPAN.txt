@@ -1,5 +1,6 @@
 Preparing module for CPAN:
 
+bump version number in lib/Labkey/Query.pm
 perl Build.PL
 pod2text lib/Labkey/Query.pm README
 perl Build manifest

@@ -25,3 +25,5 @@ Revision history for Perl module Labkey::Query
 1.02 Tue Jan 17 2012
 	- Support for LABKEY_NETRC environment variable to specify non-standard location for .netrc file
 	- Fix typo in module dependencies (URL changed to URI)		
+1.03 Fri Mar 22 2013
+	- Add optional 'useragent' and 'timeout' options to APIs.  The APIs will use 'useragent' to make the request if provided.

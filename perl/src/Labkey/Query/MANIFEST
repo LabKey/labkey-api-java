@@ -1,8 +1,10 @@
-MANIFEST
-README
-LICENSE
-Todo
-Changes
 Build.PL
+Changes
 lib/Labkey/Query.pm
+LICENSE
+MANIFEST
+MANIFEST.SKIP
+META.yml
+README
 t/001_load.t
+Todo
