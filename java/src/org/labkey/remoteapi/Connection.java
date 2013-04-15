@@ -57,7 +57,7 @@ import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
  *     String password = getPassword();
  *
  *     //create a new connection passing the user credentials
- *     Conneection cn = new Connection("https://localhost:8080/labkey", user, password);
+ *     Connection cn = new Connection("https://localhost:8080/labkey", user, password);
  *     SelectRowsCommand cmd = new SelectRowsCommand("lists", "People");
  *     SelectRowsResponse response = cmd.execute(cn, "Api Test");
  * </pre>
