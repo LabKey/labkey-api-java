@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.ArrayList;
 
 /**
- * Created by IntelliJ IDEA.
  * User: dave
  * Date: Aug 26, 2009
  * Time: 2:57:19 PM

@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
  * User: brittp
  * Date: Jun 24, 2009
  * Time: 10:11:39 PM

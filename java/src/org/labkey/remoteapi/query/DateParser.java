@@ -20,7 +20,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Created by IntelliJ IDEA.
  * User: matthewb
  * Date: 2012-03-12
  * Time: 10:55 AM
