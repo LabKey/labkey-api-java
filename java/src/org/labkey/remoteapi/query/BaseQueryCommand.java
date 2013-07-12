@@ -18,6 +18,7 @@ package org.labkey.remoteapi.query;
 import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
@@ -34,6 +35,7 @@ public abstract class BaseQueryCommand<ResponseType extends CommandResponse> ext
     protected List<Sort> _sorts = new ArrayList<Sort>();
     protected List<Filter> _filters = new ArrayList<Filter>();
     protected ContainerFilter _containerFilter;
+    private Map<String, String> _queryParameters = new HashMap<String, String>();
 
     public BaseQueryCommand(BaseQueryCommand<ResponseType> source)
     {
@@ -212,6 +214,24 @@ public abstract class BaseQueryCommand<ResponseType extends CommandResponse> ext
         this._containerFilter = containerFilter;
     }
 
+    /**
+     Map of name (string)/value pairs for the values of parameters if the SQL references underlying queries
+     that are parameterized.
+     */
+    public Map<String, String> getQueryParameters()
+    {
+        return _queryParameters;
+    }
+
+    /**
+     Map of name (string)/value pairs for the values of parameters if the SQL references underlying queries
+     that are parameterized.
+     */
+    public void setQueryParameters(Map<String, String> parameters)
+    {
+        _queryParameters = parameters;
+    }
+
     @Override
     public Map<String, Object> getParameters()
     {
@@ -232,6 +252,11 @@ public abstract class BaseQueryCommand<ResponseType extends CommandResponse> ext
 
         if(getContainerFilter() != null)
             params.put("containerFilter", getContainerFilter().name());
+
+        for (Map.Entry<String, String> entry : getQueryParameters().entrySet())
+        {
+            params.put("query.param." + entry.getKey(), entry.getValue());
+        }
 
         return params;
     }
