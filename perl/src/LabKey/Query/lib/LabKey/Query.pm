@@ -2,12 +2,12 @@
 
 =head1 NAME
 
-Labkey::Query
+LabKey::Query
 
 =head1 SYNOPSIS
 
-	use Labkey::Query;
-	my $results = Labkey::Query::selectRows(
+	use LabKey::Query;
+	my $results = LabKey::Query::selectRows(
 		-baseUrl => 'http://labkey.com:8080/labkey/',
 		-containerPath => 'myFolder/',
 		-schemaName => 'lists',
@@ -41,18 +41,25 @@ https://www.labkey.org/announcements/home/Server/Forum/list.view?
 
 =head1 AUTHOR 
 
-Ben Bimber
+LabKey Software C<info@labkey.com>
+
+=head1 CONTRIBUTING
+
+Send comments, suggestions and bug reports to:
+
+L<https://www.labkey.org/project/home/Developer/Forum/begin.view>
 
 
 =head1 COPYRIGHT
  
 Copyright (c) 2010 Ben Bimber
+Copyright (c) 2011-2013 LabKey Software
 
 Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
 
 =cut
 
-package Labkey::Query;
+package LabKey::Query;
 
 use strict;
 use LWP::UserAgent;
@@ -67,7 +74,7 @@ use URI;
 
 use vars qw($VERSION);
 
-our $VERSION = "1.03";
+our $VERSION = "1.04";
 
 
 
@@ -77,7 +84,7 @@ selectRows() can be used to query data from LabKey server
 
 The following are the minimum required params:
 		
-	my $results = Labkey::Query::selectRows(
+	my $results = LabKey::Query::selectRows(
 		-baseUrl => 'http://labkey.com:8080/labkey/',
 		-containerPath => 'myFolder/',
 		-schemaName => 'lists',
@@ -103,7 +110,7 @@ The following are optional:
 	-debug => 1,	#will result in a more verbose output
 	-loginAsGuest => #will not attempt to lookup credentials in netrc
 	-netrcFile => optional. the location of a file to use in place of a .netrc file.  see also the environment variable LABKEY_NETRC.
-	-requiredVersion => 9.1 #if 8.3 is selected, it will use Labkey's pre-9.1 format for returning the data.  9.1 is the default.  See documentation of LABKEY.Query.ExtendedSelectRowsResults for more detail here:
+	-requiredVersion => 9.1 #if 8.3 is selected, it will use LabKey's pre-9.1 format for returning the data.  9.1 is the default.  See documentation of LABKEY.Query.ExtendedSelectRowsResults for more detail here:
 		https://www.labkey.org/download/clientapi_docs/javascript-api/symbols/LABKEY.Query.html
 	-useragent => an instance of LWP::UserAgent (if not provided, a new instance will be created)
 	-timeout => timeout in seconds (used when creating a new LWP::UserAgent)
@@ -198,7 +205,7 @@ insertRows() can be used to insert records into a LabKey table
 
 The following are the minimum required params:
 
-	my $insert = Labkey::Query::insertRows(
+	my $insert = LabKey::Query::insertRows(
 		-baseUrl => 'http://labkey.com:8080/labkey/',
 		-containerPath => 'myFolder/',
 		-schemaName => 'lists',
@@ -276,7 +283,7 @@ updateRows() can be used to update records in a LabKey table
 
 The following are the minimum required params:
 
-	my $update = Labkey::Query::updateRows(
+	my $update = LabKey::Query::updateRows(
 		-baseUrl => 'http://labkey.com:8080/labkey/',
 		-containerPath => 'myFolder/',
 		-schemaName => 'lists',
@@ -353,7 +360,7 @@ deleteRows() can be used to delete records in a LabKey table
 
 The following are the minimum required params:
 
-	my $update = Labkey::Query::deleteRows(
+	my $update = LabKey::Query::deleteRows(
 		-baseUrl => 'http://labkey.com:8080/labkey/',
 		-containerPath => 'myFolder/',
 		-schemaName => 'lists',
@@ -427,7 +434,7 @@ executeSql() can be used to execute arbitrary SQL
 
 The following are the minimum required params:
 
-	my $result = Labkey::Query::executeSql(
+	my $result = LabKey::Query::executeSql(
 		-baseUrl => 'http://labkey.com:8080/labkey/',
 		-containerPath => 'myFolder/',
 		-schemaName => 'study',

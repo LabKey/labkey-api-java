@@ -3,7 +3,7 @@ use Module::Build;
 
 Module::Build->new
     ( 
-    module_name     => 'Labkey::Query',	
+    module_name     => 'LabKey::Query',	
 	#dist_author => 'Ben Bimber',
 	requires => {
                  'LWP::UserAgent' => 0,

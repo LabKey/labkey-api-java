@@ -1,4 +1,4 @@
-Revision history for Perl module Labkey::Query
+Revision history for Perl module LabKey::Query
 
 0.01 Thu Aug 26 10:57:50 2010
     - original version; created by ExtUtils::ModuleMaker 0.51
@@ -27,3 +27,5 @@ Revision history for Perl module Labkey::Query
 	- Fix typo in module dependencies (URL changed to URI)		
 1.03 Fri Mar 22 2013
 	- Add optional 'useragent' and 'timeout' options to APIs.  The APIs will use 'useragent' to make the request if provided.
+1.04 Tue Oct 8 2013
+	- Rename module from Labkey::Query to LabKey::Query

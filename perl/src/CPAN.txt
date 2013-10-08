@@ -1,12 +1,12 @@
 Preparing module for CPAN:
 
-bump version number in lib/Labkey/Query.pm
+bump version number in lib/LabKey/Query.pm, META.yml
 perl Build.PL
-pod2text lib/Labkey/Query.pm README
+pod2text lib/LabKey/Query.pm README
 perl Build manifest
 perl Build dist
 
-This will make a tar file which you should upload.
+This will make a tar file which you should upload using the 'labkey' account on https://pause.perl.org/.
 
 To create README from POD:
 pod2text [input file] [output file]

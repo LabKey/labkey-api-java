@@ -127,6 +127,7 @@ perl/src/LabKey/Query/Todo -text
 perl/src/LabKey/Query/lib/LabKey/Query.pm -text
 perl/src/LabKey/Query/t/001_load.t -text
 perl/src/labkey_api.pl -text
+perl/src/latest/LabKey-Query-1.04.tar.gz -text svneol=unset#application/x-gzip
 perl/src/latest/Labkey-Query-0.04.tar.gz -text
 perl/src/latest/Labkey-Query-0.05.tar.gz -text
 perl/src/latest/Labkey-Query-0.07.tar.gz -text

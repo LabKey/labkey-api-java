@@ -1,6 +1,6 @@
 Build.PL
 Changes
-lib/Labkey/Query.pm
+lib/LabKey/Query.pm
 LICENSE
 MANIFEST
 MANIFEST.SKIP
