@@ -124,7 +124,7 @@ perl/src/LabKey/Query/MANIFEST.SKIP -text
 perl/src/LabKey/Query/META.yml -text
 perl/src/LabKey/Query/README -text
 perl/src/LabKey/Query/Todo -text
-perl/src/LabKey/Query/lib/Labkey/Query.pm -text
+perl/src/LabKey/Query/lib/LabKey/Query.pm -text
 perl/src/LabKey/Query/t/001_load.t -text
 perl/src/labkey_api.pl -text
 perl/src/latest/Labkey-Query-0.04.tar.gz -text
