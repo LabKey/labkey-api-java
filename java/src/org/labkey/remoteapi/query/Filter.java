@@ -58,6 +58,7 @@ public class Filter
         IN("in", "Equals One Of", "IN", true),
         NOT_IN("notin", "Does Not Equal Any Of (e.g. 'a;b;c')", "NOT_IN", true),
 
+        MEMBER_OF("memberof", "Member Of", "MEMBER_OF", true),
         CONTAINS_ONE_OF("containsoneof", "Contains One Of (e.g. 'a;b;c')", "CONTAINS_ONE_OF", true),
         CONTAINS_NONE_OF("containsnoneof", "Does Not Contain Any Of (e.g. 'a;b;c')", "CONTAINS_NONE_OF", true)
         ;
