@@ -24,6 +24,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -228,7 +229,7 @@ public class Command<ResponseType extends CommandResponse>
      * Response class allows clients to get an InputStream, consume lazily, and close the connection when complete.
      * NOTE: Internal experimental API -- exposes our internal usage of HttpMethod to clients which is bad.
      */
-    protected static abstract class Response
+    protected static class Response implements Closeable
     {
         private final int statusCode;
         private final String contentType;
@@ -257,7 +258,10 @@ public class Command<ResponseType extends CommandResponse>
         }
 
         // Caller is responsible for closing the response
-        public abstract void close();
+        public void close()
+        {
+            method.releaseConnection();
+        }
 
 //        @Override
 //        protected void finalize() throws Throwable
@@ -285,14 +289,7 @@ public class Command<ResponseType extends CommandResponse>
         Header contentTypeHeader = method.getResponseHeader("Content-Type");
         String contentType = (null == contentTypeHeader ? null : contentTypeHeader.getValue());
 
-        Response response = new Response(status, contentType, method)
-        {
-            @Override
-            public void close()
-            {
-                method.releaseConnection();
-            }
-        };
+        Response response = new Response(status, contentType, method);
 
         //the HttpMethod should follow redirects automatically,
         //so the status code could be 2xx, 4xx, or 5xx
