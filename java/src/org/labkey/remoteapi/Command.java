@@ -23,9 +23,9 @@ import org.apache.commons.logging.LogFactory;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.Map;
@@ -194,174 +194,150 @@ public class Command<ResponseType extends CommandResponse>
      * @throws org.apache.commons.httpclient.HttpException Thrown if the HttpClient library generated an exception.
      * @throws IOException Thrown if there was an IO problem.
      */
-    @SuppressWarnings("unchecked")
     public final ResponseType execute(Connection connection, String folderPath) throws IOException, CommandException
     {
-        assert null != getControllerName() : "You must set the controller name before executing the command!";
-        assert null != getActionName() : "You must set the action name before executing the command!";
-
-        //construct and initialize the HttpMethod
-        HttpMethod method = getHttpMethod(connection, folderPath);
-
-        int status = 0;
-        String responseText = null;
-        Header contentTypeHeader;
-        String contentType = null;
-        JSONObject json = null;
+        // Execute the method.  Throws CommandException for error responses.
+        Response response = _execute(connection, folderPath);
 
         try
         {
-            LogFactory.getLog(Command.class).info("Requesting URL: " + method.getURI().toString());
-
-            //execute the method
-            status = connection.executeMethod(method);
-
-            //get the content-type header
-            contentTypeHeader = method.getResponseHeader("Content-Type");
-            contentType = (null == contentTypeHeader ? null : contentTypeHeader.getValue());
-
-            //if content type is json, parse it
-            if(null != contentType && contentType.contains(CONTENT_TYPE_JSON))
+            // For non-streaming Commands, read the entire response body into memory as JSON or a String.
+            JSONObject json = null;
+            String responseText = null;
+            if (null != response.contentType && response.contentType.contains(Command.CONTENT_TYPE_JSON))
             {
-                //get the response stream
-                InputStream stream = method.getResponseBodyAsStream();
-
-                //our server always returns a JSON object as the root item
-                json = (JSONObject)JSONValue.parse(new BufferedReader(new InputStreamReader(stream)));
+                // Read entire response body and parse into JSON object
+                json = (JSONObject)JSONValue.parse(new BufferedReader(new InputStreamReader(response.getInputStream())));
             }
             else
             {
-                //otherwise, read it all into the response text
-                responseText = method.getResponseBodyAsString();
+                // Otherwise, read entire reponse body as text.
+                responseText = response.getText();
             }
+
+            return createResponse(responseText, response.statusCode, response.contentType, json);
         }
         finally
         {
-            method.releaseConnection();
+            // Close the http connection
+            response.close();
         }
-
-        //the HttpMethod should follow redirects automatically,
-        //so the status code could be 2xx, 4xx, or 5xx
-        if(status >= 400 && status < 600)
-        {
-            //use the status text as the message by default
-            String message = null != method.getStatusText() ? method.getStatusText() : "(no status text)";
-
-            //if the content-type is json, try to parse the response text
-            //and extract the "exception" property from the root-level object
-            if (null != contentType && contentType.contains(CONTENT_TYPE_JSON) && null != json && json.containsKey("exception"))
-            {
-                message = (String)json.get("exception");
-
-                if ("org.labkey.api.action.ApiVersionException".equals(json.get("exceptionClass")))
-                    throw new ApiVersionException(message, status, json, responseText);
-            }
-
-            throw new CommandException(message, status, json, responseText);
-        }
-
-        return createResponse(responseText, status, contentType, json);
     }
 
     /**
-     * Executes the command in the given folder on the specified connection, and returns
-     * a stream containing the response.
-     * <p>
-     * The <code>folderPath</code> parameter must be a valid folder path on the server
-     * referenced by <code>connection</code>. To execute the command in the root container,
-     * pass null for this parameter. Note however that executing commands in the root container
-     * is typically useful only for administrator level operations.
-     * <p>
-     * The command will be executed against the server, using the credentials setup
-     * in the <code>connection</code> object. If the server is invalid or the user does not
-     * have sufficient permissions, a <code>CommandException</code> will be thrown with
-     * the 403 (Forbidden) HTTP status code.
-     * <p>
-     * Note that the command is executed synchronously, so the calling code will block until the
-     * entire response has been read from the server. To execute a command asynchronously, use
-     * a separate thread.
-     * <p>
-     * If the server returns an error HTTP status code (>= 400), this method will throw
-     * an instance of {@link CommandException}. Use its methods to determine the cause
-     * of the error.
-     * @param connection The connection on which this command should be executed.
-     * @param folderPath The folder path in which to execute the command (e.g., "My Project/My Folder/My sub-folder").
-     * You may also pass null to execute the command in the root container (usually requires site admin permission).
-     * @return An InputStream, which provides access to the returned text/data.
-     * @throws CommandException Thrown if the server returned a non-success status code.
-     * @throws org.apache.commons.httpclient.HttpException Thrown if the HttpClient library generated an exception.
-     * @throws IOException Thrown if there was an IO problem.
+     * Response class allows clients to get an InputStream, consume lazily, and close the connection when complete.
+     * NOTE: Internal experimental API -- exposes our internal usage of HttpMethod to clients which is bad.
      */
-    public final InputStream executeStream(Connection connection, String folderPath) throws IOException, CommandException
+    protected static abstract class Response
+    {
+        private final int statusCode;
+        private final String contentType;
+        private final HttpMethod method;
+
+        Response(int statusCode, String contentType, HttpMethod method)
+        {
+            this.statusCode = statusCode;
+            this.contentType = contentType;
+            this.method = method;
+        }
+
+        public String getStatusText()
+        {
+            return method.getStatusText();
+        }
+
+        public InputStream getInputStream() throws IOException
+        {
+            return method.getResponseBodyAsStream();
+        }
+
+        public String getText() throws IOException
+        {
+            return method.getResponseBodyAsString();
+        }
+
+        // Caller is responsible for closing the response
+        public abstract void close();
+
+//        @Override
+//        protected void finalize() throws Throwable
+//        {
+//            super.finalize();
+//            close();
+//        }
+    }
+
+    /** NOTE: Internal experimental API for handling streaming commands. */
+    protected Response _execute(Connection connection, String folderPath) throws CommandException, IOException
     {
         assert null != getControllerName() : "You must set the controller name before executing the command!";
         assert null != getActionName() : "You must set the action name before executing the command!";
 
         //construct and initialize the HttpMethod
-        HttpMethod method = getHttpMethod(connection, folderPath);
+        final HttpMethod method = getHttpMethod(connection, folderPath);
 
-        int status = 0;
-        String responseText = null;
-        Header contentTypeHeader;
-        String contentType = null;
-        JSONObject json = null;
-        InputStream stream = null;
+        LogFactory.getLog(Command.class).info("Requesting URL: " + method.getURI().toString());
 
-        try
+        //execute the method
+        int status = connection.executeMethod(method);
+
+        //get the content-type header
+        Header contentTypeHeader = method.getResponseHeader("Content-Type");
+        String contentType = (null == contentTypeHeader ? null : contentTypeHeader.getValue());
+
+        Response response = new Response(status, contentType, method)
         {
-            LogFactory.getLog(Command.class).info("Requesting URL: " + method.getURI().toString());
-
-            //execute the method
-            status = connection.executeMethod(method);
-
-            //get the content-type header
-            contentTypeHeader = method.getResponseHeader("Content-Type");
-            contentType = (null == contentTypeHeader ? null : contentTypeHeader.getValue());
-
-            //if content type is json, parse it
-            if(null != contentType && contentType.contains(CONTENT_TYPE_JSON))
+            @Override
+            public void close()
             {
-                //get the response stream
-                stream = method.getResponseBodyAsStream();
+                method.releaseConnection();
             }
-            else
-            {
-                //otherwise, read it all into the response text
-                responseText = method.getResponseBodyAsString();
-            }
-        }
-        finally
-        {
-            // method.releaseConnection();
-        }
+        };
 
         //the HttpMethod should follow redirects automatically,
         //so the status code could be 2xx, 4xx, or 5xx
-        if(status >= 400 && status < 600)
+        if (status >= 400 && status < 600)
         {
-            //use the status text as the message by default
-            String message = null != method.getStatusText() ? method.getStatusText() : "(no status text)";
-
-            //if the content-type is json, try to parse the response text
-            //and extract the "exception" property from the root-level object
-            if (null != contentType && contentType.contains(CONTENT_TYPE_JSON) && null != json && json.containsKey("exception"))
-            {
-                message = (String)json.get("exception");
-
-                if ("org.labkey.api.action.ApiVersionException".equals(json.get("exceptionClass")))
-                    throw new ApiVersionException(message, status, json, responseText);
-            }
-
-            throw new CommandException(message, status, json, responseText);
+            throwError(response);
         }
 
-        return stream;
+        return response;
     }
 
+    private void throwError(Response r) throws IOException, CommandException
+    {
+        //use the status text as the message by default
+        String message = null != r.getStatusText() ? r.getStatusText() : "(no status text)";
+
+        // In commons-httpclient 3.1, getting the contents of the response will buffer
+        // the entire response on the HttpMethod in memory. This seems ok for API error responses.
+        String responseText = r.getText();
+        JSONObject json = null;
+
+        // If the content-type is json, try to parse the response text
+        // and extract the "exception" property from the root-level object
+        if (null != r.contentType && r.contentType.contains(CONTENT_TYPE_JSON))
+        {
+            // Parse JSON
+            if (responseText != null && responseText.length() > 0)
+            {
+                json = (JSONObject) JSONValue.parse(responseText);
+                if (json != null && json.containsKey("exception"))
+                {
+                    message = (String)json.get("exception");
+
+                    if ("org.labkey.api.action.ApiVersionException".equals(json.get("exceptionClass")))
+                        throw new ApiVersionException(message, r.statusCode, json, responseText);
+                }
+            }
+        }
+
+        throw new CommandException(message, r.statusCode, json, responseText);
+    }
 
     /**
      * Creates an instance of the response class, initialized with
-     * the response text and the HTTP status code.
+     * the response text, the HTTP status code, and parsed JSONObject.
      * <p>
      * Override this method
      * to create an instance of a different class that extends CommandResponse
