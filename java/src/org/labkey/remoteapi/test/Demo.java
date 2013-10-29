@@ -15,12 +15,6 @@
  */
 package org.labkey.remoteapi.test;
 
-import org.labkey.remoteapi.di.ResetTransformStateCommand;
-import org.labkey.remoteapi.di.ResetTransformStateResponse;
-import org.labkey.remoteapi.di.RunTransformCommand;
-import org.labkey.remoteapi.di.RunTransformResponse;
-import org.labkey.remoteapi.di.UpdateTransformConfigurationCommand;
-import org.labkey.remoteapi.di.UpdateTransformConfigurationResponse;
 import org.labkey.remoteapi.query.*;
 import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.Command;
@@ -32,41 +26,10 @@ public class Demo
 {
     public void doDemo() throws Exception
     {
-/*
         simpleSelectDemo();
         sortFilterDemo();
         executeSqlDemo();
         getWebPartDemo();
-
-*/
-        runAndResetTransform();
-    }
-
-    public void runAndResetTransform() throws Exception
-    {
-        System.out.println("-----------------------------------------------");
-        System.out.println("Transform Tests");
-        System.out.println("-----------------------------------------------");
-
-        //create a new connection, specifying base URL,
-        //user email, and password
-        Connection cn = new Connection("http://localhost:8080/labkey", _email, _password);
-
-        RunTransformCommand cmd = new RunTransformCommand("{hidra_uw_intake}/test_StoredProcSample");
-        RunTransformResponse resp = cmd.execute(cn, "home");
-        System.out.println(resp.getStatus() + " is status");
-        System.out.println(resp.getJobId() + " is job");
-
-        Thread.sleep(1000);
-        ResetTransformStateCommand rcmd = new ResetTransformStateCommand("{hidra_uw_intake}/test_StoredProcSample");
-        ResetTransformStateResponse resresp = rcmd.execute(cn, "home");
-        System.out.println(resresp.getSuccess() + " is success");
-
-        UpdateTransformConfigurationCommand upcmd = new UpdateTransformConfigurationCommand("{hidra_uw_intake}/test_StoredProcSample");
-        upcmd.setVerboseLogging(false);
-        upcmd.setEnabled(true);
-        UpdateTransformConfigurationResponse upresp = upcmd.execute(cn,"home");
-
     }
 
     public void simpleSelectDemo() throws Exception
