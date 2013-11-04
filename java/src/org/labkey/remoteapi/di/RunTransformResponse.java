@@ -57,6 +57,6 @@ public class RunTransformResponse extends CommandResponse
 
     public String getSuccess()
     {
-        return getProperty("success");
+        return getProperty("success").toString();
     }
 }

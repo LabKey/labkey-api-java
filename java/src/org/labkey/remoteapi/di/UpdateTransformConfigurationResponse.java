@@ -42,7 +42,7 @@ public class UpdateTransformConfigurationResponse extends CommandResponse
 
     public String getSuccess()
     {
-        return getProperty("success");
+        return getProperty("success").toString();
     }
 
     public String getConfig()
@@ -52,11 +52,11 @@ public class UpdateTransformConfigurationResponse extends CommandResponse
 
     public String getEnabled()
     {
-        return getProperty("config.enabled");
+        return getProperty("result.enabled").toString();
     }
 
     public String getVerbose()
     {
-        return getProperty("verboseLogging");
+        return getProperty("result.verboseLogging").toString();
     }
 }
