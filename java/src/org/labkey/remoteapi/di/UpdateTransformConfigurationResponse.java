@@ -19,6 +19,8 @@ import org.json.simple.JSONObject;
 import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 
+import java.util.Date;
+
 /**
  * User: tgaluhn
  * Date: 10/29/13
@@ -45,18 +47,33 @@ public class UpdateTransformConfigurationResponse extends CommandResponse
         return getProperty("success").toString();
     }
 
-    public String getConfig()
+    public JSONObject getResult()
     {
-        return getProperty("config");
+        return getProperty("result");
     }
 
-    public String getEnabled()
+    public boolean getEnabled()
     {
-        return getProperty("result.enabled").toString();
+        return getProperty("result.enabled");
     }
 
-    public String getVerbose()
+    public boolean getVerboseLogging()
     {
-        return getProperty("result.verboseLogging").toString();
+        return getProperty("result.verboseLogging");
+    }
+
+    public JSONObject getState()
+    {
+        return getProperty("result.state");
+    }
+
+    public Date getLastChecked()
+    {
+        return getProperty("result.lastChecked");
+    }
+
+    public String getDescriptionId()
+    {
+        return getProperty("result.descriptionId");
     }
 }
