@@ -23,7 +23,7 @@ import org.labkey.remoteapi.CommandResponse;
  * User: tgaluhn
  * Date: 10/29/13
  */
-public class RunTransformResponse extends CommandResponse
+public class RunTransformResponse extends BaseTransformResponse
 {
     /**
      * Constructs a new CommandResponse, initialized with the provided
@@ -53,10 +53,5 @@ public class RunTransformResponse extends CommandResponse
     public String getStatus()
     {
         return getProperty("status");
-    }
-
-    public String getSuccess()
-    {
-        return getProperty("success").toString();
     }
 }

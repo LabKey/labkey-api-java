@@ -25,7 +25,7 @@ import java.util.Date;
  * User: tgaluhn
  * Date: 10/29/13
  */
-public class UpdateTransformConfigurationResponse extends CommandResponse
+public class UpdateTransformConfigurationResponse extends BaseTransformResponse
 {
     /**
      * Constructs a new CommandResponse, initialized with the provided
@@ -40,11 +40,6 @@ public class UpdateTransformConfigurationResponse extends CommandResponse
     public UpdateTransformConfigurationResponse(String text, int statusCode, String contentType, JSONObject json, Command sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
-    }
-
-    public String getSuccess()
-    {
-        return getProperty("success").toString();
     }
 
     public JSONObject getResult()

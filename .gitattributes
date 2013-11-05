@@ -35,6 +35,7 @@ java/src/org/labkey/remoteapi/assay/nab/model/NAbWell.java -text
 java/src/org/labkey/remoteapi/assay/nab/model/NAbWellGroup.java -text
 java/src/org/labkey/remoteapi/collections/CaseInsensitiveHashMap.java -text
 java/src/org/labkey/remoteapi/di/BaseTransformCommand.java -text
+java/src/org/labkey/remoteapi/di/BaseTransformResponse.java -text
 java/src/org/labkey/remoteapi/di/ResetTransformStateCommand.java -text
 java/src/org/labkey/remoteapi/di/ResetTransformStateResponse.java -text
 java/src/org/labkey/remoteapi/di/RunTransformCommand.java -text
