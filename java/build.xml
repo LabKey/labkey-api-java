@@ -65,7 +65,7 @@
                  excludepackagenames="org.labkey.remoteapi.sas,org.labkey.remoteapi.test,org.labkey.remoteapi.query.jdbc"/>
     </target>
 
-    <target name="dist" depends="compile,jar,javadoc">
+    <target name="dist" depends="build,javadoc">
         <delete file="${dist.dir}/${zip.name}"/>
         <mkdir dir="${dist.dir}"/>
         <mkdir dir="${exploded.dir}"/>
@@ -100,6 +100,16 @@
         </one-jar>
     </target>
 
-    <target name="build" depends="dist"/>
+    <target name="build">
+        <uptodate property="remoteapi_uptodate" targetfile="${build.jar.dir}/${build.jar.name}">
+            <srcfiles dir="${source.dir}"/>
+        </uptodate>
+        <antcall target="build_if_dirty"/>
+    </target>
+
+    <target name="build_if_dirty" unless="remoteapi_uptodate">
+        <antcall target="jar"/>
+    </target>
+
     <target name="rebuild" depends="clean,build"/>
 </project>
