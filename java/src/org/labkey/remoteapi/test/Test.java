@@ -46,13 +46,13 @@ public class Test
 
         try
         {
-            //nabTest(cn);
-            //selectTest(cn);
-            //crudTest(cn);
-            //execSqlTest(cn);
-            //assayTest(cn);
-            //schemasTest(cn);
-            //extendedFormatTest(cn);
+            nabTest(cn);
+            selectTest(cn);
+            crudTest(cn);
+            execSqlTest(cn);
+            assayTest(cn);
+            schemasTest(cn);
+            extendedFormatTest(cn);
             datasetTest(cn);
         }
         catch(CommandException e)
