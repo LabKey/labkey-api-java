@@ -59,6 +59,24 @@ public class GetQueryDetailsResponse extends CommandResponse
     }
 
     /**
+     * Returns the description of the query described by this response
+     * @return The query description.
+     */
+    public String getDescription()
+    {
+        return getProperty("description");
+    }
+
+    /**
+     * Returns the title of the query described by this response (often the same as the name, but not always)
+     * @return The query title.
+     */
+    public String getTitle()
+    {
+        return getProperty("title");
+    }
+
+    /**
      * Returns the columns available in the given query name.
      * @return The list of columns available within that query.
      */
