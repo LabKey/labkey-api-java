@@ -78,7 +78,7 @@ public class SASSelectRowsCommand extends SASBaseSelectCommand
         if (null == op)
             throw new RuntimeException("Unknown operator");
 
-        if (op.isValueRequired())
+        if (op.isDataValueRequired())
         {
             if (null == value)
                 throw new RuntimeException("A value is required for operator " + op.getProgrammaticName());

@@ -35,7 +35,7 @@ import java.util.Map;
  * <p>
  * All data exposed from a LabKey Server is organized into a set of queries
  * contained in a set of schemas. A schema is simply a group of queries, identified
- * by a name (e.g., 'lists' or 'study'). A query is particular table or view within
+ * by a name (e.g., 'lists' or 'study'). A query is a particular table or view within
  * that schema (e.g., 'People' or 'Peptides'). For purposes of selecting, a query
  * may be either a base table or a view that joins data between related tables.
  * <p>

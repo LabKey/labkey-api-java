@@ -32,35 +32,46 @@ public class Filter
     @SuppressWarnings({"UnusedDeclaration"})
     public enum Operator
     {
+        // Keep in sync with CompareType.java
         // WARNING: If you alter/add/remove these you need to adjust labkeymakefilter.sas and the SAS macro docs
 
-        EQUAL("eq", "Equals", "EQUAL", true),
-        NEQ("neq", "Does Not Equal", "NOT_EQUAL", true),
-        NEQ_OR_NULL("neqornull", "Does Not Equal", "NOT_EQUAL_OR_MISSING", true),
+        // These operators require a data value
 
-        DATE_EQUAL("dateeq", "Equals", "DATE_EQUAL", true),
-        DATE_NOT_EQUAL("dateneq", "Does Not Equal", "DATE_NOT_EQUAL", true),
+        EQUAL("Equals", "eq", "EQUAL", true),
+        NEQ("Does Not Equal", "neq", "NOT_EQUAL", true),
+        NEQ_OR_NULL("Does Not Equal", "neqornull", "NOT_EQUAL_OR_MISSING", true),
+        GT("Is Greater Than", "gt", "GREATER_THAN", true),
+        GTE("Is Greater Than or Equal To", "gte", "GREATER_THAN_OR_EQUAL", true),
+        LT("Is Less Than", "lt", "LESS_THAN", true),
+        LTE("Is Less Than or Equal To", "lte", "LESS_THAN_OR_EQUAL", true),
 
-        ISBLANK("isblank", "Is Blank", "MISSING", false),
-        NON_BLANK("isnonblank", "Is Not Blank", "NOT_MISSING", false),
+        DATE_EQUAL("Equals", "dateeq", "DATE_EQUAL", true),
+        DATE_NOT_EQUAL("Does Not Equal", "dateneq", "DATE_NOT_EQUAL", true),
+        DATE_GT("(Date) Is Greater Than", "dategt", "DATE_GREATER_THAN", true),
+        DATE_GTE("(Date) Is Greater Than or Equal To", "dategte", "DATE_GREATER_THAN_OR_EQUAL", true),
+        DATE_LT("(Date) Is Less Than", "datelt", "DATE_LESS_THAN", true),
+        DATE_LTE("(Date) Is Less Than or Equal To", "datelte", "DATE_LESS_THAN_OR_EQUAL", true),
 
-        GT("gt", "Is Greater Than", "GREATER_THAN", true),
-        GTE("gte", "Is Greater Than or Equal To", "GREATER_THAN_OR_EQUAL", true),
-        LT("lt", "Is Less Than", "LESS_THAN", true),
-        LTE("lte", "Is Less Than or Equal To", "LESS_THAN_OR_EQUAL", true),
+        CONTAINS("Contains", "contains", "CONTAINS", true),
+        DOES_NOT_CONTAIN("Does Not Contain", "doesnotcontain", "DOES_NOT_CONTAIN", true),
+        CONTAINS_ONE_OF("Contains One Of (e.g. 'a;b;c')", "containsoneof", "CONTAINS_ONE_OF", true),
+        CONTAINS_NONE_OF("Does Not Contain Any Of (e.g. 'a;b;c')", "containsnoneof", "CONTAINS_NONE_OF", true),
 
-        CONTAINS("contains", "Contains", "CONTAINS", true),
-        DOES_NOT_CONTAIN("doesnotcontain", "Does Not Contain", "DOES_NOT_CONTAIN", true),
+        STARTS_WITH("Starts With", "startswith", "STARTS_WITH", true),
+        DOES_NOT_START_WITH("Does Not Start With", "doesnotstartwith", "DOES_NOT_START_WITH", true),
 
-        STARTS_WITH("startswith", "Starts With", "STARTS_WITH", true),
-        DOES_NOT_START_WITH("doesnotstartwith", "Does Not Start With", "DOES_NOT_START_WITH", true),
+        IN("Equals One Of", "in", "IN", true),
+        NOT_IN("Does Not Equal Any Of (e.g. 'a;b;c')", "notin", "NOT_IN", true),
 
-        IN("in", "Equals One Of", "IN", true),
-        NOT_IN("notin", "Does Not Equal Any Of (e.g. 'a;b;c')", "NOT_IN", true),
+        MEMBER_OF("Member Of", "memberof", "MEMBER_OF", true),
 
-        MEMBER_OF("memberof", "Member Of", "MEMBER_OF", true),
-        CONTAINS_ONE_OF("containsoneof", "Contains One Of (e.g. 'a;b;c')", "CONTAINS_ONE_OF", true),
-        CONTAINS_NONE_OF("containsnoneof", "Does Not Contain Any Of (e.g. 'a;b;c')", "CONTAINS_NONE_OF", true)
+        // These are the "no data value" operators
+
+        ISBLANK("Is Blank", "isblank", "MISSING", false),
+        NON_BLANK("Is Not Blank", "isnonblank", "NOT_MISSING", false),
+
+        MV_INDICATOR("Has Missing Value Indicator", "hasmvvalue", "MV_INDICATOR", false),
+        NO_MV_INDICATOR("Does Not Have Missing Value Indicator", "nomvvalue", "NO_MV_INDICATOR", false)
         ;
 
         private static final Map<String, Operator> _programmaticNameToOperator = new HashMap<String, Operator>(Operator.values().length);
@@ -71,32 +82,33 @@ public class Filter
                 _programmaticNameToOperator.put(o.getProgrammaticName(), o);
         }
 
-        private String _name;
-        private String _caption;
-        private String _programmaticName;
-        private boolean _valueRequired;
+        private final String _urlKey;
+        private final String _displayValue;
+        private final String _programmaticName;
+        private final boolean _dataValueRequired;
 
-        Operator(String name, String caption, String programmaticName, boolean valueRequired)
+        // Note: These parameters should match the first four parameters of CompareType() exactly
+        Operator(String displayValue, String urlKey, String programmaticName, boolean dataValueRequired)
         {
-            _name = name;
-            _caption = caption;
+            _displayValue = displayValue;
+            _urlKey = urlKey;
             _programmaticName = programmaticName;
-            _valueRequired = valueRequired;
+            _dataValueRequired = dataValueRequired;
         }
 
-        public String getName()
+        public String getDisplayValue()
         {
-            return _name;
+            return _displayValue;
         }
 
-        public String getCaption()
+        public String getUrlKey()
         {
-            return _caption;
+            return _urlKey;
         }
 
-        public boolean isValueRequired()
+        public boolean isDataValueRequired()
         {
-            return _valueRequired;
+            return _dataValueRequired;
         }
 
         public String getProgrammaticName()
@@ -108,10 +120,28 @@ public class Filter
         {
             return _programmaticNameToOperator.get(programmaticName);
         }
+
+        @Deprecated // Use getDisplayValue()... this method is for backward compatibility
+        public String getCaption()
+        {
+            return _displayValue;
+        }
+
+        @Deprecated // Use getUrlKey()... this method is for backward compatibility
+        public String getName()
+        {
+            return _urlKey;
+        }
+
+        @Deprecated // Use isDataValueRequired()... this method is for backward compatibility
+        public boolean isValueRequired()
+        {
+            return _dataValueRequired;
+        }
     }
 
     private String _columnName;
-    private Operator _operator = Operator.EQUAL;
+    private Operator _operator;
     private Object _value;
 
     /**
@@ -124,13 +154,14 @@ public class Filter
     {
         _columnName = columnName;
         _value = value;
+        _operator = Operator.EQUAL;
     }
 
     /**
      * Constructs a filter with a given column name, value and operator.
      * @param columnName The column name to filter.
      * @param value The value to compare it to.
-     * @param operator The operator for the comparisson.
+     * @param operator The operator for the comparison.
      */
     public Filter(String columnName, Object value, Operator operator)
     {
@@ -187,7 +218,7 @@ public class Filter
     {
         return (null == getColumnName() || null == getOperator())
                 ? ""
-                : getColumnName() + "~" + getOperator().getName();
+                : getColumnName() + "~" + getOperator().getUrlKey();
     }
 
     /**
@@ -201,5 +232,11 @@ public class Filter
     public String getQueryStringParamValue()
     {
         return null == getValue() ? "" : getValue().toString();
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Filter: " + getColumnName() + " " + getOperator().getDisplayValue() + " " + getValue();
     }
 }

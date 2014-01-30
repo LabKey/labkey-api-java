@@ -40,9 +40,10 @@
 		%let num = %eval(&num + 1);
 		%let operator = %scan(&params, &num, %str( ,));
 
-		%if %index("EQUAL" "NOT_EQUAL" "NOT_EQUAL_OR_MISSING" "DATE_EQUAL" "DATE_NOT_EQUAL" "GREATER_THAN" "GREATER_THAN_OR_EQUAL"
-		           "LESS_THAN" "LESS_THAN_OR_EQUAL" "CONTAINS" "DOES_NOT_CONTAIN" "STARTS_WITH" "DOES_NOT_START_WITH"
-		           "IN" "NOT_IN" "MEMBER_OF" "CONTAINS_ONE_OF" "CONTAINS_NONE_OF", &operator) %then
+		%if %index("EQUAL" "NOT_EQUAL" "NOT_EQUAL_OR_MISSING" "GREATER_THAN" "GREATER_THAN_OR_EQUAL" "LESS_THAN"
+		           "LESS_THAN_OR_EQUAL" "DATE_EQUAL" "DATE_NOT_EQUAL" "DATE_GREATER_THAN" "DATE_GREATER_THAN_OR_EQUAL"
+                   "DATE_LESS_THAN" "DATE_LESS_THAN_OR_EQUAL" "CONTAINS" "DOES_NOT_CONTAIN" "CONTAINS_ONE_OF" "CONTAINS_NONE_OF"
+                   "STARTS_WITH" "DOES_NOT_START_WITH" "IN" "NOT_IN" "MEMBER_OF", &operator) %then
 			%do;
 				/*
 					For operators that require a value, set the column, operator, and value.
@@ -60,7 +61,7 @@
 			%end;
 		%else
 			%do;
-				%if %index("MISSING" "NOT_MISSING", &operator) %then
+				%if %index("MISSING" "NOT_MISSING" "MV_INDICATOR" "NO_MV_INDICATOR", &operator) %then
 					%do;
 					/*
 						For operators that don't require a value, just set the column and operator.
