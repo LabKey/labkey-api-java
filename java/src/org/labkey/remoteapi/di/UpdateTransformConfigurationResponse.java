@@ -17,7 +17,6 @@ package org.labkey.remoteapi.di;
 
 import org.json.simple.JSONObject;
 import org.labkey.remoteapi.Command;
-import org.labkey.remoteapi.CommandResponse;
 
 import java.util.Date;
 
@@ -47,26 +46,47 @@ public class UpdateTransformConfigurationResponse extends BaseTransformResponse
         return getProperty("result");
     }
 
+    /**
+     *
+     * @return true if transform is set to run on a schedule
+     */
     public boolean getEnabled()
     {
         return getProperty("result.enabled");
     }
 
+    /**
+     *
+     * @return true if transform is set for verbose logging
+     */
     public boolean getVerboseLogging()
     {
         return getProperty("result.verboseLogging");
     }
 
+    /**
+     *
+     * @return JSON map of the state saved after the last transform run. Includes row count info,
+     * filter values (runId or modifiedSince) for next run, and persisted parameter values for stored procedure transforms.
+     */
     public JSONObject getState()
     {
         return getProperty("result.state");
     }
 
+    /**
+     *
+     * @return The datetime the transform last checked for work
+     */
     public Date getLastChecked()
     {
         return getProperty("result.lastChecked");
     }
 
+    /**
+     *
+     * @return The transform name
+     */
     public String getDescriptionId()
     {
         return getProperty("result.descriptionId");

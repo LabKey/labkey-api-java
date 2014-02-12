@@ -28,7 +28,10 @@ public class ResetTransformStateCommand extends BaseTransformCommand<ResetTransf
         super(source);
     }
 
-    /** @param transformId the name of the transform to run */
+    /**
+     *  Reset an ETL transform to its initial state, as if it has never been run
+     *  @param transformId the name of the transform to reset
+     *  */
     public ResetTransformStateCommand(String transformId)
     {
         super("dataintegration", "resetTransformState");

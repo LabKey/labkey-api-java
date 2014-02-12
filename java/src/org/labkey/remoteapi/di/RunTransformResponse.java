@@ -17,7 +17,6 @@ package org.labkey.remoteapi.di;
 
 import org.json.simple.JSONObject;
 import org.labkey.remoteapi.Command;
-import org.labkey.remoteapi.CommandResponse;
 
 /**
  * User: tgaluhn
@@ -40,16 +39,28 @@ public class RunTransformResponse extends BaseTransformResponse
         super(text, statusCode, contentType, json, sourceCommand);
     }
 
+    /**
+     *
+     * @return The pipeline job id.
+     */
     public String getJobId()
     {
         return getProperty("jobId");
     }
 
+    /**
+     *
+     * @return The URL for the pipeline status page for this job
+     */
     public String getPipelineURL()
     {
         return getProperty("pipelineURL");
     }
 
+    /**
+     *
+     * @return The job status- success, complete, error, or 'no work'
+     */
     public String getStatus()
     {
         return getProperty("status");
