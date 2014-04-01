@@ -195,7 +195,7 @@ public class Command<ResponseType extends CommandResponse>
      * @throws org.apache.commons.httpclient.HttpException Thrown if the HttpClient library generated an exception.
      * @throws IOException Thrown if there was an IO problem.
      */
-    public final ResponseType execute(Connection connection, String folderPath) throws IOException, CommandException
+    public ResponseType execute(Connection connection, String folderPath) throws IOException, CommandException
     {
         // Execute the method.  Throws CommandException for error responses.
         Response response = _execute(connection, folderPath);
@@ -231,8 +231,8 @@ public class Command<ResponseType extends CommandResponse>
      */
     protected static class Response implements Closeable
     {
-        private final int statusCode;
-        private final String contentType;
+        public final int statusCode;
+        public final String contentType;
         private final HttpMethod method;
 
         Response(int statusCode, String contentType, HttpMethod method)
