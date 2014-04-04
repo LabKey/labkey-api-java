@@ -1148,6 +1148,7 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
         try
         {
             GetSchemasCommand command = new GetSchemasCommand();
+            _log.info("getSchemaNames:" + _connection.getFolderPath());
             GetSchemasResponse response = command.execute(_connection.getConnection(), _connection.getFolderPath());
             return response.getSchemaNames();
         }
@@ -1163,6 +1164,7 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
 
     public ResultSet getSchemas() throws SQLException
     {
+        _log.log(Level.INFO, "getSchemas");
         return getSchemasResultSet(getSchemaNames());
     }
 
@@ -1190,10 +1192,11 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
         {
             return getSchemasResultSet(getSchemaNames());
         }
-        if (schemaPattern.indexOf("%") != -1 || schemaPattern.indexOf("_") != -1)
+        if (schemaPattern.contains("%") || schemaPattern.contains("_"))
         {
             throw new IllegalArgumentException("schemaPattern must request an exact match, but was: " + schemaPattern);
         }
+        _log.log(Level.INFO, "getSchemas: " + catalog + ", " + schemaPattern);
         List<String> selectedSchemaNames = new ArrayList<String>();
         for (String schemaName : getSchemaNames())
         {

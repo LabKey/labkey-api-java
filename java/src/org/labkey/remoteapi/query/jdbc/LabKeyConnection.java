@@ -20,6 +20,7 @@ import java.sql.*;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
+import java.util.logging.Logger;
 
 /**
  * User: jeckels
@@ -27,6 +28,8 @@ import java.util.concurrent.Executor;
  */
 public class LabKeyConnection extends BaseJDBC implements java.sql.Connection
 {
+    private final static Logger _log = Logger.getLogger("test");
+
     private final org.labkey.remoteapi.Connection _conn;
     private String _folderPath;
     private Properties _clientInfo;
@@ -134,6 +137,7 @@ public class LabKeyConnection extends BaseJDBC implements java.sql.Connection
 
     public void setCatalog(String catalog) throws SQLException
     {
+        _log.info("setCatalog: " + catalog);
         _folderPath = catalog;
     }
 
