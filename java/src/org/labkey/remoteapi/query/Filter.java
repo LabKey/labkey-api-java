@@ -32,40 +32,58 @@ public class Filter
     @SuppressWarnings({"UnusedDeclaration"})
     public enum Operator
     {
-        // Keep in sync with CompareType.java
-        // WARNING: If you alter/add/remove these you need to adjust labkeymakefilter.sas and the SAS macro docs
+        // WARNING: Keep in sync and in order with all other client apis and docs:
+        // - server: CompareType.java
+        // - java: Filter.java
+        // - js: Filter.js
+        // - R: makeFilter.R, makeFilter.Rd
+        // - SAS: labkeymakefilter.sas, labkey.org SAS docs
+        // - Python & Perl don't have an filter operator enum
 
+        //
         // These operators require a data value
+        //
 
         EQUAL("Equals", "eq", "EQUAL", true),
-        NEQ("Does Not Equal", "neq", "NOT_EQUAL", true),
-        NEQ_OR_NULL("Does Not Equal", "neqornull", "NOT_EQUAL_OR_MISSING", true),
-        GT("Is Greater Than", "gt", "GREATER_THAN", true),
-        GTE("Is Greater Than or Equal To", "gte", "GREATER_THAN_OR_EQUAL", true),
-        LT("Is Less Than", "lt", "LESS_THAN", true),
-        LTE("Is Less Than or Equal To", "lte", "LESS_THAN_OR_EQUAL", true),
-
         DATE_EQUAL("Equals", "dateeq", "DATE_EQUAL", true),
-        DATE_NOT_EQUAL("Does Not Equal", "dateneq", "DATE_NOT_EQUAL", true),
-        DATE_GT("(Date) Is Greater Than", "dategt", "DATE_GREATER_THAN", true),
-        DATE_GTE("(Date) Is Greater Than or Equal To", "dategte", "DATE_GREATER_THAN_OR_EQUAL", true),
-        DATE_LT("(Date) Is Less Than", "datelt", "DATE_LESS_THAN", true),
-        DATE_LTE("(Date) Is Less Than or Equal To", "datelte", "DATE_LESS_THAN_OR_EQUAL", true),
 
-        CONTAINS("Contains", "contains", "CONTAINS", true),
-        DOES_NOT_CONTAIN("Does Not Contain", "doesnotcontain", "DOES_NOT_CONTAIN", true),
-        CONTAINS_ONE_OF("Contains One Of (e.g. 'a;b;c')", "containsoneof", "CONTAINS_ONE_OF", true),
-        CONTAINS_NONE_OF("Does Not Contain Any Of (e.g. 'a;b;c')", "containsnoneof", "CONTAINS_NONE_OF", true),
+        NEQ("Does Not Equal", "neq", "NOT_EQUAL", true),
+        DATE_NOT_EQUAL("Does Not Equal", "dateneq", "DATE_NOT_EQUAL", true),
+
+        NEQ_OR_NULL("Does Not Equal", "neqornull", "NOT_EQUAL_OR_MISSING", true),
+
+        GT("Is Greater Than", "gt", "GREATER_THAN", true),
+        DATE_GT("(Date) Is Greater Than", "dategt", "DATE_GREATER_THAN", true),
+
+        GTE("Is Greater Than or Equal To", "gte", "GREATER_THAN_OR_EQUAL", true),
+        DATE_GTE("(Date) Is Greater Than or Equal To", "dategte", "DATE_GREATER_THAN_OR_EQUAL", true),
+
+        LT("Is Less Than", "lt", "LESS_THAN", true),
+        DATE_LT("(Date) Is Less Than", "datelt", "DATE_LESS_THAN", true),
+
+        LTE("Is Less Than or Equal To", "lte", "LESS_THAN_OR_EQUAL", true),
+        DATE_LTE("(Date) Is Less Than or Equal To", "datelte", "DATE_LESS_THAN_OR_EQUAL", true),
 
         STARTS_WITH("Starts With", "startswith", "STARTS_WITH", true),
         DOES_NOT_START_WITH("Does Not Start With", "doesnotstartwith", "DOES_NOT_START_WITH", true),
 
+        CONTAINS("Contains", "contains", "CONTAINS", true),
+        DOES_NOT_CONTAIN("Does Not Contain", "doesnotcontain", "DOES_NOT_CONTAIN", true),
+
+        CONTAINS_ONE_OF("Contains One Of (e.g. 'a;b;c')", "containsoneof", "CONTAINS_ONE_OF", true),
+        CONTAINS_NONE_OF("Does Not Contain Any Of (e.g. 'a;b;c')", "containsnoneof", "CONTAINS_NONE_OF", true),
+
         IN("Equals One Of", "in", "IN", true),
         NOT_IN("Does Not Equal Any Of (e.g. 'a;b;c')", "notin", "NOT_IN", true),
 
+        BETWEEN("Between, Inclusive (e.g. '-4,4')", "between", "BETWEEN", true),
+        NOT_BETWEEN("Not Between, Exclusive (e.g. '-4,4')", "notbetween", "NOT_BETWEEN", true),
+
         MEMBER_OF("Member Of", "memberof", "MEMBER_OF", true),
 
+        //
         // These are the "no data value" operators
+        //
 
         ISBLANK("Is Blank", "isblank", "MISSING", false),
         NON_BLANK("Is Not Blank", "isnonblank", "NOT_MISSING", false),
