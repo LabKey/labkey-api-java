@@ -109,7 +109,8 @@ Test Code:
         return
     data = readResponse.read()
     readResponse.close()
-    
+
+
     # Search HTML response for required information on wiki. This is stored in the javascript 
     # variable named _wikiProps
     dataList = data.split('\n')
@@ -138,7 +139,7 @@ Test Code:
     mypostdata = json.dumps(wikiVars)
     
     # Use the opener to fetch a URL request
-    updateRequest = urllib2.Request(updateUrl, None, {'Content-Type': 'application/json'})
+    updateRequest = urllib2.Request(updateUrl, None, {'Content-Type': 'application/json', "Authorization": aHeader })
     try:
         UpdateResponse = opener.open(updateRequest, mypostdata)
         data = UpdateResponse.read()

@@ -2,6 +2,14 @@
 LabKey Python Client API News
 +++++++++++
 
+What's New in the LabKey 0.22 package
+==============================
+
+*Release date: 04/15/2014*
+
+- Fixed bug in updateWiki when updating a wiki where Guests have read access
+
+
 What's New in the LabKey 0.21 package
 ==============================
 

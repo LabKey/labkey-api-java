@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Copyright (c) 2011-2012 LabKey Corporation
+# Copyright (c) 2011-2014 LabKey Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 
 from distutils.core import setup
 setup(name='LabKey',
-      version='0.21',
+      version='0.22',
       description='Python client API for LabKey Server',
       long_description = open('README.txt').read() + open('NEWS.txt').read(),
       license="Apache License 2.0",
