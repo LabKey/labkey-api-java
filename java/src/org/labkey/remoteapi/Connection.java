@@ -78,6 +78,7 @@ public class Connection
     private String _password;
     private boolean _acceptSelfSignedCerts = true;
     private HttpClient _client = null;
+    private Integer _timeout;
 
     /**
      * Constructs a new Connection object given a base URL.
@@ -289,4 +290,23 @@ public class Connection
         return _connectionManager;
     }
 
+    /**
+     * Set a default timeout for Commands that have not established their own timeouts. Null indicates that the
+     * Connection doesn't specify a timeout preference. 0 means the request should never timeout.
+     * @param timeout the length of the timeout waiting for the server response, in milliseconds
+     */
+    public void setTimeout(Integer timeout)
+    {
+        _timeout = timeout;
+    }
+
+    /**
+     * The default timeout for Commands that have not established their own timeouts. Null indicates that the
+     * Connection doesn't specify a timeout preference. 0 means the request should never timeout.
+     * @return the length of the timeout waiting for the server response, in milliseconds
+     */
+    public Integer getTimeout()
+    {
+        return _timeout;
+    }
 }

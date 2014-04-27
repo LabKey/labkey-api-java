@@ -20,6 +20,7 @@ import java.sql.*;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -29,6 +30,8 @@ import java.util.logging.Logger;
 public class LabKeyConnection extends BaseJDBC implements java.sql.Connection
 {
     private final static Logger _log = Logger.getLogger("test");
+
+    public static String TIMEOUT_PARAMETER_NAME = "Timeout";
 
     private final org.labkey.remoteapi.Connection _conn;
     private String _folderPath;
@@ -275,11 +278,38 @@ public class LabKeyConnection extends BaseJDBC implements java.sql.Connection
     public void setClientInfo(String name, String value) throws SQLClientInfoException
     {
         _clientInfo.put(name, value);
+        pushTimeout();
     }
 
     public void setClientInfo(Properties properties) throws SQLClientInfoException
     {
         _clientInfo = properties;
+        pushTimeout();
+    }
+
+    private void pushTimeout()
+    {
+        if (_clientInfo.containsKey(TIMEOUT_PARAMETER_NAME))
+        {
+            String timeoutString = _clientInfo.getProperty(TIMEOUT_PARAMETER_NAME);
+            _log.log(Level.INFO, "Setting timeout on connection to " + timeoutString);
+            if (timeoutString == null || timeoutString.trim().isEmpty())
+            {
+                _conn.setTimeout(null);
+            }
+            else
+            {
+                try
+                {
+                    int timeout = Integer.parseInt(timeoutString);
+                    _conn.setTimeout(timeout);
+                }
+                catch (NumberFormatException e)
+                {
+                    _conn.setTimeout(null);
+                }
+            }
+        }
     }
 
     public String getClientInfo(String name) throws SQLException

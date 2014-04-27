@@ -800,6 +800,7 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
             row.put("SCOPE_TABLE", null);
             row.put("SOURCE_DATA_TYPE", null);
             row.put("IS_AUTOINCREMENT", column.isAutoIncrement() ? "YES" : "NO");
+            row.put("IS_GENERATEDCOLUMN", column.isCalculated() || column.isAutoIncrement() || !column.isUserEditable() ? "YES" : "NO");
             rows.add(row);
         }
 
@@ -825,6 +826,7 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
         cols.add(new LabKeyResultSet.Column("SCOPE_TABLE", String.class));
         cols.add(new LabKeyResultSet.Column("SOURCE_DATA_TYPE", Short.class));
         cols.add(new LabKeyResultSet.Column("IS_AUTOINCREMENT", String.class));
+        cols.add(new LabKeyResultSet.Column("IS_GENERATEDCOLUMN", String.class));
 
         return new LabKeyResultSet(rows, cols, _connection);
     }

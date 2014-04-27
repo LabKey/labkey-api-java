@@ -72,7 +72,9 @@ public class Command<ResponseType extends CommandResponse>
     private String _controllerName = null;
     private String _actionName = null;
     private Map<String,Object> _parameters = null;
-    private int _timeout = 60000; //default timeout to 60 seconds
+    private Integer _timeout = null;
+    /** default timeout to 60 seconds */
+    private static final int DEFAULT_TIMEOUT = 60000;
     private double _requiredVersion = 8.3;
 
     /**
@@ -100,7 +102,7 @@ public class Command<ResponseType extends CommandResponse>
         _controllerName = source.getControllerName();
         if(null != source.getParameters())
             _parameters = new HashMap<String,Object>(source.getParameters());
-        _timeout = source.getTimeout();
+        _timeout = source._timeout;
         _requiredVersion = source.getRequiredVersion();
     }
 
@@ -367,7 +369,12 @@ public class Command<ResponseType extends CommandResponse>
     protected HttpMethod getHttpMethod(Connection connection, String folderPath) throws CommandException, URIException
     {
         HttpMethod method = createMethod();
-        method.getParams().setSoTimeout(getTimeout());
+        Integer timeout = _timeout;
+        if (timeout == null)
+        {
+            timeout = connection.getTimeout();
+        }
+        method.getParams().setSoTimeout(timeout == null ? DEFAULT_TIMEOUT : timeout);
         method.setDoAuthentication(true);
 
         //construct a URI from the results of the getActionUrl method

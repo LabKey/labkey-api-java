@@ -17,6 +17,7 @@ package org.labkey.remoteapi.query.jdbc;
 
 import java.sql.Connection;
 import java.sql.Driver;
+import java.sql.DriverManager;
 import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
@@ -29,13 +30,36 @@ import java.util.logging.Logger;
  */
 public class LabKeyDriver implements Driver
 {
+    private static final String URL_PREFIX = "jdbc:labkey:";
+
+    static
+    {
+        try
+        {
+            DriverManager.registerDriver(new LabKeyDriver());
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
     public boolean acceptsURL(String url) throws SQLException
     {
-        return true;
+        if (url == null)
+        {
+            return false;
+        }
+
+        return url.toLowerCase().startsWith(URL_PREFIX);
     }
 
     public Connection connect(String url, Properties info) throws SQLException
     {
+        if (url.startsWith(URL_PREFIX))
+        {
+            url = url.substring(URL_PREFIX.length());
+        }
         String user = info.getProperty("user");
         String password = info.getProperty("password");
         org.labkey.remoteapi.Connection connection;
@@ -47,7 +71,9 @@ public class LabKeyDriver implements Driver
         {
             connection = new org.labkey.remoteapi.Connection(url);
         }
-        return new LabKeyConnection(connection);
+        LabKeyConnection labKeyConnection = new LabKeyConnection(connection);
+        labKeyConnection.setClientInfo(info);
+        return labKeyConnection;
     }
 
     public DriverPropertyInfo[] getPropertyInfo(String url, Properties info) throws SQLException

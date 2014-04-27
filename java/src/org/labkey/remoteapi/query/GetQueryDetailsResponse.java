@@ -192,6 +192,11 @@ public class GetQueryDetailsResponse extends CommandResponse
         {
             return _allProperties;
         }
+
+        public boolean isCalculated()
+        {
+            return (Boolean) _allProperties.get("calculated");
+        }
     }
 
     public static class Lookup extends ResponseObject
