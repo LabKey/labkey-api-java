@@ -76,7 +76,7 @@ public class Connection
     private String _baseUrl;
     private String _email;
     private String _password;
-    private boolean _acceptSelfSignedCerts = true;
+    private boolean _acceptSelfSignedCerts;
     private HttpClient _client = null;
     private Integer _timeout;
 
