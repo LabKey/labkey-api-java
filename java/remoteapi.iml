@@ -23,7 +23,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/commons-codec-1.2.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/commons-codec-1.5.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
