@@ -32,6 +32,9 @@ public class Run extends ExpObject
     private List<Data> _dataInputs = new ArrayList<Data>();
     private List<Data> _dataOutputs = new ArrayList<Data>();
 
+    // Used when inserting new data via SaveAssayBatchAction
+    private List<Map<String, Object>> _resultData;
+
     public Run()
     {
         super();
@@ -80,6 +83,22 @@ public class Run extends ExpObject
         }
         result.put("dataOutputs", dataOutputs);
         result.put("comment", _comment);
+
+        if (_resultData != null && !_resultData.isEmpty())
+        {
+            JSONArray dataRows = new JSONArray();
+            for (Map<String, Object> row : _resultData)
+            {
+                JSONObject o = new JSONObject();
+                for (Map.Entry<String, Object> entry : row.entrySet())
+                {
+                    o.put(entry.getKey(), entry.getValue());
+                }
+                dataRows.add(o);
+            }
+            result.put("dataRows", dataRows);
+        }
+
         return result;
     }
 
@@ -117,5 +136,11 @@ public class Run extends ExpObject
     public void setComment(String comment)
     {
         _comment = comment;
+    }
+
+    /** @param resultData the list of data rows in this assay run */
+    public void setResultData(List<Map<String, Object>> resultData)
+    {
+        _resultData = resultData;
     }
 }
