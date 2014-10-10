@@ -240,6 +240,11 @@ public class SelectRowsCommand extends BaseQueryCommand<SelectRowsResponse> impl
         if (getContainerFilter() != null)
             params.put("containerFilter", getContainerFilter().name());
 
+        for (Map.Entry<String, String> entry : getQueryParameters().entrySet())
+        {
+            params.put("query.param." + entry.getKey(), entry.getValue());
+        }
+
         return params;
     }
 
