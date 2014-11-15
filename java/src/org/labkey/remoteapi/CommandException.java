@@ -33,8 +33,8 @@ import java.util.Map;
  */
 public class CommandException extends Exception
 {
-    private int _statusCode;
-    private Map<String,Object> _properties;
+    private final int _statusCode;
+    private final Map<String, Object> _properties;
     private final String _responseText;
 
     /**
@@ -55,7 +55,7 @@ public class CommandException extends Exception
      * @param properties The exception property map (may be null)
      * @param responseText The full response text (may be null)
      */
-    public CommandException(String message, int statusCode, Map<String,Object> properties, String responseText)
+    public CommandException(String message, int statusCode, Map<String, Object> properties, String responseText)
     {
         super(message);
         _statusCode = statusCode;

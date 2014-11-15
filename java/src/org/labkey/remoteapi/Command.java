@@ -17,20 +17,23 @@ package org.labkey.remoteapi;
 
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
-import org.apache.commons.httpclient.*;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.Header;
+import org.apache.http.auth.AuthenticationException;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.utils.URIBuilder;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
-import java.io.BufferedReader;
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collection;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
 
 /**
  * Base class for all API commands. Typically, a developer will not
@@ -45,7 +48,7 @@ import java.util.HashMap;
  * the developer may still invoke these APIs by creating an instance of the
  * Command object directly, providing the controller and action name for
  * the new API. Parameters may then be specified by calling the <code>setParameters()</code>
- * method, passing a populated parameter <code>Map&lt;String,Object&gt;</code>
+ * method, passing a populated parameter <code>Map&lt;String, Object&gt;</code>
  * <p>
  * Note that this class is not thread-safe. Do not share instances of this class
  * or its descendants between threads, unless the descendant declares explicitly that
@@ -69,12 +72,10 @@ public class Command<ResponseType extends CommandResponse>
         apiVersion
     }
 
-    private String _controllerName = null;
-    private String _actionName = null;
-    private Map<String,Object> _parameters = null;
+    private final String _controllerName;
+    private final String _actionName;
+    private Map<String, Object> _parameters = null;
     private Integer _timeout = null;
-    /** default timeout to 60 seconds */
-    private static final int DEFAULT_TIMEOUT = 60000;
     private double _requiredVersion = 8.3;
 
     /**
@@ -100,8 +101,8 @@ public class Command<ResponseType extends CommandResponse>
     {
         _actionName = source.getActionName();
         _controllerName = source.getControllerName();
-        if(null != source.getParameters())
-            _parameters = new HashMap<String,Object>(source.getParameters());
+        if (null != source.getParameters())
+            _parameters = new HashMap<String, Object>(source.getParameters());
         _timeout = source._timeout;
         _requiredVersion = source.getRequiredVersion();
     }
@@ -132,8 +133,8 @@ public class Command<ResponseType extends CommandResponse>
      */
     public Map<String, Object> getParameters()
     {
-        if(null == _parameters)
-            _parameters = new HashMap<String,Object>();
+        if (null == _parameters)
+            _parameters = new HashMap<String, Object>();
 
         return _parameters;
     }
@@ -148,22 +149,21 @@ public class Command<ResponseType extends CommandResponse>
     }
 
     /**
-     * Returns the current command timeout setting in milliseconds (defaults to 60000).
-     * @return The current command timeout setting.
+     * Returns the current timeout setting in milliseconds for this Command.
+     * @return The current command timeout setting. Null means defer to Connection timeout. 0 means no timeout.
      */
-    public int getTimeout()
+    public Integer getTimeout()
     {
         return _timeout;
     }
 
     /**
-     * Sets the current command timeout setting.
+     * Sets the timeout for this Command.
      * The value of the timeout parameter should be the maximum number of milliseconds
-     * this command should wait for a response from the server. By default, this is set
-     * to 60000 (60 seconds). To wait indefinitely, set this value to 0.
-     * @param timeout The new timeout setting
+     * this command should wait for a response from the server.
+     * @param timeout The new timeout setting, with null meaning defer to the Connection and 0 meaning wait indefinitely.
      */
-    public void setTimeout(int timeout)
+    public void setTimeout(Integer timeout)
     {
         _timeout = timeout;
     }
@@ -194,12 +194,11 @@ public class Command<ResponseType extends CommandResponse>
      * You may also pass null to execute the command in the root container (usually requires site admin permission).
      * @return A CommandResponse (or derived class), which provides access to the returned text/data.
      * @throws CommandException Thrown if the server returned a non-success status code.
-     * @throws org.apache.commons.httpclient.HttpException Thrown if the HttpClient library generated an exception.
      * @throws IOException Thrown if there was an IO problem.
      */
     public ResponseType execute(Connection connection, String folderPath) throws IOException, CommandException
     {
-        // Execute the method.  Throws CommandException for error responses.
+        // Execute the command. Throws CommandException for error responses.
         Response response = _execute(connection, folderPath);
 
         try
@@ -207,18 +206,20 @@ public class Command<ResponseType extends CommandResponse>
             // For non-streaming Commands, read the entire response body into memory as JSON or a String.
             JSONObject json = null;
             String responseText = null;
-            if (null != response.contentType && response.contentType.contains(Command.CONTENT_TYPE_JSON))
+            String contentType = response.getContentType();
+
+            if (null != contentType && contentType.contains(Command.CONTENT_TYPE_JSON))
             {
                 // Read entire response body and parse into JSON object
                 json = (JSONObject)JSONValue.parse(new BufferedReader(new InputStreamReader(response.getInputStream())));
             }
             else
             {
-                // Otherwise, read entire reponse body as text.
+                // Otherwise, read entire response body as text.
                 responseText = response.getText();
             }
 
-            return createResponse(responseText, response.statusCode, response.contentType, json);
+            return createResponse(responseText, response.getStatusCode(), contentType, json);
         }
         finally
         {
@@ -229,48 +230,59 @@ public class Command<ResponseType extends CommandResponse>
 
     /**
      * Response class allows clients to get an InputStream, consume lazily, and close the connection when complete.
-     * NOTE: Internal experimental API -- exposes our internal usage of HttpMethod to clients which is bad.
      */
     protected static class Response implements Closeable
     {
-        public final int statusCode;
-        public final String contentType;
-        private final HttpMethod method;
+        private final CloseableHttpResponse _httpResponse;
+        private final String _contentType;
 
-        Response(int statusCode, String contentType, HttpMethod method)
+        private Response(CloseableHttpResponse httpResponse, String contentType)
         {
-            this.statusCode = statusCode;
-            this.contentType = contentType;
-            this.method = method;
+            _httpResponse = httpResponse;
+            _contentType = contentType;
         }
 
         public String getStatusText()
         {
-            return method.getStatusText();
+            return _httpResponse.getStatusLine().getReasonPhrase();
+        }
+
+        public int getStatusCode()
+        {
+            return _httpResponse.getStatusLine().getStatusCode();
+        }
+
+        public String getContentType()
+        {
+            return _contentType;
         }
 
         public InputStream getInputStream() throws IOException
         {
-            return method.getResponseBodyAsStream();
+            return _httpResponse.getEntity().getContent();
         }
 
         public String getText() throws IOException
         {
-            return method.getResponseBodyAsString();
+            Scanner s = null;
+            try
+            {
+                // Simple InputStream -> String conversion
+                s = new Scanner(_httpResponse.getEntity().getContent()).useDelimiter("\\A");
+                return s.hasNext() ? s.next() : "";
+            }
+            finally
+            {
+                if (s != null)
+                    s.close();
+            }
         }
 
         // Caller is responsible for closing the response
-        public void close()
+        public void close() throws IOException
         {
-            method.releaseConnection();
+            _httpResponse.close();
         }
-
-//        @Override
-//        protected void finalize() throws Throwable
-//        {
-//            super.finalize();
-//            close();
-//        }
     }
 
     /** NOTE: Internal experimental API for handling streaming commands. */
@@ -278,22 +290,31 @@ public class Command<ResponseType extends CommandResponse>
     {
         assert null != getControllerName() : "You must set the controller name before executing the command!";
         assert null != getActionName() : "You must set the action name before executing the command!";
+        CloseableHttpResponse httpResponse = null;
 
-        //construct and initialize the HttpMethod
-        final HttpMethod method = getHttpMethod(connection, folderPath);
+        try
+        {
+            //construct and initialize the HttpUriRequest
+            final HttpUriRequest request = getHttpRequest(connection, folderPath);
 
-        LogFactory.getLog(Command.class).info("Requesting URL: " + method.getURI().toString());
+            LogFactory.getLog(Command.class).info("Requesting URL: " + request.getURI().toString());
 
-        //execute the method
-        int status = connection.executeMethod(method);
+            //execute the request
+            httpResponse = connection.executeRequest(request, getTimeout());
+        }
+        catch (URISyntaxException | AuthenticationException e)
+        {
+            throw new CommandException(e.getMessage());
+        }
 
         //get the content-type header
-        Header contentTypeHeader = method.getResponseHeader("Content-Type");
+        Header contentTypeHeader = httpResponse.getFirstHeader("Content-Type");
         String contentType = (null == contentTypeHeader ? null : contentTypeHeader.getValue());
 
-        Response response = new Response(status, contentType, method);
+        Response response = new Response(httpResponse, contentType);
+        int status = response.getStatusCode();
 
-        //the HttpMethod should follow redirects automatically,
+        //the HttpUriRequest should follow redirects automatically,
         //so the status code could be 2xx, 4xx, or 5xx
         if (status >= 400 && status < 600)
         {
@@ -308,14 +329,14 @@ public class Command<ResponseType extends CommandResponse>
         //use the status text as the message by default
         String message = null != r.getStatusText() ? r.getStatusText() : "(no status text)";
 
-        // In commons-httpclient 3.1, getting the contents of the response will buffer
-        // the entire response on the HttpMethod in memory. This seems ok for API error responses.
+        // This buffers the entire response in memory, which seems OK for API error responses.
         String responseText = r.getText();
         JSONObject json = null;
 
         // If the content-type is json, try to parse the response text
         // and extract the "exception" property from the root-level object
-        if (null != r.contentType && r.contentType.contains(CONTENT_TYPE_JSON))
+        String contentType = r.getContentType();
+        if (null != contentType && contentType.contains(CONTENT_TYPE_JSON))
         {
             // Parse JSON
             if (responseText != null && responseText.length() > 0)
@@ -326,12 +347,12 @@ public class Command<ResponseType extends CommandResponse>
                     message = (String)json.get("exception");
 
                     if ("org.labkey.api.action.ApiVersionException".equals(json.get("exceptionClass")))
-                        throw new ApiVersionException(message, r.statusCode, json, responseText);
+                        throw new ApiVersionException(message, r.getStatusCode(), json, responseText);
                 }
             }
         }
 
-        throw new CommandException(message, r.statusCode, json, responseText);
+        throw new CommandException(message, r.getStatusCode(), json, responseText);
     }
 
     /**
@@ -355,27 +376,21 @@ public class Command<ResponseType extends CommandResponse>
      * Returns the appropriate, initialized HttpMethod implementation.
      * Extended classes may override this to change the way the HTTP method is initialized
      * <p>
-     * Note that this method initializes the object created by the <code>createMethod()</code>
-     * call. Extended classes should override that method to change which type of HttpMethod
+     * Note that this method initializes the object created by the <code>createRequest()</code>
+     * call. Extended classes should override that method to change which type of HttpUriRequest
      * gets created, and this one to change how it gets initialized.
-     * @param connection The Connection against which the method will be executed.
+     * @param connection The Connection against which the request will be executed.
      * @param folderPath The folder path in which the command will be executed.
      * This and the base URL from the connection will be used to construct the
      * first part of the URL.
-     * @return The constructed HttpMethod instance.
-     * @throws CommandException Thrown if there is a problem encoding the URL
-     * @throws URIException Thrown if there is a problem parsing the base URL in the connection.
+     * @return The constructed HttpUriRequest instance.
+     * @throws CommandException Thrown if there is a problem encoding or parsing the URL
+     * @throws URISyntaxException Thrown if there is a problem parsing the base URL in the connection.
      */
-    protected HttpMethod getHttpMethod(Connection connection, String folderPath) throws CommandException, URIException
+    protected HttpUriRequest getHttpRequest(Connection connection, String folderPath) throws CommandException, URISyntaxException
     {
-        HttpMethod method = createMethod();
-        Integer timeout = _timeout;
-        if (timeout == null)
-        {
-            timeout = connection.getTimeout();
-        }
-        method.getParams().setSoTimeout(timeout == null ? DEFAULT_TIMEOUT : timeout);
-        method.setDoAuthentication(true);
+// TODO        (Dave 11/11/14 -- as far as I can tell the default of the AuthSchemes is to automatically handle challenges
+//        method.setDoAuthentication(true);
 
         //construct a URI from the results of the getActionUrl method
         //note that this method returns an unescaped URL, so pass
@@ -388,21 +403,20 @@ public class Command<ResponseType extends CommandResponse>
         //so add this separately as a raw value 
         //(indicating that it has already been escaped)
         String queryString = getQueryString();
-        if(null != queryString)
-            uri.setRawQuery(queryString.toCharArray());
+        if (null != queryString)
+            uri = new URIBuilder(uri).setQuery(queryString).build();
 
-        method.setURI(uri);
-        return method;
+        return createRequest(uri);
     }
 
     /**
-     * Creates the appropriate HttpMethod instance. Override to create something
-     * other than <code>GetMethod</code>.
-     * @return The HttpMethod instance.
+     * Creates the appropriate HttpUriRequest instance. Override to create something
+     * other than <code>HttpGet</code>.
+     * @return The HttpUriRequest instance.
      */
-    protected HttpMethod createMethod()
+    protected HttpUriRequest createRequest(URI uri)
     {
-        return new GetMethod();
+        return new HttpGet(uri);
     }
 
     /**
@@ -415,39 +429,38 @@ public class Command<ResponseType extends CommandResponse>
      * @param folderPath The folder path to use.
      * @return The URL
      */
-    protected URI getActionUrl(Connection connection, String folderPath) throws URIException
+    protected URI getActionUrl(Connection connection, String folderPath) throws URISyntaxException
     {
         //start with the connection's base URL
         // Use a URI so that it correctly encodes each section of the overall URI
-        URI uri = new URI(connection.getBaseUrl().replace('\\','/'), false);
+        URI uri = new URI(connection.getBaseUrl().replace('\\','/'));
 
-        StringBuilder path = new StringBuilder(uri.getPath() == null ? "/" : uri.getPath());
+        StringBuilder path = new StringBuilder(uri.getPath() == null || "".equals(uri.getPath()) ? "/" : uri.getPath());
 
         //add the controller name
         String controller = getControllerName();
-        if(controller.charAt(0) != '/' && path.charAt(path.length() - 1) != '/')
+        if (controller.charAt(0) != '/' && path.charAt(path.length() - 1) != '/')
             path.append('/');
         path.append(controller);
 
         //add the folderPath (if any)
-        if(null != folderPath && folderPath.length() > 0)
+        if (null != folderPath && folderPath.length() > 0)
         {
             String folderPathNormalized = folderPath.replace('\\', '/');
-            if(folderPathNormalized.charAt(0) != '/' && path.charAt(path.length() - 1) != '/')
+            if (folderPathNormalized.charAt(0) != '/' && path.charAt(path.length() - 1) != '/')
                 path.append('/');
             path.append(folderPathNormalized);
         }
 
         //add the action name + ".api"
         String actionName = getActionName();
-        if(actionName.charAt(0) != '/' && path.charAt(path.length() - 1) != '/')
+        if (actionName.charAt(0) != '/' && path.charAt(path.length() - 1) != '/')
             path.append('/');
         path.append(actionName);
-        if(!actionName.endsWith(".api"))
+        if (!actionName.endsWith(".api"))
             path.append(".api");
 
-        uri.setPath(path.toString());
-        return uri;
+        return new URIBuilder(uri).setPath(path.toString()).build();
     }
 
     /**
@@ -459,17 +472,17 @@ public class Command<ResponseType extends CommandResponse>
      */
     protected String getQueryString() throws CommandException
     {
-        Map<String,Object> params = getParameters();
+        Map<String, Object> params = getParameters();
 
         //add the required version if it's > 0
-        if(getRequiredVersion() > 0)
+        if (getRequiredVersion() > 0)
             params.put(CommonParameters.apiVersion.name(), getRequiredVersion());
 
         StringBuilder qstring = new StringBuilder();
         URLCodec urlCodec = new URLCodec();
         try
         {
-            for(String name : params.keySet())
+            for (String name : params.keySet())
             {
                 Object value = params.get(name);
                 if (value instanceof Collection)
@@ -499,7 +512,7 @@ public class Command<ResponseType extends CommandResponse>
         String strValue = null == value ? null : getParamValueAsString(value, name);
         if(null != strValue)
         {
-            if(qstring.length() > 0)
+            if (qstring.length() > 0)
                 qstring.append('&');
             qstring.append(urlCodec.encode(name));
             qstring.append('=');

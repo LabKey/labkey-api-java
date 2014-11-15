@@ -50,9 +50,10 @@ public class NAbRun
         _samples = new NAbSample[samples.size()];
         for (int i = 0; i < samples.size(); i++)
             _samples[i] = new NAbSample(samples.get(i), _cutoffs);
-        
-        _cellControl = new NAbWellGroup((Map<String, Object>) properties.get("cellControl"));
-        _virusControl = new NAbWellGroup((Map<String, Object>) properties.get("virusControl"));
+
+        // TODO: These don't seem to work right anymore - ClassCastException happens every time
+//        _cellControl = new NAbWellGroup((Map<String, Object>) properties.get("cellControls"));
+//        _virusControl = new NAbWellGroup((Map<String, Object>) properties.get("virusControls"));
     }
 
     public long getRunId()

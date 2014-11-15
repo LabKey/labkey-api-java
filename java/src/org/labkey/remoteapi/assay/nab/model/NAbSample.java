@@ -68,12 +68,17 @@ public class NAbSample
                 for (int i = 0; i < cutoffs.length; i++)
                 {
                     long cutoff = cutoffs[i];
-                    double curveBasedDilution = ((Number) properties.get("curveIC" + cutoff)).doubleValue();
-                    double pointBasedDilution = ((Number) properties.get("pointIC" + cutoff)).doubleValue();
+                    double curveBasedDilution = convert(properties.get("curveIC" + cutoff));
+                    double pointBasedDilution = convert(properties.get("pointIC" + cutoff));
                     _neutralizationResults[i] = new NAbNeutralizationResult(cutoff, curveBasedDilution, pointBasedDilution);
                 }
             }
         }
+    }
+
+    private double convert(Object ic)
+    {
+       return ic instanceof Number ? ((Number) ic).doubleValue() : Double.valueOf((String) ic);
     }
 
     public Map<String, Object> getProperties()

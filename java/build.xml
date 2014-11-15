@@ -44,11 +44,11 @@
 
     <target name="compile">
         <mkdir dir="${build.classes.dir}"/>
-        <!-- Target 1.5 for now, until we have a compelling reason to move to 1.6.  SAS 9.2 installs JRE 1.5, e.g. -->
+        <!-- Target 1.7  -->
         <javac srcdir="${source.dir}" destdir="${build.classes.dir}"
                classpathref="component.class.path"
-               target="1.5"
-               source="1.5"
+               target="1.7"
+               source="1.7"
                debug="true"/>
         <copy file="${source.dir}/log4j.xml" todir="${build.classes.dir}"/>
     </target>

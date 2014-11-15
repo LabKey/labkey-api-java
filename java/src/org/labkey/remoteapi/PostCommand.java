@@ -15,12 +15,13 @@
  */
 package org.labkey.remoteapi;
 
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.json.simple.JSONObject;
 
-import java.io.UnsupportedEncodingException;
+import java.net.URI;
 
 /*
 * User: Dave
@@ -63,7 +64,7 @@ public class PostCommand<ResponseType extends CommandResponse> extends Command<R
     public PostCommand(PostCommand source)
     {
         super(source);
-        if(null != source.getJsonObject())
+        if (null != source.getJsonObject())
             _jsonObject = source.getJsonObject();
     }
 
@@ -88,37 +89,32 @@ public class PostCommand<ResponseType extends CommandResponse> extends Command<R
     }
 
     /**
-     * Overrides {@link Command#createMethod()} to create a
-     * <code>PostMethod</code> object.
+     * Overrides {@link Command#createRequest(URI)} to create an
+     * <code>HttpPost</code> object.
      * <p>
      * Override this method if your post command sends something other
      * than JSON in the post body. In your override, create the PostMethod
      * and set the RequestEntity appropriately.
      * @return The PostMethod object.
      */
+    @Override
     @SuppressWarnings("unchecked")
-    protected HttpMethod createMethod()
+    protected HttpUriRequest createRequest(URI uri)
     {
-        PostMethod method = new PostMethod();
+        HttpPost request = new HttpPost(uri);
 
         //set the post body based on the supplied JSON object
         JSONObject json = getJsonObject();
-        if(null != json)
+
+        if (null != json)
         {
-            try
-            {
-                if(!json.containsKey("apiVersion"))
-                    json.put("apiVersion", getRequiredVersion());
-                method.setRequestEntity(new StringRequestEntity(json.toString(),
-                        Command.CONTENT_TYPE_JSON, "UTF-8"));
-            }
-            catch(UnsupportedEncodingException e)
-            {
-                //just ignore for now--UTF-8 should always be supported
-            }
+            if (!json.containsKey("apiVersion"))
+                json.put("apiVersion", getRequiredVersion());
+
+            request.setEntity(new StringEntity(json.toString(), ContentType.APPLICATION_JSON));
         }
 
-        return method;
+        return request;
     }
 
     @Override

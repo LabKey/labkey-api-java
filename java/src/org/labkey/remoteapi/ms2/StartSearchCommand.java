@@ -15,11 +15,12 @@
  */
 package org.labkey.remoteapi.ms2;
 
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.json.simple.JSONObject;
 import org.labkey.remoteapi.Command;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,9 +92,9 @@ public class StartSearchCommand extends Command<StartSearchResponse>
     }
 
     @Override
-    protected HttpMethod createMethod()
+    protected HttpUriRequest createRequest(URI uri)
     {
-        return new PostMethod();
+        return new HttpPost(uri);
     }
 
     @Override

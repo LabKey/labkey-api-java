@@ -15,16 +15,17 @@
  */
 package org.labkey.remoteapi.assay;
 
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.methods.MultipartPostMethod;
-import org.apache.commons.httpclient.methods.multipart.FilePart;
-import org.apache.commons.httpclient.methods.multipart.StringPart;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.json.simple.JSONObject;
 import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.PostCommand;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.URI;
 import java.util.Map;
 
 /**
@@ -107,9 +108,9 @@ public class ImportRunCommand extends PostCommand<ImportRunResponse>
     }
 
     @Override
-    protected HttpMethod createMethod()
+    protected HttpUriRequest createRequest(URI uri)
     {
-        MultipartPostMethod method = new MultipartPostMethod();
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 
         if (_assayId == 0)
             throw new IllegalArgumentException("assay id required");
@@ -133,47 +134,37 @@ public class ImportRunCommand extends PostCommand<ImportRunResponse>
             if (_batchProperties != null)
                 json.put("batchProperties", _batchProperties);
 
-            StringPart jsonPart = new StringPart("json", json.toJSONString(), "UTF-8");
-            jsonPart.setContentType(Command.CONTENT_TYPE_JSON);
-            method.addPart(jsonPart);
-        }
+            builder.addTextBody("json", json.toJSONString(), ContentType.APPLICATION_JSON);        }
         else
         {
-            method.addPart(new StringPart("assayId", String.valueOf(_assayId)));
+            builder.addTextBody("assayId", String.valueOf(_assayId));
             if (_batchId > 0)
-                method.addPart(new StringPart("batchId", String.valueOf(_batchId)));
+                builder.addTextBody("batchId", String.valueOf(_batchId));
             if (_name != null)
-                method.addPart(new StringPart("name", String.valueOf(_name)));
+                builder.addTextBody("name", String.valueOf(_name));
             if (_comment != null)
-                method.addPart(new StringPart("comment", String.valueOf(_comment)));
+                builder.addTextBody("comment", String.valueOf(_comment));
             if (_properties != null)
             {
                 for (Map.Entry<String, Object> entry : _properties.entrySet())
                 {
-                    method.addPart(new StringPart("properties[" + entry.getKey() + "]", String.valueOf(entry.getValue())));
+                    builder.addTextBody("properties[" + entry.getKey() + "]", String.valueOf(entry.getValue()));
                 }
             }
             if (_batchProperties != null)
             {
                 for (Map.Entry<String, Object> entry : _batchProperties.entrySet())
                 {
-                    method.addPart(new StringPart("batchProperties[" + entry.getKey() + "]", String.valueOf(entry.getValue())));
+                    builder.addTextBody("batchProperties[" + entry.getKey() + "]", String.valueOf(entry.getValue()));
                 }
             }
         }
 
-        try
-        {
-            // UNDONE: set content type based on extension
-            FilePart filePart = new FilePart("file", _file, "application/octet-stream", "UTF-8");
-            method.addPart(filePart);
-        }
-        catch (FileNotFoundException e)
-        {
-            throw new IllegalArgumentException(e);
-        }
+        // UNDONE: set content type based on extension
+        builder.addBinaryBody("file", _file, ContentType.APPLICATION_OCTET_STREAM, _file.getName());
 
-        return method;
+        HttpPost post = new HttpPost(uri);
+        post.setEntity(builder.build());
+        return post;
     }
-
 }

@@ -24,7 +24,7 @@ import java.util.Map;
  */
 public class ApiVersionException extends CommandException
 {
-    ApiVersionException(String message, int statusCode, Map<String,Object> properties, String responseText)
+    ApiVersionException(String message, int statusCode, Map<String, Object> properties, String responseText)
     {
         super(message, statusCode, properties, responseText);
     }

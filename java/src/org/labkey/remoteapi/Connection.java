@@ -15,12 +15,37 @@
  */
 package org.labkey.remoteapi;
 
-import org.apache.commons.httpclient.*;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.contrib.ssl.EasySSLProtocolSocketFactory;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.protocol.Protocol;
-import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.AuthenticationException;
+import org.apache.http.auth.Credentials;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.conn.HttpClientConnectionManager;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContextBuilder;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.cookie.Cookie;
+import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Represents connection information for a particular LabKey Server.
@@ -71,14 +96,17 @@ import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
  */
 public class Connection
 {
-    private static MultiThreadedHttpConnectionManager _connectionManager = null;
+    private static final int DEFAULT_TIMEOUT = 60000;    // 60 seconds
+    private static final HttpClientConnectionManager _connectionManager = new PoolingHttpClientConnectionManager();
 
     private String _baseUrl;
     private String _email;
     private String _password;
     private boolean _acceptSelfSignedCerts;
-    private HttpClient _client = null;
-    private Integer _timeout;
+    private int _timeout = DEFAULT_TIMEOUT;
+    private HttpClientContext _httpClientContext;
+
+    private final Map<Integer, CloseableHttpClient> _clientMap = new HashMap<Integer, CloseableHttpClient>(3); // Typically very small
 
     /**
      * Constructs a new Connection object given a base URL.
@@ -102,10 +130,9 @@ public class Connection
      * <code>http://localhost:8080/labkey</code>
      * <p>
      * Note that https may also be used for the protocol. By default the
-     * Connection is configured to accept self-signed SSL certificates, which
-     * is fairly common for LabKey Server installations. If you do not want
-     * to accept self-signed certificates, use
-     * <code>setAcceptSelfSignedCerts(false)</code> to disable this behavior.
+     * Connection is configured to deny self-signed SSL certificates.
+     * If you want to accept self-signed certificates, use
+     * <code>setAcceptSelfSignedCerts(false)</code> to enable this behavior.
      * <p>
      * The email name and password should correspond to a valid user email
      * and password on the target server.
@@ -118,7 +145,7 @@ public class Connection
         _baseUrl = baseUrl;
         _email = email;
         _password = password;
-        setAcceptSelfSignedCerts(true);
+        setAcceptSelfSignedCerts(false);
     }
 
     /**
@@ -186,77 +213,79 @@ public class Connection
     public void setAcceptSelfSignedCerts(boolean acceptSelfSignedCerts)
     {
         _acceptSelfSignedCerts = acceptSelfSignedCerts;
-
-        //use the EasySSLProtocolSocketFactory
-        //to accept self-signed certificates
-        if(_acceptSelfSignedCerts)
-            Protocol.registerProtocol("https", new Protocol("https", (ProtocolSocketFactory)(new EasySSLProtocolSocketFactory()), 443));
-        else
-            Protocol.unregisterProtocol("https");
+        // Handled in getHttpClient using 4.3.x way is documented here http://stackoverflow.com/questions/19517538/ignoring-ssl-certificate-in-apache-httpclient-4-3
     }
 
     /**
-     * Returns the HttpClient object to use for this connection.
-     * @return The HttpClient object to use.
-     * @throws URIException Thrown if the base URL could not be converted
-     * into a legal URI.
+     * Returns the CloseableHttpClient object to use for this connection.
+     * @param timeout The socket timeout for this request
+     * @return The CloseableHttpClient object to use.
      */
-    public HttpClient getHttpClient() throws URIException
+    public CloseableHttpClient getHttpClient(int timeout)
     {
-        if (null == _client)
-        {
-            _client = new HttpClient(getConnectionManager());
+        // We try to hand out the same HttpClient instance to share it across multiple requests, as the docs recommend.
+        // However, HttpClient 4.x moved setting of the timeout to HttpClient construction time (it used to be on the
+        // request-specific Method instance) but our API allows setting a timeout on a per-Command basis (which seems
+        // perfectly reasonable). So, we stash and retrieve HttpClients using a Map<Integer, HttpClient>.
+        // If we're allowing self signed certificates, we'll always create new client object
 
-            //if a user name was specified, set the credentials
-            if(getEmail() != null)
+        CloseableHttpClient client = _acceptSelfSignedCerts ? null : _clientMap.get(timeout);
+
+        if (null == client)
+        {
+            HttpClientBuilder builder = HttpClientBuilder.create()
+                    .setConnectionManager(_connectionManager)
+                    .setDefaultRequestConfig(RequestConfig.custom().setSocketTimeout(timeout).build());
+            if (_acceptSelfSignedCerts)
             {
-                _client.getState().setCredentials(
-                        new AuthScope(new URI(getBaseUrl(), false).getHost(),
-                                AuthScope.ANY_PORT, AuthScope.ANY_REALM),
-                        new UsernamePasswordCredentials(getEmail(), getPassword())
-                );
-
-                //send basic auth header on first request
-                _client.getParams().setAuthenticationPreemptive(true);
+                try
+                {
+                    SSLContextBuilder sslContextBuilder = new SSLContextBuilder();
+                    sslContextBuilder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
+                    SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContextBuilder.build());
+                    builder.setSSLSocketFactory(sslConnectionSocketFactory);
+                }
+                catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException e)
+                {
+                    throw new RuntimeException(e);
+                }
             }
-        }
-        else if (_client.getState().getCookies().length > 0)
-        {
-            //clear preemptive auth setting for subsequent requests
-            //as the HttpClient library will send the session id cookie
-            _client.getParams().setAuthenticationPreemptive(false);
+            client = builder.build();
+
+            if (!_acceptSelfSignedCerts)
+                _clientMap.put(timeout, client);
         }
 
-        return _client;
+        return client;
     }
 
 
     private String csrf = null;
 
-    protected synchronized void beforeExecute(HttpClient client, HttpMethod method)
+    protected synchronized void beforeExecute(HttpClient client, HttpRequest request)
     {
-        if (null == csrf && method instanceof PostMethod)
+        if (null == csrf && request instanceof HttpPost)
         {
             // need to preemptively login
             // we're not really using the login form, just getting a JSESSIONID
             try
             {
-                new Command("login","login").execute(this,"/");
+                new Command("login", "login").execute(this, "/");
             }
-            catch (Exception x)
+            catch (Exception ignored)
             {
             }
         }
         if (null != csrf)
-            method.setRequestHeader("X-LABKEY-CSRF", csrf);
+            request.setHeader("X-LABKEY-CSRF", csrf);
     }
 
 
-    protected void afterExecute(HttpClient client, HttpMethod method, int status)
+    protected void afterExecute(HttpClient client, HttpClientContext context, HttpRequest request, HttpResponse response)
     {
         if (null == csrf)
         {
-            for (Cookie c : client.getState().getCookies())
+            for (Cookie c : context.getCookieStore().getCookies())
             {
                 if ("JSESSIONID".equals(c.getName()))
                     csrf = c.getValue();
@@ -265,34 +294,41 @@ public class Connection
     }
 
     
-    public int executeMethod(HttpMethod method) throws java.io.IOException, org.apache.commons.httpclient.HttpException
+    public CloseableHttpResponse executeRequest(HttpUriRequest request, Integer timeout) throws IOException, URISyntaxException, AuthenticationException
     {
-        HttpClient client = getHttpClient();
-        beforeExecute(client, method);
-        int status = client.executeMethod(method);
-        afterExecute(client, method, status);
-        return status;
-    }
-    
+        HttpClientContext context = _httpClientContext;
+        if (null == context)
+            context = HttpClientContext.create();
 
+        //if a user name was specified, set the credentials
+        if (getEmail() != null)
+        {
+            AuthScope scope = new AuthScope(new URI(getBaseUrl()).getHost(), AuthScope.ANY_PORT, AuthScope.ANY_REALM);
+            BasicCredentialsProvider provider = new BasicCredentialsProvider();
+            Credentials credentials = new UsernamePasswordCredentials(getEmail(), getPassword());
+            provider.setCredentials(scope, credentials);
+
+            context.setCredentialsProvider(provider);
+            request.addHeader(new BasicScheme().authenticate(credentials, request, context));
+        }
+        else
+        {
+            context.setCredentialsProvider(null);
+            request.removeHeaders("Authenticate");
+        }
+
+        int clientTimeout = null == timeout ? getTimeout() : timeout;
+        CloseableHttpClient client = getHttpClient(clientTimeout);
+        beforeExecute(client, request);
+        CloseableHttpResponse response = client.execute(request, context);
+        afterExecute(client, context, request, response);
+
+        return response;
+    }
 
     /**
-     * Returns the connection manager to use when initializing the
-     * HttpClient object. By default, this method returns a
-     * MultiThreadedHttpConnectionManager. Override to use a different
-     * one.
-     * @return The connection manager to use.
-     */
-    protected synchronized HttpConnectionManager getConnectionManager()
-    {
-        if(null == _connectionManager)
-            _connectionManager = new MultiThreadedHttpConnectionManager();
-        return _connectionManager;
-    }
-
-    /**
-     * Set a default timeout for Commands that have not established their own timeouts. Null indicates that the
-     * Connection doesn't specify a timeout preference. 0 means the request should never timeout.
+     * Set a default timeout for Commands that have not established their own timeouts. Null resets the Connection to the
+     * default timeout (60 seconds). 0 means the request should never timeout.
      * @param timeout the length of the timeout waiting for the server response, in milliseconds
      */
     public void setTimeout(Integer timeout)
@@ -301,12 +337,21 @@ public class Connection
     }
 
     /**
-     * The default timeout for Commands that have not established their own timeouts. Null indicates that the
-     * Connection doesn't specify a timeout preference. 0 means the request should never timeout.
+     * The timeout used for Commands that have not established their own timeouts. 0 means the request should never timeout.
      * @return the length of the timeout waiting for the server response, in milliseconds
      */
-    public Integer getTimeout()
+    public int getTimeout()
     {
         return _timeout;
+    }
+
+    public HttpClientContext getHttpClientContext()
+    {
+        return _httpClientContext;
+    }
+
+    public void setHttpClientContext(HttpClientContext httpClientContext)
+    {
+        _httpClientContext = httpClientContext;
     }
 }

@@ -645,11 +645,11 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
     {
         _log.log(Level.INFO, "getTables: " + catalog + ", " + schemaPattern + ", " + tableNamePattern);
         _connection.setCatalog(catalog);
-        if (schemaPattern != null && (schemaPattern.indexOf("%") != -1 || schemaPattern.indexOf("_") != -1))
+        if (schemaPattern != null && (schemaPattern.contains("%") || schemaPattern.contains("_")))
         {
             throw new IllegalArgumentException("schemaPattern must request an exact match, but was: " + schemaPattern);
         }
-        if (tableNamePattern != null && !tableNamePattern.equals("%") && (tableNamePattern.indexOf("%") != -1 || tableNamePattern.indexOf("_") != -1))
+        if (tableNamePattern != null && !tableNamePattern.equals("%") && (tableNamePattern.contains("%") || tableNamePattern.contains("_")))
         {
             throw new IllegalArgumentException("tableNamePattern must request an exact match, but was: " + tableNamePattern);
         }
@@ -759,11 +759,11 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
     public ResultSet getColumns(String catalog, String schemaPattern, String tableNamePattern, String columnNamePattern) throws SQLException
     {
         _connection.setCatalog(catalog);
-        if (schemaPattern == null || schemaPattern.indexOf("%") != -1 || schemaPattern.indexOf("_") != -1)
+        if (schemaPattern == null || schemaPattern.contains("%") || schemaPattern.contains("_"))
         {
             throw new IllegalArgumentException("schemaPattern must request an exact match but was: " + schemaPattern);
         }
-        if (tableNamePattern == null || tableNamePattern.indexOf("%") != -1 || tableNamePattern.indexOf("_") != -1)
+        if (tableNamePattern == null || tableNamePattern.contains("%") || tableNamePattern.contains("_"))
         {
             throw new IllegalArgumentException("tableNamePattern must request an exact match but was: " + tableNamePattern);
         }
@@ -837,7 +837,7 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
         {
             return Types.INTEGER;
         }
-        if (type.indexOf("String") != -1)
+        if (type.contains("String"))
         {
             return Types.VARCHAR;
         }
@@ -845,11 +845,11 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
         {
             return Types.BOOLEAN;
         }
-        if (type.indexOf("Date") != -1)
+        if (type.contains("Date"))
         {
             return Types.DATE;
         }
-        if (type.indexOf("Number") != -1)
+        if (type.contains("Number"))
         {
             return Types.DOUBLE;
         }

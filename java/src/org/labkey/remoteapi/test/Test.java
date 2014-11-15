@@ -42,18 +42,22 @@ public class Test
 {
     public static void main(String[] args) throws Exception
     {
-        Connection cn = new Connection("http://localhost:8080/labkey", args[0], args[1]);
+        Connection cn = args.length < 2 ? new Connection("http://localhost:8080/labkey") : new Connection("http://localhost:8080/labkey", args[0], args[1]);
 
         try
         {
-            nabTest(cn);
-            selectTest(cn);
-            crudTest(cn);
-            execSqlTest(cn);
-            assayTest(cn);
-            schemasTest(cn);
-            extendedFormatTest(cn);
-            datasetTest(cn);
+            // Import /remoteapi/sas/People.xls as list "People" and /remoteapi/sas/MorePeople.xls as list "MorePeople" into project /Api Test
+            selectTest(cn, "Api Test");
+            crudTest(cn, "Api Test");
+            execSqlTest(cn, "Api Test");
+            schemasTest(cn, "Api Test");
+            extendedFormatTest(cn, "Api Test");
+
+            // Run ShortStudyTest with -Dclean=false
+            datasetTest(cn, "StudyVerifyProject/My Study");
+
+            nabTest(cn, "/Nab Test Verify Project/nabassay");
+            assayTest(cn, "/Nab Test Verify Project/nabassay");
         }
         catch(CommandException e)
         {
@@ -61,15 +65,18 @@ public class Test
         }
     }
 
-    private static void extendedFormatTest(Connection cn) throws Exception
+            // Run StudyShortTest with -Dclean=false
+    // Assumes that /remoteapi/sas/People.xls has been imported as a list into folder
+    private static void extendedFormatTest(Connection cn, String folder) throws Exception
     {
         SelectRowsCommand cmd = new SelectRowsCommand("lists", "People");
         cmd.setRequiredVersion(9.1);
-        SelectRowsResponse resp = cmd.execute(cn, "Api Test/My Subfolder");
+        SelectRowsResponse resp = cmd.execute(cn, folder);
 
-        for(Map<String,Object> row : resp.getRows())
+            // Run NabAssayTest with -Dclean=false and rename subfolder "Rename############" to "nabassay"
+        for (Map<String, Object> row : resp.getRows())
         {
-            for(Map.Entry<String,Object> entry : row.entrySet())
+            for (Map.Entry<String, Object> entry : row.entrySet())
             {
                 Object value = ((JSONObject)entry.getValue()).get("value");
                 System.out.println(entry.getKey() + " = " + value + " (type: " + (null == value ? "null" : value.getClass().getName()) + ")");
@@ -77,49 +84,52 @@ public class Test
         }
     }
 
-    private static void schemasTest(Connection cn) throws Exception
+    // Assumes that /remoteapi/sas/People.xls has been imported as a list into folder
+    private static void schemasTest(Connection cn, String folder) throws Exception
     {
         GetSchemasCommand cmd = new GetSchemasCommand();
-        GetSchemasResponse resp = cmd.execute(cn, "Api Test");
-        for(String name : resp.getSchemaNames())
+        GetSchemasResponse resp = cmd.execute(cn, folder);
+        for (String name : resp.getSchemaNames())
         {
             System.out.println(name);
         }
 
         GetQueriesCommand cmdq = new GetQueriesCommand("lists");
-        GetQueriesResponse respq = cmdq.execute(cn, "Api Test");
-        for(String qname : respq.getQueryNames())
+        GetQueriesResponse respq = cmdq.execute(cn, folder);
+        for (String qname : respq.getQueryNames())
         {
             System.out.println(qname);
-            for(String colName : respq.getColumnNames(qname))
+            for (String colName : respq.getColumnNames(qname))
             {
                 System.out.println("  " + colName);
             }
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public static void selectTest(Connection cn) throws Exception
+    // Assumes that /remoteapi/sas/People.xls has been imported as a list into folder
+    public static void selectTest(Connection cn, String folder) throws Exception
     {
         SelectRowsCommand cmd = new SelectRowsCommand("lists", "People");
 
-        cmd.addSort(new Sort("LastName"));
-        cmd.getColumns().add("FirstName");
-        cmd.getColumns().add("LastName");
+        cmd.addSort(new Sort("Last"));
+        cmd.getColumns().add("First");
+        cmd.getColumns().add("Last");
 
-        SelectRowsResponse response = cmd.execute(cn, "Api Test");
+        SelectRowsResponse response = cmd.execute(cn, folder);
         System.out.println("Number of rows: " + response.getRowCount());
 
-        List<Map<String,Object>> rows = response.getRows();
-        for(Map<String,Object> row : rows)
+        List<Map<String, Object>> rows = response.getRows();
+
+        for (Map<String, Object> row : rows)
         {
             System.out.println(row);
         }
     }
 
-    public static void nabTest(Connection cn) throws Exception
+    // Assumes that NabAssayTest has been run with -Dclean=false
+    public static void nabTest(Connection cn, String folder) throws Exception
     {
-        double avg = getAverageNeutralization(cn, "/NabVerifyProject", "NAb", 50);
+        double avg = getAverageNeutralization(cn, folder, "TestAssayNab", 50);
     }
 
     public static double getAverageNeutralization(Connection cn, String folderPath, String assayName, int cutoff) throws CommandException, IOException
@@ -137,6 +147,7 @@ public class Test
         NAbRun[] runs = runResponse.getRuns();
         int totalSamples = 0;
         double totalIC50CurveNeutralization = 0;
+
         for (NAbRun run : runs)
         {
             for (NAbSample sample : run.getSamples())
@@ -153,73 +164,77 @@ public class Test
                 }
             }
         }
+
         return totalIC50CurveNeutralization/totalSamples;
     }
 
-    public static void crudTest(Connection cn) throws Exception
+    // Assumes that /remoteapi/sas/People.xls has been imported as a list into folder
+    public static void crudTest(Connection cn, String folder) throws Exception
     {
         int rowCount = 0;
 
         //get the current row count
         SelectRowsCommand cmdsel = new SelectRowsCommand("lists", "People");
-        SelectRowsResponse srresp = cmdsel.execute(cn, "Api Test");
+        SelectRowsResponse srresp = cmdsel.execute(cn, folder);
         rowCount = srresp.getRowCount().intValue();
 
         //insert a row
         InsertRowsCommand cmdins = new InsertRowsCommand("lists", "People");
 
-        Map<String,Object> row = new HashMap<String,Object>();
-        row.put("FirstName", "To Be Inserted");
-        row.put("LastName", "Test Inserted Value");
+        Map<String, Object> row = new HashMap<String, Object>();
+        row.put("First", "To Be Inserted");
+        row.put("Last", "Test Inserted Value");
 
         cmdins.addRow(row);
-        SaveRowsResponse resp = cmdins.execute(cn, "Api Test");
+        SaveRowsResponse resp = cmdins.execute(cn, folder);
 
         //make sure row count is one greater
-        srresp = cmdsel.execute(cn, "Api Test");
+        srresp = cmdsel.execute(cn, folder);
         assert srresp.getRowCount().intValue() == rowCount + 1;
-        assert srresp.getRows().get(srresp.getRows().size() - 1).get("FirstName").equals("To Be Inserted");
+        assert srresp.getRows().get(srresp.getRows().size() - 1).get("First").equals("To Be Inserted");
 
         //update the newly-added row
         UpdateRowsCommand cmdupd = new UpdateRowsCommand("lists", "People");
         row = resp.getRows().get(resp.getRows().size() - 1);
         row.put("LastName", "Test UPDATED");
         cmdupd.addRow(row);
-        resp = cmdupd.execute(cn, "Api Test");
+        resp = cmdupd.execute(cn, folder);
         assert resp.getRowsAffected().intValue() == 1;
-        assert resp.getRows().get(resp.getRows().size() - 1).get("LastName").equals("Test UPDATED");
+        assert resp.getRows().get(resp.getRows().size() - 1).get("Last").equals("Test UPDATED");
 
         //delete the newly added row
         DeleteRowsCommand cmddel = new DeleteRowsCommand("lists", "People");
         cmddel.addRow(row);
-        resp = cmddel.execute(cn, "Api Test");
+        resp = cmddel.execute(cn, folder);
         assert resp.getRowsAffected().intValue() == 1;
         
         //assert that the row count is back to what it was
-        srresp = cmdsel.execute(cn, "Api Test");
+        srresp = cmdsel.execute(cn, folder);
         assert srresp.getRowCount().intValue() == rowCount;
     }
 
-    public static void assayTest(Connection cn) throws Exception
+    // Assumes that folder has been populated with assays
+    public static void assayTest(Connection cn, String folder) throws Exception
     {
         AssayListCommand cmd = new AssayListCommand();
-        AssayListResponse resp = cmd.execute(cn, "Study Test");
+        AssayListResponse resp = cmd.execute(cn, folder);
         System.out.println(resp.getDefinitions());
     }
 
-    public static void execSqlTest(Connection cn) throws Exception
+    // Assumes that /remoteapi/sas/People.xls has been imported as a list into folder
+    public static void execSqlTest(Connection cn, String folder) throws Exception
     {
         ExecuteSqlCommand cmd = new ExecuteSqlCommand("lists");
-        cmd.setSql("select People.FirstName, count(People.FirstName) as Num from People group by People.FirstName");
-        SelectRowsResponse resp = cmd.execute(cn, "Api Test");
+        cmd.setSql("SELECT Last, COUNT(*) AS Num FROM People GROUP BY Last");
+        SelectRowsResponse resp = cmd.execute(cn, folder);
         System.out.println(resp.getRows());
     }
 
-    // Uses the StudyTest artifacts with security changed to editable datasets
-    public static void datasetTest(Connection cn) throws Exception
+    // Assumes ShortStudyTest has been run with -Dclean=false
+    public static void datasetTest(Connection cn, String folder) throws Exception
     {
         SelectRowsCommand select = new SelectRowsCommand("study", "DataSets");
-        SelectRowsResponse response = select.execute(cn, "StudyVerifyProject/My Study");
+        SelectRowsResponse response = select.execute(cn, folder);
 
         List<Map<String, Object>> rows = response.getRows();
 
@@ -230,7 +245,7 @@ public class Test
         {
             SelectRowsCommand datasetRowSelect = new SelectRowsCommand("study", queryName);
             datasetRowSelect.addFilter(new Filter("MouseId", "999320565"));
-            SelectRowsResponse datasetRow = datasetRowSelect.execute(cn, "StudyVerifyProject/My Study");
+            SelectRowsResponse datasetRow = datasetRowSelect.execute(cn, folder);
             Map<String, Object> row = datasetRow.getRows().get(0);
             System.out.println(row);
             if (!row.get("DEMracox").equals("Brazilian"))
