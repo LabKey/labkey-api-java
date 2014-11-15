@@ -19,6 +19,7 @@ import java.sql.*;
 import java.util.Properties;
 
 /**
+ * Simple test program for prototype LabKey JDBC driver
  * User: jeckels
  * Date: Apr 2, 2010
  */
@@ -27,7 +28,10 @@ public class Test
     public static void main(String... args) throws Exception
     {
         Driver driver = new LabKeyDriver();
-        Connection jdbcConnection = driver.connect("http://localhost/labkey", new Properties());
+        Properties props = new Properties();
+        props.put("user", "jeckels@labkey.com");
+        props.put("password", "SuperSecurePassword!");
+        Connection jdbcConnection = driver.connect("http://localhost:8080/labkey/home", props);
 //        Statement statement = jdbcConnection.createStatement();
 //        ResultSet resultSet = statement.executeQuery("SELECT p.Fraction, p.TrimmedPeptide FROM ms2.Peptides p");
         ResultSet resultSet = jdbcConnection.getMetaData().getSchemas();
