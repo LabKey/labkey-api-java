@@ -106,7 +106,7 @@ public class Connection
     private int _timeout = DEFAULT_TIMEOUT;
     private HttpClientContext _httpClientContext;
 
-    private final Map<Integer, CloseableHttpClient> _clientMap = new HashMap<Integer, CloseableHttpClient>(3); // Typically very small
+    private Map<Integer, CloseableHttpClient> _clientMap = new HashMap<>(3); // Typically very small
 
     /**
      * Constructs a new Connection object given a base URL.
@@ -212,8 +212,9 @@ public class Connection
      */
     public void setAcceptSelfSignedCerts(boolean acceptSelfSignedCerts)
     {
-        _acceptSelfSignedCerts = acceptSelfSignedCerts;
         // Handled in getHttpClient using 4.3.x way is documented here http://stackoverflow.com/questions/19517538/ignoring-ssl-certificate-in-apache-httpclient-4-3
+        _acceptSelfSignedCerts = acceptSelfSignedCerts;
+        _clientMap = new HashMap<>(3);      // clear client cache
     }
 
     /**
@@ -227,9 +228,8 @@ public class Connection
         // However, HttpClient 4.x moved setting of the timeout to HttpClient construction time (it used to be on the
         // request-specific Method instance) but our API allows setting a timeout on a per-Command basis (which seems
         // perfectly reasonable). So, we stash and retrieve HttpClients using a Map<Integer, HttpClient>.
-        // If we're allowing self signed certificates, we'll always create new client object
 
-        CloseableHttpClient client = _acceptSelfSignedCerts ? null : _clientMap.get(timeout);
+        CloseableHttpClient client = _clientMap.get(timeout);
 
         if (null == client)
         {
@@ -252,8 +252,7 @@ public class Connection
             }
             client = builder.build();
 
-            if (!_acceptSelfSignedCerts)
-                _clientMap.put(timeout, client);
+            _clientMap.put(timeout, client);
         }
 
         return client;
