@@ -106,7 +106,7 @@ public class Connection
     private int _timeout = DEFAULT_TIMEOUT;
     private HttpClientContext _httpClientContext;
 
-    private Map<Integer, CloseableHttpClient> _clientMap = new HashMap<>(3); // Typically very small
+    private final Map<Integer, CloseableHttpClient> _clientMap = new HashMap<>(3); // Typically very small
 
     /**
      * Constructs a new Connection object given a base URL.
@@ -214,7 +214,7 @@ public class Connection
     {
         // Handled in getHttpClient using 4.3.x way is documented here http://stackoverflow.com/questions/19517538/ignoring-ssl-certificate-in-apache-httpclient-4-3
         _acceptSelfSignedCerts = acceptSelfSignedCerts;
-        _clientMap = new HashMap<>(3);      // clear client cache
+        _clientMap.clear();      // clear client cache
     }
 
     /**
