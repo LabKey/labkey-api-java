@@ -33,10 +33,12 @@ import org.apache.http.conn.ssl.SSLContextBuilder;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.impl.cookie.BasicClientCookie;
 
 import java.io.IOException;
 import java.net.URI;
@@ -44,6 +46,7 @@ import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -104,7 +107,7 @@ public class Connection
     private String _password;
     private boolean _acceptSelfSignedCerts;
     private int _timeout = DEFAULT_TIMEOUT;
-    private HttpClientContext _httpClientContext;
+    private final HttpClientContext _httpClientContext;
 
     private final Map<Integer, CloseableHttpClient> _clientMap = new HashMap<>(3); // Typically very small
 
@@ -145,6 +148,8 @@ public class Connection
         _baseUrl = baseUrl;
         _email = email;
         _password = password;
+        _httpClientContext = HttpClientContext.create();
+        _httpClientContext.setCookieStore(new BasicCookieStore());
         setAcceptSelfSignedCerts(false);
     }
 
@@ -261,7 +266,7 @@ public class Connection
 
     private String csrf = null;
 
-    protected synchronized void beforeExecute(HttpClient client, HttpRequest request)
+    protected synchronized void beforeExecute(HttpRequest request)
     {
         if (null == csrf && request instanceof HttpPost)
         {
@@ -280,11 +285,11 @@ public class Connection
     }
 
 
-    protected void afterExecute(HttpClient client, HttpClientContext context, HttpRequest request, HttpResponse response)
+    protected void afterExecute()
     {
         if (null == csrf)
         {
-            for (Cookie c : context.getCookieStore().getCookies())
+            for (Cookie c : _httpClientContext.getCookieStore().getCookies())
             {
                 if ("JSESSIONID".equals(c.getName()))
                     csrf = c.getValue();
@@ -295,10 +300,6 @@ public class Connection
     
     public CloseableHttpResponse executeRequest(HttpUriRequest request, Integer timeout) throws IOException, URISyntaxException, AuthenticationException
     {
-        HttpClientContext context = _httpClientContext;
-        if (null == context)
-            context = HttpClientContext.create();
-
         //if a user name was specified, set the credentials
         if (getEmail() != null)
         {
@@ -307,20 +308,20 @@ public class Connection
             Credentials credentials = new UsernamePasswordCredentials(getEmail(), getPassword());
             provider.setCredentials(scope, credentials);
 
-            context.setCredentialsProvider(provider);
-            request.addHeader(new BasicScheme().authenticate(credentials, request, context));
+            _httpClientContext.setCredentialsProvider(provider);
+            request.addHeader(new BasicScheme().authenticate(credentials, request, _httpClientContext));
         }
         else
         {
-            context.setCredentialsProvider(null);
+            _httpClientContext.setCredentialsProvider(null);
             request.removeHeaders("Authenticate");
         }
 
         int clientTimeout = null == timeout ? getTimeout() : timeout;
         CloseableHttpClient client = getHttpClient(clientTimeout);
-        beforeExecute(client, request);
-        CloseableHttpResponse response = client.execute(request, context);
-        afterExecute(client, context, request, response);
+        beforeExecute(request);
+        CloseableHttpResponse response = client.execute(request, _httpClientContext);
+        afterExecute();
 
         return response;
     }
@@ -344,13 +345,22 @@ public class Connection
         return _timeout;
     }
 
-    public HttpClientContext getHttpClientContext()
+    /**
+     *
+     * @param name The cookie name
+     * @param value The cookie value
+     * @param domain The domain to which the cookie is visible
+     * @param path The path to which the cookie is visible
+     * @param expiry The cookie's expiration date
+     * @param isSecure Whether the cookie requires a secure connection
+     */
+    public void addCookie(String name, String value, String domain, String path, Date expiry, boolean isSecure)
     {
-        return _httpClientContext;
-    }
-
-    public void setHttpClientContext(HttpClientContext httpClientContext)
-    {
-        _httpClientContext = httpClientContext;
+        BasicClientCookie cookie = new BasicClientCookie(name, value);
+        cookie.setDomain(domain);
+        cookie.setPath(path);
+        cookie.setExpiryDate(expiry);
+        cookie.setSecure(isSecure);
+        _httpClientContext.getCookieStore().addCookie(cookie);
     }
 }
