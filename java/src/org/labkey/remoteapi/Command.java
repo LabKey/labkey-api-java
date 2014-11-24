@@ -290,7 +290,7 @@ public class Command<ResponseType extends CommandResponse>
     {
         assert null != getControllerName() : "You must set the controller name before executing the command!";
         assert null != getActionName() : "You must set the action name before executing the command!";
-        CloseableHttpResponse httpResponse = null;
+        CloseableHttpResponse httpResponse;
 
         try
         {

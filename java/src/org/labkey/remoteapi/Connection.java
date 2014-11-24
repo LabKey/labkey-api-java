@@ -264,7 +264,7 @@ public class Connection
 
     private String csrf = null;
 
-    protected synchronized void beforeExecute(HttpRequest request)
+    protected void beforeExecute(HttpRequest request)
     {
         if (null == csrf && request instanceof HttpPost)
         {
@@ -296,7 +296,7 @@ public class Connection
     }
 
     
-    public CloseableHttpResponse executeRequest(HttpUriRequest request, Integer timeout) throws IOException, URISyntaxException, AuthenticationException
+    CloseableHttpResponse executeRequest(HttpUriRequest request, Integer timeout) throws IOException, URISyntaxException, AuthenticationException
     {
         //if a user name was specified, set the credentials
         if (getEmail() != null)
