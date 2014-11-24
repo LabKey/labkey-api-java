@@ -373,7 +373,7 @@ public class Command<ResponseType extends CommandResponse>
     }
 
     /**
-     * Returns the appropriate, initialized HttpMethod implementation.
+     * Returns the appropriate, initialized HttpUriRequest implementation.
      * Extended classes may override this to change the way the HTTP method is initialized
      * <p>
      * Note that this method initializes the object created by the <code>createRequest()</code>

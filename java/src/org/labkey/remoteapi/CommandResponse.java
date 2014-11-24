@@ -188,19 +188,19 @@ public class CommandResponse
     }
 
     /**
-     * Finds an Map in a List of Maps who's property identified by <code>propertyName</code>
+     * Finds, in a List of Maps, the first Map containing an entry that matches <code>propertyName</code> and <code>value</code>
      * matches the <code>value</code> supplied. Returns null if not found.
      * @param objects The list of Maps to search.
      * @param propertyName The property name to examine in each Map.
      * @param value The value to compare against.
      * @return The Map where the value of propertyName equals value, or null if not found.
      */
-    protected Map<String,Object> findObject(List<Map<String,Object>> objects, String propertyName, String value)
+    protected Map<String, Object> findObject(List<Map<String, Object>> objects, String propertyName, String value)
     {
         assert null != value;
-        for(Map<String,Object> obj : objects)
+        for (Map<String, Object> obj : objects)
         {
-            if(value.equalsIgnoreCase(String.valueOf(obj.get(propertyName))))
+            if (value.equalsIgnoreCase(String.valueOf(obj.get(propertyName))))
                 return obj;
         }
         return null;

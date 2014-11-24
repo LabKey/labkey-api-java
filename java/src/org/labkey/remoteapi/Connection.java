@@ -16,12 +16,10 @@
 package org.labkey.remoteapi;
 
 import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.AuthenticationException;
 import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -68,7 +66,7 @@ import java.util.Map;
  *     Connection cn = new Connection("https://labkey.org");
  *     SelectRowsCommand cmd = new SelectRowsCommand("study", "Physical Exam");
  *     SelectRowsResponse response = cmd.execute(cn, "Home/Study/demo");
- *     for(Map&lt;String,Object&gt; row : response.getRows())
+ *     for(Map&lt;String, Object&gt; row : response.getRows())
  *     {
  *         System.out.println(row.get("ParticipantId") + " weighs " + row.get("Weight"));
  *     }
@@ -217,7 +215,7 @@ public class Connection
      */
     public void setAcceptSelfSignedCerts(boolean acceptSelfSignedCerts)
     {
-        // Handled in getHttpClient using 4.3.x way is documented here http://stackoverflow.com/questions/19517538/ignoring-ssl-certificate-in-apache-httpclient-4-3
+        // Handled in getHttpClient using 4.3.x approach documented here http://stackoverflow.com/questions/19517538/ignoring-ssl-certificate-in-apache-httpclient-4-3
         _acceptSelfSignedCerts = acceptSelfSignedCerts;
         _clientMap.clear();      // clear client cache
     }
