@@ -2,6 +2,16 @@
 LabKey Python Client API News
 +++++++++++
 
+What's New in the LabKey 0.23 package
+==============================
+
+*Release date: 11/24/2014*
+
+- Force all SSL connections to use TLSv1 Protocol or higher. 
+  This disables the use of SSLv2(Heartbleed) and SSLv3(Poodle) to 
+  protect against the Heartbleed and Poodle vulnerabilities. 
+
+
 What's New in the LabKey 0.22 package
 ==============================
 

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2011 LabKey Corporation
+# Copyright (c) 2011-2014 LabKey Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -47,6 +47,8 @@ https://www.labkey.org/announcements/home/Server/Forum/list.view?
 
 import os
 import sys
+import ssl
+from functools import wraps
 import json
 import urllib2
 import urllib
@@ -491,6 +493,26 @@ myresults = labkey.query.deleteRows(
         
     return(data_dict)
 
+
+"""
+############################################################################
+############################################################################
+Helper functions
+############################################################################
+"""
+def sslwrap(func):
+    """
+    This is used to force the HTTPS requests to use TLSv1+ instead of 
+    defaulting to SSLv3. Adapted from Stack Overflow:
+        - http://stackoverflow.com/questions/9835506/urllib-urlopen-works-on-sslv3-urls-with-python-2-6-6-on-1-machine-but-not-wit/24158047#24158047
+        - Thank you chnrxn
+    """
+    @wraps(func)
+    def bar(*args, **kw):
+        kw['ssl_version'] = ssl.PROTOCOL_TLSv1
+        return func(*args, **kw)
+    return bar
+
 def _print_debug_info(data_dict, myurl, mydata=None):
     
     # Print the URL and any data used to query the server
@@ -513,9 +535,9 @@ def _print_debug_info(data_dict, myurl, mydata=None):
     if rowlist: 
         pp.pprint(rowlist[0])
 
-    return    
+    return
     
-def _create_opener():	
+def _create_opener():
     """
     Create an opener and load the login and password into the object. The
     opener will be used when connecting to the LabKey Server
@@ -532,6 +554,9 @@ def _create_opener():
     myusername = f.readline().strip().split(' ')[1]
     mypassword = f.readline().strip().split(' ')[1]
     f.close()
+
+    # Force the opener to use TLSv1 or greater SSL Protocol for SSL connections
+    ssl.wrap_socket = sslwrap(ssl.wrap_socket)
     
     # Create a password manager
     passmanager = urllib2.HTTPPasswordMgrWithDefaultRealm()
