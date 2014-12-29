@@ -70,14 +70,14 @@ public class Filter
         CONTAINS("Contains", "contains", "CONTAINS", true),
         DOES_NOT_CONTAIN("Does Not Contain", "doesnotcontain", "DOES_NOT_CONTAIN", true),
 
-        CONTAINS_ONE_OF("Contains One Of (e.g. 'a;b;c')", "containsoneof", "CONTAINS_ONE_OF", true),
-        CONTAINS_NONE_OF("Does Not Contain Any Of (e.g. 'a;b;c')", "containsnoneof", "CONTAINS_NONE_OF", true),
+        CONTAINS_ONE_OF("Contains One Of (example usage: a;b;c)", "containsoneof", "CONTAINS_ONE_OF", true),
+        CONTAINS_NONE_OF("Does Not Contain Any Of (example usage: a;b;c)", "containsnoneof", "CONTAINS_NONE_OF", true),
 
         IN("Equals One Of", "in", "IN", true),
-        NOT_IN("Does Not Equal Any Of (e.g. 'a;b;c')", "notin", "NOT_IN", true),
+        NOT_IN("Does Not Equal Any Of (example usage: a;b;c)", "notin", "NOT_IN", true),
 
-        BETWEEN("Between, Inclusive (e.g. '-4,4')", "between", "BETWEEN", true),
-        NOT_BETWEEN("Not Between, Exclusive (e.g. '-4,4')", "notbetween", "NOT_BETWEEN", true),
+        BETWEEN("Between, Inclusive (example usage: -4,4)", "between", "BETWEEN", true),
+        NOT_BETWEEN("Not Between, Exclusive (example usage: -4,4)", "notbetween", "NOT_BETWEEN", true),
 
         MEMBER_OF("Member Of", "memberof", "MEMBER_OF", true),
 
