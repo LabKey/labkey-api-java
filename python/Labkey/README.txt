@@ -61,7 +61,7 @@ Tested against
 Free, Hosted Test Server
 ===========
 
-The sample login information provided above for the hosted.labkey.com server provides you with read access only.  This level of access is sufficient for only selectRows and executeSql. To test the other APIs on this server, please contact info@labkey.com.  LabKey Software will happily provide you with a private, free project on this server to use for testing.
+The sample login information provided above for the hosted.labkey.com server provides you with read access only.  This level of access is sufficient for only selectRows and executeSql. To test the other APIs on this server, please contact us at https://www.labkey.com/company/contact-us.  LabKey Software will happily provide you with a private, free project on this server to use for testing.
 
 Further details at http://www.labkey.com/hosted/labkey-hosted
 
