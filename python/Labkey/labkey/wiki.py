@@ -104,28 +104,47 @@ Test Code:
     try:
         readResponse = opener.open(readRequest)
     except urllib2.HTTPError, e:
-        print "There was problem while attempting to submit the read the wiki page " + wikiName + " via the URL " + str(e.geturl()) + ". The HTTP response code was " + str(e.getcode())
+        print "There was a problem while attempting to submit the read the wiki page " + wikiName + " via the URL " + str(e.geturl()) + ". The HTTP response code was " + str(e.getcode())
         print "The HTTP client error was: "+ format(e)
-        print "The HTTP Response Headers are: \n" + str(e.info())
-        print "The Response Body is \n" + str(e.read())
-        return
+        #print "The HTTP Response Headers are: \n" + str(e.info())
+        #   print "The Response Body is \n" + str(e.read())
+        return(1)
     data = readResponse.read()
+    #print readResponse.info()
+    #print readResponse.getcode()
     readResponse.close()
 
 
     # Search HTML response for required information on wiki. This is stored in the javascript 
-    # variable named _wikiProps
+    # variable named 
+    #  - _wikiProps: for 14.3 and earlier
+    #  - LABKEY._wiki.setProps for 15.1 and later
     dataList = data.split('\n')
-    #print data
+
+    # If LabKey Server is v14.3 or earlier find line containing '_wikiProp'
     v = next((i for i in xrange(len(dataList)) if '_wikiProp' in dataList[i]), None)
+
+    # If v = None, then server is running 15.1 or later and find the line  
+    # containing 'LABKEY._wiki.setProps'
+    if v == None: 
+        v = next((i for i in xrange(len(dataList)) if 'LABKEY._wiki.setProps' in dataList[i]), None)
+
+    # Verify that we found the variable in the HTML response. If not 
+    # do not proceed
+    if v == None: 
+        print "There was a problem while attempting to submit the update the wiki page '" + wikiName + "'."
+        print "The script is unable to find the wiki properties in the HTML response"
+        return(1)
+
     wikiVars = {} 
     for j in range(100):
         # Read each line, until find a javascript closing bracket. 
         if '};' in dataList[v+j+1]:
             break
+        if '});' in dataList[v+j+1]:
+            break
         wvar = dataList[v+j+1].rstrip().lstrip().replace('\'','').replace(',','')
         wikiVars[wvar.split(':')[0]] = wvar.split(':')[1]
-    # print "This is the wikiVars {0}".format(wikiVars)
     
     # Build the URL for updating the wiki page 
     updateUrl = baseUrl.rstrip('/') +\
@@ -136,7 +155,7 @@ Test Code:
     
     # Update wikiVars to use the new wiki content. 
     wikiVars['body'] = wikiBody
-    # print "This is the wikiVars {0}".format(wikiVars)
+    
     # Create the JSON needed to perform the update
     mypostdata = json.dumps(wikiVars)
     
@@ -148,11 +167,11 @@ Test Code:
         UpdateResponse.close()
         #print data        
     except urllib2.HTTPError, e:
-        print "There was problem while attempting to submit the update the wiki page " + wikiName + " via the URL " + e.geturl() + ". The HTTP response code was " + str(e.getcode())
+        print "There was a problem while attempting to submit the update the wiki page " + wikiName + " via the URL " + e.geturl() + ". The HTTP response code was " + str(e.getcode())
         print "The HTTP client error was: "+ format(e)
-        print "The HTTP Response Headers are: \n" + e.info()
-        print "The Response Body is \n" + e.read()
-        return(0)
+        #print "The HTTP Response Headers are: \n" + e.info()
+        #print "The Response Body is \n" + e.read()
+        return(1)
     
     # Decode the JSON into a Python "dictionary" - an associative array
     data_dict = json.loads(data, object_hook=_decode_dict)

@@ -18,7 +18,7 @@
 
 from distutils.core import setup
 setup(name='LabKey',
-      version='0.23',
+      version='0.24',
       description='Python client API for LabKey Server',
       long_description = open('README.txt').read() + open('NEWS.txt').read(),
       license="Apache License 2.0",
