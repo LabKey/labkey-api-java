@@ -55,11 +55,11 @@ public class Filter
         GT("Is Greater Than", "gt", "GREATER_THAN", true),
         DATE_GT("(Date) Is Greater Than", "dategt", "DATE_GREATER_THAN", true),
 
-        GTE("Is Greater Than or Equal To", "gte", "GREATER_THAN_OR_EQUAL", true),
-        DATE_GTE("(Date) Is Greater Than or Equal To", "dategte", "DATE_GREATER_THAN_OR_EQUAL", true),
-
         LT("Is Less Than", "lt", "LESS_THAN", true),
         DATE_LT("(Date) Is Less Than", "datelt", "DATE_LESS_THAN", true),
+
+        GTE("Is Greater Than or Equal To", "gte", "GREATER_THAN_OR_EQUAL", true),
+        DATE_GTE("(Date) Is Greater Than or Equal To", "dategte", "DATE_GREATER_THAN_OR_EQUAL", true),
 
         LTE("Is Less Than or Equal To", "lte", "LESS_THAN_OR_EQUAL", true),
         DATE_LTE("(Date) Is Less Than or Equal To", "datelte", "DATE_LESS_THAN_OR_EQUAL", true),
@@ -86,7 +86,9 @@ public class Filter
         //
 
         ISBLANK("Is Blank", "isblank", "MISSING", false),
+        @Deprecated // Use NONBLANK instead... that name matches CompareType operator
         NON_BLANK("Is Not Blank", "isnonblank", "NOT_MISSING", false),
+        NONBLANK("Is Not Blank", "isnonblank", "NOT_MISSING", false),
 
         MV_INDICATOR("Has Missing Value Indicator", "hasmvvalue", "MV_INDICATOR", false),
         NO_MV_INDICATOR("Does Not Have Missing Value Indicator", "nomvvalue", "NO_MV_INDICATOR", false)
