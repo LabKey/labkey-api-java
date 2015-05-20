@@ -103,6 +103,7 @@ java/src/org/labkey/remoteapi/security/DeleteContainerCommand.java -text
 java/src/org/labkey/remoteapi/security/DeleteContainerResponse.java -text
 java/src/org/labkey/remoteapi/security/DeleteGroupCommand.java -text
 java/src/org/labkey/remoteapi/security/DeleteUserCommand.java -text
+java/src/org/labkey/remoteapi/security/EnsureLoginCommand.java -text
 java/src/org/labkey/remoteapi/security/GetContainersCommand.java -text
 java/src/org/labkey/remoteapi/security/GetContainersResponse.java -text
 java/src/org/labkey/remoteapi/security/GetGroupPermsCommand.java -text

@@ -37,6 +37,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.cookie.BasicClientCookie;
+import org.labkey.remoteapi.security.EnsureLoginCommand;
 
 import java.io.IOException;
 import java.net.URI;
@@ -238,7 +239,8 @@ public class Connection
         {
             HttpClientBuilder builder = HttpClientBuilder.create()
                     .setConnectionManager(_connectionManager)
-                    .setDefaultRequestConfig(RequestConfig.custom().setSocketTimeout(timeout).build());
+                    .setDefaultRequestConfig(RequestConfig.custom().setSocketTimeout(timeout).build())
+                    .setDefaultCookieStore(_httpClientContext.getCookieStore());
             if (_acceptSelfSignedCerts)
             {
                 try
@@ -295,7 +297,14 @@ public class Connection
         }
     }
 
-    
+    /** Ensures that the credentials have been used to authenticate the users and returns a client that can be used for other requests */
+    public CloseableHttpClient ensureAuthenticated() throws IOException, AuthenticationException, CommandException
+    {
+        EnsureLoginCommand command = new EnsureLoginCommand();
+        CommandResponse response = command.execute(this, "/home");
+        return getHttpClient(getTimeout());
+    }
+
     CloseableHttpResponse executeRequest(HttpUriRequest request, Integer timeout) throws IOException, URISyntaxException, AuthenticationException
     {
         //if a user name was specified, set the credentials
