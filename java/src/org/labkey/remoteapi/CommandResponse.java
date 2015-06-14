@@ -104,7 +104,7 @@ public class CommandResponse
     /**
      * Returns the API version number required by the source command.
      * Some APIs may return data in a different format depending on the required version
-     * @return the requried API version number
+     * @return the required API version number
      */
     public double getRequiredVersion()
     {
