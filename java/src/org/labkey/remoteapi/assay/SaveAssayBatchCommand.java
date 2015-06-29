@@ -19,7 +19,7 @@ import org.json.simple.JSONObject;
 import org.labkey.remoteapi.PostCommand;
 
 /**
- * Saves an assay batch on the server. If no batch or run ids are specified, new ones will be inserted. If they are,
+ * Saves an assay batch on the server. If no batch or run ids are specified, new ones will be inserted. If they are
  * specified, existing ones will be updated.
  * User: jeckels
  * Date: Apr 28, 2010
