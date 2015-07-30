@@ -156,6 +156,7 @@ python/Labkey/MANIFEST.in -text
 python/Labkey/NEWS.txt -text
 python/Labkey/README.txt -text
 python/Labkey/labkey/__init__.py -text
+python/Labkey/labkey/experiment.py -text
 python/Labkey/labkey/messageboard.py -text
 python/Labkey/labkey/query.py -text
 python/Labkey/labkey/wiki.py -text
