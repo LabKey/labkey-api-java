@@ -1,82 +1,27 @@
-import ssl
-import requests
+from __future__ import unicode_literals
 import json
 
-from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.poolmanager import PoolManager
 from requests.exceptions import SSLError
+from utils import build_url
 
 ## EXAMPLE
 ## -------
 
-# from experiment import create_server_context, load_batch
-
-# server_context = create_server_context('localhost:8080', 'Home', 'labkey', use_ssl=False)
-# assay_id = 84
-# batch_id = 1
-# load_batch(assay_id, batch_id, server_context)
+# from utils import create_server_context
+# from experiment import load_batch
+#
+# server_context = create_server_context('localhost:8080', 'CDSTest Project', 'labkey', use_ssl=False)
+# assay_id = # provide one from your server
+# batch_id = # provide one from your server
+# run_group = load_batch(assay_id, batch_id, server_context)
+#
+# print(run_group.lsid)
+# print(run_group.created_by)
 
 ## --------
 ## /EXAMPLE
 
-# _ssl.c:504: error:14077410:SSL routines:SSL23_GET_SERVER_HELLO:sslv3 alert handshake failure
-# http://lukasa.co.uk/2013/01/Choosing_SSL_Version_In_Requests/
-class SafeTLSAdapter(HTTPAdapter):
-	def init_poolmanager(self, connections, maxsize, block=False):
-		self.poolmanager = PoolManager(num_pools=connections,
-									   maxsize=maxsize,
-									   block=block,
-									   ssl_version=ssl.PROTOCOL_TLSv1)
-
-# TODO: consider moving this to a util, along with the SafeTLSAdapter
-def create_server_context(domain, container_path, context_path=None, use_ssl=True):
-	server_context = {
-		'domain': domain,
-		'container_path': container_path,
-		'context_path': context_path
-	}
-
-	if use_ssl:
-		scheme = 'https'
-	else:
-		scheme = 'http'
-	scheme += '://'
-
-	if use_ssl:
-		session = requests.Session()
-		session.mount(scheme, SafeTLSAdapter)
-	else:
-		# TODO: Is there a better way? Can we have session.mount('http')?
-		session = requests
-
-	server_context['scheme'] = scheme
-	server_context['session'] = session
-
-	return server_context
-
-# TODO: Consider moving this to a util? action_url.py?
-def build_url(controller, action, server_context):
-	"""
-	Builds a URL from a controller and an action. Uses the server_context to determine
-	domain, context path, container, etc
-	:param controller: The controller to use in building the URL
-	:param action: The action to use in building the URL
-	:param server_context:
-	:return:
-	"""
-	sep = '/'
-
-	url = server_context['scheme']
-	url += server_context['domain']
-
-	if server_context['context_path'] is not None:
-		url += sep + server_context['context_path']
-
-	url += sep + controller
-	url += sep + server_context['container_path']
-	url += sep + action
-
-	return url
+# TODO Incorporate logging
 
 def load_batch(assay_id, batch_id, server_context):
 	"""
@@ -99,38 +44,71 @@ def load_batch(assay_id, batch_id, server_context):
 	}
 
 	try:
-		print load_batch_url
-		print payload
 		response = session.post(load_batch_url, data=json.dumps(payload), headers=headers)
 		status = response.status_code
 
 		if status == 200:
 			decoded = json.JSONDecoder().decode(response.text)
-			print(decoded)
+			return RunGroup.from_data(decoded)
 		else:
 			print(response.text)
 			print(status)
 	except SSLError as e:
 		raise Exception("Failed to match server SSL configuration. Failed to load batch.")
 
-def save_batch(run_group, container_path):
+def save_batch(run_group, server_context):
 
 	if not isinstance(run_group, RunGroup):
-		raise Exception('Expected to be a RunGroup')
+		raise Exception('save_batch() "run_group" expected to be instance of RunGroup')
 
-	pass
+	save_batch_url = build_url('assay', 'saveAssayBatch.api', server_context)
 
-# TODO: Move this to it's own file, under experiment
-class RunGroup():
+	# payload = {
+	# 	'assayId': assay_id,
+	# 	'batches': batches
+	# }
 
-	def __init__(self, batch_protocol_id=0, runs=None, hidden=False):
-		self.batch_protocol_id = batch_protocol_id
-		self.hidden = hidden
+	headers = {
+		'Content-type': 'application/json',
+		'Accept': 'text/plain'
+	}
 
-		if runs is not None:
-			self.runs = runs
-		else:
-			self.runs = []
+	raise NotImplementedError('save_batch is not ready yet')
+
+class ExpObject(object):
+
+	def __init__(self, **kwargs):
+		self.lsid = kwargs.pop('lsid', None)
+		self.name = kwargs.pop('name', None)
+		self.id = kwargs.pop('id', None)
+		self.row_id = self.id
+		self.comment = kwargs.pop('comment', None)
+		self.created = kwargs.pop('created', None)
+		self.modified = kwargs.pop('modified', None)
+		self.created_by = kwargs.pop('created_by', kwargs.pop('createdBy', None))
+		self.modified_by = kwargs.pop('modified_by', kwargs.pop('modifiedBy', None))
+		self.properties = kwargs.pop('properties', {})
+
+# TODO: Move these classes into their own file(s)
+class RunGroup(ExpObject):
+
+	def __init__(self, **kwargs):
+		super(RunGroup, self).__init__(**kwargs)
+
+		self.batch_protocol_id = kwargs.pop('batch_protocol_id', kwargs.pop('batchProtocolId', 0))
+		self.hidden = kwargs.pop('hidden', False)
+
+		runs = kwargs.pop('runs', [])
+		run_instances = []
+
+		for run in runs:
+			run_instances.append(Run.from_data(run))
+
+		self.runs = run_instances
+
+	@staticmethod
+	def from_data(data):
+		return RunGroup(**data['batch'])
 
 	def to_json(self):
 
@@ -150,40 +128,65 @@ class RunGroup():
 
 		return json.dumps(data)
 
-# TODO: Move this to it's own file, under experiment
-class Run():
+class Run(ExpObject):
 
-	def __init__(self):
-		self.experiments = []
-		self._protocol = None
-		self._file_path_root = None
-		self.data_inputs = []
-		self.data_outputs = []
-		self.data_rows = []
-		self.material_inputs = []
-		self.material_outputs = []
-		self.object_properties = []
+	def __init__(self, **kwargs):
+		super(Run, self).__init__(**kwargs)
+
+		self.experiments = kwargs.pop('experiments', [])
+		self.file_path_root = kwargs.pop('file_path_root', kwargs.pop('filePathRoot', None))
+		self.protocol = kwargs.pop('protocol', None)
+		self.data_outputs = kwargs.pop('data_outputs', kwargs.pop('dataOutputs', []))
+		self.data_rows = kwargs.pop('data_rows', kwargs.pop('dataRows', []))
+		self.material_inputs = kwargs.pop('material_inputs', kwargs.pop('materialInputs', []))
+		self.material_outputs = kwargs.pop('material_outputs', kwargs.pop('materialOutputs', []))
+		self.object_properties = kwargs.pop('object_properties', kwargs.pop('objectProperties', []))
+
+		# TODO: initialize protocol
+		# self._protocol = None
+
+		# initialize data_inputs
+		data_inputs = kwargs.pop('data_inputs', kwargs.pop('dataInputs', []))
+		data_inputs_instances = []
+
+		for input in data_inputs:
+			data_inputs_instances.append(Data.from_data(input))
+
+		self.data_inputs = data_inputs_instances
+
+	@staticmethod
+	def from_data(data):
+		return Run(**data)
 
 	def to_json(self):
 		data = {}
 		return json.dumps(data)
 
+class ProtocolOutput(ExpObject):
+
+	def __init__(self, **kwargs):
+		super(ProtocolOutput, self).__init__(**kwargs)
+
+		self.source_protocol = kwargs.pop('source_protocol', kwargs.pop('sourceProtocol', None))
+		self.run = kwargs.pop('run', None) # TODO Check if this should be a Run instance
+		self.target_applications = kwargs.pop('target_applications', kwargs.pop('targetApplications'), None)
+		self.successor_runs = kwargs.pop('successor_runs', kwargs.pop('sucessorRuns', None)) # sic
+		self.cpas_type = kwargs.pop('cpas_type', kwargs.pop('cpasType', None))
+
 	@staticmethod
-	def from_data(self, data):
-		return Run()
+	def from_data(data):
+		return ProtocolOutput(**data)
 
-	@property
-	def protocol(self):
-		return self._protocol
+class Data(ProtocolOutput):
 
-	@protocol.setter
-	def protocol(self, value):
-		self._protocol = value
+	def __init__(self, **kwargs):
+		super(Data, self).__init__(**kwargs)
 
-	@property
-	def file_path_root(self):
-		return self._file_path_root
+		self.data_type = kwargs.pop('data_type', kwargs.pop('dataType', None))
+		self.data_file_url = kwargs.pop('data_file_url', kwargs.pop('dataFileURL', None))
+		self.pipeline_path = kwargs.pop('pipeline_path', kwargs.pop('pipeline_path', None))
+		self.role = kwargs.pop('role', None)
 
-	@file_path_root.setter
-	def file_path_root(self, value):
-		self._file_path_root = value
+	@staticmethod
+	def from_data(data):
+		return Data(**data)
