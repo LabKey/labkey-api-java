@@ -15,6 +15,7 @@ Module::Build->new
                  'FileHandle' => 0,
                  'URI' => 0,
                  'Carp' => 0,
+                 'IO::Socket::SSL' => 0
                },	
 	dist_abstract => 'For interacting with data in LabKey Server',
     )->create_build_script;

@@ -8,3 +8,4 @@ META.yml
 README
 t/001_load.t
 Todo
+META.json

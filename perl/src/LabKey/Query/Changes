@@ -1,5 +1,9 @@
 Revision history for Perl module LabKey::Query
 
+1.05 2015-07-30
+    - Fix SSL errors when using module on MacOSX and connecting 
+      to a LabKey Server with SSLv2 and SSLv3 disabled
+
 1.04 2013-10-08
     - Rename module from Labkey::Query to LabKey::Query
 

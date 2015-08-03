@@ -54,3 +54,4 @@
 \bcover_db\b
 #!end included /opt/local/lib/perl5/5.12.4/ExtUtils/MANIFEST.SKIP from macports
 
+^MYMETA\.json$
