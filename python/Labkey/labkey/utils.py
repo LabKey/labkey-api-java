@@ -15,6 +15,7 @@
 #
 import requests
 import ssl
+import json
 
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.poolmanager import PoolManager
@@ -71,3 +72,33 @@ def build_url(controller, action, server_context):
 	url += sep + action
 
 	return url
+
+def handle_response(response):
+	sc = response.status_code
+	body = response.text
+
+	if sc == 200 or sc == 207:
+		return json.JSONDecoder().decode(body)
+	elif sc == 401:
+		print(str(sc) + ": Authorization failed.")
+	elif sc == 404:
+		msg = str(sc) + ": "
+		decoded = json.JSONDecoder().decode(body)
+		if 'exception' in decoded:
+			msg += decoded['exception']
+		else:
+			msg += 'Not found.'
+		print(msg)
+	elif sc == 500:
+		msg = str(sc) + ": "
+		decoded = json.JSONDecoder().decode(body)
+		if 'exception' in decoded:
+			msg += decoded['exception']
+		else:
+			msg += 'Internal Server Error.'
+		print(msg)
+	else:
+		print(str(sc))
+		print(body)
+
+	return None

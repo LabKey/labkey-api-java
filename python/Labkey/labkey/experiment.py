@@ -17,21 +17,33 @@ from __future__ import unicode_literals
 import json
 
 from requests.exceptions import SSLError
-from utils import build_url
+from utils import build_url, handle_response
 
 ## EXAMPLE
 ## -------
 
 # from utils import create_server_context
-# from experiment import load_batch
+# from experiment import load_batch, save_batch
 #
+# print("Create a server context")
 # server_context = create_server_context('localhost:8080', 'CDSTest Project', 'labkey', use_ssl=False)
+#
+# print("Load an Assay batch from the server")
 # assay_id = # provide one from your server
 # batch_id = # provide one from your server
 # run_group = load_batch(assay_id, batch_id, server_context)
 #
-# print(run_group.lsid)
-# print(run_group.created_by)
+# if run_group is not None:
+# 	print("Batch Id: " + str(run_group.id))
+# 	print("Created By: " + run_group.created_by)
+#
+# 	print("Modify a property")
+# 	batch_property_name = '' # provide one from your assay
+# 	batch_property_value = '' # provide one
+# 	run_group.properties[batch_property_name] = batch_property_value
+#
+# 	print("Save the batch")
+# 	save_batch(assay_id, run_group, server_context)
 
 ## --------
 ## /EXAMPLE
@@ -41,7 +53,7 @@ from utils import build_url
 def load_batch(assay_id, batch_id, server_context):
 	"""
 	Loads a batch from the server.
-	:param assay_id:
+	:param assay_id: The protocol id of the assay from which to load a batch.
 	:param batch_id:
 	:return:
 	"""
@@ -60,42 +72,53 @@ def load_batch(assay_id, batch_id, server_context):
 
 	try:
 		response = session.post(load_batch_url, data=json.dumps(payload), headers=headers)
-		status = response.status_code
-
-		if status == 200:
-			decoded = json.JSONDecoder().decode(response.text)
-			return RunGroup.from_data(decoded)
-		else:
-			print(response.text)
-			print(status)
+		json_body = handle_response(response)
+		if json_body is not None:
+			return Batch.from_data(json_body['batch'])
 	except SSLError as e:
 		raise Exception("Failed to match server SSL configuration. Failed to load batch.")
 
-def save_batch(run_group, server_context):
+	return None
 
-	if not isinstance(run_group, RunGroup):
-		raise Exception('save_batch() "run_group" expected to be instance of RunGroup')
+def save_batch(assay_id, batch, server_context):
+	"""
+	Saves a modified batch.
+	:param assay_id: The assay protocol id.
+	:param batch: The Batch to save.
+	:param server_context: A LabKey server context. See utils.create_server_context
+	:return:
+	"""
+	if not isinstance(batch, Batch):
+		raise Exception('save_batch() "batch" expected to be instance of Batch')
 
 	save_batch_url = build_url('assay', 'saveAssayBatch.api', server_context)
-
-	# payload = {
-	# 	'assayId': assay_id,
-	# 	'batches': batches
-	# }
-
+	session = server_context['session']
+	payload = {
+		'assayId': assay_id,
+		'batches': [batch.to_json()]
+	}
 	headers = {
 		'Content-type': 'application/json',
 		'Accept': 'text/plain'
 	}
 
-	raise NotImplementedError('save_batch is not ready yet')
+	try:
+		# print(payload)
+		response = session.post(save_batch_url, data=json.dumps(payload), headers=headers)
+		json_body = handle_response(response)
+		if json_body is not None:
+			return Batch.from_data(json_body['batch'])
+	except SSLError as e:
+		raise Exception("Failed to match server SSL configuration. Failed to save batch.")
+
+	return None
 
 class ExpObject(object):
 
 	def __init__(self, **kwargs):
 		self.lsid = kwargs.pop('lsid', None)
 		self.name = kwargs.pop('name', None)
-		self.id = kwargs.pop('id', None)
+		self.id = kwargs.pop('id', 0)
 		self.row_id = self.id
 		self.comment = kwargs.pop('comment', None)
 		self.created = kwargs.pop('created', None)
@@ -104,13 +127,27 @@ class ExpObject(object):
 		self.modified_by = kwargs.pop('modified_by', kwargs.pop('modifiedBy', None))
 		self.properties = kwargs.pop('properties', {})
 
+	def to_json(self):
+		data = {
+			'id': self.id,
+			'lsid': self.lsid,
+			'comment': self.comment,
+			'name': self.name,
+			'created': self.created,
+			'createdBy': self.created_by,
+			'modified': self.modified,
+			'modifiedBy': self.modified_by,
+			'properties': self.properties
+		}
+		return data
+
 # TODO: Move these classes into their own file(s)
-class RunGroup(ExpObject):
+class Batch(ExpObject):
 
 	def __init__(self, **kwargs):
-		super(RunGroup, self).__init__(**kwargs)
+		super(Batch, self).__init__(**kwargs)
 
-		self.batch_protocol_id = kwargs.pop('batch_protocol_id', kwargs.pop('batchProtocolId', 0))
+		self.batch_protocol_id = kwargs.pop('batch_protocol_id', self.id)
 		self.hidden = kwargs.pop('hidden', False)
 
 		runs = kwargs.pop('runs', [])
@@ -123,25 +160,22 @@ class RunGroup(ExpObject):
 
 	@staticmethod
 	def from_data(data):
-		return RunGroup(**data['batch'])
+		return Batch(**data)
 
 	def to_json(self):
+
+		data = super(Batch, self).to_json()
 
 		json_runs = []
 		for run in self.runs:
 			json_runs.append(run.to_json())
 
-		batch = {
-			'batchProtocolId': self.batch_protocol_id,
-			'runs': json_runs
-		}
-		data = {
-			# TODO: Make sure it is always correct assay_id <- batch_protocol_id
-			'assayId': self.batch_protocol_id,
-			'batch': batch
-		}
+		# The JavaScript API doesn't appear to send these?
+		# data['batchProtocolId'] = self.batch_protocol_id
+		# data['hidden'] = self.hidden
+		data['runs'] = json_runs
 
-		return json.dumps(data)
+		return data
 
 class Run(ExpObject):
 
@@ -174,8 +208,17 @@ class Run(ExpObject):
 		return Run(**data)
 
 	def to_json(self):
-		data = {}
-		return json.dumps(data)
+
+		data = super(Run, self).to_json()
+
+		data['dataInputs'] = self.data_inputs
+		data['dataRows'] = self.data_rows
+		data['experiments'] = self.experiments
+		data['filePathRoot'] = self.file_path_root
+		data['materialInputs'] = self.material_inputs
+		data['materialOutputs'] = self.material_outputs
+
+		return data
 
 class ProtocolOutput(ExpObject):
 
