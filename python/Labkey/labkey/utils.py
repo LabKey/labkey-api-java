@@ -13,9 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from __future__ import unicode_literals
+
 import requests
 import ssl
-import json
 
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.poolmanager import PoolManager
@@ -40,7 +41,7 @@ def create_server_context(domain, container_path, context_path=None, use_ssl=Tru
 
 	if use_ssl:
 		session = requests.Session()
-		session.mount(scheme, SafeTLSAdapter)
+		session.mount(scheme, SafeTLSAdapter())
 	else:
 		# TODO: Is there a better way? Can we have session.mount('http')?
 		session = requests
@@ -50,7 +51,7 @@ def create_server_context(domain, container_path, context_path=None, use_ssl=Tru
 
 	return server_context
 
-def build_url(controller, action, server_context):
+def build_url(controller, action, server_context, container_path=None):
 	"""
 	Builds a URL from a controller and an action. Uses the server_context to determine
 	domain, context path, container, etc
@@ -68,22 +69,26 @@ def build_url(controller, action, server_context):
 		url += sep + server_context['context_path']
 
 	url += sep + controller
-	url += sep + server_context['container_path']
+
+	if container_path is not None:
+		url += sep + container_path
+	else:
+		url += sep + server_context['container_path']
+
 	url += sep + action
 
 	return url
 
 def handle_response(response):
 	sc = response.status_code
-	body = response.text
 
 	if sc == 200 or sc == 207:
-		return json.JSONDecoder().decode(body)
+		return response.json()
 	elif sc == 401:
 		print(str(sc) + ": Authorization failed.")
 	elif sc == 404:
 		msg = str(sc) + ": "
-		decoded = json.JSONDecoder().decode(body)
+		decoded = response.json()
 		if 'exception' in decoded:
 			msg += decoded['exception']
 		else:
@@ -91,7 +96,7 @@ def handle_response(response):
 		print(msg)
 	elif sc == 500:
 		msg = str(sc) + ": "
-		decoded = json.JSONDecoder().decode(body)
+		decoded = response.json()
 		if 'exception' in decoded:
 			msg += decoded['exception']
 		else:
@@ -99,6 +104,6 @@ def handle_response(response):
 		print(msg)
 	else:
 		print(str(sc))
-		print(body)
+		print(response.json())
 
 	return None

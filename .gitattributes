@@ -159,6 +159,7 @@ python/Labkey/labkey/__init__.py -text
 python/Labkey/labkey/experiment.py -text
 python/Labkey/labkey/messageboard.py -text
 python/Labkey/labkey/query.py -text
+python/Labkey/labkey/query2.py -text
 python/Labkey/labkey/utils.py -text
 python/Labkey/labkey/wiki.py -text
 python/Labkey/setup.py -text
