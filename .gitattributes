@@ -136,7 +136,12 @@ perl/src/LabKey/Query/META.yml -text
 perl/src/LabKey/Query/README -text
 perl/src/LabKey/Query/Todo -text
 perl/src/LabKey/Query/lib/LabKey/Query.pm -text
-perl/src/LabKey/Query/t/001_load.t -text
+perl/src/LabKey/Query/t/00_load.t -text
+perl/src/LabKey/Query/t/01_selectRows.t -text
+perl/src/LabKey/Query/t/02_executeSql.t -text
+perl/src/LabKey/Query/t/03_insertRows.t -text
+perl/src/LabKey/Query/t/04_updateRows.t -text
+perl/src/LabKey/Query/t/05_deleteRows.t -text
 perl/src/labkey_api.pl -text
 perl/src/latest/LabKey-Query-1.04.tar.gz -text svneol=unset#application/x-gzip
 perl/src/latest/Labkey-Query-0.04.tar.gz -text
