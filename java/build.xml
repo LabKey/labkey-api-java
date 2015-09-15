@@ -44,7 +44,7 @@
 
     <target name="compile">
         <mkdir dir="${build.classes.dir}"/>
-        <!-- Target 1.7  -->
+        <!-- Target 1.7, required for compatibility with SAS -->
         <javac srcdir="${source.dir}" destdir="${build.classes.dir}"
                classpathref="component.class.path"
                target="1.7"
