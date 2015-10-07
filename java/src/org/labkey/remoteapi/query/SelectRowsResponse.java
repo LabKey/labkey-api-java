@@ -92,7 +92,7 @@ public class SelectRowsResponse extends RowsResponse
     /**
      * Returns an iterable Rowset. Use this to iterate over the rows,
      * working with the Row interface, which hides the differences between
-     * the normal (<9.1) and extended (>=9.1) response formats.
+     * the normal (&lt;9.1) and extended (&gt;=9.1) response formats.
      * @return An iterable Rowset.
      */
     public Rowset getRowset()

@@ -45,8 +45,8 @@ import java.util.Map;
  * tab across the top of the main part of the page.
  * <p>Example:
  * <p>
- * <code>
  * <pre>
+ * <code>
  *     Connection cn = new Connection("https://labkey.org");
  *     SelectRowsCommand cmd = new SelectRowsCommand("study", "Physical Exam");
  *     SelectRowsResponse response = cmd.execute(cn, "Home/Study/demo");
@@ -54,8 +54,8 @@ import java.util.Map;
  *     {
  *         System.out.println(row.get("ParticipantId") + " weighs " + row.get("APXwtkg"));
  *     }
- * </pre>
  * </code>
+ * </pre>
  * <p>
  */
 public class SelectRowsCommand extends BaseQueryCommand<SelectRowsResponse> implements BaseSelect

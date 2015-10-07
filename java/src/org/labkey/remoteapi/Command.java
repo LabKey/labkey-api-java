@@ -186,7 +186,7 @@ public class Command<ResponseType extends CommandResponse>
      * entire response has been read from the server. To execute a command asynchronously, use
      * a separate thread.
      * <p>
-     * If the server returns an error HTTP status code (>= 400), this method will throw
+     * If the server returns an error HTTP status code (&gt;= 400), this method will throw
      * an instance of {@link CommandException}. Use its methods to determine the cause
      * of the error.
      * @param connection The connection on which this command should be executed.
@@ -422,7 +422,7 @@ public class Command<ResponseType extends CommandResponse>
     /**
      * Returns the portion of the URL before the query string for this command.
      * <p>
-     * Note that the URL returned should <emph>not</emph> be encoded, as the calling function will encode it.
+     * Note that the URL returned should <em>not</em> be encoded, as the calling function will encode it.
      * <p>
      * For example: "http://localhost:8080/labkey/MyProject/MyFolder/selectRows.api"
      * @param connection The connection to use.

@@ -55,7 +55,7 @@ import java.util.Map;
  * tab across the top of the main part of the page.
  * <p>
  * Examples:
- * <code><pre>
+ * <pre><code>
  *  Connection cn = new Connection("http://localhost:8080", user, password);
  *
  *  //Insert Rows Command
@@ -85,7 +85,7 @@ import java.util.Map;
  *  row.put("Key", newKey);
  *  cmdDel.addRow(row);
  *  resp = cmdDel.execute(cn, "Api Test");
- * </pre></code>
+ * </code></pre>
  */
 public abstract class SaveRowsCommand extends PostCommand<SaveRowsResponse>
 {

@@ -24,7 +24,7 @@ import org.labkey.remoteapi.pipeline.FileNotificationCommand;
  * queued pipeline jobs that are blocked awaiting those files.
  *
  * By default looks for a config.properties in the working directory, but the location can be specified with a
- * -config=<PATH TO CONFIG FILE> argument.
+ * -config=&lt;PATH TO CONFIG FILE&gt; argument.
  *
  * Expects the following config properties:
  * baseServerURL: base URL of the LabKey Server, such as "http://www.labkey.org"

@@ -62,8 +62,7 @@ import java.util.Map;
  * <code>Command.execute()</code> method.
  * <p>Example:
  * <p>
- * <code>
- * <pre>
+ * <pre><code>
  *     Connection cn = new Connection("https://labkey.org");
  *     SelectRowsCommand cmd = new SelectRowsCommand("study", "Physical Exam");
  *     SelectRowsResponse response = cmd.execute(cn, "Home/Study/demo");
@@ -71,13 +70,12 @@ import java.util.Map;
  *     {
  *         System.out.println(row.get("ParticipantId") + " weighs " + row.get("Weight"));
  *     }
- * </pre>
- * </code>
+ * </code></pre>
  * <p>
  * Example using Authentication
  * <p>
- * <code>
  * <pre>
+ * <code>
  *     //get the user email and password from command-line arguments,
  *     //environment variables, a file, or some other mechanism.
  *     String user = getUser();
@@ -87,8 +85,8 @@ import java.util.Map;
  *     Connection cn = new Connection("https://localhost:8080/labkey", user, password);
  *     SelectRowsCommand cmd = new SelectRowsCommand("lists", "People");
  *     SelectRowsResponse response = cmd.execute(cn, "Api Test");
- * </pre>
  * </code>
+ * </pre>
  * <p>
  * Note that this class is not thread-safe. Do not share instances of Connection
  * between threads.

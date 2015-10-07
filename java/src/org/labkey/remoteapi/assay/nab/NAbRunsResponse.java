@@ -32,7 +32,7 @@ import java.util.List;
  * Response class for the {@link NAbRunsCommand}. This class
  * provides helpful getter method to access particular bits of the parsed
  * response data.  Sample usage:
-
+<pre><code>
  public static void main(String[] args) throws Exception
  {
      // expected parameters:
@@ -62,7 +62,7 @@ import java.util.List;
              for (NAbNeutralizationResult neutResult : sample.getNeutralizationResults())
              {
                  // only total non-infinite values (that is, results where we found a neutralizing dilution:
-                 if (neutResult.getCutoff() == neutPercent && !Double.isInfinite(neutResult.getCurveBasedDilution()))
+                 if (neutResult.getCutoff() == neutPercent &amp;&amp; !Double.isInfinite(neutResult.getCurveBasedDilution()))
                  {
                      totalSamples++;
                      totalDilution += neutResult.getCurveBasedDilution();
@@ -72,7 +72,7 @@ import java.util.List;
      }
      return totalDilution/totalSamples;
  }
-
+</code></pre>
  */
 public class NAbRunsResponse extends CommandResponse
 {

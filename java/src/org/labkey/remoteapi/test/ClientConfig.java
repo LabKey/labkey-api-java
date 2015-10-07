@@ -29,7 +29,7 @@ public class ClientConfig
 
     /**
      * Defaults to looking in the working directory for a config.properties file. Can be pointed to another file
-     * if one of the arguments is -config=<PATH TO CONFIG FILE>
+     * if one of the arguments is -config=&lt;PATH TO CONFIG FILE&gt;
      *
      * Looks for a "debug" property - if set to true, enables verbose debug logging for the HTTP connection 
      *
