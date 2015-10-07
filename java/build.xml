@@ -1,4 +1,5 @@
-<project name="remoteapi" basedir="." default="build">
+<?xml version="1.0"?>
+<project name="remoteapi" basedir="." default="build" xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 
     <taskdef name="one-jar" classname="com.simontuffs.onejar.ant.OneJarTask"
         classpath="../../external/lib/build/one-jar-ant-task-0.96.jar" onerror="report"/>
@@ -32,17 +33,113 @@
     <property name="readme.file" value="README.html"/>
 
     <property name="build.sysclasspath" value="ignore" />
-    
+
+    <property name="groupId" value="org.labkey"/>
+    <property name="artifactId" value="labkey-client-api"/>
+    <property name="maven-repository-url" value="https://oss.sonatype.org/service/local/staging/deploy/maven2"/>
+    <property name="maven-repository-id" value="sonatype-nexus-staging"/>
+    <property name="maven-jar" value="${build.dir}/${artifactId}-${labkey.version}.jar"/>
+    <property name="maven-javadoc-dir" value="${build.dir}/maven-javadoc"/>
+    <property name="maven-javadoc-jar" value="${build.dir}/${artifactId}-${labkey.version}-javadoc.jar"/>
+    <property name="maven-sources-jar" value="${build.dir}/${artifactId}-${labkey.version}-sources.jar"/>
+
     <path id="component.class.path">
         <fileset dir="lib" includes="*.jar"/>
     </path>
+    
+    <!-- the normal classpath -->
+    <path id="classpath">
+        <pathelement location="${build.classes.dir}" />
+        <fileset dir="${build.jar.dir}">
+            <include name="*.jar" />
+        </fileset>
+    </path>
 
-    <target name="clean">
+    <!-- ================================================================== -->
+    <!-- Make Maven Central Release -->
+    <!-- ================================================================== -->
+    <target name="release" depends="compile" description="--> generate the release distribution">
+        <!-- build the main artifact -->
+        <jar jarfile="${maven-jar}" basedir="${build.classes.dir}" />
+        <fail message="Unsupported Java version: ${java.version}. Javadoc requires Java version 7u25 or greater.">
+            <condition>
+                <or>
+                    <matches string="${java.version}" pattern="1.7.0_2[01234].+" casesensitive="false" />
+                    <matches string="${java.version}" pattern="1.7.0_2[01234].+" casesensitive="false" />
+                    <matches string="${java.version}" pattern="1.7.0_1.+" casesensitive="false" />
+                    <equals arg1="${ant.java.version}" arg2="1.6" />
+                    <equals arg1="${ant.java.version}" arg2="1.5" />
+                </or>
+            </condition>
+        </fail>
+        <!-- build the javadoc artifact -->
+        <javadoc
+            destdir="${maven-javadoc-dir}"
+            overview="${source.dir}/overview.html"
+            author="true"
+            version="true"
+            use="true"
+            windowtitle="${artifactId} ${labkey.version} API"
+            doctitle="${artifactId} ${labkey.version} API"
+            >
+            <packageset dir="${source.dir}"/>
+            <classpath refid="classpath"/>
+        </javadoc>
+        <jar jarfile="${maven-javadoc-jar}">
+            <fileset dir="${maven-javadoc-dir}" />
+        </jar>
+        <!-- build the sources artifact -->
+        <jar jarfile="${maven-sources-jar}">
+            <fileset dir="${source.dir}" />
+        </jar>
+    </target>
+
+    <!-- ================================================================== -->
+    <!-- Deploy to Apache Nexus -->
+    <!-- ================================================================== -->
+    <target name="deploy" depends="release" description="--> deploy to Sonatype OSSRH">
+        <!-- generate a pom file -->
+        <!--ivy:makepom ivyfile="${ivy.file}" pomfile="${basedir}/pom.xml" templatefile="${basedir}/mvn.template">
+            <mapping conf="default" scope="compile"/>
+            <mapping conf="runtime" scope="runtime"/>
+        </ivy:makepom-->
+        <!-- sign and deploy the main artifact -->
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-gpg-plugin:1.6:sign-and-deploy-file" />
+            <arg value="-Durl=${maven-repository-url}" />
+            <arg value="-DrepositoryId=${maven-repository-id}" />
+            <arg value="-DpomFile=pom.xml" />
+            <arg value="-Dfile=${maven-jar}" />
+            <arg value="-Papache-release" />
+        </artifact:mvn>
+        <!-- sign and deploy the sources artifact -->
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-gpg-plugin:1.6:sign-and-deploy-file" />
+            <arg value="-Durl=${maven-repository-url}" />
+            <arg value="-DrepositoryId=${maven-repository-id}" />
+            <arg value="-DpomFile=pom.xml" />
+            <arg value="-Dfile=${maven-sources-jar}" />
+            <arg value="-Dclassifier=sources" />
+            <arg value="-Papache-release" />
+        </artifact:mvn>
+        <!-- sign and deploy the javadoc artifact -->
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-gpg-plugin:1.6:sign-and-deploy-file" />
+            <arg value="-Durl=${maven-repository-url}" />
+            <arg value="-DrepositoryId=${maven-repository-id}" />
+            <arg value="-DpomFile=pom.xml" />
+            <arg value="-Dfile=${maven-javadoc-jar}" />
+            <arg value="-Dclassifier=javadoc" />
+            <arg value="-Papache-release" />
+        </artifact:mvn>
+    </target>
+    
+    <target name="clean" description="--> delete the build artifacts and compiled Java code.">
         <delete dir="${build.dir}"/>
         <delete dir="${dist.dir}"/>
     </target>
 
-    <target name="compile">
+    <target name="compile" description="--> compile and build Java source code.">
         <mkdir dir="${build.classes.dir}"/>
         <!-- Target 1.7, required for compatibility with SAS -->
         <javac srcdir="${source.dir}" destdir="${build.classes.dir}"
@@ -53,19 +150,19 @@
         <copy file="${source.dir}/log4j.xml" todir="${build.classes.dir}"/>
     </target>
 
-    <target name="jar" depends="compile">
+    <target name="jar" depends="compile" description="--> generate the labkey Java .jar artifacts.">
         <mkdir dir="${build.jar.dir}"/>
         <jar destfile="${build.jar.dir}/${build.jar.name}" basedir="${build.classes.dir}"/>
     </target>
 
-    <target name="javadoc">
+    <target name="javadoc" description="--> build the Java API documentation.">
         <javadoc sourcepath="${source.dir}" destdir="${doc.dir}" classpathref="component.class.path"
                  windowtitle="LabKey Client API Library for Java Documentation"
                  author="true" version="true" packagenames="org.labkey.remoteapi.*"
                  excludepackagenames="org.labkey.remoteapi.sas,org.labkey.remoteapi.test,org.labkey.remoteapi.query.jdbc"/>
     </target>
 
-    <target name="dist" depends="build,javadoc">
+    <target name="dist" depends="build,javadoc" description="--> build the packaged distribution.">
         <delete file="${dist.dir}/${zip.name}"/>
         <mkdir dir="${dist.dir}"/>
         <mkdir dir="${exploded.dir}"/>
@@ -100,16 +197,17 @@
         </one-jar>
     </target>
 
-    <target name="build">
+    <target name="build" description="--> build the .jar artifact if it is not up-to-date.">
         <uptodate property="remoteapi_uptodate" targetfile="${build.jar.dir}/${build.jar.name}">
             <srcfiles dir="${source.dir}"/>
         </uptodate>
         <antcall target="build_if_dirty"/>
     </target>
 
-    <target name="build_if_dirty" unless="remoteapi_uptodate">
+    <target name="build_if_dirty" unless="remoteapi_uptodate" description="--> build the .jar artifact if source code is dirty.">
         <antcall target="jar"/>
     </target>
 
-    <target name="rebuild" depends="clean,build"/>
+    <target name="rebuild" depends="clean,build" description="--> clean and then rebuild the .jar artifact."/>
+
 </project>

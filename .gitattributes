@@ -2,6 +2,8 @@
 java/README.html -text
 java/build.xml -text
 java/manifest.mf -text
+java/mvn.template -text
+java/pom.xml -text
 java/remoteapi.iml -text
 java/remoteapi.ipr -text
 java/src/log4j.xml -text
