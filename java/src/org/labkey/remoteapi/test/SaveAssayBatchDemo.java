@@ -104,6 +104,7 @@ public class SaveAssayBatchDemo
         run.setName(description);
         // Optionally set run properties
 //        run.getProperties().put("MyRunProperty", "RunPropertyValue");
+        run.getProperties().put("MyDate", new java.util.Date());  //Issue: 23708.
         batch.getRuns().add(run);
 
         // Add each of the files to the run

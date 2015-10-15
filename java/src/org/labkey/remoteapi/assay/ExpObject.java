@@ -56,8 +56,30 @@ public abstract class ExpObject extends ResponseObject
             result.put("id", _id);
         }
         result.put("name", _name);
-        result.put("properties", _properties);
+        result.put("properties", toJSON(_properties));
         return result;
+    }
+
+    /**
+     * Temp Fix for Issue: 23708
+     *      The Simple JSON library isn't properly serializing Dates, and generates invalid JSON.
+     *  TODO: Investigate and replace with a different JSON library
+     * @param properties Map to serialize
+     * @return
+     */
+    public JSONObject toJSON(Map properties)
+    {
+        JSONObject props = new JSONObject();
+        properties.forEach((k, v) -> {
+            Object val = v instanceof java.util.Date ?
+                v.toString() :
+                v instanceof java.util.Map ?
+                    toJSON((java.util.Map) v):
+                    v;
+            props.put(k, val);
+        });
+
+        return props;
     }
 
     /** @return the auto-generated rowId for this object */
