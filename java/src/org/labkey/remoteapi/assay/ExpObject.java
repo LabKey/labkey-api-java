@@ -67,17 +67,21 @@ public abstract class ExpObject extends ResponseObject
      * @param properties Map to serialize
      * @return
      */
-    public JSONObject toJSON(Map properties)
+    public JSONObject toJSON(Map<String, Object> properties)
     {
         JSONObject props = new JSONObject();
-        properties.forEach((k, v) -> {
-            Object val = v instanceof java.util.Date ?
-                v.toString() :
-                v instanceof java.util.Map ?
-                    toJSON((java.util.Map) v):
-                    v;
-            props.put(k, val);
-        });
+
+        for(Map.Entry entry : properties.entrySet())
+        {
+            Object val = entry.getValue();
+            val = val instanceof java.util.Date ?
+                val.toString() :
+                val instanceof java.util.Map ?
+                    toJSON((java.util.Map) val):
+                    val;
+
+            props.put(entry.getKey(), val);
+        }
 
         return props;
     }
