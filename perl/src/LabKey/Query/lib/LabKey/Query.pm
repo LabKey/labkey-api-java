@@ -204,7 +204,7 @@ sub selectRows {
 
 	# Simple error checking
 	if ( $response->is_error ) {
-		croak( $response->status_line );
+		croak($response->status_line . '\n' . $response->decoded_content);
 	}
 
 	my $json_obj = JSON->new->utf8->decode( $response->content )
@@ -672,7 +672,7 @@ sub _postData(){
 
 	# Simple error checking
 	if ( $response->is_error ) {
-		croak($response->status_line);
+		croak($response->status_line . '\n' . $response->decoded_content);
 	}
 
 	#print Dumper($response);
