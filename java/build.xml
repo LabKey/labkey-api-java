@@ -28,8 +28,6 @@
     <property name="doc.dir" value="${exploded.ver.dir}/doc"/>
     <property name="zip.name" value="LabKey${labkey.version}-ClientAPI-Java.zip"/>
     <property name="source.zip.name" value="LabKey${labkey.version}-ClientAPI-Java-src.zip"/>
-    <property name="license.source.path" value="${server.dir}/installer/license.rtf"/>
-    <property name="license.dest.file" value="license.rtf"/>
     <property name="readme.file" value="README.html"/>
 
     <property name="build.sysclasspath" value="ignore" />
@@ -171,13 +169,11 @@
         <copy todir="${exploded.ver.dir}/lib/">
             <fileset dir="lib" includes="*.jar"/>
         </copy>
-        <copy file="${license.source.path}" tofile="${exploded.ver.dir}/${license.dest.file}"/>
         <copy file="${readme.file}" tofile="${exploded.ver.dir}/${readme.file}"/>
         <zip basedir="${exploded.dir}" destfile="${dist.dir}/${zip.name}"/>
 
         <delete file="${dist.dir}/${source.zip.name}"/>
         <mkdir dir="${dist.source.dir}"/>
-        <copy file="${license.source.path}" tofile="${dist.source.dir}/${license.dest.file}"/>
         <copy todir="${dist.source.dir}">
             <fileset dir="src"/>
         </copy>
