@@ -44,7 +44,11 @@ public class NetrcFileParser
     private NetrcEntry getEntry(String netrcName, String host) throws IOException
     {
         File netrcFile = new File(System.getProperty("user.home") + "/" + netrcName);
+        return getEntry(netrcFile, host);
+    }
 
+    public  NetrcEntry getEntry(File netrcFile, String host) throws IOException
+    {
         if (!netrcFile.exists())
             return null;
 
