@@ -56,6 +56,7 @@ import java.util.Map;
  * <p>
  * Examples:
  * <pre><code>
+ *  // May need to add CONTEXT_PATH for dev instances
  *  Connection cn = new Connection("http://localhost:8080", user, password);
  *
  *  //Insert Rows Command
@@ -66,7 +67,7 @@ import java.util.Map;
  *  row.put("LastName", "Test");
  *
  *  cmd.addRow(row); //can add multiple rows to insert many at once
- *  SaveRowsResponse resp = cmd.execute(cn, "Api Test");
+ *  SaveRowsResponse resp = cmd.execute(cn, "PROJECT_NAME");
  *
  *  //get the newly-assigned primary key value from the first return row
  *  int newKey = resp.getRows().get(0).get("Key");
@@ -77,14 +78,14 @@ import java.util.Map;
  *  row.put("Key", newKey);
  *  row.put("LastName", "Test UPDATED");
  *  cmdUpd.addRow(row);
- *  resp = cmdUpd.execute(cn, "Api Test");
+ *  resp = cmdUpd.execute(cn, "PROJECT_NAME");
  *
  *  //Delete Rows Command
  *  DeleteRowsCommand cmdDel = new DeleteRowsCommand("lists", "People");
  *  row = new HashMap&lt;String,Object&gt;();
  *  row.put("Key", newKey);
  *  cmdDel.addRow(row);
- *  resp = cmdDel.execute(cn, "Api Test");
+ *  resp = cmdDel.execute(cn, "PROJECT_NAME");
  * </code></pre>
  */
 public abstract class SaveRowsCommand extends PostCommand<SaveRowsResponse>
