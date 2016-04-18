@@ -15,8 +15,13 @@
  */
 
 /*
-	Standard code to create a connection.  If userName was passed in then use it.  Otherwise, if lk_userName is
-	defined (via %setDefaults), use it.  Otherwise, rely on .netrc handling.
+	Standard code to create a connection:
+
+	- If userName was passed in then use it.
+	- Otherwise, if lk_userName is defined (via %setDefaults), use it.
+	- Otherwise, if apiKey was passed then use it.
+	- Otherwise, if lk_apiKey is defined (via %setDefaults), use it.
+	- Otherwise, rely on .netrc handling.
 */
 %macro _labkeyCreateConnection();
 		%if (&userName eq) and %symexist(lk_userName) %then
@@ -31,7 +36,19 @@
             %end;
         %else
             %do;
-                declare javaobj cn ('org/labkey/remoteapi/sas/SASConnection', &baseUrl);
+                %if (&apiKey eq) and %symexist(lk_apiKey) %then
+                    %do;
+                        %let apiKey = &lk_apiKey;
+                    %end;
+
+                %if &apiKey ne %then
+                    %do;
+                        declare javaobj cn ('org/labkey/remoteapi/sas/SASConnection', &baseUrl, &apiKey);
+                    %end;
+                %else
+                %do;
+                    declare javaobj cn ('org/labkey/remoteapi/sas/SASConnection', &baseUrl);
+                %end;
             %end;
 
         %_labkeyExceptionDescribe(cn);

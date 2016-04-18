@@ -58,7 +58,7 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
 
     public String getUserName() throws SQLException
     {
-        return _connection.getConnection().getEmail();
+        return null;  // TODO: Could get from _connection CredentialsProvider, but need to accommodate no email situations (guest auth and API keys)
     }
 
     public boolean isReadOnly() throws SQLException

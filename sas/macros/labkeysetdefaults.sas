@@ -18,13 +18,14 @@
 	Set default values for commonly used parameters.  Subsequent calls to %labkeySelectRows, %labkeyExecuteSql, etc. will
 	use the	values specified here by default.
 */
-%macro labkeySetDefaults(baseUrl=, folderPath=, schemaName=, queryName=, userName=, password=, containerFilter=);
-	%global lk_baseUrl lk_folderPath lk_schemaName lk_queryName lk_userName lk_password;
+%macro labkeySetDefaults(baseUrl=, folderPath=, schemaName=, queryName=, userName=, password=, containerFilter=, apikey=);
+	%global lk_baseUrl lk_folderPath lk_schemaName lk_queryName lk_userName lk_password lk_apikey;
 	%let lk_baseUrl = &baseUrl;
 	%let lk_folderPath = &folderPath;
 	%let lk_schemaName = &schemaName;
 	%let lk_queryName = &queryName;
 	%let lk_userName = &userName;
 	%let lk_password = &password;
-	%let lk_containerFilter = &containerFilter; 
+	%let lk_containerFilter = &containerFilter;
+	%let lk_apikey = &apikey;
 %mend labkeySetDefaults;

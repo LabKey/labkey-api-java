@@ -16,10 +16,7 @@
 package org.labkey.remoteapi;
 
 import org.apache.http.HttpRequest;
-import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.AuthenticationException;
-import org.apache.http.auth.Credentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -30,9 +27,7 @@ import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLContextBuilder;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.cookie.Cookie;
-import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
@@ -53,10 +48,13 @@ import java.util.Map;
  * Represents connection information for a particular LabKey Server.
  * <p>
  * Create an instance of this class for each server you wish to interact with.
- * If the commands you execute reference data that requires a login, you must
- * also set an email address and password to be used for authentication.
- * Typically, developers will obtain these credentials from the program's environment,
- * such as via command-line parameters, environment variables, a properties file, etc.
+ * If the commands you execute require a login, you must also configure
+ * authentication via one of the supported methods: retrieving email address
+ * and password from a .netrc/_netrc file, providing an api key, or providing
+ * email address and password directly (which could be obtained from the
+ * program's environment, such as via command-line parameters, environment
+ * variables, a properties file, etc. See the individual constructors and
+ * implementations of <code>CredentialsProvider</code> for more details.
  * <p>
  * After creating and initializing the Connection instance, pass it to the
  * <code>Command.execute()</code> method.
@@ -99,29 +97,16 @@ public class Connection
     private static final int DEFAULT_TIMEOUT = 60000;    // 60 seconds
     private static final HttpClientConnectionManager _connectionManager = new PoolingHttpClientConnectionManager();
 
-    private String _baseUrl;
-    private String _email;
-    private String _password;
-    private boolean _acceptSelfSignedCerts;
-    private int _timeout = DEFAULT_TIMEOUT;
+    private final String _baseUrl;
+    private final CredentialsProvider _credentialsProvider;
     private final HttpClientContext _httpClientContext;
-
     private final Map<Integer, CloseableHttpClient> _clientMap = new HashMap<>(3); // Typically very small
 
-    /**
-     * Constructs a new Connection object given a base URL.
-     * <p>
-     * This is equivalent to calling <code>Connection(baseUrl, null, null)</code>.
-     * @param baseUrl The base URL
-     * @see #Connection(String, String, String)
-     */
-    public Connection(String baseUrl)
-    {
-        this(baseUrl, null, null);
-    }
+    private boolean _acceptSelfSignedCerts;
+    private int _timeout = DEFAULT_TIMEOUT;
 
     /**
-     * Constructs a new Connection object given a base URL and user credentials.
+     * Constructs a new Connection object given a base URL and a credentials provider.
      * <p>
      * The baseUrl parameter should include the protocol, domain name, port,
      * and LabKey web application context path (if configured). For example
@@ -137,17 +122,41 @@ public class Connection
      * The email name and password should correspond to a valid user email
      * and password on the target server.
      * @param baseUrl The base URL
-     * @param email The user email name to pass for authentication
-     * @param password The user password to send for authentication
+     * @param credentialsProvider A credentials provider
      */
-    public Connection(String baseUrl, String email, String password)
+    public Connection(String baseUrl, CredentialsProvider credentialsProvider)
     {
         _baseUrl = baseUrl;
-        _email = email;
-        _password = password;
+        _credentialsProvider = credentialsProvider;
         _httpClientContext = HttpClientContext.create();
         _httpClientContext.setCookieStore(new BasicCookieStore());
         setAcceptSelfSignedCerts(false);
+    }
+
+    /**
+     * Constructs a new Connection object with a base URL that attempts authentication via .netrc/_netrc entry, if present.
+     * If not present, connects as guest.
+     * <p>
+     * @param baseUrl The base URL
+     * @see #Connection(String, CredentialsProvider)
+     */
+    public Connection(String baseUrl) throws URISyntaxException, IOException
+    {
+        this(baseUrl, new NetrcCredentialsProvider(new URI(baseUrl)));
+    }
+
+    /**
+     * Constructs a new Connection object for a base URL that attempts basic authentication.
+     * <p>
+     * This is equivalent to calling <code>Connection(baseUrl, new BasicAuthCredentialsProvider(email, password))</code>.
+     * @param baseUrl The base URL
+     * @param email The user email address to pass for authentication
+     * @param password The user password to send for authentication
+     * @see #Connection(String, CredentialsProvider)
+     */
+    public Connection(String baseUrl, String email, String password)
+    {
+        this(baseUrl, new BasicAuthCredentialsProvider(email, password));
     }
 
     /**
@@ -157,42 +166,6 @@ public class Connection
     public String getBaseUrl()
     {
         return _baseUrl;
-    }
-
-    /**
-     * Returns the email address to use for authentication.
-     * @return The email address.
-     */
-    public String getEmail()
-    {
-        return _email;
-    }
-
-    /**
-     * Sets the email address to use for authentication.
-     * @param email The email address to use.
-     */
-    public void setEmail(String email)
-    {
-        _email = email;
-    }
-
-    /**
-     * Returns the password to use for authentication.
-     * @return The password.
-     */
-    public String getPassword()
-    {
-        return _password;
-    }
-
-    /**
-     * Sets the password to use for authentication.
-     * @param password The password to use.
-     */
-    public void setPassword(String password)
-    {
-        _password = password;
     }
 
     /**
@@ -305,22 +278,8 @@ public class Connection
 
     CloseableHttpResponse executeRequest(HttpUriRequest request, Integer timeout) throws IOException, URISyntaxException, AuthenticationException
     {
-        //if a user name was specified, set the credentials
-        if (getEmail() != null)
-        {
-            AuthScope scope = new AuthScope(new URI(getBaseUrl()).getHost(), AuthScope.ANY_PORT, AuthScope.ANY_REALM);
-            BasicCredentialsProvider provider = new BasicCredentialsProvider();
-            Credentials credentials = new UsernamePasswordCredentials(getEmail(), getPassword());
-            provider.setCredentials(scope, credentials);
-
-            _httpClientContext.setCredentialsProvider(provider);
-            request.addHeader(new BasicScheme().authenticate(credentials, request, _httpClientContext));
-        }
-        else
-        {
-            _httpClientContext.setCredentialsProvider(null);
-            request.removeHeaders("Authenticate");
-        }
+        // Delegate authentication setup to CredentialsProvider
+        _credentialsProvider.configureRequest(getBaseUrl(), request, _httpClientContext);
 
         int clientTimeout = null == timeout ? getTimeout() : timeout;
         CloseableHttpClient client = getHttpClient(clientTimeout);

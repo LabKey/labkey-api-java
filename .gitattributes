@@ -7,11 +7,17 @@ java/pom.xml -text
 java/remoteapi.iml -text
 java/remoteapi.ipr -text
 java/src/log4j.xml -text
+java/src/org/labkey/remoteapi/ApiKeyCredentialsProvider.java -text
 java/src/org/labkey/remoteapi/ApiVersionException.java -text
+java/src/org/labkey/remoteapi/BasicAuthCredentialsProvider.java -text
 java/src/org/labkey/remoteapi/Command.java -text
 java/src/org/labkey/remoteapi/CommandException.java -text
 java/src/org/labkey/remoteapi/CommandResponse.java -text
 java/src/org/labkey/remoteapi/Connection.java -text
+java/src/org/labkey/remoteapi/CredentialsProvider.java -text
+java/src/org/labkey/remoteapi/GuestCredentialsProvider.java -text
+java/src/org/labkey/remoteapi/NetrcCredentialsProvider.java -text
+java/src/org/labkey/remoteapi/NetrcFileParser.java -text
 java/src/org/labkey/remoteapi/PostCommand.java -text
 java/src/org/labkey/remoteapi/ResponseObject.java -text
 java/src/org/labkey/remoteapi/assay/AssayListCommand.java -text
@@ -81,7 +87,6 @@ java/src/org/labkey/remoteapi/query/jdbc/LabKeyStatement.java -text
 java/src/org/labkey/remoteapi/query/jdbc/ResultSetData.java -text
 java/src/org/labkey/remoteapi/query/jdbc/Test.java -text
 java/src/org/labkey/remoteapi/sas/Main.java -text
-java/src/org/labkey/remoteapi/sas/NetrcFileParser.java -text
 java/src/org/labkey/remoteapi/sas/SASBaseSelectCommand.java -text
 java/src/org/labkey/remoteapi/sas/SASConnection.java -text
 java/src/org/labkey/remoteapi/sas/SASDeleteRowsCommand.java -text

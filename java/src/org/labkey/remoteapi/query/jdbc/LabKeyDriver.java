@@ -15,6 +15,8 @@
  */
 package org.labkey.remoteapi.query.jdbc;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -69,7 +71,14 @@ public class LabKeyDriver implements Driver
         }
         else
         {
-            connection = new org.labkey.remoteapi.Connection(url);
+            try
+            {
+                connection = new org.labkey.remoteapi.Connection(url);
+            }
+            catch (URISyntaxException | IOException e)
+            {
+                throw new SQLException(e);
+            }
         }
         LabKeyConnection labKeyConnection = new LabKeyConnection(connection);
         labKeyConnection.setClientInfo(info);

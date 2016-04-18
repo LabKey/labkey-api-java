@@ -15,7 +15,10 @@
  */
 package org.labkey.remoteapi.sas;
 
+import org.labkey.remoteapi.ApiKeyCredentialsProvider;
+import org.labkey.remoteapi.BasicAuthCredentialsProvider;
 import org.labkey.remoteapi.Connection;
+import org.labkey.remoteapi.NetrcCredentialsProvider;
 
 import java.io.IOException;
 import java.net.URI;
@@ -32,32 +35,20 @@ public class SASConnection extends Connection
     // Called from SAS macros via reflective JavaObj interface
     public SASConnection(String baseUrl, String userName, String password) throws IOException, URISyntaxException
     {
-        super(baseUrl);
-
-        setEmail(userName);
-        setPassword(password);
+        super(baseUrl, new BasicAuthCredentialsProvider(userName, password));
     }
 
     @SuppressWarnings({"UnusedDeclaration"})
     // Called from SAS macros via reflective JavaObj interface
     public SASConnection(String baseUrl) throws IOException, URISyntaxException
     {
-        super(baseUrl);
-
-        URI uri = new URI(baseUrl);
-
-        setCredentials(uri.getHost());
+        super(baseUrl, new NetrcCredentialsProvider(new URI(baseUrl)));
     }
 
-    private void setCredentials(String host) throws IOException
+    @SuppressWarnings({"UnusedDeclaration"})
+    // Called from SAS macros via reflective JavaObj interface
+    public SASConnection(String baseUrl, String apiKey) throws IOException, URISyntaxException
     {
-        NetrcFileParser parser = new NetrcFileParser();
-        NetrcFileParser.NetrcEntry entry = parser.getEntry(host);
-
-        if (null != entry)
-        {
-            setEmail(entry.getLogin());
-            setPassword(entry.getPassword());
-        }
+        super(baseUrl, new ApiKeyCredentialsProvider(apiKey));
     }
 }

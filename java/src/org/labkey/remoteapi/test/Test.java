@@ -42,11 +42,14 @@ public class Test
 {
     public static void main(String[] args) throws Exception
     {
-        Connection cn = args.length < 2 ? new Connection("http://localhost:8080/labkey") : new Connection("http://localhost:8080/labkey", args[0], args[1]);
+        String baseUrl = "http://localhost:8080/labkey";
+        Connection cn = args.length < 2 ? new Connection(baseUrl) : new Connection(baseUrl, args[0], args[1]);
+//        Connection cn = new Connection(baseUrl, new ApiKeyCredentialsProvider("session:d7c3a4aeb283e3e54c4126a707908420"));
+//        Connection cn = new Connection(baseUrl, new NetRcCredentialsProvider(baseUrl));
 
         try
         {
-            // Import /remoteapi/sas/People.xls as list "People" and /remoteapi/sas/MorePeople.xls as list "MorePeople" into project /Api Test
+            // Import /remoteapi/sas/People.xls as list "People" into project "Api Test"
             selectTest(cn, "Api Test");
             crudTest(cn, "Api Test");
             execSqlTest(cn, "Api Test");
@@ -56,32 +59,90 @@ public class Test
             // Run ShortStudyTest with -Dclean=false
             datasetTest(cn, "StudyVerifyProject/My Study");
 
+            // Run NabAssayTest with -Dclean=false and rename subfolder "Rename############" to "nabassay"
             nabTest(cn, "/Nab Test Verify Project/nabassay");
             assayTest(cn, "/Nab Test Verify Project/nabassay");
+
+            System.out.println("*** All tests completed successfully ***");
         }
         catch(CommandException e)
         {
-            System.out.println("Command Exception: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
-            // Run StudyShortTest with -Dclean=false
     // Assumes that /remoteapi/sas/People.xls has been imported as a list into folder
-    private static void extendedFormatTest(Connection cn, String folder) throws Exception
+    public static void selectTest(Connection cn, String folder) throws Exception
     {
         SelectRowsCommand cmd = new SelectRowsCommand("lists", "People");
-        cmd.setRequiredVersion(9.1);
-        SelectRowsResponse resp = cmd.execute(cn, folder);
 
-            // Run NabAssayTest with -Dclean=false and rename subfolder "Rename############" to "nabassay"
-        for (Map<String, Object> row : resp.getRows())
+        cmd.addSort(new Sort("Last"));
+        cmd.getColumns().add("First");
+        cmd.getColumns().add("Last");
+
+        SelectRowsResponse response = cmd.execute(cn, folder);
+        System.out.println("Number of rows: " + response.getRowCount());
+
+        List<Map<String, Object>> rows = response.getRows();
+
+        for (Map<String, Object> row : rows)
         {
-            for (Map.Entry<String, Object> entry : row.entrySet())
-            {
-                Object value = ((JSONObject)entry.getValue()).get("value");
-                System.out.println(entry.getKey() + " = " + value + " (type: " + (null == value ? "null" : value.getClass().getName()) + ")");
-            }
+            System.out.println(row);
         }
+    }
+
+    // Assumes that /remoteapi/sas/People.xls has been imported as a list into folder
+    public static void crudTest(Connection cn, String folder) throws Exception
+    {
+        int rowCount = 0;
+
+        //get the current row count
+        SelectRowsCommand cmdsel = new SelectRowsCommand("lists", "People");
+        SelectRowsResponse srresp = cmdsel.execute(cn, folder);
+        rowCount = srresp.getRowCount().intValue();
+
+        //insert a row
+        InsertRowsCommand cmdins = new InsertRowsCommand("lists", "People");
+
+        Map<String, Object> row = new HashMap<String, Object>();
+        row.put("First", "To Be Inserted");
+        row.put("Last", "Test Inserted Value");
+
+        cmdins.addRow(row);
+        SaveRowsResponse resp = cmdins.execute(cn, folder);
+
+        //make sure row count is one greater
+        srresp = cmdsel.execute(cn, folder);
+        assert srresp.getRowCount().intValue() == rowCount + 1;
+        assert srresp.getRows().get(srresp.getRows().size() - 1).get("First").equals("To Be Inserted");
+
+        //update the newly-added row
+        UpdateRowsCommand cmdupd = new UpdateRowsCommand("lists", "People");
+        row = resp.getRows().get(resp.getRows().size() - 1);
+        row.put("LastName", "Test UPDATED");
+        cmdupd.addRow(row);
+        resp = cmdupd.execute(cn, folder);
+        assert resp.getRowsAffected().intValue() == 1;
+        assert resp.getRows().get(resp.getRows().size() - 1).get("Last").equals("Test UPDATED");
+
+        //delete the newly added row
+        DeleteRowsCommand cmddel = new DeleteRowsCommand("lists", "People");
+        cmddel.addRow(row);
+        resp = cmddel.execute(cn, folder);
+        assert resp.getRowsAffected().intValue() == 1;
+
+        //assert that the row count is back to what it was
+        srresp = cmdsel.execute(cn, folder);
+        assert srresp.getRowCount().intValue() == rowCount;
+    }
+
+    // Assumes that /remoteapi/sas/People.xls has been imported as a list into folder
+    public static void execSqlTest(Connection cn, String folder) throws Exception
+    {
+        ExecuteSqlCommand cmd = new ExecuteSqlCommand("lists");
+        cmd.setSql("SELECT Last, COUNT(*) AS Num FROM People GROUP BY Last");
+        SelectRowsResponse resp = cmd.execute(cn, folder);
+        System.out.println(resp.getRows());
     }
 
     // Assumes that /remoteapi/sas/People.xls has been imported as a list into folder
@@ -107,22 +168,66 @@ public class Test
     }
 
     // Assumes that /remoteapi/sas/People.xls has been imported as a list into folder
-    public static void selectTest(Connection cn, String folder) throws Exception
+    private static void extendedFormatTest(Connection cn, String folder) throws Exception
     {
         SelectRowsCommand cmd = new SelectRowsCommand("lists", "People");
+        cmd.setRequiredVersion(9.1);
+        SelectRowsResponse resp = cmd.execute(cn, folder);
 
-        cmd.addSort(new Sort("Last"));
-        cmd.getColumns().add("First");
-        cmd.getColumns().add("Last");
+        for (Map<String, Object> row : resp.getRows())
+        {
+            for (Map.Entry<String, Object> entry : row.entrySet())
+            {
+                Object value = ((JSONObject)entry.getValue()).get("value");
+                System.out.println(entry.getKey() + " = " + value + " (type: " + (null == value ? "null" : value.getClass().getName()) + ")");
+            }
+        }
+    }
 
-        SelectRowsResponse response = cmd.execute(cn, folder);
-        System.out.println("Number of rows: " + response.getRowCount());
+    // Assumes StudyShortTest has been run with -Dclean=false
+    public static void datasetTest(Connection cn, String folder) throws Exception
+    {
+        SelectRowsCommand select = new SelectRowsCommand("study", "DataSets");
+        SelectRowsResponse response = select.execute(cn, folder);
 
         List<Map<String, Object>> rows = response.getRows();
 
         for (Map<String, Object> row : rows)
-        {
             System.out.println(row);
+
+        for (String queryName : new String[]{"DEM-1", "DEM-1: Demographics"})
+        {
+            SelectRowsCommand datasetRowSelect = new SelectRowsCommand("study", queryName);
+            datasetRowSelect.addFilter(new Filter("MouseId", "999320565"));
+            SelectRowsResponse datasetRow = datasetRowSelect.execute(cn, folder);
+            Map<String, Object> row = datasetRow.getRows().get(0);
+            System.out.println(row);
+            if (!row.get("DEMracox").equals("Brazilian"))
+                throw new RuntimeException("Race is not 'Brazilian' before update");
+
+            UpdateRowsCommand update = new UpdateRowsCommand("study", queryName);
+            row.put("DEMracox", "Martian");
+            update.setRows(Collections.singletonList(row));
+            update.execute(cn, "StudyVerifyProject/My Study");
+            datasetRowSelect = new SelectRowsCommand("study", queryName);
+            datasetRowSelect.addFilter(new Filter("MouseId", "999320565"));
+            datasetRow = datasetRowSelect.execute(cn, "StudyVerifyProject/My Study");
+            row = datasetRow.getRows().get(0);
+            System.out.println(row);
+            if (!row.get("DEMracox").equals("Martian"))
+                throw new RuntimeException("Race is not 'Martian' after first update");
+
+            update = new UpdateRowsCommand("study", queryName);
+            row.put("DEMracox", "Brazilian");
+            update.setRows(Collections.singletonList(row));
+            update.execute(cn, "StudyVerifyProject/My Study");
+            datasetRowSelect = new SelectRowsCommand("study", queryName);
+            datasetRowSelect.addFilter(new Filter("MouseId", "999320565"));
+            datasetRow = datasetRowSelect.execute(cn, "StudyVerifyProject/My Study");
+            row = datasetRow.getRows().get(0);
+            System.out.println(row);
+            if (!row.get("DEMracox").equals("Brazilian"))
+                throw new RuntimeException("Race is not 'Brazilian' after second update");
         }
     }
 
@@ -168,112 +273,11 @@ public class Test
         return totalIC50CurveNeutralization/totalSamples;
     }
 
-    // Assumes that /remoteapi/sas/People.xls has been imported as a list into folder
-    public static void crudTest(Connection cn, String folder) throws Exception
-    {
-        int rowCount = 0;
-
-        //get the current row count
-        SelectRowsCommand cmdsel = new SelectRowsCommand("lists", "People");
-        SelectRowsResponse srresp = cmdsel.execute(cn, folder);
-        rowCount = srresp.getRowCount().intValue();
-
-        //insert a row
-        InsertRowsCommand cmdins = new InsertRowsCommand("lists", "People");
-
-        Map<String, Object> row = new HashMap<String, Object>();
-        row.put("First", "To Be Inserted");
-        row.put("Last", "Test Inserted Value");
-
-        cmdins.addRow(row);
-        SaveRowsResponse resp = cmdins.execute(cn, folder);
-
-        //make sure row count is one greater
-        srresp = cmdsel.execute(cn, folder);
-        assert srresp.getRowCount().intValue() == rowCount + 1;
-        assert srresp.getRows().get(srresp.getRows().size() - 1).get("First").equals("To Be Inserted");
-
-        //update the newly-added row
-        UpdateRowsCommand cmdupd = new UpdateRowsCommand("lists", "People");
-        row = resp.getRows().get(resp.getRows().size() - 1);
-        row.put("LastName", "Test UPDATED");
-        cmdupd.addRow(row);
-        resp = cmdupd.execute(cn, folder);
-        assert resp.getRowsAffected().intValue() == 1;
-        assert resp.getRows().get(resp.getRows().size() - 1).get("Last").equals("Test UPDATED");
-
-        //delete the newly added row
-        DeleteRowsCommand cmddel = new DeleteRowsCommand("lists", "People");
-        cmddel.addRow(row);
-        resp = cmddel.execute(cn, folder);
-        assert resp.getRowsAffected().intValue() == 1;
-        
-        //assert that the row count is back to what it was
-        srresp = cmdsel.execute(cn, folder);
-        assert srresp.getRowCount().intValue() == rowCount;
-    }
-
     // Assumes that folder has been populated with assays
     public static void assayTest(Connection cn, String folder) throws Exception
     {
         AssayListCommand cmd = new AssayListCommand();
         AssayListResponse resp = cmd.execute(cn, folder);
         System.out.println(resp.getDefinitions());
-    }
-
-    // Assumes that /remoteapi/sas/People.xls has been imported as a list into folder
-    public static void execSqlTest(Connection cn, String folder) throws Exception
-    {
-        ExecuteSqlCommand cmd = new ExecuteSqlCommand("lists");
-        cmd.setSql("SELECT Last, COUNT(*) AS Num FROM People GROUP BY Last");
-        SelectRowsResponse resp = cmd.execute(cn, folder);
-        System.out.println(resp.getRows());
-    }
-
-    // Assumes ShortStudyTest has been run with -Dclean=false
-    public static void datasetTest(Connection cn, String folder) throws Exception
-    {
-        SelectRowsCommand select = new SelectRowsCommand("study", "DataSets");
-        SelectRowsResponse response = select.execute(cn, folder);
-
-        List<Map<String, Object>> rows = response.getRows();
-
-        for (Map<String, Object> row : rows)
-            System.out.println(row);
-
-        for (String queryName : new String[]{"DEM-1", "DEM-1: Demographics"})
-        {
-            SelectRowsCommand datasetRowSelect = new SelectRowsCommand("study", queryName);
-            datasetRowSelect.addFilter(new Filter("MouseId", "999320565"));
-            SelectRowsResponse datasetRow = datasetRowSelect.execute(cn, folder);
-            Map<String, Object> row = datasetRow.getRows().get(0);
-            System.out.println(row);
-            if (!row.get("DEMracox").equals("Brazilian"))
-                throw new RuntimeException("Race is not 'Brazilian' before update");
-
-            UpdateRowsCommand update = new UpdateRowsCommand("study", queryName);
-            row.put("DEMracox", "Martian");
-            update.setRows(Collections.singletonList(row));
-            update.execute(cn, "StudyVerifyProject/My Study");
-            datasetRowSelect = new SelectRowsCommand("study", queryName);
-            datasetRowSelect.addFilter(new Filter("MouseId", "999320565"));
-            datasetRow = datasetRowSelect.execute(cn, "StudyVerifyProject/My Study");
-            row = datasetRow.getRows().get(0);
-            System.out.println(row);
-            if (!row.get("DEMracox").equals("Martian"))
-                throw new RuntimeException("Race is not 'Martian' after first update");
-
-            update = new UpdateRowsCommand("study", queryName);
-            row.put("DEMracox", "Brazilian");
-            update.setRows(Collections.singletonList(row));
-            update.execute(cn, "StudyVerifyProject/My Study");
-            datasetRowSelect = new SelectRowsCommand("study", queryName);
-            datasetRowSelect.addFilter(new Filter("MouseId", "999320565"));
-            datasetRow = datasetRowSelect.execute(cn, "StudyVerifyProject/My Study");
-            row = datasetRow.getRows().get(0);
-            System.out.println(row);
-            if (!row.get("DEMracox").equals("Brazilian"))
-                throw new RuntimeException("Race is not 'Brazilian' after second update");
-        }
     }
 }

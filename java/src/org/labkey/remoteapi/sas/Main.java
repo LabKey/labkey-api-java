@@ -41,13 +41,14 @@ public class Main
     }
 
     /*
-        Tests the SAS wrapper api by simulating in Java the calls made by the SAS macros.  Requires the following:
+        Tests the SAS wrapper api by simulating in Java the calls made by the SAS macros. Requires the following:
 
-        - Local, running LabKey Server with a list called People defined in /home and either guest read
-          permissions to /home or .netrc/_netrc configured with localhost credentials.
+        - Local, running LabKey Server with .netrc/_netrc configured with localhost credentials that grant editor role in /home
+        - A list called "People" defined in /home with a custom grid view "males" that filters to Gender = 1
      */
     private static void test() throws CommandException, IOException, URISyntaxException
     {
+        String folder = "home";
         SASConnection cn = new SASConnection("http://localhost:8080/labkey");
 
         System.out.println();
@@ -55,11 +56,11 @@ public class Main
         System.out.println();
         SASSelectRowsCommand command = new SASSelectRowsCommand("lists", "People");
         command.setMaxRows(0);
-        SASSelectRowsResponse response = new SASSelectRowsResponse(cn, command, "home");
+        SASSelectRowsResponse response = new SASSelectRowsResponse(cn, command, folder);
         logResponse(response);
 
         command.addFilter("Age", "GREATER_THAN_OR_EQUAL", "12");
-        response = new SASSelectRowsResponse(cn, command, "home");
+        response = new SASSelectRowsResponse(cn, command, folder);
         System.out.println();
         System.out.println("Old people");
         System.out.println();
@@ -69,19 +70,19 @@ public class Main
         System.out.println("Specify view, columns, sort, maxRows, and offset");
         System.out.println();
         command = new SASSelectRowsCommand("lists", "People");
-        command.setViewName("namesByAge");
+        command.setViewName("males");
         command.setColumns("First, Last");
         command.setSorts("Last, -First");
         command.setMaxRows(3.0);
         command.setOffset(1.0);
-        response = new SASSelectRowsResponse(cn, command, "home");
+        response = new SASSelectRowsResponse(cn, command, folder);
         logResponse(response);
 
         System.out.println();
         System.out.println("Test executeSql");
         System.out.println();
         SASExecuteSqlCommand execSql = new SASExecuteSqlCommand("lists", "SELECT People.Last, COUNT(People.First) AS Number, AVG(People.Height) AS AverageHeight, AVG(People.Age) AS AverageAge FROM People GROUP BY People.Last");
-        response = new SASSelectRowsResponse(cn, execSql, "home");
+        response = new SASSelectRowsResponse(cn, execSql, folder);
         logResponse(response);
 
         System.out.println();
@@ -103,7 +104,7 @@ public class Main
         row.put("Appearance", "1963-10-01");
         insert.addRow(row);
 
-        SASSaveRowsResponse resp = new SASSaveRowsResponse(cn, insert, "home");
+        SASSaveRowsResponse resp = new SASSaveRowsResponse(cn, insert, folder);
 
         System.out.println("Inserted " + resp.getRowsAffected() + " rows.");
 
@@ -111,7 +112,7 @@ public class Main
         System.out.println("Display new rows");
         System.out.println();
         command = new SASSelectRowsCommand("lists", "People");
-        response = new SASSelectRowsResponse(cn, command, "home");
+        response = new SASSelectRowsResponse(cn, command, folder);
         logResponse(response);
 
         System.out.println();
@@ -119,7 +120,7 @@ public class Main
         System.out.println();
         command.setColumns("Key");
         command.addFilter("Age", "LESS_THAN_OR_EQUAL", "1");
-        response = new SASSelectRowsResponse(cn, command, "home");
+        response = new SASSelectRowsResponse(cn, command, folder);
         SASDeleteRowsCommand delete = new SASDeleteRowsCommand("lists", "People");
 
         while (response.getRow())
@@ -129,8 +130,9 @@ public class Main
             delete.addRow(row);
         }
 
-        resp = new SASSaveRowsResponse(cn, delete, "home");
+        resp = new SASSaveRowsResponse(cn, delete, folder);
         System.out.println("Deleted " + resp.getRowsAffected() + " rows.");
+        System.out.println("*** All test passed without error ***");
     }
 
     private static void logResponse(SASSelectRowsResponse response)
