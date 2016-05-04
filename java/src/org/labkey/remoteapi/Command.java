@@ -199,9 +199,7 @@ public class Command<ResponseType extends CommandResponse>
     public ResponseType execute(Connection connection, String folderPath) throws IOException, CommandException
     {
         // Execute the command. Throws CommandException for error responses.
-        Response response = _execute(connection, folderPath);
-
-        try
+        try (Response response = _execute(connection, folderPath))
         {
             // For non-streaming Commands, read the entire response body into memory as JSON or a String.
             JSONObject json = null;
@@ -211,7 +209,7 @@ public class Command<ResponseType extends CommandResponse>
             if (null != contentType && contentType.contains(Command.CONTENT_TYPE_JSON))
             {
                 // Read entire response body and parse into JSON object
-                json = (JSONObject)JSONValue.parse(new BufferedReader(new InputStreamReader(response.getInputStream())));
+                json = (JSONObject) JSONValue.parse(new BufferedReader(new InputStreamReader(response.getInputStream())));
             }
             else
             {
@@ -220,11 +218,6 @@ public class Command<ResponseType extends CommandResponse>
             }
 
             return createResponse(responseText, response.getStatusCode(), contentType, json);
-        }
-        finally
-        {
-            // Close the http connection
-            response.close();
         }
     }
 

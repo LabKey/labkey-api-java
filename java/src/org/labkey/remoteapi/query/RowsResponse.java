@@ -37,7 +37,7 @@ import java.util.Map;
  * and meta-data about those rows. Primarily, this class converts
  * date values in the rows array to real Java Date objects.
  */
-public abstract class RowsResponse extends CommandResponse
+abstract class RowsResponse extends CommandResponse
 {
     /**
      * Constructs a new RowsResponse given the specified text and status code.
@@ -47,7 +47,7 @@ public abstract class RowsResponse extends CommandResponse
      * @param json The parsed JSONObject (or null if JSON was not returned.
      * @param sourceCommand The source command object
      */
-    protected RowsResponse(String text, int statusCode, String contentType, JSONObject json, Command sourceCommand)
+    RowsResponse(String text, int statusCode, String contentType, JSONObject json, Command sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
         fixupParsedData();
@@ -79,7 +79,7 @@ public abstract class RowsResponse extends CommandResponse
      * Fixes up the parsed data. Currently, this converts string-based
      * date literals into real Java Date objects.
      */
-    protected void fixupParsedData()
+    private void fixupParsedData()
     {
         if(null == getParsedData())
             return;
@@ -92,9 +92,9 @@ public abstract class RowsResponse extends CommandResponse
         //based on the meta-data type name (int vs float)
 
         //build up the list of date fields
-        List<String> dateFields = new ArrayList<String>();
-        List<String> intFields = new ArrayList<String>();
-        List<String> floatFields = new ArrayList<String>();
+        List<String> dateFields = new ArrayList<>();
+        List<String> intFields = new ArrayList<>();
+        List<String> floatFields = new ArrayList<>();
         List<Map<String,Object>> fields = getProperty("metaData.fields");
         if(null == fields)
             return;
@@ -126,12 +126,12 @@ public abstract class RowsResponse extends CommandResponse
         DateParser dateFormat = new DateParser();
 
         boolean expandedFormat = getRequiredVersion() == 9.1;
-        for(Map<String,Object> row : rows)
+        for (Map<String, Object> row : rows)
         {
             for(String field : dateFields)
             {
                 //in expanded format, the value is another JSONObject with several
-                //possible properites, including "value" which is the column's value
+                //possible properties, including "value" which is the column's value
                 Object dateString = expandedFormat ? ((JSONObject)row.get(field)).get("value") : row.get(field);
 
                 if(null != dateString && dateString instanceof String)
@@ -164,7 +164,7 @@ public abstract class RowsResponse extends CommandResponse
                 Object value = expandedFormat ? ((JSONObject)row.get(field)).get("value") : row.get(field);
                 if (value instanceof Number)
                 {
-                    Double number = new Double(((Number)value).doubleValue());
+                    Double number = ((Number) value).doubleValue();
                     if(expandedFormat)
                         ((JSONObject)row.get(field)).put("value", number);
                     else
@@ -178,27 +178,25 @@ public abstract class RowsResponse extends CommandResponse
                 Object value = expandedFormat ? ((JSONObject)row.get(field)).get("value") : row.get(field);
                 if (value instanceof Number)
                 {
-                    Integer number = new Integer(((Number)value).intValue());
+                    Integer number = ((Number) value).intValue();
                     if(expandedFormat)
                         ((JSONObject)row.get(field)).put("value", number);
                     else
                         row.put(field, number);
                 }
-
             }
-
         } //for each row
     } //fixupParsedData()
 
-    protected void caseInsensitizeRowMaps()
+    private void caseInsensitizeRowMaps()
     {
         //copy the row maps into case-insensitive hash maps
-        List<Map<String,Object>> ciRows = new ArrayList<Map<String,Object>>();
+        List<Map<String,Object>> ciRows = new ArrayList<>();
         
         for(Map<String,Object> row : getRows())
         {
             //copy the row map into a case-insensitive hash map
-            ciRows.add(new CaseInsensitiveHashMap<Object>(row));
+            ciRows.add(new CaseInsensitiveHashMap<>(row));
         }
 
         //reset the rows array
