@@ -61,7 +61,7 @@ Tested against
 Free, Hosted Test Server
 ===========
 
-The sample login information provided above for the hosted.labkey.com server provides you with read access only.  This level of access is sufficient for only selectRows and executeSql. To test the other APIs on this server, please contact us at https://www.labkey.com/company/contact-us.  LabKey Software will happily provide you with a private, free project on this server to use for testing.
+The sample login information provided above for the hosted.labkey.com server provides you with read access only.  This level of access is sufficient for only selectRows and executeSql. To test the other APIs on this server, please contact us at https://www.labkey.com/company/contact-us.  LabKey will happily provide you with a private, free project on this server to use for testing.
 
 Further details at http://www.labkey.com/hosted/labkey-hosted
 
@@ -69,7 +69,7 @@ Further details at http://www.labkey.com/hosted/labkey-hosted
 Help and Contributing
 =========
 
-The `LabKey Python Client API`_ and the LabKey Server are maintained by the LabKey Software Foundation. If you have any questions or need support, please use the `LabKey Server support forum`_. 
+The `LabKey Python Client API`_ and the LabKey Server are maintained by the LabKey Foundation. If you have any questions or need support, please use the `LabKey Server support forum`_.
 
 
 Documentation 
@@ -94,7 +94,7 @@ Documentation
 Working with the Source Code
 =========
 
-1. Download the source_ from the `LabKey Software Foundation subversion repository`_
+1. Download the source_ from the `LabKey Foundation subversion repository`_
 
 2. Make your changes
 
@@ -108,7 +108,7 @@ You can create a new source distribution by running::
 
 This will create a new source distribution in the dist subdirectory.
 
-.. _`LabKey Software Foundation subversion repository`: https://www.labkey.org/wiki/home/Documentation/page.view?name=svn
+.. _`LabKey Foundation subversion repository`: https://www.labkey.org/wiki/home/Documentation/page.view?name=svn
 .. _source: https://hedgehog.fhcrc.org/tor/stedi/trunk/remoteapi/python
 
 
@@ -118,11 +118,11 @@ Contributors
 
 - Elizabeth Nelson (eknelson@labkey.com)
 
-    - Outreach Director at LabKey Software 
+    - Outreach Director at LabKey
 
 - Brian Connolly (brian@labkey.com)
 
-    - Consultant at LabKey Software
+    - Consultant at LabKey
 
 
 Thanks also too
