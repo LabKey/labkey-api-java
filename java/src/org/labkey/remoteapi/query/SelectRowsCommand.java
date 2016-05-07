@@ -183,6 +183,7 @@ public class SelectRowsCommand extends BaseQueryCommand<SelectRowsResponse> impl
     /**
      * Sets an explicit list of columns to request. To refer to columns in a related table, use the syntax
      * <i>foreign-key-column</i>/<i>related-column</i> (e.g., 'RelatedPeptide/Protein');
+     * The special column name '*' can be used to request all columns in the target query.
      * @param columns The explicit column list, or null to request the default set of columns.
      */
     public void setColumns(List<String> columns)
