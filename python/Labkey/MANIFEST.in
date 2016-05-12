@@ -1,6 +1,0 @@
-include *.txt
-recursive-include docs *.txt
-include labkeycredentials.sample
-exclude labkeycredentials.txt labkeyquery.py how-to-develop.txt
-recursive-exclude dist
-
