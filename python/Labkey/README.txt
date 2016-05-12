@@ -69,7 +69,7 @@ Further details at http://www.labkey.com/hosted/labkey-hosted
 Help and Contributing
 =========
 
-The `LabKey Python Client API`_ and the LabKey Server are maintained by the LabKey Foundation. If you have any questions or need support, please use the `LabKey Server support forum`_.
+The `LabKey Python Client API`_ and the LabKey Server are maintained by LabKey. If you have any questions or need support, please use the `LabKey Server support forum`_.
 
 
 Documentation 
@@ -94,7 +94,7 @@ Documentation
 Working with the Source Code
 =========
 
-1. Download the source_ from the `LabKey Foundation subversion repository`_
+1. Download the source_ from the `LabKey Server subversion repository`_
 
 2. Make your changes
 
@@ -108,7 +108,7 @@ You can create a new source distribution by running::
 
 This will create a new source distribution in the dist subdirectory.
 
-.. _`LabKey Foundation subversion repository`: https://www.labkey.org/wiki/home/Documentation/page.view?name=svn
+.. _`LabKey Server subversion repository`: https://www.labkey.org/wiki/home/Documentation/page.view?name=svn
 .. _source: https://hedgehog.fhcrc.org/tor/stedi/trunk/remoteapi/python
 
 

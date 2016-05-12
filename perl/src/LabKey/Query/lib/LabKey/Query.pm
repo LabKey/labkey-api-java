@@ -41,7 +41,7 @@ https://www.labkey.org/announcements/home/Server/Forum/list.view?
 
 =head1 AUTHOR 
 
-LabKey Software C<info@labkey.com>
+LabKey C<info@labkey.com>
 
 =head1 CONTRIBUTING
 
@@ -53,7 +53,7 @@ L<https://www.labkey.org/project/home/Developer/Forum/begin.view>
 =head1 COPYRIGHT
  
 Copyright (c) 2010 Ben Bimber
-Copyright (c) 2011-2013 LabKey Software
+Copyright (c) 2011-2013 LabKey
 
 Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
 
