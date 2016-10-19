@@ -91,10 +91,17 @@ public class Filter
         NONBLANK("Is Not Blank", "isnonblank", "NOT_MISSING", false),
 
         MV_INDICATOR("Has Missing Value Indicator", "hasmvvalue", "MV_INDICATOR", false),
-        NO_MV_INDICATOR("Does Not Have Missing Value Indicator", "nomvvalue", "NO_MV_INDICATOR", false)
+        NO_MV_INDICATOR("Does Not Have Missing Value Indicator", "nomvvalue", "NO_MV_INDICATOR", false),
+
+        //
+        // Table/Query-wise operators
+        //
+
+        Q("Search", "q", "Q", true),
+        WHERE("Where", "where", "WHERE", true)
         ;
 
-        private static final Map<String, Operator> _programmaticNameToOperator = new HashMap<String, Operator>(Operator.values().length);
+        private static final Map<String, Operator> _programmaticNameToOperator = new HashMap<>(Operator.values().length);
 
         static
         {

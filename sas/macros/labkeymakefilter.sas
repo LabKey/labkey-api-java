@@ -52,6 +52,7 @@
                    "CONTAINS_ONE_OF" "CONTAINS_NONE_OF"
                    "IN" "NOT_IN"
                    "BETWEEN" "NOT_BETWEEN"
+                   "Q" "WHERE"
                    "MEMBER_OF" &operator) %then
 			%do;
 				/*
