@@ -31,7 +31,7 @@ import java.util.*;
  */
 public class LabKeyResultSet extends BaseJDBC implements ResultSet
 {
-    private final List<Map<String, Object>> _rows;
+    protected final List<Map<String, Object>> _rows;
     private final List<Column> _columns;
     private final Map<String, Column> _columnMap;
     private final LabKeyConnection _connection;
@@ -44,7 +44,7 @@ public class LabKeyResultSet extends BaseJDBC implements ResultSet
         _rows = rows;
         _columns = cols;
         _connection = connection;
-        _columnMap = new HashMap<String, Column>();
+        _columnMap = new HashMap<>();
         for (Column column : _columns)
         {
             _columnMap.put(column.getName().toLowerCase(), column);
@@ -58,7 +58,7 @@ public class LabKeyResultSet extends BaseJDBC implements ResultSet
 
     private static List<Column> extractColumns(SelectRowsResponse response)
     {
-        List<Column> result = new ArrayList<Column>();
+        List<Column> result = new ArrayList<>();
         for (Map<String, Object> metadata : (List<Map<String, Object>>)response.getMetaData().get("fields"))
         {
             String name = (String) metadata.get("name");
