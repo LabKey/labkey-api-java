@@ -19,8 +19,8 @@
 
 	- If userName was passed in then use it.
 	- Otherwise, if lk_userName is defined (via %setDefaults), use it.
-	- Otherwise, if apiKey was passed then use it.
-	- Otherwise, if lk_apiKey is defined (via %setDefaults), use it.
+	- Otherwise, if apiKey was passed then use it. **NYI** See #28305
+	- Otherwise, if lk_apiKey is defined (via %setDefaults), use it. **NYI** See #28305
 	- Otherwise, rely on .netrc handling.
 */
 %macro _labkeyCreateConnection();
@@ -36,19 +36,7 @@
             %end;
         %else
             %do;
-                %if (&apiKey eq) and %symexist(lk_apiKey) %then
-                    %do;
-                        %let apiKey = &lk_apiKey;
-                    %end;
-
-                %if &apiKey ne %then
-                    %do;
-                        declare javaobj cn ('org/labkey/remoteapi/sas/SASConnection', &baseUrl, &apiKey);
-                    %end;
-                %else
-                %do;
-                    declare javaobj cn ('org/labkey/remoteapi/sas/SASConnection', &baseUrl);
-                %end;
+                declare javaobj cn ('org/labkey/remoteapi/sas/SASConnection', &baseUrl);
             %end;
 
         %_labkeyExceptionDescribe(cn);
