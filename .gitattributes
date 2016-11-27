@@ -1,6 +1,8 @@
 * text=auto !eol
 java/README.html -text
+java/build.gradle -text
 java/build.xml -text
+java/gradle.properties -text
 java/manifest.mf -text
 java/mvn.template -text
 java/pom.xml -text
