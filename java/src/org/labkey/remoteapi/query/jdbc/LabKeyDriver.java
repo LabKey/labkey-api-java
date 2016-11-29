@@ -53,27 +53,44 @@ public class LabKeyDriver implements Driver
             return false;
         }
 
-        return url.toLowerCase().startsWith(URL_PREFIX);
+        url = url.toLowerCase();
+        return url.startsWith(URL_PREFIX) || url.startsWith("http://") || url.startsWith("https://");
     }
 
-    public Connection connect(String url, Properties info) throws SQLException
+    /**
+     * Supports using a # to preset the initial folder path for the connection. For example,
+     * jdbc:labkey:http://localhost:8080/labkey#/MyProject, will target MyProject by default, even if no catalog is
+     * set on the connection
+     */
+    public Connection connect(String rawURL, Properties info) throws SQLException
     {
-        if (url.startsWith(URL_PREFIX))
+        if (rawURL.startsWith(URL_PREFIX))
         {
-            url = url.substring(URL_PREFIX.length());
+            rawURL = rawURL.substring(URL_PREFIX.length());
+        }
+        String[] parsed = rawURL.split("#");
+        String baseURL = parsed[0];
+        String folderPath = null;
+        if (parsed.length > 2)
+        {
+            throw new IllegalArgumentException("Illegal URL - more than one # - " + rawURL);
+        }
+        if (parsed.length > 1)
+        {
+            folderPath = parsed[1];
         }
         String user = info.getProperty("user");
         String password = info.getProperty("password");
         org.labkey.remoteapi.Connection connection;
         if (user != null && password != null)
         {
-            connection = new org.labkey.remoteapi.Connection(url, user, password);
+            connection = new org.labkey.remoteapi.Connection(baseURL, user, password);
         }
         else
         {
             try
             {
-                connection = new org.labkey.remoteapi.Connection(url);
+                connection = new org.labkey.remoteapi.Connection(baseURL);
             }
             catch (URISyntaxException | IOException e)
             {
@@ -82,6 +99,7 @@ public class LabKeyDriver implements Driver
         }
         LabKeyConnection labKeyConnection = new LabKeyConnection(connection);
         labKeyConnection.setClientInfo(info);
+        labKeyConnection.setFolderPath(folderPath);
         return labKeyConnection;
     }
 

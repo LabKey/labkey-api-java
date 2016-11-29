@@ -518,12 +518,12 @@ public class LabKeyResultSet extends BaseJDBC implements ResultSet
 
     public void setFetchSize(int rows) throws SQLException
     {
-        throw new UnsupportedOperationException();
+
     }
 
     public int getFetchSize() throws SQLException
     {
-        throw new UnsupportedOperationException();
+        return 0;
     }
 
     public int getType() throws SQLException

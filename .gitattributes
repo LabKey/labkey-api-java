@@ -8,6 +8,7 @@ java/mvn.template -text
 java/pom.xml -text
 java/remoteapi.iml -text
 java/remoteapi.ipr -text
+java/src/META-INF/services/java.sql.Driver -text
 java/src/log4j.xml -text
 java/src/org/labkey/remoteapi/ApiKeyCredentialsProvider.java -text
 java/src/org/labkey/remoteapi/ApiVersionException.java -text

@@ -36,6 +36,8 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
 
     private final LabKeyConnection _connection;
 
+    private Map<String, GetQueryDetailsResponse> _queryDetails = new HashMap<>();
+
     public LabKeyDatabaseMetaData(LabKeyConnection connection)
     {
         _connection = connection;
@@ -378,7 +380,7 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
 
     public boolean supportsSchemasInTableDefinitions() throws SQLException
     {
-        return false;
+        return true;
     }
 
     public boolean supportsSchemasInIndexDefinitions() throws SQLException
@@ -403,7 +405,7 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
 
     public boolean supportsCatalogsInTableDefinitions() throws SQLException
     {
-        return false;
+        return true;
     }
 
     public boolean supportsCatalogsInIndexDefinitions() throws SQLException
@@ -680,7 +682,7 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
                         row.put("TABLE_CAT", catalog);
                         row.put("TABLE_SCHEM", response.getSchemaName());
                         row.put("TABLE_NAME", table);
-                        row.put("TABLE_TYPE", "TABLE");
+                        row.put("TABLE_TYPE", response.isUserDefined(table) ? "VIEW" : "TABLE");
                         row.put("REMARKS", null);
                         row.put("TYPE_CAT", null);
                         row.put("TYPE_SCHEM", null);
@@ -759,13 +761,21 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
     public ResultSet getColumns(String catalog, String schemaPattern, String tableNamePattern, String columnNamePattern) throws SQLException
     {
         _connection.setCatalog(catalog);
-        if (schemaPattern == null || schemaPattern.contains("%") || schemaPattern.contains("_"))
+        if (schemaPattern == null)
         {
             throw new IllegalArgumentException("schemaPattern must request an exact match but was: " + schemaPattern);
         }
-        if (tableNamePattern == null || tableNamePattern.contains("%") || tableNamePattern.contains("_"))
+        if (schemaPattern.contains("%") || schemaPattern.contains("_"))
+        {
+            _log.info("schemaPattern requested via a possible wildcard pattern, but interpreting as an exact match: " + schemaPattern);
+        }
+        if (tableNamePattern == null)
         {
             throw new IllegalArgumentException("tableNamePattern must request an exact match but was: " + tableNamePattern);
+        }
+        if (tableNamePattern.contains("%") || tableNamePattern.contains("_"))
+        {
+            _log.info("tableNamePattern requested via a possible wildcard pattern, but interpreting as an exact match: " + tableNamePattern);
         }
         if (columnNamePattern != null && !"%".equals(columnNamePattern))
         {
@@ -874,20 +884,28 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
 
     private GetQueryDetailsResponse getQueryDetails(String schema, String table) throws SQLException
     {
-        GetQueryDetailsCommand command = new GetQueryDetailsCommand(schema, table);
-        try
+        String cacheKey = _connection.getFolderPath() + "." + schema + "." + table;
+        GetQueryDetailsResponse results = _queryDetails.get(cacheKey);
+        if (results == null)
         {
-            return command.execute(_connection.getConnection(), _connection.getFolderPath());
+            GetQueryDetailsCommand command = new GetQueryDetailsCommand(schema, table);
+            try
+            {
+                results = command.execute(_connection.getConnection(), _connection.getFolderPath());
+            }
+            catch (IOException e)
+            {
+                throw new SQLException(e);
+            }
+            catch (CommandException e)
+            {
+                // Ignore tables that aren't exposed directly for now
+                throw new SQLException(e);
+            }
+
+            _queryDetails.put(cacheKey, results);
         }
-        catch (IOException e)
-        {
-            throw new SQLException(e);
-        }
-        catch (CommandException e)
-        {
-            // Ignore tables that aren't exposed directly for now
-            throw new SQLException(e);
-        }
+        return results;
     }
 
     public ResultSet getVersionColumns(String catalog, String schema, String table) throws SQLException
@@ -945,7 +963,7 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
                 row.put("KEY_SEQ", 1);
                 row.put("UPDATE_RULE", importedKeyNoAction);
                 row.put("DELETE_RULE", importedKeyNoAction);
-                row.put("FK_NAME", null);
+                row.put("FK_NAME", response.getName() + "_" + column.getName());
                 row.put("PK_NAME", null);
                 row.put("DEFERRABILITY", importedKeyNotDeferrable);
                 rows.add(row);

@@ -69,6 +69,32 @@ public class GetQueriesResponse extends CommandResponse
     }
 
     /**
+     * @param queryName The query name to find.
+     * @return true if the query of interest is known to be a custom LabKey SQL query, false otherwise.
+     */
+    public boolean isUserDefined(String queryName)
+    {
+        Map<String, Object> query = getQuery(queryName);
+        return query != null && query.containsKey("isUserDefined") && ((Boolean)query.get("isUserDefined")).booleanValue();
+    }
+
+    private Map<String, Object> getQuery(String queryName)
+    {
+        List<Map<String,Object>> queries = getProperty("queries");
+        if(null == queries)
+            return null;
+
+        for(Map<String,Object> query : queries)
+        {
+            if(queryName.equals(query.get("name")))
+            {
+                return query;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Returns the list of column names available in the given query name. Note
      * that if the command was set to not include column information, this will return
      * an empty list.
@@ -81,24 +107,18 @@ public class GetQueriesResponse extends CommandResponse
         if(null == queryName)
             throw new IllegalArgumentException("queryName parameter was null!");
 
-        List<Map<String,Object>> queries = getProperty("queries");
-        if(null == queries)
-            return Collections.emptyList();
-
-        for(Map<String,Object> query : queries)
+        Map<String, Object> query = getQuery(queryName);
+        if (query != null && query.containsKey("columns"))
         {
-            if(queryName.equals(query.get("name")) && query.containsKey("columns"))
+            List<String> colNames = new ArrayList<String>();
+            List<Map<String,Object>> cols = (List<Map<String,Object>>)query.get("columns");
+            if(null != cols)
             {
-                List<String> colNames = new ArrayList<String>();
-                List<Map<String,Object>> cols = (List<Map<String,Object>>)query.get("columns");
-                if(null != cols)
-                {
-                    for(Map<String,Object> col : cols)
-                        colNames.add((String)col.get("name"));
-                }
-
-                return colNames;
+                for(Map<String,Object> col : cols)
+                    colNames.add((String)col.get("name"));
             }
+
+            return colNames;
         }
         return Collections.emptyList();
     }

@@ -140,6 +140,7 @@
 
     <target name="compile" description="--> compile and build Java source code.">
         <mkdir dir="${build.classes.dir}"/>
+        <mkdir dir="${build.classes.dir}/META-INF"/>
         <!-- Target 1.7, required for compatibility with SAS -->
         <javac srcdir="${source.dir}" destdir="${build.classes.dir}"
                classpathref="component.class.path"
@@ -147,6 +148,9 @@
                source="1.7"
                debug="true"/>
         <copy file="${source.dir}/log4j.xml" todir="${build.classes.dir}"/>
+        <copy todir="${build.classes.dir}/META-INF">
+            <fileset dir="${source.dir}/META-INF"/>
+        </copy>
     </target>
 
     <target name="jar" depends="compile" description="--> generate the labkey Java .jar artifacts.">

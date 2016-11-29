@@ -17,6 +17,7 @@ package org.labkey.remoteapi.query.jdbc;
 
 
 import java.sql.*;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
@@ -38,6 +39,8 @@ public class LabKeyConnection extends BaseJDBC implements java.sql.Connection
     private Properties _clientInfo;
     private boolean _closed = false;
 
+    private Map<String, Class<?>> _typeMap = new HashMap<>();
+
     public LabKeyConnection(org.labkey.remoteapi.Connection conn)
     {
         _conn = conn;
@@ -51,6 +54,11 @@ public class LabKeyConnection extends BaseJDBC implements java.sql.Connection
     public String getFolderPath()
     {
         return _folderPath;
+    }
+
+    public void setFolderPath(String folderPath)
+    {
+        _folderPath = folderPath;
     }
 
     public void clearWarnings() throws SQLException
@@ -182,12 +190,12 @@ public class LabKeyConnection extends BaseJDBC implements java.sql.Connection
 
     public Map<String, Class<?>> getTypeMap() throws SQLException
     {
-        throw new UnsupportedOperationException();
+        return _typeMap;
     }
 
     public void setTypeMap(Map<String, Class<?>> map) throws SQLException
     {
-        throw new UnsupportedOperationException();
+        _typeMap = new HashMap<>(map);
     }
 
     public void setHoldability(int holdability) throws SQLException
