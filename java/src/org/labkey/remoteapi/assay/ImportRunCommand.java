@@ -20,11 +20,9 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.json.simple.JSONObject;
-import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.PostCommand;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.net.URI;
 import java.util.Map;
 
