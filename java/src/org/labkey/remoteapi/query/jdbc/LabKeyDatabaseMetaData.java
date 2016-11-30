@@ -647,10 +647,7 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
     {
         _log.log(Level.INFO, "getTables: " + catalog + ", " + schemaPattern + ", " + tableNamePattern);
         _connection.setCatalog(catalog);
-        if (schemaPattern != null && (schemaPattern.contains("%") || schemaPattern.contains("_")))
-        {
-            throw new IllegalArgumentException("schemaPattern must request an exact match, but was: " + schemaPattern);
-        }
+        validatePattern(schemaPattern, "schemaPattern");
         if (tableNamePattern != null && !tableNamePattern.equals("%") && (tableNamePattern.contains("%") || tableNamePattern.contains("_")))
         {
             throw new IllegalArgumentException("tableNamePattern must request an exact match, but was: " + tableNamePattern);
@@ -761,22 +758,8 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
     public ResultSet getColumns(String catalog, String schemaPattern, String tableNamePattern, String columnNamePattern) throws SQLException
     {
         _connection.setCatalog(catalog);
-        if (schemaPattern == null)
-        {
-            throw new IllegalArgumentException("schemaPattern must request an exact match but was: " + schemaPattern);
-        }
-        if (schemaPattern.contains("%") || schemaPattern.contains("_"))
-        {
-            _log.info("schemaPattern requested via a possible wildcard pattern, but interpreting as an exact match: " + schemaPattern);
-        }
-        if (tableNamePattern == null)
-        {
-            throw new IllegalArgumentException("tableNamePattern must request an exact match but was: " + tableNamePattern);
-        }
-        if (tableNamePattern.contains("%") || tableNamePattern.contains("_"))
-        {
-            _log.info("tableNamePattern requested via a possible wildcard pattern, but interpreting as an exact match: " + tableNamePattern);
-        }
+        validatePattern(schemaPattern, "schemaPattern");
+        validatePattern(tableNamePattern, "tableNamePattern");
         if (columnNamePattern != null && !"%".equals(columnNamePattern))
         {
             throw new IllegalArgumentException("columnNamePattern must be null");
@@ -839,6 +822,18 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
         cols.add(new LabKeyResultSet.Column("IS_GENERATEDCOLUMN", String.class));
 
         return new LabKeyResultSet(rows, cols, _connection);
+    }
+
+    private void validatePattern(String pattern, String patternName)
+    {
+        if (pattern == null)
+        {
+            throw new IllegalArgumentException(patternName + " must request an exact match but was null");
+        }
+        if (pattern.contains("%") || pattern.contains("_"))
+        {
+            _log.info(patternName + " requested via a possible wildcard pattern, but interpreting as an exact match: " + pattern);
+        }
     }
 
     private int getSQLType(String type)
