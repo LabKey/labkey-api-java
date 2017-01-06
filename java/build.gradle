@@ -79,6 +79,10 @@ model {
     }
 }
 
+project.tasks.module {
+    baseName 'labkey-client-api'
+}
+
 // TODO finish conversion of the build process, which should be just the dist task(s)
 ant.importBuild("build.xml")  { antTargetName ->
 
