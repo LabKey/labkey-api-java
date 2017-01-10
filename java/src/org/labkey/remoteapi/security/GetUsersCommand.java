@@ -31,6 +31,7 @@ public class GetUsersCommand extends Command<GetUsersResponse>
     private int _groupId = -1;
     private String _name;
     private String _group;
+    private Boolean _includeDeactivated;
 
     public GetUsersCommand()
     {
@@ -92,6 +93,19 @@ public class GetUsersCommand extends Command<GetUsersResponse>
         _name = name;
     }
 
+    /**
+     * @return Flag to request Active user accounts only
+     */
+    public Boolean includeDeactivated()
+    {
+        return _includeDeactivated;
+    }
+
+    public void setIncludeDeactivated(Boolean active)
+    {
+        _includeDeactivated = active;
+    }
+
     @Override
     public Command copy()
     {
@@ -113,6 +127,10 @@ public class GetUsersCommand extends Command<GetUsersResponse>
         if (_name != null)
         {
             params.put("name", _name);
+        }
+        if (_includeDeactivated != null)
+        {
+            params.put("includeDeactivatedAccounts", includeDeactivated());
         }
         return params;
     }
