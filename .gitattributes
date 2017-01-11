@@ -168,6 +168,7 @@ perl/src/latest/Labkey-query-0.02.tar.gz -text
 perl/src/latest/Labkey-query-0.03.tar.gz -text
 sas/MorePeople.xls -text
 sas/People.xls -text
+sas/build.gradle -text
 sas/build.xml -text
 sas/deleteMacros.sas -text
 sas/demo.sas -text
