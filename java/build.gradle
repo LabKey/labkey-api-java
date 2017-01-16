@@ -1,18 +1,16 @@
 apply plugin: 'java'
+apply plugin: 'maven'
 apply plugin: 'maven-publish'
-apply plugin: 'org.labkey.simpleModule'
+
 
 import org.labkey.gradle.plugin.LabKey
+import org.labkey.gradle.task.PomFile
 import org.labkey.gradle.util.GroupNames
-
-buildDir = "${rootProject.buildDir}/client-api/java/"
 
 dependencies {
     compile "commons-codec:commons-codec:${commonsCodecVersion}"
     compile "commons-logging:commons-logging:${commonsLoggingVersion}"
-    compile "org.apache.httpcomponents:fluent-hc:${fluentHcVersion}"
     compile "org.apache.httpcomponents:httpclient:${httpclientVersion}"
-    compile "org.apache.httpcomponents:httpclient-cache:${httpclientVersion}"
     compile "org.apache.httpcomponents:httpcore:${httpcoreVersion}"
     compile "org.apache.httpcomponents:httpmime:${httpmimeVersion}"
     compile ("com.googlecode.json-simple:json-simple:${jsonSimpleVersion}")
@@ -41,64 +39,86 @@ jar {
     libsDirName = "jar"
 }
 
+project.task("fatJar",
+        description: "Generate single jar file containing the api and all its dependent classes",
+        group: GroupNames.BUILD,
+        type: Jar,
+        {
+            Jar jar ->
+                jar.from sourceSets.main.output
+                jar.from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }}
+                jar.baseName "labkey-client-api"
+                jar.version project.version
+                jar.classifier LabKey.FAT_JAR_CLASSIFIER
+                jar.dependsOn project.tasks.jar
+        }
+)
+
 project.task('javadocJar', description: "Generate jar file of javadoc files", type: Jar) {
             from project.tasks.javadoc.destinationDir
             group GroupNames.DISTRIBUTION
-            baseName "${project.name}_${LabKey.JAVADOC_CLASSIFIER}"
+            baseName 'labkey-client-api'
             classifier LabKey.JAVADOC_CLASSIFIER
             dependsOn project.tasks.javadoc
         }
+
+project.task('javadocZip', description: "Generate zip file with javadoc files for TeamCity artifact", group: GroupNames.DOCUMENTATION, type: Zip, {
+    Zip zip ->
+        zip.archiveName = "TeamCity-ClientAPI-Java-Docs.zip" // we use a non-versioned name here so TeamCity can recognize it
+        zip.from project.tasks.javadoc.destinationDir
+        zip.destinationDir = project.rootProject.file("dist")
+        zip.dependsOn project.tasks.javadoc
+})
 
 project.task('sourcesJar', description: "Generate jar file of source files", type: Jar) {
             from project.sourceSets.main.allJava
 
             group GroupNames.DISTRIBUTION
-            baseName "${project.name}_${LabKey.SOURCES_CLASSIFIER}"
+            baseName 'labkey-client-api'
             classifier LabKey.SOURCES_CLASSIFIER
         }
 
-publishing {
-    publications {
-        libs(MavenPublication) {
-            from components.java
-            artifactId 'labkey-client-api'
-            pom.withXml {
-                def orgNode = asNode().appendNode("organization")
-                orgNode.appendNode("name", "LabKey")
-                orgNode.appendNode("url", "http://www.labkey.org")
-                asNode().appendNode("description", "The client-side library for Java developers is a separate JAR from the LabKey Server code base. It can be used by any Java program, including another Java web application.")
-                asNode().appendNode("url","https://www.labkey.org/wiki/home/Documentation/page.view?name=javaAPI")
-                def licenseNode = asNode().appendNode("licenses").appendNode("license")
-                licenseNode.appendNode("name", "The Apache Software License, Version 2.0")
-                licenseNode.appendNode("url", "http://www.apache.org/licenses/LICENSE-2.0.txt")
-                licenseNode.appendNode("distribution", "repo")
+Properties pomProperties = new Properties()
+pomProperties.put("ArtifactId", "labkey-client-api")
+pomProperties.put("Organization", "LabKey")
+pomProperties.put("OrganizationURL", "http://www.labkey.org")
+pomProperties.put("Description","The client-side library for Java developers is a separate JAR from the LabKey Server code base. It can be used by any Java program, including another Java web application." )
+pomProperties.put("License", "The Apache Software License, Version 2.0")
+pomProperties.put("LicenseURL", "http://www.apache.org/licenses/LICENSE-2.0.txt")
+
+project.afterEvaluate {
+    Task pomFileTask = project.task("pomFile",
+            group: GroupNames.PUBLISHING,
+            description: "create the pom file for this project",
+            type: PomFile,
+            {
+                PomFile pom ->
+                    pom.pomProperties = pomProperties
+            }
+    )
+    project.publishing {
+        publications {
+            libs(MavenPublication) {
+                project.tasks.each {
+                    if (it instanceof Jar)
+                    {
+                        artifactId 'labkey-client-api'
+                        artifact it
+                    }
+                }
             }
         }
-    }
-}
 
-model {
-    tasks.generatePomFileForLibsPublication {
-        destination = file("$projectDir/generated-pom.xml")
-    }
-}
+        project.artifactoryPublish {
+            project.tasks.each {
+                if (it instanceof Jar)
+                {
+                    dependsOn it
+                }
+            }
+            dependsOn pomFileTask
+            publications('libs')
+        }
 
-project.tasks.module {
-    baseName 'labkey-client-api'
-}
-
-// TODO finish conversion of the build process, which should be just the dist task(s)
-ant.importBuild("build.xml")  { antTargetName ->
-
-    if (['assemble', 'build', 'buildDependents', 'buildNeeded', 'classes', 'clean',
-         'jar', 'testClasses', 'init', 'wrapper', 'javadoc', 'buildEnvironment', 'components',
-         'dependencies', 'dependencyInsight', 'help', 'model', 'projects', 'properties', 'tasks', 'check', 'test'
-    ].contains(antTargetName))
-    {
-        return 'ant_' + antTargetName;
-    }
-    else
-    {
-        return antTargetName
     }
 }
