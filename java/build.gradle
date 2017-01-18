@@ -2,6 +2,11 @@ apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
+buildDir = new File(project.rootProject.buildDir, "/remoteapi/java")
+
+def artifactPrefix = 'labkey-client-api'
+def description = "The client-side library for Java developers is a separate JAR from the LabKey Server code base. It can be used by any Java program, including another Java web application."
+def orgUrl = "http://www.labkey.org"
 
 import org.labkey.gradle.plugin.LabKey
 import org.labkey.gradle.task.PomFile
@@ -22,7 +27,7 @@ dependencies {
 }
 
 jar {
-    baseName 'labkey-client-api'
+    baseName artifactPrefix
 
     sourceCompatibility = labkey.sourceCompatibility
     targetCompatibility = labkey.targetCompatibility
@@ -47,7 +52,7 @@ project.task("fatJar",
             Jar jar ->
                 jar.from sourceSets.main.output
                 jar.from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }}
-                jar.baseName "labkey-client-api"
+                jar.baseName artifactPrefix
                 jar.version project.version
                 jar.classifier LabKey.FAT_JAR_CLASSIFIER
                 jar.dependsOn project.tasks.jar
@@ -57,7 +62,7 @@ project.task("fatJar",
 project.task('javadocJar', description: "Generate jar file of javadoc files", type: Jar) {
             from project.tasks.javadoc.destinationDir
             group GroupNames.DISTRIBUTION
-            baseName 'labkey-client-api'
+            baseName artifactPrefix
             classifier LabKey.JAVADOC_CLASSIFIER
             dependsOn project.tasks.javadoc
         }
@@ -74,15 +79,22 @@ project.task('sourcesJar', description: "Generate jar file of source files", typ
             from project.sourceSets.main.allJava
 
             group GroupNames.DISTRIBUTION
-            baseName 'labkey-client-api'
+            baseName artifactPrefix
             classifier LabKey.SOURCES_CLASSIFIER
-        }
+}
+
+project.artifacts {
+    archives project.tasks.sourcesJar
+    archives project.tasks.javadocJar
+    archives project.tasks.javadocZip
+    archives project.tasks.fatJar
+}
 
 Properties pomProperties = new Properties()
-pomProperties.put("ArtifactId", "labkey-client-api")
+pomProperties.put("ArtifactId", artifactPrefix)
 pomProperties.put("Organization", "LabKey")
-pomProperties.put("OrganizationURL", "http://www.labkey.org")
-pomProperties.put("Description","The client-side library for Java developers is a separate JAR from the LabKey Server code base. It can be used by any Java program, including another Java web application." )
+pomProperties.put("OrganizationURL", orgUrl)
+pomProperties.put("Description", description )
 pomProperties.put("License", "The Apache Software License, Version 2.0")
 pomProperties.put("LicenseURL", "http://www.apache.org/licenses/LICENSE-2.0.txt")
 
@@ -102,7 +114,7 @@ project.afterEvaluate {
                 project.tasks.each {
                     if (it instanceof Jar)
                     {
-                        artifactId 'labkey-client-api'
+                        artifactId artifactPrefix
                         artifact it
                     }
                 }
@@ -120,5 +132,49 @@ project.afterEvaluate {
             publications('libs')
         }
 
+    }
+}
+
+// This section is used for publishing the jar files to bintray and then on to maven central.
+if (project.hasProperty('bintray_user')
+        && project.hasProperty('bintray_api_key')
+        && project.hasProperty('gpg_passphrase')
+        && project.hasProperty('sonatype_username')
+        && project.hasProperty('sonatype_password'))
+{
+    apply plugin: 'com.jfrog.bintray'
+    bintray {
+        user = project.bintray_user
+        key = project.bintray_api_key
+        publications = ['libs']
+        publish = false
+        // TODO set to true to make the artifacts available for download (once we've verified that our settings are correct)
+        pkg {
+            repo = project.version.endsWith('SNAPSHOT') ? 'libs-snapshot' : 'libs-release'
+            desc = description
+            websiteUrl = orgUrl
+            name = artifactPrefix
+            userOrg = 'labkey'
+            licenses = ['Apache-2.0']
+            vcsUrl = 'https://hedgehog.fhcrc.org/tor/stedi/'
+            version {
+                name = project.version
+                desc = "LabKey Java Client API ${project.version}"
+                released = new Date()
+                gpg {
+                    sign = true
+                    passphrase = project.gpg_passphrase
+                }
+
+                mavenCentralSync {
+                    sync = true //[Default: true] Determines whether to sync the version to Maven Central.
+                    user = project.sonatype_username //OSS user token: mandatory
+                    password = project.sonatype_password //OSS user password: mandatory
+                    close = '0'
+                    //Optional property. By default the staging repository is closed and artifacts are released to Maven Central. You can optionally turn this behaviour off (by puting 0 as value) and release the version manually.
+                    // TODO change to '1' once we've verified our procedure and settings work.
+                }
+            }
+        }
     }
 }
