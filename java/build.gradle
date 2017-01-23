@@ -9,6 +9,7 @@ def description = "The client-side library for Java developers is a separate JAR
 def orgUrl = "http://www.labkey.org"
 
 import org.labkey.gradle.plugin.LabKey
+import org.labkey.gradle.plugin.StagingExtension
 import org.labkey.gradle.task.PomFile
 import org.labkey.gradle.util.GroupNames
 
@@ -43,6 +44,19 @@ jar {
 
     libsDirName = "jar"
 }
+
+// FIXME this is a bit of a hack. Remove when we publish next changes for gradlePlugins
+StagingExtension staging = project.getExtensions().getByType(StagingExtension.class)
+project.task('stageJars',
+        type: Copy,
+        description: "Copy dependencies into staging directory",
+        group: GroupNames.DEPLOY,
+        {CopySpec copy ->
+            copy.from project.configurations.compile
+            copy.into staging.libDir
+        }
+)
+project.project(":server").tasks.stageJars.dependsOn(project.tasks.stageJars)
 
 project.task("fatJar",
         description: "Generate single jar file containing the api and all its dependent classes",
