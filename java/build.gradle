@@ -81,14 +81,6 @@ project.task('javadocJar', description: "Generate jar file of javadoc files", ty
             dependsOn project.tasks.javadoc
         }
 
-project.task('javadocZip', description: "Generate zip file with javadoc files for TeamCity artifact", group: GroupNames.DOCUMENTATION, type: Zip, {
-    Zip zip ->
-        zip.archiveName = "TeamCity-ClientAPI-Java-Docs.zip" // we use a non-versioned name here so TeamCity can recognize it
-        zip.from project.tasks.javadoc.destinationDir
-        zip.destinationDir = project.rootProject.file("dist")
-        zip.dependsOn project.tasks.javadoc
-})
-
 project.task('sourcesJar', description: "Generate jar file of source files", type: Jar) {
             from project.sourceSets.main.allJava
 
@@ -100,7 +92,6 @@ project.task('sourcesJar', description: "Generate jar file of source files", typ
 project.artifacts {
     archives project.tasks.sourcesJar
     archives project.tasks.javadocJar
-    archives project.tasks.javadocZip
     archives project.tasks.fatJar
 }
 
