@@ -192,6 +192,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
     /**
      Include the total number of rows available (defaults to true).
      If false totalCount will equal number of rows returned (equal to maxRows unless maxRows == 0).
+     @return indication of whether total count should be included or not
      */
     public boolean isIncludeTotalCount()
     {
@@ -201,6 +202,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
     /**
      Include the total number of rows available (defaults to true).
      If false totalCount will equal number of rows returned (equal to maxRows unless maxRows == 0).
+     @param includeTotalCount setting for whether to include the total count
      */
     public void setIncludeTotalCount(boolean includeTotalCount)
     {
@@ -213,6 +215,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
      The value of this property should be a comma-delimited list of column names you want to sort by.
      Use a - prefix to sort a column in descending order
      (e.g., 'LastName,-Age' to sort first by LastName, then by Age descending).
+     @return the set of sorts to apply
      */
     public List<Sort> getSorts()
     {
@@ -225,6 +228,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
      The value of this property should be a comma-delimited list of column names you want to sort by.
      Use a - prefix to sort a column in descending order
      (e.g., 'LastName,-Age' to sort first by LastName, then by Age descending).
+     @param sorts the sort specifications to apply to the query
      */
     public void setSort(List<Sort> sorts)
     {
@@ -236,6 +240,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
      * If true, all information required to recreate the query will be stored on the server and a unique query name
      * will be passed to the success callback. This temporary query name can be used by all other API methods,
      * including Query Web Part creation, for as long as the current user's session remains active.
+     * @return whether to save the query definition in session or not
      */
     public boolean isSaveInSession()
     {
@@ -247,6 +252,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
      * If true, all information required to recreate the query will be stored on the server and a unique query name
      * will be passed to the success callback. This temporary query name can be used by all other API methods,
      * including Query Web Part creation, for as long as the current user's session remains active.
+     * @param saveInSession indication of whether to save in session or not
      */
     public void setSaveInSession(boolean saveInSession)
     {
@@ -257,6 +263,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
      Include the Details link column in the set of columns (defaults to false).
      If included, the column will have the name "~~Details~~".
      The underlying table/query must support details links or the column will be omitted in the response.
+     @return whether to include the details column in the set of columns
      */
     public boolean isIncludeDetailsColumn()
     {
@@ -267,6 +274,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
      Include the Details link column in the set of columns (defaults to false).
      If included, the column will have the name "~~Details~~".
      The underlying table/query must support details links or the column will be omitted in the response.
+     @param includeDetailsColumn indication of whether to include the details column or not
      */
     public void setIncludeDetailsColumn(boolean includeDetailsColumn)
     {
@@ -276,6 +284,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
     /**
      Map of name (string)/value pairs for the values of parameters if the SQL references underlying queries
      that are parameterized.
+     @return the set of query parameters for the SQL references
      */
     public Map<String, String> getQueryParameters()
     {
@@ -285,6 +294,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
     /**
      Map of name (string)/value pairs for the values of parameters if the SQL references underlying queries
      that are parameterized.
+     @param parameters a map of the named parameters to use in the underlying parameterized queries
      */
     public void setQueryParameters(Map<String, String> parameters)
     {

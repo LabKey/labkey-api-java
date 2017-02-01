@@ -103,7 +103,6 @@ public class SelectRowsResponse extends RowsResponse
     /**
      * Returns the meta-data section of the response. This map contains the following
      * entries:
-     * <p>
      * <ul>
      *  <li>id = the column name that contains the primary key for the row.</li>
      *  <li>fields = a List of Maps, one for each result column. Each map contains the following properties:

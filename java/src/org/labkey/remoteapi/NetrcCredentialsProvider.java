@@ -40,7 +40,7 @@ public class NetrcCredentialsProvider implements CredentialsProvider
      * Attempt netrc lookup for the URI's host.
      *
      * @param baseURI A valid base URI from which we'll extract the host name.
-     * @throws IOException
+     * @throws IOException if there is an IO problem reading from the netrc file
      */
     public NetrcCredentialsProvider(URI baseURI) throws IOException
     {
@@ -51,7 +51,7 @@ public class NetrcCredentialsProvider implements CredentialsProvider
      * Attempt netrc lookup for the given host.
      *
      * @param host Just the host name, e.g., "www.labkey.org" or "localhost"
-     * @throws IOException
+     * @throws IOException if there is an IO problem reading from the netrc file
      */
     public NetrcCredentialsProvider(String host) throws IOException
     {

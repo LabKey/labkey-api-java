@@ -80,6 +80,7 @@ public class Sort
      * sort definitions. The sort query string parameter is in the form of
      * <i>[-]column,[-]column,...</i> where the optional - is used for
      * a descending sort direction.
+     * @param sorts the set of sorts in the query
      * @return The sort query string parameter.
      */
     public static String getSortQueryStringParam(List<Sort> sorts)

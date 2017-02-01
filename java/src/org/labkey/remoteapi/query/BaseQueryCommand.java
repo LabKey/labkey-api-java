@@ -215,7 +215,7 @@ public abstract class BaseQueryCommand<ResponseType extends CommandResponse> ext
     }
 
     /**
-     Map of name (string)/value pairs for the values of parameters if the SQL references underlying queries
+     @return Map of name (string)/value pairs for the values of parameters if the SQL references underlying queries
      that are parameterized.
      */
     public Map<String, String> getQueryParameters()
@@ -226,6 +226,7 @@ public abstract class BaseQueryCommand<ResponseType extends CommandResponse> ext
     /**
      Map of name (string)/value pairs for the values of parameters if the SQL references underlying queries
      that are parameterized.
+     @param parameters the set of parameters
      */
     public void setQueryParameters(Map<String, String> parameters)
     {

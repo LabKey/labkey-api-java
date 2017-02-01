@@ -15,9 +15,13 @@
  */
 package org.labkey.remoteapi.test;
 
-import java.io.*;
-import java.util.Properties;
 import org.labkey.remoteapi.Connection;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 /**
  * Utility class to parse a .properties file and produce reasonable exceptions if required properties aren't present.
@@ -34,6 +38,7 @@ public class ClientConfig
      * Looks for a "debug" property - if set to true, enables verbose debug logging for the HTTP connection 
      *
      * @param args command-line arguments to the program
+     * @throws IOException if there is an IO problem reading the config.properties file
      */
     public ClientConfig(String args[]) throws IOException
     {
@@ -72,8 +77,8 @@ public class ClientConfig
 
     /**
      * Gets a property of the given name. 
-     * @param name
-     * @return
+     * @param name the name of the property
+     * @return the property value, or null if the property is not found
      */
     public String getProperty(String name)
     {
@@ -87,6 +92,7 @@ public class ClientConfig
     /**
      * Creates a connection object based on the baseServerURL, username, and password config properties.
      * All are required.
+     * @return a connection object
      */
     public Connection createConnection()
     {

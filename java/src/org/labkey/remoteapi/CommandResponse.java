@@ -146,6 +146,7 @@ public class CommandResponse
      * example, to obtain the 'bar' property from the Map associated
      * with the 'foo' property, the path would be 'foo.bar'.
      * @param path The property path.
+     * @param <T> the type of the property.
      * @return The property value, or null if the property was not found.
      */
     @SuppressWarnings("unchecked")
@@ -165,6 +166,7 @@ public class CommandResponse
      * @param path The path split into a String[].
      * @param index The current index into the path array.
      * @param parent The current parent map.
+     * @param <T> The type of the property.
      * @return The property value, or null if not found.
      */
     @SuppressWarnings("unchecked")

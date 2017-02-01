@@ -55,11 +55,11 @@ import java.util.Map;
  * program's environment, such as via command-line parameters, environment
  * variables, a properties file, etc. See the individual constructors and
  * implementations of <code>CredentialsProvider</code> for more details.
- * <p>
+ * </p>
  * After creating and initializing the Connection instance, pass it to the
  * <code>Command.execute()</code> method.
  * <p>Example:
- * <p>
+ * </p>
  * <pre><code>
  *     Connection cn = new Connection("https://labkey.org");
  *     SelectRowsCommand cmd = new SelectRowsCommand("study", "Physical Exam");
@@ -71,7 +71,7 @@ import java.util.Map;
  * </code></pre>
  * <p>
  * Example using Authentication
- * <p>
+ * </p>
  * <pre>
  * <code>
  *     //get the user email and password from command-line arguments,
@@ -88,6 +88,7 @@ import java.util.Map;
  * <p>
  * Note that this class is not thread-safe. Do not share instances of Connection
  * between threads.
+ * </p>
  * 
  * @author Dave Stearns, LabKey Corporation
  * @version 1.0
@@ -111,14 +112,14 @@ public class Connection
      * The baseUrl parameter should include the protocol, domain name, port,
      * and LabKey web application context path (if configured). For example
      * in a typical localhost configuration, the base URL would be:
-     * <p>
+     * </p>
      * <code>http://localhost:8080/labkey</code>
      * <p>
      * Note that https may also be used for the protocol. By default the
      * Connection is configured to deny self-signed SSL certificates.
      * If you want to accept self-signed certificates, use
      * <code>setAcceptSelfSignedCerts(false)</code> to enable this behavior.
-     * <p>
+     * </p>
      * The email name and password should correspond to a valid user email
      * and password on the target server.
      * @param baseUrl The base URL
@@ -136,8 +137,9 @@ public class Connection
     /**
      * Constructs a new Connection object with a base URL that attempts authentication via .netrc/_netrc entry, if present.
      * If not present, connects as guest.
-     * <p>
      * @param baseUrl The base URL
+     * @throws URISyntaxException if the given url is not a valid URI
+     * @throws IOException if there are problems reading the credentials
      * @see #Connection(String, CredentialsProvider)
      */
     public Connection(String baseUrl) throws URISyntaxException, IOException
@@ -268,8 +270,13 @@ public class Connection
         }
     }
 
-    /** Ensures that the credentials have been used to authenticate the users and returns a client that can be used for other requests */
-    public CloseableHttpClient ensureAuthenticated() throws IOException, AuthenticationException, CommandException
+    /**
+     * Ensures that the credentials have been used to authenticate the users and returns a client that can be used for other requests
+     * @return an HTTP client
+     * @throws IOException if there is an IO problem executing the command to ensure loginf
+     * @throws CommandException if the server returned a non-success status code.
+     */
+    public CloseableHttpClient ensureAuthenticated() throws IOException, CommandException
     {
         EnsureLoginCommand command = new EnsureLoginCommand();
         CommandResponse response = command.execute(this, "/home");

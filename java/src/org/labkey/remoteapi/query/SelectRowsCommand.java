@@ -38,13 +38,12 @@ import java.util.Map;
  * by a name (e.g., 'lists' or 'study'). A query is a particular table or view within
  * that schema (e.g., 'People' or 'Peptides'). For purposes of selecting, a query
  * may be either a base table or a view that joins data between related tables.
- * <p>
+ * </p>
  * To view the schemas and queries exposed in a given folder, add a Query web part
  * to your portal page and choose the option "Show the list of tables in this schema"
  * in the part configuration page. Alternatively, if it is exposed, click on the Query
  * tab across the top of the main part of the page.
- * <p>Example:
- * <p>
+ * <p>Example:</p>
  * <pre>
  * <code>
  *     Connection cn = new Connection("https://labkey.org");
@@ -56,7 +55,6 @@ import java.util.Map;
  *     }
  * </code>
  * </pre>
- * <p>
  */
 public class SelectRowsCommand extends BaseQueryCommand<SelectRowsResponse> implements BaseSelect
 {

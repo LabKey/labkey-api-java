@@ -65,7 +65,7 @@ public abstract class ExpObject extends ResponseObject
      *      The Simple JSON library isn't properly serializing Dates, and generates invalid JSON.
      *  TODO: Investigate and replace with a different JSON library
      * @param properties Map to serialize
-     * @return
+     * @return the JSON object corresponding to the given properties
      */
     public JSONObject toJSON(Map<String, Object> properties)
     {

@@ -278,7 +278,7 @@ public class Command<ResponseType extends CommandResponse>
         }
     }
 
-    /** NOTE: Internal experimental API for handling streaming commands. */
+    /* NOTE: Internal experimental API for handling streaming commands. */
     protected Response _execute(Connection connection, String folderPath) throws CommandException, IOException
     {
         assert null != getControllerName() : "You must set the controller name before executing the command!";
@@ -405,6 +405,7 @@ public class Command<ResponseType extends CommandResponse>
     /**
      * Creates the appropriate HttpUriRequest instance. Override to create something
      * other than <code>HttpGet</code>.
+     * @param uri the uri to convert
      * @return The HttpUriRequest instance.
      */
     protected HttpUriRequest createRequest(URI uri)
@@ -421,6 +422,7 @@ public class Command<ResponseType extends CommandResponse>
      * @param connection The connection to use.
      * @param folderPath The folder path to use.
      * @return The URL
+     * @throws URISyntaxException if the uri constructed from the parameters is malformed
      */
     protected URI getActionUrl(Connection connection, String folderPath) throws URISyntaxException
     {

@@ -38,6 +38,7 @@ public class GetQueryDetailsCommand extends Command<GetQueryDetailsResponse>
     /**
      * Constructs the command given a particular schema name.
      * @param schemaName The schema name.
+     * @param queryName The name of the query (e.g., table) for the corresponding schema.
      */
     public GetQueryDetailsCommand(String schemaName, String queryName)
     {
