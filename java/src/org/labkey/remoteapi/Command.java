@@ -27,7 +27,11 @@ import org.apache.http.client.utils.URIBuilder;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
@@ -202,19 +206,23 @@ public class Command<ResponseType extends CommandResponse>
         try (Response response = _execute(connection, folderPath))
         {
             // For non-streaming Commands, read the entire response body into memory as JSON or a String.
-            JSONObject json = null;
-            String responseText = null;
+            // The json and responseText will already be parsed when checking for an exception message on small 200 responses.
+            JSONObject json = response._json;
+            String responseText = response._responseText;
             String contentType = response.getContentType();
 
-            if (null != contentType && contentType.contains(Command.CONTENT_TYPE_JSON))
+            if (json == null)
             {
-                // Read entire response body and parse into JSON object
-                json = (JSONObject) JSONValue.parse(new BufferedReader(new InputStreamReader(response.getInputStream())));
-            }
-            else
-            {
-                // Otherwise, read entire response body as text.
-                responseText = response.getText();
+                if (null != contentType && contentType.contains(Command.CONTENT_TYPE_JSON))
+                {
+                    // Read entire response body and parse into JSON object
+                    json = (JSONObject) JSONValue.parse(new BufferedReader(new InputStreamReader(response.getInputStream())));
+                }
+                else
+                {
+                    // Otherwise, read entire response body as text.
+                    responseText = response.getText();
+                }
             }
 
             return createResponse(responseText, response.getStatusCode(), contentType, json);
@@ -228,11 +236,18 @@ public class Command<ResponseType extends CommandResponse>
     {
         private final CloseableHttpResponse _httpResponse;
         private final String _contentType;
+        private final Long _contentLength;
 
-        private Response(CloseableHttpResponse httpResponse, String contentType)
+        // The json and responseText will already be parsed when checking for an exception message on small 200 responses.
+        // The parsed json should not be available to the client library user since exposing the fields would make streaming responses impossible.
+        private String _responseText;
+        private JSONObject _json;
+
+        private Response(CloseableHttpResponse httpResponse, String contentType, Long contentLength)
         {
             _httpResponse = httpResponse;
             _contentType = contentType;
+            _contentLength = contentLength;
         }
 
         public String getStatusText()
@@ -250,6 +265,11 @@ public class Command<ResponseType extends CommandResponse>
             return _contentType;
         }
 
+        public Long getContentLength()
+        {
+            return _contentLength;
+        }
+
         public InputStream getInputStream() throws IOException
         {
             return _httpResponse.getEntity().getContent();
@@ -257,6 +277,9 @@ public class Command<ResponseType extends CommandResponse>
 
         public String getText() throws IOException
         {
+            if (_responseText != null)
+                return _responseText;
+
             Scanner s = null;
             try
             {
@@ -285,11 +308,11 @@ public class Command<ResponseType extends CommandResponse>
         assert null != getActionName() : "You must set the action name before executing the command!";
         CloseableHttpResponse httpResponse;
 
+        final HttpUriRequest request;
         try
         {
             //construct and initialize the HttpUriRequest
-            final HttpUriRequest request = getHttpRequest(connection, folderPath);
-
+            request = getHttpRequest(connection, folderPath);
             LogFactory.getLog(Command.class).info("Requesting URL: " + request.getURI().toString());
 
             //execute the request
@@ -304,20 +327,37 @@ public class Command<ResponseType extends CommandResponse>
         Header contentTypeHeader = httpResponse.getFirstHeader("Content-Type");
         String contentType = (null == contentTypeHeader ? null : contentTypeHeader.getValue());
 
-        Response response = new Response(httpResponse, contentType);
-        int status = response.getStatusCode();
+        Header contentLengthHeader = httpResponse.getFirstHeader("Content-Length");
+        Long contentLength = (null == contentLengthHeader ? null : Long.parseLong(contentLengthHeader.getValue()));
 
-        //the HttpUriRequest should follow redirects automatically,
-        //so the status code could be 2xx, 4xx, or 5xx
-        if (status >= 400 && status < 600)
-        {
-            throwError(response);
-        }
-
+        Response response = new Response(httpResponse, contentType, contentLength);
+        checkThrowError(response);
         return response;
     }
 
-    private void throwError(Response r) throws IOException, CommandException
+    protected void checkThrowError(Response response) throws IOException, CommandException
+    {
+        int status = response.getStatusCode();
+
+        // Always throw an exception if status is 4xx or 5xx.
+        //the HttpUriRequest should follow redirects automatically,
+        //so the status code could be 2xx, 4xx, or 5xx.
+        if (status >= 400 && status < 600)
+        {
+            throwError(response, true);
+        }
+
+        // Check for a 200 status but with an exception in the json response body.
+        // To support streaming large responses, only check for an exception if the response size is less than 4K
+        if (status == 200 &&
+                response.getContentType() != null && response.getContentType().contains(CONTENT_TYPE_JSON) &&
+                response.getContentLength() != null && response.getContentLength() < 4096)
+        {
+            throwError(response, false);
+        }
+    }
+
+    private void throwError(Response r, boolean throwByDefault) throws IOException, CommandException
     {
         //use the status text as the message by default
         String message = null != r.getStatusText() ? r.getStatusText() : "(no status text)";
@@ -341,12 +381,20 @@ public class Command<ResponseType extends CommandResponse>
 
                     if ("org.labkey.api.action.ApiVersionException".equals(json.get("exceptionClass")))
                         throw new ApiVersionException(message, r.getStatusCode(), json, responseText);
+
+                    throw new CommandException(message, r.getStatusCode(), json, responseText);
                 }
             }
         }
 
-        throw new CommandException(message, r.getStatusCode(), json, responseText);
+        if (throwByDefault)
+            throw new CommandException(message, r.getStatusCode(), json, responseText);
+
+        // If we didn't encounter an exception property on the json object, save the fully consumed text and parsed json on the Response object
+        r._json = json;
+        r._responseText = responseText;
     }
+
 
     /**
      * Creates an instance of the response class, initialized with

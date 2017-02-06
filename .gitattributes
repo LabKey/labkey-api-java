@@ -68,6 +68,8 @@ java/src/org/labkey/remoteapi/query/GetQueryDetailsCommand.java -text
 java/src/org/labkey/remoteapi/query/GetQueryDetailsResponse.java -text
 java/src/org/labkey/remoteapi/query/GetSchemasCommand.java -text
 java/src/org/labkey/remoteapi/query/GetSchemasResponse.java -text
+java/src/org/labkey/remoteapi/query/ImportDataCommand.java -text
+java/src/org/labkey/remoteapi/query/ImportDataResponse.java -text
 java/src/org/labkey/remoteapi/query/InsertRowsCommand.java -text
 java/src/org/labkey/remoteapi/query/Row.java -text
 java/src/org/labkey/remoteapi/query/RowMap.java -text
