@@ -109,15 +109,18 @@ project.afterEvaluate {
             }
         }
 
-        project.artifactoryPublish {
-            project.tasks.each {
-                if (it instanceof Jar)
-                {
-                    dependsOn it
+        if (project.hasProperty('doPublishing'))
+        {
+            project.artifactoryPublish {
+                project.tasks.each {
+                    if (it instanceof Jar)
+                    {
+                        dependsOn it
+                    }
                 }
+                dependsOn pomFileTask
+                publications('libs')
             }
-            dependsOn pomFileTask
-            publications('libs')
         }
 
     }
