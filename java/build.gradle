@@ -11,6 +11,7 @@ def orgUrl = "http://www.labkey.org"
 
 import org.labkey.gradle.plugin.LabKey
 import org.labkey.gradle.task.PomFile
+import org.labkey.gradle.util.BuildUtils
 import org.labkey.gradle.util.GroupNames
 
 dependencies {
@@ -109,7 +110,7 @@ project.afterEvaluate {
             }
         }
 
-        if (project.hasProperty('doPublishing'))
+        if (BuildUtils.shouldPublish(project))
         {
             project.artifactoryPublish {
                 project.tasks.each {
