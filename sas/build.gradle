@@ -1,6 +1,6 @@
 import org.labkey.gradle.util.GroupNames
 
-project.task("dist",
+project.task("distribution",
         group: GroupNames.DISTRIBUTION,
         description: "Create a zip file for the SAS API client distribution containing the SAS macros, java client api jar and its dependencies",
         type: Zip,
