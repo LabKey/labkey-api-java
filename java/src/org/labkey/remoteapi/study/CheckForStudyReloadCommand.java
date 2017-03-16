@@ -28,16 +28,23 @@ import java.util.Map;
 public class CheckForStudyReloadCommand extends Command<CommandResponse>
 {
     private final boolean _skipQueryValidation;
+    private final boolean _failForUndefinedVisits;
 
     public CheckForStudyReloadCommand()
     {
-        this(true);
+        this(true, false);
     }
 
     public CheckForStudyReloadCommand(boolean skipQueryValidation)
     {
+        this(skipQueryValidation, false);
+    }
+
+    public CheckForStudyReloadCommand(boolean skipQueryValidation, boolean failForUndefinedVisits)
+    {
         super("study", "checkForReload");
         _skipQueryValidation = skipQueryValidation;
+        _failForUndefinedVisits = failForUndefinedVisits;
     }
 
     @Override
@@ -47,6 +54,10 @@ public class CheckForStudyReloadCommand extends Command<CommandResponse>
         if (_skipQueryValidation)
         {
             parameters.put("skipQueryValidation", "1");
+        }
+        if (_failForUndefinedVisits)
+        {
+            parameters.put("failForUndefinedVisits", "1");
         }
         return parameters;
     }
