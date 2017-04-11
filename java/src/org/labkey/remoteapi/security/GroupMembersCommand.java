@@ -33,7 +33,7 @@ import java.util.ArrayList;
  */
 public abstract class GroupMembersCommand extends PostCommand<CommandResponse>
 {
-    private int _groupId = -1;
+    private int _groupId = 0;
     private List<Integer> _principals = new ArrayList<Integer>();
 
     protected GroupMembersCommand(String actionName, int groupId)
@@ -88,7 +88,7 @@ public abstract class GroupMembersCommand extends PostCommand<CommandResponse>
     @Override
     public JSONObject getJsonObject()
     {
-        assert getGroupId() > 0 : "forgot to set group id!";
+        assert getGroupId() != 0 : "forgot to set group id!";
         assert _principals.size() > 0 : "forgot to add principal id(s)!";
         JSONObject obj = new JSONObject();
         obj.put("groupId", getGroupId());
