@@ -42,10 +42,16 @@ public class ImportRunCommand extends PostCommand<ImportRunResponse>
     private Map<String, Object> _properties;
     private Map<String, Object> _batchProperties;
     private File _file;
+    private String _runFilePath;
+
+    public ImportRunCommand(int assayId)
+    {
+        this(assayId, null);
+    }
 
     public ImportRunCommand(int assayId, File file)
     {
-        super("assay", "importRun");
+        super("assay", "importRun.api");
         _assayId = assayId;
         _file = file;
     }
@@ -68,6 +74,15 @@ public class ImportRunCommand extends PostCommand<ImportRunResponse>
     public void setFile(File file)
     {
         _file = file;
+    }
+
+    /**
+     * Absolute or relative path to assay data file to be imported.
+     * The file must exist under the file or pipeline root of the container.
+     */
+    public void setRunFilePath(String runFilePath)
+    {
+        _runFilePath = runFilePath;
     }
 
     public void setProperties(Map<String, Object> properties)
@@ -95,6 +110,7 @@ public class ImportRunCommand extends PostCommand<ImportRunResponse>
         cmd._properties = this._properties;
         cmd._batchId = this._batchId;
         cmd._batchProperties = this._batchProperties;
+        cmd._runFilePath = this._runFilePath;
 
         return cmd;
     }
@@ -113,8 +129,8 @@ public class ImportRunCommand extends PostCommand<ImportRunResponse>
         if (_assayId == 0)
             throw new IllegalArgumentException("assay id required");
 
-        if (_file == null)
-            throw new IllegalArgumentException("file required");
+        if (_file == null && _runFilePath == null)
+            throw new IllegalArgumentException("file or runFilePath required");
 
         if (_useJson)
         {
@@ -131,8 +147,11 @@ public class ImportRunCommand extends PostCommand<ImportRunResponse>
                 json.put("properties", _properties);
             if (_batchProperties != null)
                 json.put("batchProperties", _batchProperties);
+            if (_runFilePath != null)
+                json.put("runFilePath", _runFilePath);
 
-            builder.addTextBody("json", json.toJSONString(), ContentType.APPLICATION_JSON);        }
+            builder.addTextBody("json", json.toJSONString(), ContentType.APPLICATION_JSON);
+        }
         else
         {
             builder.addTextBody("assayId", String.valueOf(_assayId));
@@ -156,10 +175,13 @@ public class ImportRunCommand extends PostCommand<ImportRunResponse>
                     builder.addTextBody("batchProperties[" + entry.getKey() + "]", String.valueOf(entry.getValue()));
                 }
             }
+            if (_runFilePath != null)
+                builder.addTextBody("runFilePath", _runFilePath);
         }
 
         // UNDONE: set content type based on extension
-        builder.addBinaryBody("file", _file, ContentType.APPLICATION_OCTET_STREAM, _file.getName());
+        if (_file != null)
+            builder.addBinaryBody("file", _file, ContentType.APPLICATION_OCTET_STREAM, _file.getName());
 
         HttpPost post = new HttpPost(uri);
         post.setEntity(builder.build());
