@@ -19,11 +19,13 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.labkey.remoteapi.PostCommand;
 
 import java.io.File;
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,12 +43,15 @@ public class ImportRunCommand extends PostCommand<ImportRunResponse>
     private String _comment;
     private Map<String, Object> _properties;
     private Map<String, Object> _batchProperties;
+
+    // Only one of the follow is allowed
+    private List<Map<String, Object>> _dataRows;
     private File _file;
     private String _runFilePath;
 
     public ImportRunCommand(int assayId)
     {
-        this(assayId, null);
+        this(assayId, (File)null);
     }
 
     public ImportRunCommand(int assayId, File file)
@@ -54,6 +59,13 @@ public class ImportRunCommand extends PostCommand<ImportRunResponse>
         super("assay", "importRun.api");
         _assayId = assayId;
         _file = file;
+    }
+
+    public ImportRunCommand(int assayId, List<Map<String, Object>> dataRows)
+    {
+        super("assay", "importRun.api");
+        _assayId = assayId;
+        _dataRows = dataRows;
     }
 
     public void setUseJson(boolean useJson)
@@ -129,8 +141,11 @@ public class ImportRunCommand extends PostCommand<ImportRunResponse>
         if (_assayId == 0)
             throw new IllegalArgumentException("assay id required");
 
-        if (_file == null && _runFilePath == null)
-            throw new IllegalArgumentException("file or runFilePath required");
+        if (_file == null && _runFilePath == null && _dataRows == null)
+            throw new IllegalArgumentException("At least one of 'file', 'runFilePath', or 'dataRows' is required");
+
+        if ((_file != null ? 1 : 0) + (_runFilePath != null ? 1 : 0) + (_dataRows != null ? 1 : 0) > 1)
+            throw new IllegalArgumentException("Only one of 'file', 'runFilePath', or 'dataRows' is allowed");
 
         if (_useJson)
         {
@@ -147,6 +162,8 @@ public class ImportRunCommand extends PostCommand<ImportRunResponse>
                 json.put("properties", _properties);
             if (_batchProperties != null)
                 json.put("batchProperties", _batchProperties);
+            if (_dataRows != null)
+                json.put("dataRows", _dataRows);
             if (_runFilePath != null)
                 json.put("runFilePath", _runFilePath);
 
@@ -175,6 +192,8 @@ public class ImportRunCommand extends PostCommand<ImportRunResponse>
                     builder.addTextBody("batchProperties[" + entry.getKey() + "]", String.valueOf(entry.getValue()));
                 }
             }
+            if (_dataRows != null)
+                builder.addTextBody("dataRows", JSONArray.toJSONString(_dataRows), ContentType.APPLICATION_JSON);
             if (_runFilePath != null)
                 builder.addTextBody("runFilePath", _runFilePath);
         }
