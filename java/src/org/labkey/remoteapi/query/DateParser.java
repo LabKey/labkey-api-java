@@ -32,7 +32,8 @@ public class DateParser
     {
         new SimpleDateFormat("yyyy/MM/d HH:mm:ss"),
         new SimpleDateFormat("yyyy-MM-d HH:mm:ss"),
-        new SimpleDateFormat("d MMM yyyy HH:mm:ss")
+        new SimpleDateFormat("d MMM yyyy HH:mm:ss"),
+        new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy")
     };
 
     public DateParser()
