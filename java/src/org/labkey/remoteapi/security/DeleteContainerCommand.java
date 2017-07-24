@@ -16,7 +16,6 @@
 package org.labkey.remoteapi.security;
 
 import org.json.simple.JSONObject;
-import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.PostCommand;
 
 /**
