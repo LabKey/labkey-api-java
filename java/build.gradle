@@ -9,8 +9,8 @@ def description = "The client-side library for Java developers is a separate JAR
 def orgUrl = "http://www.labkey.org"
 
 
+
 import org.labkey.gradle.plugin.LabKey
-import org.labkey.gradle.task.PomFile
 import org.labkey.gradle.util.BuildUtils
 import org.labkey.gradle.util.GroupNames
 
@@ -79,27 +79,46 @@ project.artifacts {
     archives project.tasks.fatJar
 }
 
-Properties pomProperties = new Properties()
-pomProperties.put("ArtifactId", artifactPrefix)
-pomProperties.put("Organization", "LabKey")
-pomProperties.put("OrganizationURL", orgUrl)
-pomProperties.put("Description", description )
-pomProperties.put("License", "The Apache Software License, Version 2.0")
-pomProperties.put("LicenseURL", "http://www.apache.org/licenses/LICENSE-2.0.txt")
+
+def pomConfig = {
+   organization {
+      name 'LabKey'
+      url orgUrl
+   }
+   licenses {
+      license {
+         name 'The Apache Software License, Version 2.0'
+         url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+         distribution 'repo'
+      }
+   }
+   scm {
+        url 'http://hedgehog.fhcrc.org/tor/stedi/trunk'
+        connection 'http://hedgehog.fhcrc.org/tor/stedi/trunk'
+        developerConnection 'http://hedgehog.fhcrc.org/tor/stedi/trunk'
+   }
+   developers {
+        developer {
+            id 'labkey-team'
+            name 'The LabKey Development Team'
+            organization 'LabKey.org'
+            organizationUrl orgUrl
+        }
+    }
+}
+
 
 project.afterEvaluate {
-    Task pomFileTask = project.task("pomFile",
-            group: GroupNames.PUBLISHING,
-            description: "create the pom file for this project",
-            type: PomFile,
-            {
-                PomFile pom ->
-                    pom.pomProperties = pomProperties
-            }
-    )
     project.publishing {
         publications {
             libs(MavenPublication) {
+                from components.java
+                pom.withXml {
+                    asNode().appendNode('url', orgUrl)
+                    asNode().appendNode('name', artifactPrefix)
+                    asNode().appendNode('description', description)
+                    asNode().children().last() + pomConfig
+                }
                 project.tasks.each {
                     if (it instanceof Jar)
                     {
@@ -119,11 +138,15 @@ project.afterEvaluate {
                         dependsOn it
                     }
                 }
-                dependsOn pomFileTask
                 publications('libs')
             }
         }
 
+    }
+    project.model {
+        tasks.publishLibsPublicationToMavenLocal {
+            enabled = false
+        }
     }
 }
 
@@ -139,7 +162,7 @@ if (project.hasProperty('bintray_user')
         user = project.bintray_user
         key = project.bintray_api_key
         publications = ['libs']
-        publish = false
+        publish = true
         // TODO set to true to make the artifacts available for download (once we've verified that our settings are correct)
         pkg {
             repo = project.version.endsWith('SNAPSHOT') ? 'libs-snapshot' : 'libs-release'
@@ -162,11 +185,12 @@ if (project.hasProperty('bintray_user')
                     sync = true //[Default: true] Determines whether to sync the version to Maven Central.
                     user = project.sonatype_username //OSS user token: mandatory
                     password = project.sonatype_password //OSS user password: mandatory
-                    close = '0'
-                    //Optional property. By default the staging repository is closed and artifacts are released to Maven Central. You can optionally turn this behaviour off (by puting 0 as value) and release the version manually.
-                    // TODO change to '1' once we've verified our procedure and settings work.
+                    close = '1'
+                    //Optional property. By default the staging repository is closed and artifacts are released to Maven Central. 
+                    //You can optionally turn this behaviour off (by puting 0 as value) and release the version manually.
                 }
             }
         }
     }
 }
+
