@@ -13,6 +13,7 @@ def orgUrl = "http://www.labkey.org"
 import org.labkey.gradle.plugin.LabKey
 import org.labkey.gradle.util.BuildUtils
 import org.labkey.gradle.util.GroupNames
+import org.labkey.gradle.task.PomFile
 
 dependencies {
     compile "org.apache.httpcomponents:httpmime:${httpmimeVersion}"
@@ -79,7 +80,21 @@ project.artifacts {
     archives project.tasks.fatJar
 }
 
+Properties pomProperties = new Properties()
+pomProperties.put("ArtifactId", artifactPrefix)
+pomProperties.put("Organization", "LabKey")
+pomProperties.put("OrganizationURL", orgUrl)
+pomProperties.put("Description", description )
+pomProperties.put("License", "The Apache Software License, Version 2.0")
+pomProperties.put("LicenseURL", "http://www.apache.org/licenses/LICENSE-2.0.txt")
 
+// N.B.  This seems redundant with the properties above, but artifactoryPublish needs to have a pom file, and I
+// can't figure out how to make it depend on the default pom file task (using tasks.generatePomFileForLibsPublication
+// produces an error complaining about not knowing what this task is).  Using the pomFileTask as a dependency for
+// bintrayUpload does not work because the default generatePomFile... task runs after the pomFileTask and thus
+// the pom file we attempt to publish with does not have any of the properties specified above.  Since I
+// can't figure out how to grab onto this task (don't know what type it is either), I can't disable it or specify
+// an ordering.  And so we have two, which I really don't like.
 def pomConfig = {
    organization {
       name 'LabKey'
@@ -107,8 +122,34 @@ def pomConfig = {
     }
 }
 
+task writeNewPom << {
+    pom {
+        project {
+            url orgUrl
+            name artifactPrefix
+            description description
+
+            licenses {
+                license {
+                    name 'The Apache Software License, Version 2.0'
+                    url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    distribution 'repo'
+                }
+            }
+        }
+    }.writeTo("pom.xml")
+}
 
 project.afterEvaluate {
+    Task pomFileTask = project.task("pomFile",
+            group: GroupNames.PUBLISHING,
+            description: "create the pom file for this project",
+            type: PomFile,
+            {
+                PomFile pom ->
+                    pom.pomProperties = pomProperties
+            }
+    )
     project.publishing {
         publications {
             libs(MavenPublication) {
@@ -138,6 +179,7 @@ project.afterEvaluate {
                         dependsOn it
                     }
                 }
+                dependsOn pomFileTask
                 publications('libs')
             }
         }
@@ -163,7 +205,6 @@ if (project.hasProperty('bintray_user')
         key = project.bintray_api_key
         publications = ['libs']
         publish = true
-        // TODO set to true to make the artifacts available for download (once we've verified that our settings are correct)
         pkg {
             repo = project.version.endsWith('SNAPSHOT') ? 'libs-snapshot' : 'libs-release'
             desc = description
