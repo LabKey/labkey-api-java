@@ -122,24 +122,6 @@ def pomConfig = {
     }
 }
 
-task writeNewPom << {
-    pom {
-        project {
-            url orgUrl
-            name artifactPrefix
-            description description
-
-            licenses {
-                license {
-                    name 'The Apache Software License, Version 2.0'
-                    url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    distribution 'repo'
-                }
-            }
-        }
-    }.writeTo("pom.xml")
-}
-
 project.afterEvaluate {
     Task pomFileTask = project.task("pomFile",
             group: GroupNames.PUBLISHING,
