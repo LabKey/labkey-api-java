@@ -91,6 +91,7 @@ public class ImportRunCommand extends PostCommand<ImportRunResponse>
     /**
      * Absolute or relative path to assay data file to be imported.
      * The file must exist under the file or pipeline root of the container.
+     * @param runFilePath the data file path
      */
     public void setRunFilePath(String runFilePath)
     {
