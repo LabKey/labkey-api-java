@@ -49,6 +49,9 @@ java/src/org/labkey/remoteapi/di/RunTransformCommand.java -text
 java/src/org/labkey/remoteapi/di/RunTransformResponse.java -text
 java/src/org/labkey/remoteapi/di/UpdateTransformConfigurationCommand.java -text
 java/src/org/labkey/remoteapi/di/UpdateTransformConfigurationResponse.java -text
+java/src/org/labkey/remoteapi/experiment/LineageCommand.java -text
+java/src/org/labkey/remoteapi/experiment/LineageNode.java -text
+java/src/org/labkey/remoteapi/experiment/LineageResponse.java -text
 java/src/org/labkey/remoteapi/ms2/StartSearchCommand.java -text
 java/src/org/labkey/remoteapi/ms2/StartSearchResponse.java -text
 java/src/org/labkey/remoteapi/pipeline/FileNotificationCommand.java -text
