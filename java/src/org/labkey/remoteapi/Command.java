@@ -380,15 +380,15 @@ public class Command<ResponseType extends CommandResponse>
                     message = (String)json.get("exception");
 
                     if ("org.labkey.api.action.ApiVersionException".equals(json.get("exceptionClass")))
-                        throw new ApiVersionException(message, r.getStatusCode(), json, responseText);
+                        throw new ApiVersionException(message, r.getStatusCode(), json, responseText, contentType);
 
-                    throw new CommandException(message, r.getStatusCode(), json, responseText);
+                    throw new CommandException(message, r.getStatusCode(), json, responseText, contentType);
                 }
             }
         }
 
         if (throwByDefault)
-            throw new CommandException(message, r.getStatusCode(), json, responseText);
+            throw new CommandException(message, r.getStatusCode(), json, responseText, contentType);
 
         // If we didn't encounter an exception property on the json object, save the fully consumed text and parsed json on the Response object
         r._json = json;

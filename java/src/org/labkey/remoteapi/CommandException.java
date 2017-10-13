@@ -33,6 +33,7 @@ import java.util.Map;
  */
 public class CommandException extends Exception
 {
+    private final String _contentType;
     private final int _statusCode;
     private final Map<String, Object> _properties;
     private final String _responseText;
@@ -44,23 +45,38 @@ public class CommandException extends Exception
      */
     public CommandException(String message)
     {
-        this(message, 0, null, null);
+        this(message, 0, null, null, null);
+    }
+
+    /**
+     * @deprecated Use {@link #CommandException(String, int, Map, String, String)}
+     */
+    public CommandException(String message, int statusCode, Map<String, Object> properties, String responseText)
+    {
+        this(message, statusCode, properties, responseText, null);
     }
 
     /**
      * Constructs a new CommandException given a message, HTTP status code,
-     * and exception property map (which may be null).
+     * exception property map, responseText, and contentType.
      * @param message The message text (should not be null).
      * @param statusCode The HTTP status code.
      * @param properties The exception property map (may be null)
      * @param responseText The full response text (may be null)
+     * @param contentType The response content type (may be null)
      */
-    public CommandException(String message, int statusCode, Map<String, Object> properties, String responseText)
+    public CommandException(String message, int statusCode, Map<String, Object> properties, String responseText, String contentType)
     {
         super(message);
         _statusCode = statusCode;
         _properties = properties;
         _responseText = responseText;
+        _contentType = contentType;
+    }
+
+    public String getContentType()
+    {
+        return _contentType;
     }
 
     /**
