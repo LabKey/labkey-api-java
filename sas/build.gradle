@@ -1,11 +1,20 @@
+import org.labkey.gradle.util.BuildUtils
 import org.labkey.gradle.util.GroupNames
+import org.labkey.gradle.plugin.extension.TeamCityExtension
+
+// We add the TeamCity extension here if it doesn't exist because we will use the build
+// number property from TeamCity in the distribution artifact names, if present.
+TeamCityExtension teamCityExt  = project.getExtensions().findByType(TeamCityExtension.class)
+if (teamCityExt == null)
+    project.extensions.create("teamCity", TeamCityExtension, project)
+
 
 project.task("distribution",
         group: GroupNames.DISTRIBUTION,
         description: "Create a zip file for the SAS API client distribution containing the SAS macros, java client api jar and its dependencies",
         type: Zip,
         {Zip zip ->
-            zip.baseName = "LabKey${project.version}-ClientAPI-SAS"
+            zip.baseName = "LabKey${BuildUtils.getDistributionVersion(project)}-ClientAPI-SAS"
             zip.from (project.file("macros"))
             zip.from (project.project(":remoteapi:java").tasks.jar)
             zip.from (project.project(":remoteapi:java").configurations.compile)
