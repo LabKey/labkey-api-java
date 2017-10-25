@@ -55,6 +55,10 @@ project.task("fatJar",
                 jar.version project.version
                 jar.classifier LabKey.FAT_JAR_CLASSIFIER
                 jar.dependsOn project.tasks.jar
+                jar.into('lib') {
+                    from tasks.jar
+                    from configurations.compile
+                }
         }
 )
 
