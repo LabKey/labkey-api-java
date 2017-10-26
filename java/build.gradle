@@ -62,20 +62,20 @@ project.task("fatJar",
         }
 )
 
-project.task('javadocJar', description: "Generate jar file of javadoc files", type: Jar) {
-            from project.tasks.javadoc.destinationDir
-            group GroupNames.DISTRIBUTION
-            baseName artifactPrefix
-            classifier LabKey.JAVADOC_CLASSIFIER
-            dependsOn project.tasks.javadoc
+project.task('javadocJar', description: "Generate jar file of javadoc files", type: Jar) {Jar jar ->
+            jar.from project.tasks.javadoc.destinationDir
+            jar.group GroupNames.DISTRIBUTION
+            jar.baseName artifactPrefix
+            jar.classifier LabKey.JAVADOC_CLASSIFIER
+            jar.dependsOn project.tasks.javadoc
         }
 
-project.task('sourcesJar', description: "Generate jar file of source files", type: Jar) {
-            from project.sourceSets.main.allJava
+project.task('sourcesJar', description: "Generate jar file of source files", type: Jar) {Jar jar ->
+            jar.from project.sourceSets.main.allJava
 
-            group GroupNames.DISTRIBUTION
-            baseName artifactPrefix
-            classifier LabKey.SOURCES_CLASSIFIER
+            jar.group GroupNames.DISTRIBUTION
+            jar.baseName artifactPrefix
+            jar.classifier LabKey.SOURCES_CLASSIFIER
 }
 
 project.artifacts {
