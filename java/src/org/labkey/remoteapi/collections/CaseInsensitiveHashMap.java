@@ -15,15 +15,10 @@
  */
 package org.labkey.remoteapi.collections;
 
-import java.util.Map;
-import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-/**
- * User: dave
- * Date: Aug 26, 2009
- * Time: 2:57:19 PM
- */
 public class CaseInsensitiveHashMap<V> extends HashMap<String, V>
 {
     private Map<String, String> caseMap = new HashMap<String, String>();
@@ -111,6 +106,33 @@ public class CaseInsensitiveHashMap<V> extends HashMap<String, V>
         return super.put(correctCase, o1);
     }
 
+    @Override
+    public V getOrDefault(Object key, V defaultValue)
+    {
+        if (containsKey(key))
+            return get(key);
+
+        return defaultValue;
+    }
+
+    @Override
+    public V putIfAbsent(String key, V value)
+    {
+        if (containsKey(key))
+            return get(key);
+
+        put(key, value);
+        return null;
+    }
+
+    @Override
+    public void putAll(Map<? extends String, ? extends V> m)
+    {
+        for (Entry<? extends String, ? extends V> e : m.entrySet())
+        {
+            put(e.getKey(), e.getValue());
+        }
+    }
 
     //
     // UNDONE
