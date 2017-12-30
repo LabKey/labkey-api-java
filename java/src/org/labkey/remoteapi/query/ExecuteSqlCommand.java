@@ -55,7 +55,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
     private Map<String, String> _queryParameters = new HashMap<String, String>();
 
     /**
-     * Constructs an ExceuteSqlCommand, initialized with a schema name.
+     * Constructs an ExecuteSqlCommand, initialized with a schema name.
      * <p>
      * When using this constructor, you must call the {@link #setSql(String)}
      * method before executing the command.
