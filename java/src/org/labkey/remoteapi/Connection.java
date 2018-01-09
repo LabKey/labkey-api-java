@@ -15,16 +15,18 @@
  */
 package org.labkey.remoteapi;
 
+import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.auth.AuthenticationException;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLContextBuilder;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.BasicCookieStore;
@@ -41,8 +43,6 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Represents connection information for a particular LabKey Server.
@@ -101,10 +101,12 @@ public class Connection
     private final String _baseUrl;
     private final CredentialsProvider _credentialsProvider;
     private final HttpClientContext _httpClientContext;
-    private final Map<Integer, CloseableHttpClient> _clientMap = new HashMap<>(3); // Typically very small
 
+    private CloseableHttpClient _client;
     private boolean _acceptSelfSignedCerts;
     private int _timeout = DEFAULT_TIMEOUT;
+    private String _proxyHost;
+    private Integer _proxyPort;
 
     /**
      * Constructs a new Connection object given a base URL and a credentials provider.
@@ -171,70 +173,50 @@ public class Connection
     }
 
     /**
-     * Returns true if the connection should accept a self-signed
-     * SSL certificate when using HTTPS, false otherwise. Defaults
-     * to true.
-     * @return true or false
-     */
-    public boolean isAcceptSelfSignedCerts()
-    {
-        return _acceptSelfSignedCerts;
-    }
-
-    /**
-     * Sets the accept self-signed certificates option. Set to false
-     * to disable automatic acceptance of self-signed SSL certificates
-     * when using HTTPS.
-     * @param acceptSelfSignedCerts set to false to not accept self-signed certificates
-     */
-    public void setAcceptSelfSignedCerts(boolean acceptSelfSignedCerts)
-    {
-        // Handled in getHttpClient using 4.3.x approach documented here http://stackoverflow.com/questions/19517538/ignoring-ssl-certificate-in-apache-httpclient-4-3
-        _acceptSelfSignedCerts = acceptSelfSignedCerts;
-        _clientMap.clear();      // clear client cache
-    }
-
-    /**
      * Returns the CloseableHttpClient object to use for this connection.
-     * @param timeout The socket timeout for this request
      * @return The CloseableHttpClient object to use.
      */
-    public CloseableHttpClient getHttpClient(int timeout)
+    public CloseableHttpClient getHttpClient()
     {
-        // We try to hand out the same HttpClient instance to share it across multiple requests, as the docs recommend.
-        // However, HttpClient 4.x moved setting of the timeout to HttpClient construction time (it used to be on the
-        // request-specific Method instance) but our API allows setting a timeout on a per-Command basis (which seems
-        // perfectly reasonable). So, we stash and retrieve HttpClients using a Map<Integer, HttpClient>.
-
-        CloseableHttpClient client = _clientMap.get(timeout);
-
-        if (null == client)
+        if (null == _client)
         {
-            HttpClientBuilder builder = HttpClientBuilder.create()
-                    .setConnectionManager(_connectionManager)
-                    .setDefaultRequestConfig(RequestConfig.custom().setSocketTimeout(timeout).build())
-                    .setDefaultCookieStore(_httpClientContext.getCookieStore());
-            if (_acceptSelfSignedCerts)
-            {
-                try
-                {
-                    SSLContextBuilder sslContextBuilder = new SSLContextBuilder();
-                    sslContextBuilder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
-                    SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContextBuilder.build());
-                    builder.setSSLSocketFactory(sslConnectionSocketFactory);
-                }
-                catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException e)
-                {
-                    throw new RuntimeException(e);
-                }
-            }
-            client = builder.build();
-
-            _clientMap.put(timeout, client);
+            _client = clientBuilder().build();
         }
 
-        return client;
+        return _client;
     }
+
+    /**
+     * Create the HttpClientBuilder based on this Connection's configuration options.
+     */
+    protected HttpClientBuilder clientBuilder()
+    {
+        HttpClientBuilder builder = HttpClientBuilder.create()
+                .setConnectionManager(_connectionManager)
+                .setDefaultRequestConfig(RequestConfig.custom().setSocketTimeout(getTimeout()).build())
+                .setDefaultCookieStore(_httpClientContext.getCookieStore());
+
+        if (_proxyHost != null && _proxyPort != null)
+            builder.setProxy(new HttpHost(_proxyHost, _proxyPort));
+
+        if (_acceptSelfSignedCerts)
+        {
+            try
+            {
+                SSLContextBuilder sslContextBuilder = new SSLContextBuilder();
+                sslContextBuilder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
+                SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContextBuilder.build());
+                builder.setSSLSocketFactory(sslConnectionSocketFactory);
+            }
+            catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException e)
+            {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return builder;
+    }
+
 
 
     private String csrf = null;
@@ -273,14 +255,14 @@ public class Connection
     /**
      * Ensures that the credentials have been used to authenticate the users and returns a client that can be used for other requests
      * @return an HTTP client
-     * @throws IOException if there is an IO problem executing the command to ensure loginf
+     * @throws IOException if there is an IO problem executing the command to ensure login
      * @throws CommandException if the server returned a non-success status code.
      */
     public CloseableHttpClient ensureAuthenticated() throws IOException, CommandException
     {
         EnsureLoginCommand command = new EnsureLoginCommand();
         CommandResponse response = command.execute(this, "/home");
-        return getHttpClient(getTimeout());
+        return getHttpClient();
     }
 
     CloseableHttpResponse executeRequest(HttpUriRequest request, Integer timeout) throws IOException, URISyntaxException, AuthenticationException
@@ -288,8 +270,18 @@ public class Connection
         // Delegate authentication setup to CredentialsProvider
         _credentialsProvider.configureRequest(getBaseUrl(), request, _httpClientContext);
 
-        int clientTimeout = null == timeout ? getTimeout() : timeout;
-        CloseableHttpClient client = getHttpClient(clientTimeout);
+        CloseableHttpClient client = getHttpClient();
+
+        // Set the timeout on the request if it is different the client's default
+        if (request instanceof HttpRequestBase && timeout != null && timeout != getTimeout())
+        {
+            HttpRequestBase r = (HttpRequestBase)request;
+            RequestConfig base = r.getConfig();
+            if (base == null)
+                base = RequestConfig.DEFAULT;
+            r.setConfig(RequestConfig.copy(base).setSocketTimeout(timeout).build());
+        }
+
         beforeExecute(request);
         CloseableHttpResponse response = client.execute(request, _httpClientContext);
         afterExecute();
@@ -300,11 +292,15 @@ public class Connection
     /**
      * Set a default timeout for Commands that have not established their own timeouts. Null resets the Connection to the
      * default timeout (60 seconds). 0 means the request should never timeout.
+     * NOTE: Changing this setting will force the underlying http client to be recreated.
+     *
      * @param timeout the length of the timeout waiting for the server response, in milliseconds
      */
-    public void setTimeout(Integer timeout)
+    public Connection setTimeout(Integer timeout)
     {
-        _timeout = timeout;
+        _timeout = timeout == null ? DEFAULT_TIMEOUT : timeout;
+        _client = null;
+        return this;
     }
 
     /**
@@ -317,7 +313,45 @@ public class Connection
     }
 
     /**
+     * Sets the proxy host and port for this Connection.
+     * NOTE: Changing this setting will force the underlying http client to be recreated.
+     */
+    public Connection setProxy(String host, Integer port)
+    {
+        _proxyHost = host;
+        _proxyPort = port;
+        _client = null;
+        return this;
+    }
+
+    /**
+     * Returns true if the connection should accept a self-signed
+     * SSL certificate when using HTTPS, false otherwise. Defaults
+     * to true.
+     * @return true or false
+     */
+    public boolean isAcceptSelfSignedCerts()
+    {
+        return _acceptSelfSignedCerts;
+    }
+
+    /**
+     * Sets the accept self-signed certificates option. Set to false
+     * to disable automatic acceptance of self-signed SSL certificates
+     * when using HTTPS.
+     * NOTE: Changing this setting will force the underlying http client to be recreated.
      *
+     * @param acceptSelfSignedCerts set to false to not accept self-signed certificates
+     */
+    public Connection setAcceptSelfSignedCerts(boolean acceptSelfSignedCerts)
+    {
+        // Handled in getHttpClient using 4.3.x approach documented here http://stackoverflow.com/questions/19517538/ignoring-ssl-certificate-in-apache-httpclient-4-3
+        _acceptSelfSignedCerts = acceptSelfSignedCerts;
+        _client = null;
+        return this;
+    }
+
+    /**
      * @param name The cookie name
      * @param value The cookie value
      * @param domain The domain to which the cookie is visible
@@ -325,7 +359,7 @@ public class Connection
      * @param expiry The cookie's expiration date
      * @param isSecure Whether the cookie requires a secure connection
      */
-    public void addCookie(String name, String value, String domain, String path, Date expiry, boolean isSecure)
+    public Connection addCookie(String name, String value, String domain, String path, Date expiry, boolean isSecure)
     {
         BasicClientCookie cookie = new BasicClientCookie(name, value);
         cookie.setDomain(domain);
@@ -333,5 +367,7 @@ public class Connection
         cookie.setExpiryDate(expiry);
         cookie.setSecure(isSecure);
         _httpClientContext.getCookieStore().addCookie(cookie);
+        return this;
     }
+
 }
