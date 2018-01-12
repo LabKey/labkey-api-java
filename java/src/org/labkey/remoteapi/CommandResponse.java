@@ -20,6 +20,8 @@ import org.json.simple.JSONValue;
 
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /*
 * User: Dave
@@ -145,6 +147,8 @@ public class CommandResponse
      * The path is a period-delimited list of property names. For
      * example, to obtain the 'bar' property from the Map associated
      * with the 'foo' property, the path would be 'foo.bar'.
+     * Property names may include an array index. For example, 'foos[2].bar'
+     * will return the 'bar' property for the third item of the 'foos' array
      * @param path The property path.
      * @param <T> the type of the property.
      * @return The property value, or null if the property was not found.
@@ -164,27 +168,45 @@ public class CommandResponse
      * a String[], and recursively by itself as it descends the property
      * hierarchy.
      * @param path The path split into a String[].
-     * @param index The current index into the path array.
+     * @param pathIndex The current index into the path array.
      * @param parent The current parent map.
      * @param <T> The type of the property.
      * @return The property value, or null if not found.
      */
     @SuppressWarnings("unchecked")
-    protected <T> T getProperty(String[] path, int index, Map<String,Object> parent)
+    protected <T> T getProperty(String[] path, int pathIndex, Map<String,Object> parent)
     {
         if(null == parent)
             return null;
 
-        Object prop = parent.get(path[index]);
+        String key = path[pathIndex];
+        Integer arrayIndex = null;
+        Pattern arrayPattern = Pattern.compile("(.+)\\[([0-9]+)]$");
+        Matcher matcher = arrayPattern.matcher(key);
+        if (matcher.find())
+        {
+            key = matcher.group(1);
+            arrayIndex = Integer.parseInt(matcher.group(2));
+        }
+
+        Object prop = parent.get(key);
+        if (arrayIndex != null)
+        {
+            if (prop != null && prop instanceof List && ((List)prop).size() > arrayIndex)
+                prop = ((List)prop).get(arrayIndex);
+            else
+                return null;
+        }
+
         //if this was the last path part, return the prop
         //will return null if final path part not found
-        if(index == (path.length -1))
+        if(pathIndex == (path.length -1))
             return (T)prop;
         else
         {
             //recurse if prop is non-null and instance of map
             return (null != prop && prop instanceof Map)
-                ? (T)getProperty(path, index + 1, (Map<String,Object>)prop)
+                ? (T)getProperty(path, pathIndex + 1, (Map<String,Object>)prop)
                 : null;
         }
     }
