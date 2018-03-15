@@ -77,7 +77,7 @@ public class LineageResponse extends CommandResponse
         if (_seed == null)
             sb.append("No seed found");
 
-        _seed.dump(0, sb, new HashSet<>());
+        _seed.dump(0, sb, new HashSet<String>());
     }
 
 }

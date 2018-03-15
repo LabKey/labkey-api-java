@@ -18,10 +18,10 @@ package org.labkey.remoteapi.experiment;
 
 import org.labkey.remoteapi.ResponseObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class LineageNode extends ResponseObject
 {
@@ -55,14 +55,14 @@ public class LineageNode extends ResponseObject
 
     List<Edge> fixupEdges(Map<String, LineageNode> nodes, List<Map<String, Object>> edges)
     {
-        return edges
-                .stream()
-                .map(m -> {
-                    String role = (String)m.get("role");
-                    String lsid = (String)m.get("lsid");
-                    return new Edge(role, nodes.get(lsid));
-                })
-                .collect(Collectors.toList());
+        List<Edge> fixedEdges = new ArrayList<>();
+        for (Map<String, Object> edge : edges)
+        {
+            String role = (String)edge.get("role");
+            String lsid = (String)edge.get("lsid");
+            fixedEdges.add(new Edge(role, nodes.get(lsid)));
+        }
+        return fixedEdges;
     }
 
     public String getLsid()

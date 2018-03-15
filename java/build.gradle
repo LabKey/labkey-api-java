@@ -43,6 +43,11 @@ jar {
     libsDirName = "jar"
 }
 
+project.tasks.withType(JavaCompile) {
+    sourceCompatibility = project.ext.sourceCompatibility
+    targetCompatibility = project.ext.targetCompatibility
+}
+
 project.task("fatJar",
         description: "Generate single jar file containing the api and all its dependent classes",
         group: GroupNames.BUILD,
