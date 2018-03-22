@@ -126,7 +126,7 @@ public class LabKeyResultSetMetaData extends BaseJDBC implements ResultSetMetaDa
         {
             return Types.BIGINT;
         }
-        if (type == Date.class)
+        if (type == Date.class || type == java.sql.Date.class)
         {
             return Types.DATE;
         }
@@ -150,7 +150,7 @@ public class LabKeyResultSetMetaData extends BaseJDBC implements ResultSetMetaDa
         {
             return Types.BOOLEAN;
         }
-        throw new UnsupportedOperationException("Unexpected type: " + type);
+        throw new LoggingUnsupportedOperationException("Unexpected type: " + type);
     }
 
     public String getColumnTypeName(int column) throws SQLException
@@ -168,7 +168,7 @@ public class LabKeyResultSetMetaData extends BaseJDBC implements ResultSetMetaDa
         {
             return "BIGINT";
         }
-        if (type == Date.class)
+        if (type == Date.class || type == java.sql.Date.class)
         {
             return "DATE";
         }
@@ -192,7 +192,7 @@ public class LabKeyResultSetMetaData extends BaseJDBC implements ResultSetMetaDa
         {
             return "BOOLEAN";
         }
-        throw new UnsupportedOperationException("Unexpected type: " + type);
+        throw new LoggingUnsupportedOperationException("Unexpected type: " + type);
     }
 
     private LabKeyResultSet.Column getColumn(int column)

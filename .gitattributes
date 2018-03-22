@@ -90,6 +90,7 @@ java/src/org/labkey/remoteapi/query/jdbc/LabKeyDriver.java -text
 java/src/org/labkey/remoteapi/query/jdbc/LabKeyResultSet.java -text
 java/src/org/labkey/remoteapi/query/jdbc/LabKeyResultSetMetaData.java -text
 java/src/org/labkey/remoteapi/query/jdbc/LabKeyStatement.java -text
+java/src/org/labkey/remoteapi/query/jdbc/LoggingUnsupportedOperationException.java -text
 java/src/org/labkey/remoteapi/query/jdbc/ResultSetData.java -text
 java/src/org/labkey/remoteapi/query/jdbc/Test.java -text
 java/src/org/labkey/remoteapi/sas/Main.java -text

@@ -32,7 +32,7 @@ import java.util.logging.Logger;
  */
 public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
 {
-    private final static Logger _log = Logger.getLogger("test");
+    private final static Logger _log = Logger.getLogger(LabKeyDatabaseMetaData.class.getName());
 
     private final LabKeyConnection _connection;
 
@@ -647,7 +647,7 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
     {
         _log.log(Level.INFO, "getTables: " + catalog + ", " + schemaPattern + ", " + tableNamePattern);
         _connection.setCatalog(catalog);
-        validatePattern(schemaPattern, "schemaPattern");
+        validatePattern(schemaPattern, "schemaPattern", true);
         if (tableNamePattern != null && !tableNamePattern.equals("%") && (tableNamePattern.contains("%") || tableNamePattern.contains("_")))
         {
             throw new IllegalArgumentException("tableNamePattern must request an exact match, but was: " + tableNamePattern);
@@ -758,8 +758,8 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
     public ResultSet getColumns(String catalog, String schemaPattern, String tableNamePattern, String columnNamePattern) throws SQLException
     {
         _connection.setCatalog(catalog);
-        validatePattern(schemaPattern, "schemaPattern");
-        validatePattern(tableNamePattern, "tableNamePattern");
+        validatePattern(schemaPattern, "schemaPattern", false);
+        validatePattern(tableNamePattern, "tableNamePattern", false);
         if (columnNamePattern != null && !"%".equals(columnNamePattern))
         {
             throw new IllegalArgumentException("columnNamePattern must be null");
@@ -824,13 +824,16 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
         return new LabKeyResultSet(rows, cols, _connection);
     }
 
-    private void validatePattern(String pattern, String patternName)
+    private void validatePattern(String pattern, String patternName, boolean allowNull)
     {
         if (pattern == null)
         {
-            throw new IllegalArgumentException(patternName + " must request an exact match but was null");
+            if (!allowNull)
+                throw new IllegalArgumentException(patternName + " must request an exact match but was null");
+            else
+                _log.info(patternName + " is null");
         }
-        if (pattern.contains("%") || pattern.contains("_"))
+        else if (pattern.contains("%") || pattern.contains("_"))
         {
             _log.info(patternName + " requested via a possible wildcard pattern, but interpreting as an exact match: " + pattern);
         }
@@ -1155,7 +1158,7 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
 
     public RowIdLifetime getRowIdLifetime() throws SQLException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
     }
 
     public List<String> getSchemaNames() throws SQLException
@@ -1257,11 +1260,11 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
 
     public ResultSet getPseudoColumns(String catalog, String schemaPattern, String tableNamePattern, String columnNamePattern) throws SQLException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
     }
 
     public boolean generatedKeyAlwaysReturned() throws SQLException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
     }
 }

@@ -127,6 +127,6 @@ public class LabKeyDriver implements Driver
 
     public Logger getParentLogger() throws SQLFeatureNotSupportedException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
     }
 }

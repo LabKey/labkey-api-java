@@ -16,7 +16,21 @@
 package org.labkey.remoteapi.query.jdbc;
 
 
-import java.sql.*;
+import java.sql.Array;
+import java.sql.Blob;
+import java.sql.CallableStatement;
+import java.sql.Clob;
+import java.sql.DatabaseMetaData;
+import java.sql.NClob;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLClientInfoException;
+import java.sql.SQLException;
+import java.sql.SQLWarning;
+import java.sql.SQLXML;
+import java.sql.Savepoint;
+import java.sql.Statement;
+import java.sql.Struct;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -30,7 +44,7 @@ import java.util.logging.Logger;
  */
 public class LabKeyConnection extends BaseJDBC implements java.sql.Connection
 {
-    private final static Logger _log = Logger.getLogger("test");
+    private final static Logger _log = Logger.getLogger(LabKeyConnection.class.getName());
 
     public static String TIMEOUT_PARAMETER_NAME = "Timeout";
 
@@ -63,7 +77,7 @@ public class LabKeyConnection extends BaseJDBC implements java.sql.Connection
 
     public void clearWarnings() throws SQLException
     {
-        throw new UnsupportedOperationException();
+        // no-op
     }
 
     public Statement createStatement() throws SQLException
@@ -73,26 +87,26 @@ public class LabKeyConnection extends BaseJDBC implements java.sql.Connection
 
     public PreparedStatement prepareStatement(String sql) throws SQLException
     {
-        throw new UnsupportedOperationException();
+         return this.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
     }
 
     public CallableStatement prepareCall(String sql) throws SQLException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
     }
 
     public String nativeSQL(String sql) throws SQLException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
     }
 
     public void setAutoCommit(boolean autoCommit) throws SQLException
     {
         validateOpen();
-        if (!autoCommit)
-        {
-            throw new UnsupportedOperationException();
-        }
+//        if (!autoCommit)
+//        {
+//            throw new LoggingUnsupportedOperationException();
+//        }
     }
 
     public boolean getAutoCommit() throws SQLException
@@ -111,13 +125,11 @@ public class LabKeyConnection extends BaseJDBC implements java.sql.Connection
     public void commit() throws SQLException
     {
         validateOpen();
-        throw new UnsupportedOperationException();
     }
 
     public void rollback() throws SQLException
     {
         validateOpen();
-        throw new UnsupportedOperationException();
     }
 
     public void close() throws SQLException
@@ -138,12 +150,12 @@ public class LabKeyConnection extends BaseJDBC implements java.sql.Connection
 
     public void setReadOnly(boolean readOnly) throws SQLException
     {
-        throw new UnsupportedOperationException();
+        // no op
     }
 
     public boolean isReadOnly() throws SQLException
     {
-        return false;
+        return true;
     }
 
     public void setCatalog(String catalog) throws SQLException
@@ -160,32 +172,41 @@ public class LabKeyConnection extends BaseJDBC implements java.sql.Connection
 
     public void setTransactionIsolation(int level) throws SQLException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
     }
 
     public int getTransactionIsolation() throws SQLException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
     }
 
     public SQLWarning getWarnings() throws SQLException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
     }
 
     public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
     }
 
     public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency) throws SQLException
     {
-        throw new UnsupportedOperationException();
+        this.checkOpen();
+        if (sql != null && sql.length() != 0)
+        {
+            return new LabKeyStatement(this, sql);
+            //            this.addStatement(stmt);
+        }
+        else
+        {
+            throw new SQLException("SQL null or blank");
+        }
     }
 
     public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency) throws SQLException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
     }
 
     public Map<String, Class<?>> getTypeMap() throws SQLException
@@ -200,87 +221,87 @@ public class LabKeyConnection extends BaseJDBC implements java.sql.Connection
 
     public void setHoldability(int holdability) throws SQLException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
     }
 
     public int getHoldability() throws SQLException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
     }
 
     public Savepoint setSavepoint() throws SQLException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
     }
 
     public Savepoint setSavepoint(String name) throws SQLException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
     }
 
     public void rollback(Savepoint savepoint) throws SQLException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
     }
 
     public void releaseSavepoint(Savepoint savepoint) throws SQLException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
     }
 
     public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
     }
 
     public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
     }
 
     public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
     }
 
     public PreparedStatement prepareStatement(String sql, int autoGeneratedKeys) throws SQLException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
     }
 
     public PreparedStatement prepareStatement(String sql, int[] columnIndexes) throws SQLException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
     }
 
     public PreparedStatement prepareStatement(String sql, String[] columnNames) throws SQLException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
     }
 
     public Clob createClob() throws SQLException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
     }
 
     public Blob createBlob() throws SQLException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
     }
 
     public NClob createNClob() throws SQLException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
     }
 
     public SQLXML createSQLXML() throws SQLException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
     }
 
     public boolean isValid(int timeout) throws SQLException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
     }
 
     public void setClientInfo(String name, String value) throws SQLClientInfoException
@@ -332,38 +353,46 @@ public class LabKeyConnection extends BaseJDBC implements java.sql.Connection
 
     public Array createArrayOf(String typeName, Object[] elements) throws SQLException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
     }
 
     public Struct createStruct(String typeName, Object[] attributes) throws SQLException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
     }
 
     // These JDBC 4.1 methods must be "implemented" so JDK 7 can compile this class.
 
     public void setSchema(String schema) throws SQLException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
     }
 
     public String getSchema() throws SQLException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
     }
 
     public void abort(Executor executor) throws SQLException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
     }
 
     public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
     }
 
     public int getNetworkTimeout() throws SQLException
     {
-        throw new UnsupportedOperationException();
+        throw new LoggingUnsupportedOperationException();
+    }
+
+    //
+
+    private void checkOpen() throws SQLException {
+        if (this._closed) {
+            throw new SQLException("Connection closed");
+        }
     }
 }
