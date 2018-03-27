@@ -55,6 +55,8 @@ public class LabKeyConnection extends BaseJDBC implements java.sql.Connection
 
     private Map<String, Class<?>> _typeMap = new HashMap<>();
 
+    private boolean _rootIsCatalog = false;
+
     public LabKeyConnection(org.labkey.remoteapi.Connection conn)
     {
         _conn = conn;
@@ -394,5 +396,20 @@ public class LabKeyConnection extends BaseJDBC implements java.sql.Connection
         if (this._closed) {
             throw new SQLException("Connection closed");
         }
+    }
+
+    boolean isRootIsCatalog()
+    {
+        return _rootIsCatalog;
+    }
+
+    /**
+     * Setting this true will force root to only be exposed as a catalog in calls to getTables(); the schemas/tables will not also be exposed
+     * at the top level of the tree in calls to getTables()
+     * @param rootIsCatalog
+     */
+    void setRootIsCatalog(boolean rootIsCatalog)
+    {
+        _rootIsCatalog = rootIsCatalog;
     }
 }

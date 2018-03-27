@@ -16,13 +16,27 @@
 package org.labkey.remoteapi.query.jdbc;
 
 import org.labkey.remoteapi.CommandException;
-import org.labkey.remoteapi.query.*;
+import org.labkey.remoteapi.query.GetQueriesCommand;
+import org.labkey.remoteapi.query.GetQueriesResponse;
+import org.labkey.remoteapi.query.GetQueryDetailsCommand;
+import org.labkey.remoteapi.query.GetQueryDetailsResponse;
+import org.labkey.remoteapi.query.GetSchemasCommand;
+import org.labkey.remoteapi.query.GetSchemasResponse;
 import org.labkey.remoteapi.security.GetContainersCommand;
 import org.labkey.remoteapi.security.GetContainersResponse;
 
 import java.io.IOException;
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.RowIdLifetime;
+import java.sql.SQLException;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -654,18 +668,18 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
         }
         try
         {
-            List<String> schemaNames;
+            List<String> schemaNames = Collections.emptyList();
             if (schemaPattern != null)
             {
                 schemaNames = Collections.singletonList(schemaPattern);
             }
-            else
+            else if (!_connection.isRootIsCatalog() || (catalog != null && catalog.length() > 0))
             {
                 GetSchemasCommand command = new GetSchemasCommand();
                 GetSchemasResponse response = command.execute(_connection.getConnection(), _connection.getFolderPath());
                 schemaNames = response.getSchemaNames();
             }
-            List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
+            List<Map<String, Object>> rows = new ArrayList<>();
             for (String schemaName : schemaNames)
             {
                 GetQueriesCommand command = new GetQueriesCommand(schemaName);
@@ -690,7 +704,7 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
                     }
                 }
             }
-            List<LabKeyResultSet.Column> columns = new ArrayList<LabKeyResultSet.Column>();
+            List<LabKeyResultSet.Column> columns = new ArrayList<>();
             columns.add(new LabKeyResultSet.Column("TABLE_CAT", String.class));
             columns.add(new LabKeyResultSet.Column("TABLE_SCHEM", String.class));
             columns.add(new LabKeyResultSet.Column("TABLE_NAME", String.class));
@@ -703,11 +717,7 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
             columns.add(new LabKeyResultSet.Column("REF_GENERATION", String.class));
             return new LabKeyResultSet(rows, columns, _connection);
         }
-        catch (IOException e)
-        {
-            throw new SQLException(e);
-        }
-        catch (CommandException e)
+        catch (IOException | CommandException e)
         {
             throw new SQLException(e);
         }
@@ -720,15 +730,11 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
             GetContainersCommand command = new GetContainersCommand();
             command.setIncludeSubfolders(true);
             GetContainersResponse response = command.execute(_connection.getConnection(), "/");
-            List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
+            List<Map<String, Object>> rows = new ArrayList<>();
             addCatalog(response.getParsedData(), rows);
             return new LabKeyResultSet(rows, Collections.singletonList(new LabKeyResultSet.Column("TABLE_CAT", String.class)), _connection);
         }
-        catch (IOException e)
-        {
-            throw new SQLException(e);
-        }
-        catch (CommandException e)
+        catch (IOException | CommandException e)
         {
             throw new SQLException(e);
         }
@@ -736,7 +742,8 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
 
     private void addCatalog(Map<String, Object> parsedData, List<Map<String, Object>> rows)
     {
-        rows.add(Collections.singletonMap("TABLE_CAT", parsedData.get("path")));
+        if (parsedData.containsKey("effectivePermissions"))
+            rows.add(Collections.singletonMap("TABLE_CAT", parsedData.get("path")));
         if (parsedData.containsKey("children"))
         {
             List<Map<String, Object>> children = (List<Map<String, Object>>)parsedData.get("children");
@@ -749,7 +756,7 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
 
     public ResultSet getTableTypes() throws SQLException
     {
-        List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> rows = new ArrayList<>();
         rows.add(Collections.<String, Object>singletonMap("TABLE_TYPE", "TABLE"));
         List<LabKeyResultSet.Column> columns = Collections.singletonList(new LabKeyResultSet.Column("TABLE_TYPE", String.class));
         return new LabKeyResultSet(rows, columns, _connection);
@@ -765,13 +772,13 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
             throw new IllegalArgumentException("columnNamePattern must be null");
         }
 
-        List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> rows = new ArrayList<>();
         GetQueryDetailsResponse response = getQueryDetails(schemaPattern, tableNamePattern);
 
         int ordinalPosition = 1;
         for (GetQueryDetailsResponse.Column column : response.getColumns())
         {
-            Map<String, Object> row = new HashMap<String, Object>();
+            Map<String, Object> row = new HashMap<>();
             row.put("TABLE_CAT", catalog);
             row.put("TABLE_SCHEM", response.getSchemaName());
             row.put("TABLE_NAME", response.getName());
@@ -797,7 +804,7 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
             rows.add(row);
         }
 
-        List<LabKeyResultSet.Column> cols = new ArrayList<LabKeyResultSet.Column>();
+        List<LabKeyResultSet.Column> cols = new ArrayList<>();
         cols.add(new LabKeyResultSet.Column("TABLE_CAT", String.class));
         cols.add(new LabKeyResultSet.Column("TABLE_SCHEM", String.class));
         cols.add(new LabKeyResultSet.Column("TABLE_NAME", String.class));
@@ -855,7 +862,7 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
         }
         if (type.contains("Date"))
         {
-            return Types.DATE;
+            return Types.TIMESTAMP;
         }
         if (type.contains("Number"))
         {
@@ -913,14 +920,14 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
 
     public ResultSet getPrimaryKeys(String catalog, String schema, String table) throws SQLException
     {
-        List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> rows = new ArrayList<>();
         GetQueryDetailsResponse response = getQueryDetails(schema, table);
         int keyIndex = 1;
         for (GetQueryDetailsResponse.Column column : response.getColumns())
         {
             if (column.isKeyField())
             {
-                Map<String, Object> row = new HashMap<String, Object>();
+                Map<String, Object> row = new HashMap<>();
                 row.put("TABLE_CAT", catalog);
                 row.put("TABLE_SCHEM", response.getSchemaName());
                 row.put("TABLE_NAME", response.getName());
@@ -930,7 +937,7 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
                 rows.add(row);
             }
         }
-        List<LabKeyResultSet.Column> cols = new ArrayList<LabKeyResultSet.Column>();
+        List<LabKeyResultSet.Column> cols = new ArrayList<>();
         cols.add(new LabKeyResultSet.Column("TABLE_CAT", String.class));
         cols.add(new LabKeyResultSet.Column("TABLE_SCHEM", String.class));
         cols.add(new LabKeyResultSet.Column("TABLE_NAME", String.class));
@@ -944,12 +951,12 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
     public ResultSet getImportedKeys(String catalog, String schema, String table) throws SQLException
     {
         GetQueryDetailsResponse response = getQueryDetails(schema, table);
-        List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> rows = new ArrayList<>();
         for (GetQueryDetailsResponse.Column column : response.getColumns())
         {
             if (column.getLookup() != null)
             {
-                Map<String, Object> row = new HashMap<String, Object>();
+                Map<String, Object> row = new HashMap<>();
                 row.put("PKTABLE_CAT", catalog);
                 row.put("PKTABLE_SCHEM", column.getLookup().getSchemaName());
                 row.put("PKTABLE_NAME", column.getLookup().getQueryName());
@@ -967,7 +974,7 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
                 rows.add(row);
             }
         }
-        List<LabKeyResultSet.Column> cols = new ArrayList<LabKeyResultSet.Column>();
+        List<LabKeyResultSet.Column> cols = new ArrayList<>();
         cols.add(new LabKeyResultSet.Column("PKTABLE_CAT", String.class));
         cols.add(new LabKeyResultSet.Column("PKTABLE_SCHEM", String.class));
         cols.add(new LabKeyResultSet.Column("PKTABLE_NAME", String.class));
@@ -1170,11 +1177,7 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
             GetSchemasResponse response = command.execute(_connection.getConnection(), _connection.getFolderPath());
             return response.getSchemaNames();
         }
-        catch (IOException e)
-        {
-            throw new SQLException(e);
-        }
-        catch (CommandException e)
+        catch (IOException | CommandException e)
         {
             throw new SQLException(e);
         }
@@ -1189,15 +1192,15 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
     private ResultSet getSchemasResultSet(List<String> schemaNames)
             throws SQLException
     {
-        List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> rows = new ArrayList<>();
         for (String schemaName : schemaNames)
         {
-            Map<String, Object> row = new HashMap<String, Object>();
+            Map<String, Object> row = new HashMap<>();
             row.put("TABLE_SCHEM", schemaName);
             row.put("TABLE_CATALOG", _connection.getCatalog());
             rows.add(row);
         }
-        List<LabKeyResultSet.Column> columns = new ArrayList<LabKeyResultSet.Column>();
+        List<LabKeyResultSet.Column> columns = new ArrayList<>();
         columns.add(new LabKeyResultSet.Column("TABLE_SCHEM", String.class));
         columns.add(new LabKeyResultSet.Column("TABLE_CATALOG", String.class));
         return new LabKeyResultSet(rows, columns, _connection);

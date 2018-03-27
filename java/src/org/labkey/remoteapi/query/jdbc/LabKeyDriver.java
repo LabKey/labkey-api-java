@@ -100,6 +100,7 @@ public class LabKeyDriver implements Driver
         LabKeyConnection labKeyConnection = new LabKeyConnection(connection);
         labKeyConnection.setClientInfo(info);
         labKeyConnection.setFolderPath(folderPath);
+        labKeyConnection.setRootIsCatalog(Boolean.parseBoolean(info.getProperty("rootIsCatalog")));
         return labKeyConnection;
     }
 

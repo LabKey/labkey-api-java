@@ -27,6 +27,8 @@ import java.net.URL;
 import java.sql.*;
 import java.util.Calendar;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * User: jeckels
@@ -34,6 +36,7 @@ import java.util.Map;
  */
 public class LabKeyStatement implements CallableStatement
 {
+    private final static Logger _log = Logger.getLogger(LabKeyStatement.class.getName());
     private final LabKeyConnection _connection;
     private boolean _closed = false;
     private ResultSet _nextResultSet;
@@ -893,6 +896,7 @@ public class LabKeyStatement implements CallableStatement
     {
         if (sql != null && sql.length() != 0)
         {
+            _log.log(Level.FINE, "executing SQL in container: '" + _connection.getFolderPath() + "'\nSQL: " + sql);
             ExecuteSqlCommand command = new ExecuteSqlCommand("core", sql);
             try
             {

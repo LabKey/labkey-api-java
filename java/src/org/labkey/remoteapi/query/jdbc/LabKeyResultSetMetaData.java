@@ -126,9 +126,9 @@ public class LabKeyResultSetMetaData extends BaseJDBC implements ResultSetMetaDa
         {
             return Types.BIGINT;
         }
-        if (type == Date.class || type == java.sql.Date.class)
+        if (Date.class.isAssignableFrom(type))  // Date.class == java.util.Date, not java.sql.Date
         {
-            return Types.DATE;
+            return Types.TIMESTAMP;
         }
         if (type == Short.class)
         {
@@ -168,9 +168,9 @@ public class LabKeyResultSetMetaData extends BaseJDBC implements ResultSetMetaDa
         {
             return "BIGINT";
         }
-        if (type == Date.class || type == java.sql.Date.class)
+        if (Date.class.isAssignableFrom(type)) // Date.class == java.util.Date, not java.sql.date
         {
-            return "DATE";
+            return "TIMESTAMP";
         }
         if (type == Short.class)
         {

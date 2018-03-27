@@ -87,7 +87,7 @@ public class LabKeyResultSet extends BaseJDBC implements ResultSet
             }
             else if ("date".equalsIgnoreCase(typeName))
             {
-                type = Date.class;
+                type = Timestamp.class;
             }
             else if ("string".equalsIgnoreCase(typeName))
             {
@@ -228,7 +228,7 @@ public class LabKeyResultSet extends BaseJDBC implements ResultSet
     public BigDecimal getBigDecimal(int columnIndex, int scale) throws SQLException
     {
         Column column = getColumn(columnIndex);
-        return getBigDecimal(column.getName());
+        return getBigDecimal(column.getName(), scale);
     }
 
     public byte[] getBytes(int columnIndex) throws SQLException
@@ -310,7 +310,7 @@ public class LabKeyResultSet extends BaseJDBC implements ResultSet
         }
         else
         {
-            throw new SQLException(columnLabel + " is a non-numeric value (" + result.getClass() + ")");
+            throw new SQLException(columnLabel + " is a non-boolean value (" + result.getClass() + ")");
         }
     }
 
@@ -352,8 +352,7 @@ public class LabKeyResultSet extends BaseJDBC implements ResultSet
 
     public BigDecimal getBigDecimal(String columnLabel, int scale) throws SQLException
     {
-        Number result = getNumber(columnLabel);
-        return result == null ? null : new BigDecimal(result.doubleValue());
+        return getBigDecimal(columnLabel);
     }
 
     public byte[] getBytes(String columnLabel) throws SQLException
@@ -363,17 +362,33 @@ public class LabKeyResultSet extends BaseJDBC implements ResultSet
 
     public Date getDate(String columnLabel) throws SQLException
     {
-        throw new LoggingUnsupportedOperationException();
+        java.util.Date result = getJavaUtilDate(columnLabel);
+        return result == null ? null : new Date(result.getTime());
     }
 
     public Time getTime(String columnLabel) throws SQLException
     {
-        throw new LoggingUnsupportedOperationException();
+        java.util.Date result = getJavaUtilDate(columnLabel);
+        return result == null ? null : new Time(result.getTime());
     }
 
     public Timestamp getTimestamp(String columnLabel) throws SQLException
     {
-        throw new LoggingUnsupportedOperationException();
+        java.util.Date result = getJavaUtilDate(columnLabel);
+        return result == null ? null : new Timestamp(result.getTime());
+    }
+
+    private java.util.Date getJavaUtilDate(String columnLabel) throws SQLException
+    {
+        Object result = getObject(columnLabel);
+        if (result == null || result instanceof java.util.Date)
+        {
+            return (java.util.Date)result;
+        }
+        else
+        {
+            throw new SQLException(columnLabel + " is not a java.util.date (" + result.getClass() + ")");
+        }
     }
 
     public InputStream getAsciiStream(String columnLabel) throws SQLException
@@ -453,12 +468,14 @@ public class LabKeyResultSet extends BaseJDBC implements ResultSet
 
     public BigDecimal getBigDecimal(int columnIndex) throws SQLException
     {
-        throw new LoggingUnsupportedOperationException();
+        Column column = getColumn(columnIndex);
+        return getBigDecimal(column.getName());
     }
 
     public BigDecimal getBigDecimal(String columnLabel) throws SQLException
     {
-        throw new LoggingUnsupportedOperationException();
+        Number result = getNumber(columnLabel);
+        return result == null ? null : new BigDecimal(result.doubleValue());
     }
 
     public boolean isBeforeFirst() throws SQLException
