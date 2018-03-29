@@ -896,7 +896,7 @@ public class LabKeyStatement implements CallableStatement
     {
         if (sql != null && sql.length() != 0)
         {
-            _log.log(Level.FINE, "executing SQL in container: '" + _connection.getFolderPath() + "'\nSQL: " + sql);
+            _log.log(Level.FINE, "Executing SQL in container: '" + _connection.getFolderPath() + "'\nSQL: " + sql);
             ExecuteSqlCommand command = new ExecuteSqlCommand("core", sql);
             try
             {

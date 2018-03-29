@@ -31,7 +31,6 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.RowIdLifetime;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -742,7 +741,10 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
 
     private void addCatalog(Map<String, Object> parsedData, List<Map<String, Object>> rows)
     {
-        if (parsedData.containsKey("effectivePermissions"))
+        // Add the container at the top of the parsedData tree as a catalog, but if it is the server root container,
+        // only add it if the user has permissions for it. Otherwise it looks like an available catalog, but will give a
+        // 403 forbidden server response if the user attempts to access it.
+        if (!"/".equals(parsedData.get("path")) || parsedData.containsKey("effectivePermissions"))
             rows.add(Collections.singletonMap("TABLE_CAT", parsedData.get("path")));
         if (parsedData.containsKey("children"))
         {
@@ -783,7 +785,7 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
             row.put("TABLE_SCHEM", response.getSchemaName());
             row.put("TABLE_NAME", response.getName());
             row.put("COLUMN_NAME", column.getName());
-            row.put("DATA_TYPE", getSQLType(column.getType()));
+            row.put("DATA_TYPE", JdbcType.getSqlType(column.getType()));
             row.put("TYPE_NAME", column.getType());
             row.put("COLUMN_SIZE", -1);
             row.put("BUFFER_LENGTH", null);
@@ -844,32 +846,6 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
         {
             _log.info(patternName + " requested via a possible wildcard pattern, but interpreting as an exact match: " + pattern);
         }
-    }
-
-    private int getSQLType(String type)
-    {
-        if ("Integer".equalsIgnoreCase(type))
-        {
-            return Types.INTEGER;
-        }
-        if (type.contains("String"))
-        {
-            return Types.VARCHAR;
-        }
-        if ("Boolean".equalsIgnoreCase(type))
-        {
-            return Types.BOOLEAN;
-        }
-        if (type.contains("Date"))
-        {
-            return Types.TIMESTAMP;
-        }
-        if (type.contains("Number"))
-        {
-            return Types.DOUBLE;
-        }
-
-        return Types.VARCHAR;
     }
 
     public ResultSet getColumnPrivileges(String catalog, String schema, String table, String columnNamePattern) throws SQLException

@@ -79,29 +79,7 @@ public class LabKeyResultSet extends BaseJDBC implements ResultSet
         for (Map<String, Object> metadata : (List<Map<String, Object>>)response.getMetaData().get("fields"))
         {
             String name = (String) metadata.get("name");
-            String typeName = (String) metadata.get("type");
-            Class type = Object.class;
-            if ("int".equalsIgnoreCase(typeName))
-            {
-                type = Integer.class;
-            }
-            else if ("date".equalsIgnoreCase(typeName))
-            {
-                type = Timestamp.class;
-            }
-            else if ("string".equalsIgnoreCase(typeName))
-            {
-                type = String.class;
-            }
-            else if ("float".equalsIgnoreCase(typeName))
-            {
-                type = Float.class;
-            }
-            else if ("boolean".equalsIgnoreCase(typeName))
-            {
-                type = Boolean.class;
-            }
-            Column column = new Column(name, type);
+            Column column = new Column(name, JdbcType.getJavaType((String) metadata.get("type")));
             result.add(column);
         }
         return result;

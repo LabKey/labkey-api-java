@@ -17,8 +17,6 @@ package org.labkey.remoteapi.query.jdbc;
 
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Types;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -113,86 +111,12 @@ public class LabKeyResultSetMetaData extends BaseJDBC implements ResultSetMetaDa
 
     public int getColumnType(int column) throws SQLException
     {
-        Class type = getColumn(column).getType();
-        if (type == String.class)
-        {
-            return Types.VARCHAR;
-        }
-        if (type == Integer.class)
-        {
-            return Types.INTEGER;
-        }
-        if (type == Long.class)
-        {
-            return Types.BIGINT;
-        }
-        if (Date.class.isAssignableFrom(type))  // Date.class == java.util.Date, not java.sql.Date
-        {
-            return Types.TIMESTAMP;
-        }
-        if (type == Short.class)
-        {
-            return Types.INTEGER;
-        }
-        if (type == Byte.class)
-        {
-            return Types.INTEGER;
-        }
-        if (type == Double.class)
-        {
-            return Types.DOUBLE;
-        }
-        if (type == Float.class)
-        {
-            return Types.FLOAT;
-        }
-        if (type == Boolean.class)
-        {
-            return Types.BOOLEAN;
-        }
-        throw new LoggingUnsupportedOperationException("Unexpected type: " + type);
+        return JdbcType.getSqlType(getColumn(column).getType());
     }
 
     public String getColumnTypeName(int column) throws SQLException
     {
-        Class type = getColumn(column).getType();
-        if (type == String.class)
-        {
-            return "VARCHAR";
-        }
-        if (type == Integer.class)
-        {
-            return "INTEGER";
-        }
-        if (type == Long.class)
-        {
-            return "BIGINT";
-        }
-        if (Date.class.isAssignableFrom(type)) // Date.class == java.util.Date, not java.sql.date
-        {
-            return "TIMESTAMP";
-        }
-        if (type == Short.class)
-        {
-            return "INTEGER";
-        }
-        if (type == Byte.class)
-        {
-            return "INTEGER";
-        }
-        if (type == Double.class)
-        {
-            return "DOUBLE";
-        }
-        if (type == Float.class)
-        {
-            return "FLOAT";
-        }
-        if (type == Boolean.class)
-        {
-            return "BOOLEAN";
-        }
-        throw new LoggingUnsupportedOperationException("Unexpected type: " + type);
+       return JdbcType.getSqlTypeName(getColumn(column).getType());
     }
 
     private LabKeyResultSet.Column getColumn(int column)

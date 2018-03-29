@@ -194,7 +194,7 @@ public class LabKeyConnection extends BaseJDBC implements java.sql.Connection
 
     public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency) throws SQLException
     {
-        this.checkOpen();
+        validateOpen();
         if (sql != null && sql.length() != 0)
         {
             return new LabKeyStatement(this, sql);
@@ -390,23 +390,15 @@ public class LabKeyConnection extends BaseJDBC implements java.sql.Connection
         throw new LoggingUnsupportedOperationException();
     }
 
-    //
-
-    private void checkOpen() throws SQLException {
-        if (this._closed) {
-            throw new SQLException("Connection closed");
-        }
-    }
-
     boolean isRootIsCatalog()
     {
         return _rootIsCatalog;
     }
 
     /**
-     * Setting this true will force root to only be exposed as a catalog in calls to getTables(); the schemas/tables will not also be exposed
-     * at the top level of the tree in calls to getTables()
-     * @param rootIsCatalog
+     * @param rootIsCatalog  Setting this true will force the root container on the server
+     *                       to only be exposed as a catalog in calls to getTables().
+     *                       Otherwise the schemas/tables will also be exposed at the top level of the tree.
      */
     void setRootIsCatalog(boolean rootIsCatalog)
     {
