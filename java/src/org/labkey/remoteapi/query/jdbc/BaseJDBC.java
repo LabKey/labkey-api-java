@@ -137,12 +137,17 @@ public class BaseJDBC implements Wrapper
 
         protected boolean matchOnQueryDetailsType(String type)
         {
-            return matchOnSelectRowsType(type);
+            return matchOnSimpleName(_javaType, type);
         }
 
         protected boolean matchOnSelectRowsType(String type)
         {
-            return _javaType.getSimpleName().equalsIgnoreCase(type);
+            return matchOnSimpleName(_javaType, type);
+        }
+
+        private boolean matchOnSimpleName(Class javaType, String type)
+        {
+            return javaType.getSimpleName().equalsIgnoreCase(type);
         }
 
         static int getSqlType(String typeName)
