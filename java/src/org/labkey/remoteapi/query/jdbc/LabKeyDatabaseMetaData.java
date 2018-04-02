@@ -869,7 +869,7 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
         GetQueryDetailsResponse results = _queryDetails.get(cacheKey);
         if (results == null)
         {
-            GetQueryDetailsCommand command = new GetQueryDetailsCommand(schema, table);
+            GetQueryDetailsCommand command = new GetQueryDetailsCommand(schema, table, false);
             try
             {
                 results = command.execute(_connection.getConnection(), _connection.getFolderPath());
