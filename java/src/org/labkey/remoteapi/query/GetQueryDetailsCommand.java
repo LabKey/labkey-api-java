@@ -34,20 +34,20 @@ public class GetQueryDetailsCommand extends Command<GetQueryDetailsResponse>
 {
     private String _schemaName;
     private String _queryName;
-    private boolean _includeSuggestedColumns;
+    private boolean _includeSuggestedQueryColumns;
 
     /**
      * Constructs the command given a particular schema name.
      * @param schemaName The schema name.
      * @param queryName The name of the query (e.g., table) for the corresponding schema.
-     * @param includeSuggestedColumns Default true. Include the auto suggested columns in the response, e.g., user defined queries always have the container column of their root table added.
+     * @param includeSuggestedQueryColumns Default true. Include the auto suggested columns in the response, e.g., user defined queries always have the container column of their root table added.
      */
-    public GetQueryDetailsCommand(String schemaName, String queryName, boolean includeSuggestedColumns)
+    public GetQueryDetailsCommand(String schemaName, String queryName, boolean includeSuggestedQueryColumns)
     {
         super("query", "getQueryDetails");
         _schemaName = schemaName;
         _queryName = queryName;
-        _includeSuggestedColumns = includeSuggestedColumns;
+        _includeSuggestedQueryColumns = includeSuggestedQueryColumns;
     }
 
     /**
@@ -65,7 +65,7 @@ public class GetQueryDetailsCommand extends Command<GetQueryDetailsResponse>
         super(source);
         _schemaName = source._schemaName;
         _queryName = source._queryName;
-        _includeSuggestedColumns = source._includeSuggestedColumns;
+        _includeSuggestedQueryColumns = source._includeSuggestedQueryColumns;
     }
 
     public String getSchemaName()
@@ -96,7 +96,7 @@ public class GetQueryDetailsCommand extends Command<GetQueryDetailsResponse>
         Map<String,Object> params = new HashMap<String,Object>();
         params.put("schemaName", getSchemaName());
         params.put("queryName", getQueryName());
-        params.put("includeSuggestedColumns", _includeSuggestedColumns);
+        params.put("includeSuggestedQueryColumns", _includeSuggestedQueryColumns);
 
         return params;
     }

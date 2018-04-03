@@ -390,7 +390,7 @@ public class LabKeyConnection extends BaseJDBC implements java.sql.Connection
         throw new LoggingUnsupportedOperationException();
     }
 
-    boolean isRootIsCatalog()
+    public boolean isRootIsCatalog()
     {
         return _rootIsCatalog;
     }
@@ -400,7 +400,7 @@ public class LabKeyConnection extends BaseJDBC implements java.sql.Connection
      *                       to only be exposed as a catalog in calls to getTables().
      *                       Otherwise the schemas/tables will also be exposed at the top level of the tree.
      */
-    void setRootIsCatalog(boolean rootIsCatalog)
+    public void setRootIsCatalog(boolean rootIsCatalog)
     {
         _rootIsCatalog = rootIsCatalog;
     }

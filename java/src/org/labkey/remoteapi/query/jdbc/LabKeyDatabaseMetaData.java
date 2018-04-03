@@ -668,15 +668,18 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
         try
         {
             List<String> schemaNames = Collections.emptyList();
-            if (schemaPattern != null)
+            if (allowCatalog(catalog))
             {
-                schemaNames = Collections.singletonList(schemaPattern);
-            }
-            else if (!_connection.isRootIsCatalog() || (catalog != null && catalog.length() > 0))
-            {
-                GetSchemasCommand command = new GetSchemasCommand();
-                GetSchemasResponse response = command.execute(_connection.getConnection(), _connection.getFolderPath());
-                schemaNames = response.getSchemaNames();
+                if (schemaPattern != null)
+                {
+                    schemaNames = Collections.singletonList(schemaPattern);
+                }
+                else
+                {
+                    GetSchemasCommand command = new GetSchemasCommand();
+                    GetSchemasResponse response = command.execute(_connection.getConnection(), _connection.getFolderPath());
+                    schemaNames = response.getSchemaNames();
+                }
             }
             List<Map<String, Object>> rows = new ArrayList<>();
             for (String schemaName : schemaNames)
@@ -775,35 +778,38 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
         }
 
         List<Map<String, Object>> rows = new ArrayList<>();
-        GetQueryDetailsResponse response = getQueryDetails(schemaPattern, tableNamePattern);
-
-        int ordinalPosition = 1;
-        for (GetQueryDetailsResponse.Column column : response.getColumns())
+        if (allowCatalog(catalog))
         {
-            Map<String, Object> row = new HashMap<>();
-            row.put("TABLE_CAT", catalog);
-            row.put("TABLE_SCHEM", response.getSchemaName());
-            row.put("TABLE_NAME", response.getName());
-            row.put("COLUMN_NAME", column.getName());
-            row.put("DATA_TYPE", JdbcType.getSqlType(column.getType()));
-            row.put("TYPE_NAME", column.getType());
-            row.put("COLUMN_SIZE", -1);
-            row.put("BUFFER_LENGTH", null);
-            row.put("DECIMAL_DIGITS", null);
-            row.put("NUM_PREC_RADIX", 10);
-            row.put("NULLABLE", column.isNullable() ? columnNullable : columnNoNulls);
-            row.put("REMARKS", column.getDescription());
-            row.put("SQL_DATA_TYPE", null);
-            row.put("SQL_DATETIME_SUB", null);
-            row.put("CHAR_OCTET_LENGTH", null);
-            row.put("ORDINAL_POSITION", ordinalPosition++);
-            row.put("SCOPE_CATALOG", null);
-            row.put("SCOPE_SCHEMA", null);
-            row.put("SCOPE_TABLE", null);
-            row.put("SOURCE_DATA_TYPE", null);
-            row.put("IS_AUTOINCREMENT", column.isAutoIncrement() ? "YES" : "NO");
-            row.put("IS_GENERATEDCOLUMN", column.isCalculated() || column.isAutoIncrement() || !column.isUserEditable() ? "YES" : "NO");
-            rows.add(row);
+            GetQueryDetailsResponse response = getQueryDetails(schemaPattern, tableNamePattern);
+
+            int ordinalPosition = 1;
+            for (GetQueryDetailsResponse.Column column : response.getColumns())
+            {
+                Map<String, Object> row = new HashMap<>();
+                row.put("TABLE_CAT", catalog);
+                row.put("TABLE_SCHEM", response.getSchemaName());
+                row.put("TABLE_NAME", response.getName());
+                row.put("COLUMN_NAME", column.getName());
+                row.put("DATA_TYPE", JdbcType.getSqlType(column.getType()));
+                row.put("TYPE_NAME", column.getType());
+                row.put("COLUMN_SIZE", -1);
+                row.put("BUFFER_LENGTH", null);
+                row.put("DECIMAL_DIGITS", null);
+                row.put("NUM_PREC_RADIX", 10);
+                row.put("NULLABLE", column.isNullable() ? columnNullable : columnNoNulls);
+                row.put("REMARKS", column.getDescription());
+                row.put("SQL_DATA_TYPE", null);
+                row.put("SQL_DATETIME_SUB", null);
+                row.put("CHAR_OCTET_LENGTH", null);
+                row.put("ORDINAL_POSITION", ordinalPosition++);
+                row.put("SCOPE_CATALOG", null);
+                row.put("SCOPE_SCHEMA", null);
+                row.put("SCOPE_TABLE", null);
+                row.put("SOURCE_DATA_TYPE", null);
+                row.put("IS_AUTOINCREMENT", column.isAutoIncrement() ? "YES" : "NO");
+                row.put("IS_GENERATEDCOLUMN", column.isCalculated() || column.isAutoIncrement() || !column.isUserEditable() ? "YES" : "NO");
+                rows.add(row);
+            }
         }
 
         List<LabKeyResultSet.Column> cols = new ArrayList<>();
@@ -1185,24 +1191,28 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
     public ResultSet getSchemas(String catalog, String schemaPattern) throws SQLException
     {
         _connection.setCatalog(catalog);
-        if (schemaPattern == null || schemaPattern.equals("%"))
+        if (allowCatalog(catalog))
         {
-            return getSchemasResultSet(getSchemaNames());
-        }
-        if (schemaPattern.contains("%") || schemaPattern.contains("_"))
-        {
-            throw new IllegalArgumentException("schemaPattern must request an exact match, but was: " + schemaPattern);
-        }
-        _log.log(Level.INFO, "getSchemas: " + catalog + ", " + schemaPattern);
-        List<String> selectedSchemaNames = new ArrayList<String>();
-        for (String schemaName : getSchemaNames())
-        {
-            if (matches(schemaName, schemaPattern))
+            if (schemaPattern == null || schemaPattern.equals("%"))
             {
-                selectedSchemaNames.add(schemaName);
+                return getSchemasResultSet(getSchemaNames());
             }
+            if (schemaPattern.contains("%") || schemaPattern.contains("_"))
+            {
+                throw new IllegalArgumentException("schemaPattern must request an exact match, but was: " + schemaPattern);
+            }
+            _log.log(Level.INFO, "getSchemas: " + catalog + ", " + schemaPattern);
+            List<String> selectedSchemaNames = new ArrayList<>();
+            for (String schemaName : getSchemaNames())
+            {
+                if (matches(schemaName, schemaPattern))
+                {
+                    selectedSchemaNames.add(schemaName);
+                }
+            }
+            return getSchemasResultSet(selectedSchemaNames);
         }
-        return getSchemasResultSet(selectedSchemaNames);
+        else return getSchemasResultSet(Collections.<String>emptyList());
     }
 
     private boolean matches(String name, String pattern)
@@ -1245,5 +1255,10 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
     public boolean generatedKeyAlwaysReturned() throws SQLException
     {
         throw new LoggingUnsupportedOperationException();
+    }
+
+    private boolean allowCatalog(String catalog)
+    {
+        return !_connection.isRootIsCatalog() || (catalog != null && catalog.length() > 0);
     }
 }

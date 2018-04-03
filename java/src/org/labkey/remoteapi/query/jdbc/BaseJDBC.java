@@ -84,7 +84,14 @@ public class BaseJDBC implements Wrapper
                         return type.contains("String");
                     }
                 },
-        Boolean(Types.BOOLEAN, Boolean.class),
+        Boolean(Types.BOOLEAN, Boolean.class)
+                {
+                    @Override
+                    protected boolean matchOnQueryDetailsType(String type)
+                    {
+                        return type.contains("Boolean");
+                    }
+                },
         Timestamp(Types.TIMESTAMP, Date.class)
                 {
                     @Override
