@@ -29,6 +29,7 @@ public class CreateContainerCommand extends PostCommand<CreateContainerResponse>
     private String _name;
     private String _title;
     private String _description;
+    private String _type;
     private boolean _workbook = false;
     private String _folderType;
 
@@ -40,6 +41,7 @@ public class CreateContainerCommand extends PostCommand<CreateContainerResponse>
         _description = source.getDescription();
         _workbook = source.isWorkbook();
         _folderType = source.getFolderType();
+        _type = source.getType();
     }
 
     /** @param name the name of the container to create */  
@@ -60,6 +62,7 @@ public class CreateContainerCommand extends PostCommand<CreateContainerResponse>
         result.put("name", _name);
         result.put("title", _title);
         result.put("description", _description);
+        result.put("type", _type);
         result.put("isWorkbook", _workbook);
         result.put("folderType", _folderType);
         setJsonObject(result);
@@ -74,6 +77,16 @@ public class CreateContainerCommand extends PostCommand<CreateContainerResponse>
     public void setName(String name)
     {
         _name = name;
+    }
+
+    public String getType()
+    {
+        return _type;
+    }
+
+    public void setType(String type)
+    {
+        _type = type;
     }
 
     public String getTitle()
