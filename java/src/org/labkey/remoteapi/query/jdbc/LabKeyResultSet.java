@@ -15,12 +15,15 @@
  */
 package org.labkey.remoteapi.query.jdbc;
 
+import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.query.SelectRowsResponse;
+import org.labkey.remoteapi.query.SqlExecuteCommand;
 
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.nio.ByteBuffer;
 import java.sql.Array;
 import java.sql.Blob;
 import java.sql.Clob;
@@ -37,10 +40,13 @@ import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * User: jeckels
@@ -1174,4 +1180,181 @@ public class LabKeyResultSet extends BaseJDBC implements ResultSet
     {
         throw new LoggingUnsupportedOperationException();
     }
+
+
+    public static LabKeyResultSet fromSqlExecute(SqlExecuteCommand command, CommandResponse response, long maxRows, LabKeyConnection _connection)
+            throws SQLException
+    {
+        String fullResponse = response.getText();
+        ArrayList<String> lines = new ArrayList<>();
+        splitString(fullResponse, command.getLineSeparator(), lines);
+        if (lines.size() < 2)
+            throw new SQLException("Bad response format, bad header");
+        ArrayList<String> names = new ArrayList<>();
+        splitString(lines.get(0), command.getFieldSeparator(), names);
+        ArrayList<String> types = new ArrayList<>();
+        splitString(lines.get(1), command.getFieldSeparator(), types);
+        if (names.size() != types.size())
+            throw new SQLException("Bad response format: found " + names.size() + " + names, and " + types.size() + " types");
+
+        int count = names.size();
+        Column[] columns = new Column[count];
+        Converter<Object>[] converters = new Converter[count];
+        ArrayMap.FindMap<String> findMap = new ArrayMap.FindMap<>(new HashMap<String,Integer>());
+        for (int col=0 ; col<count ; col++)
+        {
+            if (findMap.put(names.get(col),col) != null)
+                throw new SQLException("duplicate name in result: " + names.get(col));
+            Class typeClass = String.class;
+            Converter converter = STRING_CONVERTER;
+            switch(types.get(col))
+            {
+                case "BOOLEAN":
+                    typeClass = Boolean.class;
+                    converter = LONG_CONVERTER;
+                    break;
+                case "TINYINT":
+                case "SMALLINT":
+                    typeClass = Short.class;
+                    converter = LONG_CONVERTER;
+                    break;
+                case "INTEGER":
+                    typeClass = Integer.class;
+                    converter = LONG_CONVERTER;
+                    break;
+                case "BIGINT":
+                    typeClass = Long.class;
+                    converter = LONG_CONVERTER;
+                    break;
+                case "DOUBLE":
+                    typeClass = Double.class;
+                    converter = DOUBLE_CONVERTER;
+                    break;
+                case "REAL":
+                    typeClass = Float.class;
+                    converter = DOUBLE_CONVERTER;
+                    break;
+                case "DECIMAL":
+                    typeClass = BigDecimal.class;
+                    converter = DECIMAL_CONVERTER;
+                    break;
+                case "CHAR":
+                case "VARCHAR":
+                case "LONGVARCHAR":
+                    typeClass = String.class;
+                    break;
+                case "DATE":
+                    typeClass = java.sql.Date.class;
+                    break;
+                case "TIME":
+                    typeClass = java.sql.Time.class;
+                    break;
+                case "TIMESTAMP":
+                    typeClass = java.sql.Timestamp.class;
+                    break;
+                case "BINARY":
+                case "VARBINARY":
+                case "LONGVARBINARY":
+                    typeClass = ByteBuffer.class;
+                    break;
+                case "OTHER":
+                default:
+                    typeClass = String.class;
+            }
+            columns[col] = new Column(names.get(col), typeClass);
+            converters[col] = converter;
+        }
+        int firstRow = 2;
+        List<Map<String,Object>> rows = new ArrayList<>(lines.size());
+        ArrayList<String> stringValues = new ArrayList<>(count);
+        for (int row=firstRow ; row<lines.size() ; row++)
+        {
+            String line = lines.get(row).trim();
+            if (line.isEmpty())
+                continue;
+            splitString(lines.get(row), command.getFieldSeparator(), stringValues);
+            Object[] convertedValues = new Object[count];
+            for (int col=0 ; col<count ; col++)
+            {
+                String stringValue = col<stringValues.size() ? stringValues.get(col) : null;
+                Object convertedValue = null;
+                if (null == stringValue || stringValue.isEmpty())
+                    convertedValue = null;
+                else if (stringValue.equals("\u0008") && row!=firstRow)
+                    convertedValue = ((ArrayMap)rows.get(row-firstRow-1)).get(col);
+                else
+                    convertedValue = converters[col].apply(stringValue);
+                convertedValues[col] = convertedValue;
+            }
+            rows.add(new ArrayMap<>(findMap, convertedValues));
+        }
+        return new LabKeyResultSet(rows, Arrays.asList(columns), _connection);
+    }
+
+
+    private static void splitString(String str, String sep, ArrayList<String> out)
+    {
+        int start = 0, end;
+        int index = 0;
+        while (-1 != (end = str.indexOf(sep,start)))
+        {
+            assert out.size() >= index;
+            if (out.size() == index)
+                out.add(str.substring(start, end));
+            else
+                out.set(index, str.substring(start, end));
+            index++;
+            start = end+sep.length();
+        }
+        out.add(index++, str.substring(start));
+        while (index < out.size())
+            out.set(index++, null);
+    }
+
+    // TODO replace with import java.util.function.Function and bump to language level = 8
+    // CONSIDER include org.apache.commons.beanutils.converters
+    private abstract static class Converter<R> // implements Function<R,String>
+    {
+        abstract R apply(String str);
+    }
+    static final Converter<BigDecimal> DECIMAL_CONVERTER = new Converter<BigDecimal>()
+    {
+        @Override
+        BigDecimal apply(String str)
+        {
+            return new BigDecimal(str);
+        }
+    };
+    static final Converter<Long> LONG_CONVERTER = new Converter<Long>()
+    {
+        @Override
+        Long apply(String str)
+        {
+            return new Long(str);
+        }
+    };
+    static final Converter<Double> DOUBLE_CONVERTER = new Converter<Double>()
+    {
+        @Override
+        Double apply(String str)
+        {
+            return new Double(str);
+        }
+    };
+    static final Converter<String> STRING_CONVERTER = new Converter<String>()
+    {
+        @Override
+        String apply(String str)
+        {
+            return str;
+        }
+    };
+    static final Converter<Timestamp> TIMESTAMP_CONVERTER = new Converter<Timestamp>()
+    {
+        @Override
+        Timestamp apply(String str)
+        {
+            return Timestamp.valueOf(str);
+        }
+    };
 }

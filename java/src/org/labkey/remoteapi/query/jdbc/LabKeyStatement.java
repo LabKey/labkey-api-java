@@ -16,8 +16,10 @@
 package org.labkey.remoteapi.query.jdbc;
 
 import org.labkey.remoteapi.CommandException;
+import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.query.ExecuteSqlCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
+import org.labkey.remoteapi.query.SqlExecuteCommand;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -892,7 +894,8 @@ public class LabKeyStatement implements CallableStatement
         throw new LoggingUnsupportedOperationException();
     }
 
-    public ResultSet executeQuery(String sql) throws SQLException
+
+    private ResultSet executeQuery_query(String sql) throws SQLException
     {
         if (sql != null && sql.length() != 0)
         {
@@ -917,6 +920,41 @@ public class LabKeyStatement implements CallableStatement
             throw new SQLException("SQL null or blank");
         }
     }
+
+
+    private ResultSet executeQuery_sql(String sql) throws SQLException
+    {
+        if (sql != null && sql.length() != 0)
+        {
+            _log.log(Level.FINE, "Executing SQL in container: '" + _connection.getFolderPath() + "'\nSQL: " + sql);
+            SqlExecuteCommand command = new SqlExecuteCommand("core", sql);
+            try
+            {
+                // UNDONE: maxrows
+                CommandResponse response = command.execute(_connection.getConnection(), _connection.getFolderPath());
+                return LabKeyResultSet.fromSqlExecute(command, response, _maxRows, _connection);
+            }
+            catch (IOException | CommandException e)
+            {
+                throw new SQLException(e);
+            }
+        }
+        else
+        {
+            throw new SQLException("SQL null or blank");
+        }
+    }
+
+
+    @Override
+    public ResultSet executeQuery(String sql) throws SQLException
+    {
+        if (true)
+            return executeQuery_query(sql); // query-executeSql
+        else
+            return executeQuery_sql(sql);   // sql-execute
+    }
+
 
     public int executeUpdate(String sql) throws SQLException
     {
