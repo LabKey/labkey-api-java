@@ -1188,12 +1188,14 @@ public class LabKeyResultSet extends BaseJDBC implements ResultSet
         String fullResponse = response.getText();
         ArrayList<String> lines = new ArrayList<>();
         splitString(fullResponse, command.getLineSeparator(), lines);
-        if (lines.size() < 2)
+        if (lines.size() < 3)
             throw new SQLException("Bad response format, bad header");
+        ArrayList<String> metadata = new ArrayList<>();
+        splitString(lines.get(0), command.getFieldSeparator(), metadata);
         ArrayList<String> names = new ArrayList<>();
-        splitString(lines.get(0), command.getFieldSeparator(), names);
+        splitString(lines.get(1), command.getFieldSeparator(), names);
         ArrayList<String> types = new ArrayList<>();
-        splitString(lines.get(1), command.getFieldSeparator(), types);
+        splitString(lines.get(2), command.getFieldSeparator(), types);
         if (names.size() != types.size())
             throw new SQLException("Bad response format: found " + names.size() + " + names, and " + types.size() + " types");
 
@@ -1251,6 +1253,7 @@ public class LabKeyResultSet extends BaseJDBC implements ResultSet
                     break;
                 case "TIMESTAMP":
                     typeClass = java.sql.Timestamp.class;
+                    converter = TIMESTAMP_CONVERTER;
                     break;
                 case "BINARY":
                 case "VARBINARY":
@@ -1264,7 +1267,7 @@ public class LabKeyResultSet extends BaseJDBC implements ResultSet
             columns[col] = new Column(names.get(col), typeClass);
             converters[col] = converter;
         }
-        int firstRow = 2;
+        int firstRow = metadata.size();
         List<Map<String,Object>> rows = new ArrayList<>(lines.size());
         ArrayList<String> stringValues = new ArrayList<>(count);
         for (int row=firstRow ; row<lines.size() ; row++)
@@ -1354,6 +1357,9 @@ public class LabKeyResultSet extends BaseJDBC implements ResultSet
         @Override
         Timestamp apply(String str)
         {
+            // jdbc requires :ss portion
+            if (str.length() == 16 && str.charAt(10)==':' && str.charAt(13)==':')
+                str = str + ":00";
             return Timestamp.valueOf(str);
         }
     };

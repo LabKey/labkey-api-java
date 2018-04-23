@@ -949,7 +949,7 @@ public class LabKeyStatement implements CallableStatement
     @Override
     public ResultSet executeQuery(String sql) throws SQLException
     {
-        if (true)
+        if (true) // if server_version <= 18.1
             return executeQuery_query(sql); // query-executeSql
         else
             return executeQuery_sql(sql);   // sql-execute
