@@ -785,30 +785,33 @@ public class LabKeyDatabaseMetaData extends BaseJDBC implements DatabaseMetaData
             int ordinalPosition = 1;
             for (GetQueryDetailsResponse.Column column : response.getColumns())
             {
-                Map<String, Object> row = new HashMap<>();
-                row.put("TABLE_CAT", catalog);
-                row.put("TABLE_SCHEM", response.getSchemaName());
-                row.put("TABLE_NAME", response.getName());
-                row.put("COLUMN_NAME", column.getName());
-                row.put("DATA_TYPE", JdbcType.getSqlType(column.getType()));
-                row.put("TYPE_NAME", column.getType());
-                row.put("COLUMN_SIZE", -1);
-                row.put("BUFFER_LENGTH", null);
-                row.put("DECIMAL_DIGITS", null);
-                row.put("NUM_PREC_RADIX", 10);
-                row.put("NULLABLE", column.isNullable() ? columnNullable : columnNoNulls);
-                row.put("REMARKS", column.getDescription());
-                row.put("SQL_DATA_TYPE", null);
-                row.put("SQL_DATETIME_SUB", null);
-                row.put("CHAR_OCTET_LENGTH", null);
-                row.put("ORDINAL_POSITION", ordinalPosition++);
-                row.put("SCOPE_CATALOG", null);
-                row.put("SCOPE_SCHEMA", null);
-                row.put("SCOPE_TABLE", null);
-                row.put("SOURCE_DATA_TYPE", null);
-                row.put("IS_AUTOINCREMENT", column.isAutoIncrement() ? "YES" : "NO");
-                row.put("IS_GENERATEDCOLUMN", column.isCalculated() || column.isAutoIncrement() || !column.isUserEditable() ? "YES" : "NO");
-                rows.add(row);
+                if (column.isSelectable())
+                {
+                    Map<String, Object> row = new HashMap<>();
+                    row.put("TABLE_CAT", catalog);
+                    row.put("TABLE_SCHEM", response.getSchemaName());
+                    row.put("TABLE_NAME", response.getName());
+                    row.put("COLUMN_NAME", column.getName());
+                    row.put("DATA_TYPE", JdbcType.getSqlType(column.getType()));
+                    row.put("TYPE_NAME", column.getType());
+                    row.put("COLUMN_SIZE", -1);
+                    row.put("BUFFER_LENGTH", null);
+                    row.put("DECIMAL_DIGITS", null);
+                    row.put("NUM_PREC_RADIX", 10);
+                    row.put("NULLABLE", column.isNullable() ? columnNullable : columnNoNulls);
+                    row.put("REMARKS", column.getDescription());
+                    row.put("SQL_DATA_TYPE", null);
+                    row.put("SQL_DATETIME_SUB", null);
+                    row.put("CHAR_OCTET_LENGTH", null);
+                    row.put("ORDINAL_POSITION", ordinalPosition++);
+                    row.put("SCOPE_CATALOG", null);
+                    row.put("SCOPE_SCHEMA", null);
+                    row.put("SCOPE_TABLE", null);
+                    row.put("SOURCE_DATA_TYPE", null);
+                    row.put("IS_AUTOINCREMENT", column.isAutoIncrement() ? "YES" : "NO");
+                    row.put("IS_GENERATEDCOLUMN", column.isCalculated() || column.isAutoIncrement() || !column.isUserEditable() ? "YES" : "NO");
+                    rows.add(row);
+                }
             }
         }
 
