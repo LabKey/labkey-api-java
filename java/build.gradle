@@ -126,9 +126,9 @@ def pomConfig = {
       }
    }
    scm {
-        url 'http://hedgehog.fhcrc.org/tor/stedi/trunk'
-        connection 'http://hedgehog.fhcrc.org/tor/stedi/trunk'
-        developerConnection 'http://hedgehog.fhcrc.org/tor/stedi/trunk'
+        url 'http://svn.mgt.labkey.host/stedi/trunk'
+        connection 'http://svn.mgt.labkey.host/stedi/trunk'
+        developerConnection 'http://svn.mgt.labkey.host/stedi/trunk'
    }
    developers {
         developer {
@@ -212,7 +212,7 @@ if (project.hasProperty('bintray_user')
             name = artifactPrefix
             userOrg = 'labkey'
             licenses = ['Apache-2.0']
-            vcsUrl = 'https://hedgehog.fhcrc.org/tor/stedi/'
+            vcsUrl = 'https://svn.mgt.labkey.host/stedi/'
             version {
                 name = project.version
                 desc = "LabKey Java Client API ${project.version}"
