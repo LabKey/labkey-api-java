@@ -130,7 +130,7 @@ public class GetUsersCommand extends Command<GetUsersResponse>
         }
         if (_includeDeactivated != null)
         {
-            params.put("includeDeactivatedAccounts", includeDeactivated());
+            params.put("active", !includeDeactivated());
         }
         return params;
     }
