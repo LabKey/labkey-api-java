@@ -34,8 +34,8 @@ import java.util.Map;
  * LabKey SQL is variant of standard SQL that supports most of the SELECT-related
  * operations. For more information on LabKey SQL, see the following page:
  * <p>
- * <a href="https://www.labkey.org/wiki/home/Documentation/page.view?name=labkeySql">
- * https://www.labkey.org/wiki/home/Documentation/page.view?name=labkeySql</a>
+ * <a href="https://www.labkey.org/Documentation/wiki-page.view?name=labkeySql">
+ * https://www.labkey.org/Documentation/wiki-page.view?name=labkeySql</a>
  * <p>
  * The response of this command is exactly the same as the
  * {@link org.labkey.remoteapi.query.SelectRowsCommand}, so the response object
@@ -317,7 +317,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
      */
     public void setContainerFilter(ContainerFilter containerFilter)
     {
-        this._containerFilter = containerFilter;
+        _containerFilter = containerFilter;
     }
 
     protected SelectRowsResponse createResponse(String text, int status, String contentType, JSONObject json)

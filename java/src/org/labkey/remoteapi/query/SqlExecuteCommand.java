@@ -28,8 +28,8 @@ import java.util.Map;
  * LabKey SQL is variant of standard SQL that supports most of the SELECT-related
  * operations. For more information on LabKey SQL, see the following page:
  * <p>
- * <a href="https://www.labkey.org/wiki/home/Documentation/page.view?name=labkeySql">
- * https://www.labkey.org/wiki/home/Documentation/page.view?name=labkeySql</a>
+ * <a href="https://www.labkey.org/Documentation/wiki-page.view?name=labkeySql">
+ * https://www.labkey.org/Documentation/wiki-page.view?name=labkeySql</a>
  * <p>
  *
  * Uses stream-lined sql-execute.api instead of query-executesql.api

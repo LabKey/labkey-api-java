@@ -46,7 +46,7 @@ import java.util.Map;
  * <p>Example:</p>
  * <pre>
  * <code>
- *     Connection cn = new Connection("https://labkey.org");
+ *     Connection cn = new Connection("https://www.labkey.org");
  *     SelectRowsCommand cmd = new SelectRowsCommand("study", "Physical Exam");
  *     SelectRowsResponse response = cmd.execute(cn, "Home/Study/demo");
  *     for(Map&lt;String,Object&gt; row : response.getRows())

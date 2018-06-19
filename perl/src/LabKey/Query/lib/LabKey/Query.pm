@@ -25,7 +25,7 @@ This module is designed to simplify querying and manipulating data in LabKey Ser
 After the module is installed, if you need to login with a specific user you 
 will need to create a .netrc file in the home directory of the user
 running the perl script.  Documentation on .netrc can be found here:
-https://www.labkey.org/wiki/home/Documentation/page.view?name=netrc
+https://www.labkey.org/Documentation/wiki-page.view?name=netrc
 
 In API versions 0.08 and later, you can specify the param '-loginAsGuest'
 which will query the server without any credentials.  The server must permit 
@@ -34,10 +34,10 @@ guest to that folder for this to work though.
 =head1 SEE ALSO
 
 The LabKey client APIs are described in greater detail here:
-https://www.labkey.org/wiki/home/Documentation/page.view?name=viewAPIs
+https://www.labkey.org/Documentation/wiki-page.view?name=viewAPIs
 
 Support questions should be directed to the LabKey forum:
-https://www.labkey.org/announcements/home/Server/Forum/list.view?
+https://www.labkey.org/home/Server/Forum/announcements-list.view
 
 =head1 AUTHOR 
 
@@ -47,7 +47,7 @@ LabKey C<info@labkey.com>
 
 Send comments, suggestions and bug reports to:
 
-L<https://www.labkey.org/project/home/Developer/Forum/begin.view>
+L<https://www.labkey.org/home/developer/forum/project-start.view>
 
 
 =head1 COPYRIGHT

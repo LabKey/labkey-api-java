@@ -27,7 +27,7 @@ print Dumper($$results{'rows'});
 
 #it seems guests cannot run executeSql
 #my $sql = LabKey::Query::executeSql(
-#	-baseUrl => 'https://labkey.org/',
+#	-baseUrl => 'https://www.labkey.org/',
 #	-containerPath => 'home/Documentation/',
 #	-schemaName => 'issues',
 #	-sql => 'SELECT max(i.issueid) as id FROM issues.issues i',
