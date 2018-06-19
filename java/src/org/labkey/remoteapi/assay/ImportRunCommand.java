@@ -117,13 +117,13 @@ public class ImportRunCommand extends PostCommand<ImportRunResponse>
     public ImportRunCommand copy()
     {
         ImportRunCommand cmd = new ImportRunCommand(_assayId, _file);
-        cmd._useJson = this._useJson;
-        cmd._name = this._name;
-        cmd._comment = this._comment;
-        cmd._properties = this._properties;
-        cmd._batchId = this._batchId;
-        cmd._batchProperties = this._batchProperties;
-        cmd._runFilePath = this._runFilePath;
+        cmd._useJson = _useJson;
+        cmd._name = _name;
+        cmd._comment = _comment;
+        cmd._properties = _properties;
+        cmd._batchId = _batchId;
+        cmd._batchProperties = _batchProperties;
+        cmd._runFilePath = _runFilePath;
 
         return cmd;
     }

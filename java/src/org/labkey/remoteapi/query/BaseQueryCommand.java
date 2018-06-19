@@ -211,7 +211,7 @@ public abstract class BaseQueryCommand<ResponseType extends CommandResponse> ext
      */
     public void setContainerFilter(ContainerFilter containerFilter)
     {
-        this._containerFilter = containerFilter;
+        _containerFilter = containerFilter;
     }
 
     /**
