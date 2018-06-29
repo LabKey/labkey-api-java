@@ -61,7 +61,7 @@ public class UpdateTransformConfigurationCommand extends BaseTransformCommand<Up
         return enabled;
     }
 
-    public void setEnabled(boolean enabled)
+    public void setEnabled(Boolean enabled)
     {
         this.enabled = enabled;
     }
@@ -71,7 +71,7 @@ public class UpdateTransformConfigurationCommand extends BaseTransformCommand<Up
         return verboseLogging;
     }
 
-    public void setVerboseLogging(boolean verboseLogging)
+    public void setVerboseLogging(Boolean verboseLogging)
     {
         this.verboseLogging = verboseLogging;
     }
