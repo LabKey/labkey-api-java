@@ -188,6 +188,7 @@ public class Connection
 
     /**
      * Create the HttpClientBuilder based on this Connection's configuration options.
+     * @return The builder for an HttpClient
      */
     protected HttpClientBuilder clientBuilder()
     {
@@ -295,6 +296,7 @@ public class Connection
      * NOTE: Changing this setting will force the underlying http client to be recreated.
      *
      * @param timeout the length of the timeout waiting for the server response, in milliseconds
+     * @return this connection
      */
     public Connection setTimeout(Integer timeout)
     {
@@ -315,6 +317,9 @@ public class Connection
     /**
      * Sets the proxy host and port for this Connection.
      * NOTE: Changing this setting will force the underlying http client to be recreated.
+     * @param host the proxy host
+     * @param port the proxy port
+     * @return this connection
      */
     public Connection setProxy(String host, Integer port)
     {
@@ -342,6 +347,7 @@ public class Connection
      * NOTE: Changing this setting will force the underlying http client to be recreated.
      *
      * @param acceptSelfSignedCerts set to false to not accept self-signed certificates
+     * @return this connection
      */
     public Connection setAcceptSelfSignedCerts(boolean acceptSelfSignedCerts)
     {
@@ -358,6 +364,7 @@ public class Connection
      * @param path The path to which the cookie is visible
      * @param expiry The cookie's expiration date
      * @param isSecure Whether the cookie requires a secure connection
+     * @return this connection
      */
     public Connection addCookie(String name, String value, String domain, String path, Date expiry, boolean isSecure)
     {

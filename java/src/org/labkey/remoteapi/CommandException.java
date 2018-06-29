@@ -49,6 +49,10 @@ public class CommandException extends Exception
     }
 
     /**
+     * @param message The message text (should not be null).
+     * @param statusCode The HTTP status code.
+     * @param properties The exception property map (may be null)
+     * @param responseText The full response text (may be null)
      * @deprecated Use {@link #CommandException(String, int, Map, String, String)}
      */
     public CommandException(String message, int statusCode, Map<String, Object> properties, String responseText)
