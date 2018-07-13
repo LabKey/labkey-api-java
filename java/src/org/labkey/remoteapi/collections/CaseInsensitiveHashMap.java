@@ -106,7 +106,7 @@ public class CaseInsensitiveHashMap<V> extends HashMap<String, V>
         return super.put(correctCase, o1);
     }
 
-    @Override
+
     public V getOrDefault(Object key, V defaultValue)
     {
         if (containsKey(key))
@@ -115,7 +115,6 @@ public class CaseInsensitiveHashMap<V> extends HashMap<String, V>
         return defaultValue;
     }
 
-    @Override
     public V putIfAbsent(String key, V value)
     {
         if (containsKey(key))
