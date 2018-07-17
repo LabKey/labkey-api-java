@@ -15,8 +15,8 @@
  */
 package org.labkey.remoteapi.study;
 
-import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
+import org.labkey.remoteapi.PostCommand;
 
 import java.util.Map;
 
@@ -25,7 +25,7 @@ import java.util.Map;
  * Created by: jeckels
  * Date: 7/12/15
  */
-public class CheckForStudyReloadCommand extends Command<CommandResponse>
+public class CheckForStudyReloadCommand extends PostCommand<CommandResponse>
 {
     private final boolean _skipQueryValidation;
     private final boolean _failForUndefinedVisits;
