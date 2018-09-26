@@ -32,6 +32,8 @@ public class Run extends ExpObject
     private String _comment;
     private List<Data> _dataInputs = new ArrayList<Data>();
     private List<Data> _dataOutputs = new ArrayList<Data>();
+    private List<Material> _materialInputs = new ArrayList<>();
+    private List<Material> _materialOutputs = new ArrayList<>();
 
     // Used when inserting new data via SaveAssayBatchAction
     private List<Map<String, Object>> _resultData;
@@ -63,6 +65,23 @@ public class Run extends ExpObject
             }
         }
 
+        if (json.containsKey("materialInputs"))
+        {
+            JSONArray array = (JSONArray)json.get("materialInputs");
+            for (Object o : array)
+            {
+                _materialInputs.add(new Material((JSONObject) o));
+            }
+        }
+
+        if (json.containsKey("materialOutputs"))
+        {
+            JSONArray array = (JSONArray)json.get("materialOutputs");
+            for (Object o : array)
+            {
+                _materialOutputs.add(new Material((JSONObject) o));
+            }
+        }
         _comment = (String)json.get("comment");
     }
 
@@ -84,6 +103,21 @@ public class Run extends ExpObject
         }
         result.put("dataOutputs", dataOutputs);
         result.put("comment", _comment);
+
+        JSONArray materialInputs = new JSONArray();
+        JSONArray materialOutputs = new JSONArray();
+
+        for (Material material : _materialInputs)
+        {
+            materialInputs.add(material.toJSONObject());
+        }
+        result.put("materialInputs", materialInputs);
+
+        for (Material material : _materialOutputs)
+        {
+            materialOutputs.add(material.toJSONObject());
+        }
+        result.put("materialOutputs", materialOutputs);
 
         if (_resultData != null && !_resultData.isEmpty())
         {
@@ -125,6 +159,26 @@ public class Run extends ExpObject
     public void setDataOutputs(List<Data> dataOutputs)
     {
         _dataOutputs = dataOutputs;
+    }
+
+    public List<Material> getMaterialInputs()
+    {
+        return _materialInputs;
+    }
+
+    public void setMaterialInputs(List<Material> materialInputs)
+    {
+        _materialInputs = materialInputs;
+    }
+
+    public List<Material> getMaterialOutputs()
+    {
+        return _materialOutputs;
+    }
+
+    public void setMaterialOutputs(List<Material> materialOutputs)
+    {
+        _materialOutputs = materialOutputs;
     }
 
     /** @return the free-form comment attached to this run */

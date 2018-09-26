@@ -26,8 +26,11 @@ import org.labkey.remoteapi.PostCommand;
  */
 public class SaveAssayBatchCommand extends PostCommand<SaveAssayBatchResponse>
 {
+    public static final String SAMPLE_DERIVATION_PROTOCOL = "Sample Derivation Protocol";       // protocol name that can be used to create non-assay backed runs
+
     private Batch _batch = new Batch();
     private int _assayId;
+    private String _protocolName;
 
     /** @param assayId the id of the assay definition on the web server */
     public SaveAssayBatchCommand(int assayId)
@@ -46,17 +49,41 @@ public class SaveAssayBatchCommand extends PostCommand<SaveAssayBatchResponse>
         _batch = batch;
     }
 
+    /**
+     * @param protocolName the name of the protocol to use for non-assay backed runs
+     * @param batch the batch object to be saved
+     */
+    public SaveAssayBatchCommand(String protocolName, Batch batch)
+    {
+        this(-1);
+        _protocolName = protocolName;
+        _batch = batch;
+    }
+
+    public SaveAssayBatchCommand(SaveAssayBatchCommand source)
+    {
+        super(source);
+
+        _assayId = source._assayId;
+        _protocolName = source._protocolName;
+        _batch = source._batch;
+    }
+
     @Override
     public SaveAssayBatchCommand copy()
     {
-        return new SaveAssayBatchCommand(_assayId, _batch);
+        return new SaveAssayBatchCommand(this);
     }
 
     @Override
     public JSONObject getJsonObject()
     {
         JSONObject result = new JSONObject();
-        result.put("assayId", _assayId);
+
+        if (_protocolName != null)
+            result.put("protocolName", _protocolName);
+        else
+            result.put("assayId", _assayId);
 
         result.put("batch", _batch.toJSONObject());
         return result;
@@ -67,5 +94,4 @@ public class SaveAssayBatchCommand extends PostCommand<SaveAssayBatchResponse>
     {
         return new SaveAssayBatchResponse(text, status, contentType, json, this);
     }
-
 }
