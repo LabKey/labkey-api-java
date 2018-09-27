@@ -32,8 +32,10 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -106,7 +108,7 @@ public class Command<ResponseType extends CommandResponse>
         _actionName = source.getActionName();
         _controllerName = source.getControllerName();
         if (null != source.getParameters())
-            _parameters = new HashMap<String, Object>(source.getParameters());
+            _parameters = new HashMap<>(source.getParameters());
         _timeout = source._timeout;
         _requiredVersion = source.getRequiredVersion();
     }
@@ -138,7 +140,7 @@ public class Command<ResponseType extends CommandResponse>
     public Map<String, Object> getParameters()
     {
         if (null == _parameters)
-            _parameters = new HashMap<String, Object>();
+            _parameters = new HashMap<>();
 
         return _parameters;
     }
@@ -216,7 +218,7 @@ public class Command<ResponseType extends CommandResponse>
                 if (null != contentType && contentType.contains(Command.CONTENT_TYPE_JSON))
                 {
                     // Read entire response body and parse into JSON object
-                    json = (JSONObject) JSONValue.parse(new BufferedReader(new InputStreamReader(response.getInputStream())));
+                    json = (JSONObject) JSONValue.parse(response.getReader());
                 }
                 else
                 {
@@ -275,22 +277,20 @@ public class Command<ResponseType extends CommandResponse>
             return _httpResponse.getEntity().getContent();
         }
 
+        public Reader getReader() throws IOException
+        {
+            return new BufferedReader(new InputStreamReader(getInputStream(), StandardCharsets.UTF_8));
+        }
+
         public String getText() throws IOException
         {
             if (_responseText != null)
                 return _responseText;
 
-            Scanner s = null;
-            try
+            try (Scanner s = new Scanner(_httpResponse.getEntity().getContent()).useDelimiter("\\A"))
             {
                 // Simple InputStream -> String conversion
-                s = new Scanner(_httpResponse.getEntity().getContent()).useDelimiter("\\A");
                 return s.hasNext() ? s.next() : "";
-            }
-            finally
-            {
-                if (s != null)
-                    s.close();
             }
         }
 
