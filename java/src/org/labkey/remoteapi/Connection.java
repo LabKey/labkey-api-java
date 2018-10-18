@@ -35,6 +35,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.labkey.remoteapi.security.EnsureLoginCommand;
+import org.labkey.remoteapi.security.LogoutCommand;
 
 import java.io.IOException;
 import java.net.URI;
@@ -243,13 +244,11 @@ public class Connection
 
     protected void afterExecute()
     {
-        if (null == csrf)
+        // Always update our CSRF token as the session may be new since our last request
+        for (Cookie c : _httpClientContext.getCookieStore().getCookies())
         {
-            for (Cookie c : _httpClientContext.getCookieStore().getCookies())
-            {
-                if ("JSESSIONID".equals(c.getName()))
-                    csrf = c.getValue();
-            }
+            if ("JSESSIONID".equals(c.getName()))
+                csrf = c.getValue();
         }
     }
 
@@ -262,6 +261,19 @@ public class Connection
     public CloseableHttpClient ensureAuthenticated() throws IOException, CommandException
     {
         EnsureLoginCommand command = new EnsureLoginCommand();
+        CommandResponse response = command.execute(this, "/home");
+        return getHttpClient();
+    }
+
+    /**
+     * Invalidates the current HTTP session on the server, if any
+     * @return an HTTP client
+     * @throws IOException if there is an IO problem executing the command to ensure logout
+     * @throws CommandException if the server returned a non-success status code.
+     */
+    public CloseableHttpClient logout() throws IOException, CommandException
+    {
+        LogoutCommand command = new LogoutCommand();
         CommandResponse response = command.execute(this, "/home");
         return getHttpClient();
     }
