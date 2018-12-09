@@ -43,10 +43,10 @@ public class SASRow
         {
             // Temp hack to handle fact that SAS only sets doubles, but server-side bean converters will throw for integer fields
             // TODO: Make server more lenient in this case (accept double format when expecting integer)
-            Double delta = Math.abs(value - Math.round(value));
+            double delta = Math.abs(value - Math.round(value));
 
             if (delta < 0.000000001)
-                _map.put(key, new Double(value).longValue());
+                _map.put(key, Double.valueOf(value).longValue());
             else
                 _map.put(key, value);
         }

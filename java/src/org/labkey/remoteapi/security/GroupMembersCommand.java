@@ -58,7 +58,7 @@ public abstract class GroupMembersCommand extends PostCommand<CommandResponse>
     {
         for (int id : ids)
         {
-            _principals.add(new Integer(id));
+            _principals.add(Integer.valueOf(id));
         }
     }
 
@@ -66,7 +66,7 @@ public abstract class GroupMembersCommand extends PostCommand<CommandResponse>
     {
         for (int id : ids)
         {
-            _principals.add(new Integer(id));
+            _principals.add(Integer.valueOf(id));
         }
     }
 
