@@ -18,6 +18,8 @@ package org.labkey.remoteapi.di;
 import org.json.simple.JSONObject;
 
 /**
+ * Resets the stored state of an ETL, allowing it to be rerun from scratch by forgetting any retained last modified dates
+ * or similar.
  * User: tgaluhn
  * Date: 10/29/13
  */
