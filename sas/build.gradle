@@ -16,8 +16,8 @@ project.task("distribution",
         {Zip zip ->
             zip.baseName = "LabKey${BuildUtils.getDistributionVersion(project)}-ClientAPI-SAS"
             zip.from (project.file("macros"))
-            zip.from (project.project(":remoteapi:java").tasks.jar)
-            zip.from (project.project(":remoteapi:java").configurations.compile)
+            zip.from (project.project(BuildUtils.getRemoteApiProjectPath(gradle)).tasks.jar)
+            zip.from (project.project(BuildUtils.getRemoteApiProjectPath(gradle)).configurations.compile)
             zip.into zip.baseName
             zip.destinationDir project.rootProject.file("dist/client-api/sas")
         }
