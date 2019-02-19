@@ -16,7 +16,7 @@
 package org.labkey.remoteapi.assay;
 
 import org.json.simple.JSONObject;
-import org.labkey.remoteapi.Command;
+import org.labkey.remoteapi.PostCommand;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +34,7 @@ import java.util.Map;
  * you may use the various setters to filter this list to assays of a given
  * name, type or id.
  */
-public class AssayListCommand extends Command<AssayListResponse>
+public class AssayListCommand extends PostCommand<AssayListResponse>
 {
     private String _name;
     private String _type;
@@ -120,6 +120,18 @@ public class AssayListCommand extends Command<AssayListResponse>
     protected AssayListResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
         return new AssayListResponse(text, status, contentType, json, this.copy());
+    }
+
+    @Override
+    public JSONObject getJsonObject()
+    {
+        JSONObject obj = new JSONObject();
+
+        obj.put("name", getName());
+        obj.put("type", getType());
+        obj.put("id", getId());
+
+        return obj;
     }
 
     public Map<String, Object> getParameters()
