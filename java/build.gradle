@@ -1,9 +1,11 @@
+
 plugins {
     id 'java'
-    id 'java-library'
+//    id 'java-library'
     id 'maven'
     id 'maven-publish'
 }
+
 
 buildDir = new File(project.rootProject.buildDir, "/remoteapi/java")
 
@@ -17,6 +19,10 @@ import org.labkey.gradle.plugin.LabKey
 import org.labkey.gradle.util.BuildUtils
 import org.labkey.gradle.util.GroupNames
 import org.labkey.gradle.task.PomFile
+
+project.configurations {
+    api.extendsFrom(compile) // added for use by PomFile task
+}
 
 dependencies {
     compile "org.apache.httpcomponents:httpmime:${httpmimeVersion}"
@@ -50,6 +56,7 @@ project.tasks.withType(JavaCompile) {
     sourceCompatibility = project.ext.sourceCompatibility
     targetCompatibility = project.ext.targetCompatibility
 }
+
 
 project.task("fatJar",
         description: "Generate single jar file containing the api and all its dependent classes",
