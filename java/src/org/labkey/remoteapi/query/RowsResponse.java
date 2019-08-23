@@ -192,11 +192,14 @@ abstract class RowsResponse extends CommandResponse
     {
         //copy the row maps into case-insensitive hash maps
         List<Map<String,Object>> ciRows = new ArrayList<>();
-        
-        for(Map<String,Object> row : getRows())
+
+        if (getRows() != null)
         {
-            //copy the row map into a case-insensitive hash map
-            ciRows.add(new CaseInsensitiveHashMap<>(row));
+            for(Map<String,Object> row : getRows())
+            {
+                //copy the row map into a case-insensitive hash map
+                ciRows.add(new CaseInsensitiveHashMap<>(row));
+            }
         }
 
         //reset the rows array

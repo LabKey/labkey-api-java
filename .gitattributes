@@ -80,6 +80,7 @@ java/src/org/labkey/remoteapi/query/SelectRowsCommand.java -text
 java/src/org/labkey/remoteapi/query/SelectRowsResponse.java -text
 java/src/org/labkey/remoteapi/query/Sort.java -text
 java/src/org/labkey/remoteapi/query/SqlExecuteCommand.java -text
+java/src/org/labkey/remoteapi/query/TruncateTableCommand.java -text
 java/src/org/labkey/remoteapi/query/UpdateRowsCommand.java -text
 java/src/org/labkey/remoteapi/sas/Main.java -text
 java/src/org/labkey/remoteapi/sas/SASBaseSelectCommand.java -text

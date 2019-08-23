@@ -44,8 +44,8 @@ public class Test
     {
         String baseUrl = "http://localhost:8080/labkey";
         Connection cn = args.length < 2 ? new Connection(baseUrl) : new Connection(baseUrl, args[0], args[1]);
-//        Connection cn = new Connection(baseUrl, new ApiKeyCredentialsProvider("session:d7c3a4aeb283e3e54c4126a707908420"));
-//        Connection cn = new Connection(baseUrl, new NetRcCredentialsProvider(baseUrl));
+        //Connection cn = new Connection(baseUrl, new ApiKeyCredentialsProvider("session:d7c3a4aeb283e3e54c4126a707908420"));
+        //Connection cn = new Connection(baseUrl, new NetRcCredentialsProvider(baseUrl));
 
         try
         {
@@ -62,7 +62,9 @@ public class Test
             // Run NabAssayTest with -Dclean=false and rename subfolder "Rename############" to "nabassay"
             nabTest(cn, "/Nab Test Verify Project/nabassay");
             assayTest(cn, "/Nab Test Verify Project/nabassay");
+            truncateAssayFailsTest(cn, "/Nab Test Verify Project/nabassay");
 
+            truncateTableSuccessTest(cn, "Api Test");
             System.out.println("*** All tests completed successfully ***");
         }
         catch(CommandException e)
@@ -134,6 +136,16 @@ public class Test
         //assert that the row count is back to what it was
         srresp = cmdsel.execute(cn, folder);
         assert srresp.getRowCount().intValue() == rowCount;
+    }
+
+    // Assumes that /remoteapi/sas/People.xls has been imported as a list into folder
+    public static void truncateTableSuccessTest(Connection cn, String folder) throws Exception
+    {
+        TruncateTableCommand trunc = new TruncateTableCommand("lists", "People");
+        SaveRowsResponse resp = trunc.execute(cn, folder);
+
+        assert resp.getRowsAffected().intValue() == 9;
+        assert resp.getRows().size() == 0;
     }
 
     // Assumes that /remoteapi/sas/People.xls has been imported as a list into folder
@@ -279,5 +291,19 @@ public class Test
         AssayListCommand cmd = new AssayListCommand();
         AssayListResponse resp = cmd.execute(cn, folder);
         System.out.println(resp.getDefinitions());
+    }
+
+    // Assumes that folder has been populated with assays
+    public static void truncateAssayFailsTest(Connection cn, String folder) throws Exception
+    {
+        TruncateTableCommand trunc = new TruncateTableCommand("assay.NAb.TestAssayNab", "WellData");
+        try{
+            SaveRowsResponse resp = trunc.execute(cn, folder);
+        }
+        catch (CommandException e)
+        {
+            assert e.getStatusCode() == 500;
+            assert e.getLocalizedMessage().equals("The query 'WellData' in the schema 'assay.NAb.TestAssayNab' is not truncatable.");
+        }
     }
 }
