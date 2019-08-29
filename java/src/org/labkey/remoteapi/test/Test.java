@@ -299,6 +299,8 @@ public class Test
         TruncateTableCommand trunc = new TruncateTableCommand("assay.NAb.TestAssayNab", "WellData");
         try{
             SaveRowsResponse resp = trunc.execute(cn, folder);
+            throw new RuntimeException("Truncate table command should not succeed for tables other than lists," +
+                    "datasets, sample sets, data classes, and issues");
         }
         catch (CommandException e)
         {
