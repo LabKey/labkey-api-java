@@ -43,26 +43,26 @@ public class Test
     public static void main(String[] args) throws Exception
     {
         String baseUrl = "http://localhost:8080/labkey";
-        Connection cn = args.length < 2 ? new Connection(baseUrl) : new Connection(baseUrl, args[0], args[1]);
+        Connection cn = args.length < 2 ? new Connection(baseUrl) : new Connection(baseUrl, "israelh@labkey.com", "devdev1");
         //Connection cn = new Connection(baseUrl, new ApiKeyCredentialsProvider("session:d7c3a4aeb283e3e54c4126a707908420"));
         //Connection cn = new Connection(baseUrl, new NetRcCredentialsProvider(baseUrl));
 
         try
         {
             // Import /remoteapi/sas/People.xls as list "People" into project "Api Test"
-            selectTest(cn, "Api Test");
-            crudTest(cn, "Api Test");
-            execSqlTest(cn, "Api Test");
-            schemasTest(cn, "Api Test");
-            extendedFormatTest(cn, "Api Test");
-
-            // Run ShortStudyTest with -Dclean=false
-            datasetTest(cn, "StudyVerifyProject/My Study");
-
-            // Run NabAssayTest with -Dclean=false and rename subfolder "Rename############" to "nabassay"
-            nabTest(cn, "/Nab Test Verify Project/nabassay");
-            assayTest(cn, "/Nab Test Verify Project/nabassay");
-            truncateAssayFailsTest(cn, "/Nab Test Verify Project/nabassay");
+//            selectTest(cn, "Api Test");
+//            crudTest(cn, "Api Test");
+//            execSqlTest(cn, "Api Test");
+//            schemasTest(cn, "Api Test");
+//            extendedFormatTest(cn, "Api Test");
+//
+//            // Run ShortStudyTest with -Dclean=false
+//            datasetTest(cn, "StudyVerifyProject/My Study");
+//
+//            // Run NabAssayTest with -Dclean=false and rename subfolder "Rename############" to "nabassay"
+//            nabTest(cn, "/Nab Test Verify Project/nabassay");
+//            assayTest(cn, "/Nab Test Verify Project/nabassay");
+//            truncateAssayFailsTest(cn, "/Nab Test Verify Project/nabassay");
 
             truncateTableSuccessTest(cn, "Api Test");
             System.out.println("*** All tests completed successfully ***");
@@ -142,9 +142,9 @@ public class Test
     public static void truncateTableSuccessTest(Connection cn, String folder) throws Exception
     {
         TruncateTableCommand trunc = new TruncateTableCommand("lists", "People");
-        SaveRowsResponse resp = trunc.execute(cn, folder);
+        TruncateTableResponse resp = trunc.execute(cn, folder);
 
-        assert resp.getRowsAffected().intValue() == 9;
+        assert resp.getDeletedRows().intValue() == 9;
         assert resp.getRows().size() == 0;
     }
 
@@ -298,7 +298,7 @@ public class Test
     {
         TruncateTableCommand trunc = new TruncateTableCommand("assay.NAb.TestAssayNab", "WellData");
         try{
-            SaveRowsResponse resp = trunc.execute(cn, folder);
+            TruncateTableResponse resp = trunc.execute(cn, folder);
             throw new RuntimeException("Truncate table command should not succeed for tables other than lists," +
                     "datasets, sample sets, data classes, and issues");
         }

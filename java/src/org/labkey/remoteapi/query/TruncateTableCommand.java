@@ -15,25 +15,37 @@
  */
 package org.labkey.remoteapi.query;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.labkey.remoteapi.PostCommand;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Map;
+
 /**
  * Command for deleting rows from a read-write schema. The user associated
  * with the connection used when executing this command must have
  * permission to delete the data.
  * <p>
- * For details on schemas and queries, and example code, see the {@link SaveRowsCommand}.
  */
-public class TruncateTableCommand extends SaveRowsCommand
+public class TruncateTableCommand extends PostCommand<TruncateTableResponse>
 {
+    private String _schemaName;
+    private String _queryName;
+
     /**
      * Constructs a TruncateTableCommand for the given schemaName and queryName.
-     * See the {@link SaveRowsCommand} for more details.
      * @param schemaName The schemaName
-     * @param queryName The queryName.
-     * @see SaveRowsCommand
+     * @param queryName The queryName
      */
     public TruncateTableCommand(String schemaName, String queryName)
     {
-        super(schemaName, queryName, "truncateTable");
+        super("query", "truncateTable");
+        assert null != schemaName;
+        assert null != queryName;
+        _schemaName = schemaName;
+        _queryName = queryName;
     }
 
     public TruncateTableCommand(TruncateTableCommand source)
@@ -41,9 +53,60 @@ public class TruncateTableCommand extends SaveRowsCommand
         super(source);
     }
 
+    /**
+     * Returns the schema name.
+     * @return The schema name.
+     */
+    public String getSchemaName()
+    {
+        return _schemaName;
+    }
+
+    /**
+     * Sets the schema name
+     * @param schemaName The new schema name.
+     */
+    public void setSchemaName(String schemaName)
+    {
+        _schemaName = schemaName;
+    }
+
+    /**
+     * Returns the query name
+     * @return the query name.
+     */
+    public String getQueryName()
+    {
+        return _queryName;
+    }
+
+    /**
+     * Sets a new query name to update
+     * @param queryName the query name.
+     */
+    public void setQueryName(String queryName)
+    {
+        _queryName = queryName;
+    }
+
     @Override
     public TruncateTableCommand copy()
     {
         return new TruncateTableCommand(this);
+    }
+
+    @Override
+    protected TruncateTableResponse createResponse(String text, int status, String contentType, JSONObject json)
+    {
+        return new TruncateTableResponse(text, status, contentType, json, copy());
+    }
+
+    public JSONObject getJsonObject()
+    {
+        JSONObject json = new JSONObject();
+        json.put("schemaName", getSchemaName());
+        json.put("queryName", getQueryName());
+        //json.put("rows", jsonRows);
+        return json;
     }
 }
