@@ -46,6 +46,14 @@ java/src/org/labkey/remoteapi/di/RunTransformCommand.java -text
 java/src/org/labkey/remoteapi/di/RunTransformResponse.java -text
 java/src/org/labkey/remoteapi/di/UpdateTransformConfigurationCommand.java -text
 java/src/org/labkey/remoteapi/di/UpdateTransformConfigurationResponse.java -text
+java/src/org/labkey/remoteapi/domain/AbstractDomainUpdateCommand.java -text
+java/src/org/labkey/remoteapi/domain/CreateDomainCommand.java -text
+java/src/org/labkey/remoteapi/domain/Domain.java -text
+java/src/org/labkey/remoteapi/domain/DomainResponse.java -text
+java/src/org/labkey/remoteapi/domain/DropDomainCommand.java -text
+java/src/org/labkey/remoteapi/domain/GetDomainCommand.java -text
+java/src/org/labkey/remoteapi/domain/PropertyDescriptor.java -text
+java/src/org/labkey/remoteapi/domain/SaveDomainCommand.java -text
 java/src/org/labkey/remoteapi/experiment/LineageCommand.java -text
 java/src/org/labkey/remoteapi/experiment/LineageNode.java -text
 java/src/org/labkey/remoteapi/experiment/LineageResponse.java -text
