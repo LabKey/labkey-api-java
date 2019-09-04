@@ -48,7 +48,7 @@ public class TruncateTableResponse extends RowsResponse
      * @return The number of rows affected by the command, or null if this property
      * was not present in the response.
      */
-    public Number getDeletedRows()
+    public Number getDeletedRowCount()
     {
         return getProperty("deletedRows");
     }

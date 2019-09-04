@@ -144,7 +144,7 @@ public class Test
         TruncateTableCommand trunc = new TruncateTableCommand("lists", "People");
         TruncateTableResponse resp = trunc.execute(cn, folder);
 
-        assert resp.getDeletedRows().intValue() == 9;
+        assert resp.getDeletedRowCount().intValue() == 9;
         assert resp.getRows().size() == 0;
     }
 
