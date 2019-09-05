@@ -3,7 +3,7 @@ package org.labkey.remoteapi.domain;
 import org.json.simple.JSONObject;
 import org.labkey.remoteapi.PostCommand;
 
-abstract class AbstractDomainUpdateCommand extends PostCommand<DomainResponse>
+public abstract class AbstractDomainUpdateCommand extends PostCommand<DomainResponse>
 {
     private Domain _design = new Domain();
 
