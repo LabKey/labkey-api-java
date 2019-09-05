@@ -50,19 +50,19 @@ public class Test
         try
         {
             // Import /remoteapi/sas/People.xls as list "People" into project "Api Test"
-//            selectTest(cn, "Api Test");
-//            crudTest(cn, "Api Test");
-//            execSqlTest(cn, "Api Test");
-//            schemasTest(cn, "Api Test");
-//            extendedFormatTest(cn, "Api Test");
-//
-//            // Run ShortStudyTest with -Dclean=false
-//            datasetTest(cn, "StudyVerifyProject/My Study");
-//
-//            // Run NabAssayTest with -Dclean=false and rename subfolder "Rename############" to "nabassay"
-//            nabTest(cn, "/Nab Test Verify Project/nabassay");
-//            assayTest(cn, "/Nab Test Verify Project/nabassay");
-//            truncateAssayFailsTest(cn, "/Nab Test Verify Project/nabassay");
+            selectTest(cn, "Api Test");
+            crudTest(cn, "Api Test");
+            execSqlTest(cn, "Api Test");
+            schemasTest(cn, "Api Test");
+            extendedFormatTest(cn, "Api Test");
+
+            // Run ShortStudyTest with -Dclean=false
+            datasetTest(cn, "StudyVerifyProject/My Study");
+
+            // Run NabAssayTest with -Dclean=false and rename subfolder "Rename############" to "nabassay"
+            nabTest(cn, "/Nab Test Verify Project/nabassay");
+            assayTest(cn, "/Nab Test Verify Project/nabassay");
+            truncateAssayFailsTest(cn, "/Nab Test Verify Project/nabassay");
 
             truncateTableSuccessTest(cn, "Api Test");
             System.out.println("*** All tests completed successfully ***");
@@ -145,7 +145,6 @@ public class Test
         TruncateTableResponse resp = trunc.execute(cn, folder);
 
         assert resp.getDeletedRowCount().intValue() == 9;
-        assert resp.getRows().size() == 0;
     }
 
     // Assumes that /remoteapi/sas/People.xls has been imported as a list into folder

@@ -15,19 +15,13 @@
  */
 package org.labkey.remoteapi.query;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.labkey.remoteapi.PostCommand;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
-
 /**
- * Command for deleting rows from a read-write schema. The user associated
+ * Command for truncating a table from a read-write schema. The user associated
  * with the connection used when executing this command must have
  * permission to delete the data.
- * <p>
  */
 public class TruncateTableCommand extends PostCommand<TruncateTableResponse>
 {
@@ -106,7 +100,6 @@ public class TruncateTableCommand extends PostCommand<TruncateTableResponse>
         JSONObject json = new JSONObject();
         json.put("schemaName", getSchemaName());
         json.put("queryName", getQueryName());
-        //json.put("rows", jsonRows);
         return json;
     }
 }

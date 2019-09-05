@@ -16,6 +16,7 @@
 package org.labkey.remoteapi.query;
 
 import org.json.simple.JSONObject;
+import org.labkey.remoteapi.CommandResponse;
 
 /*
 * User: Dave
@@ -24,14 +25,14 @@ import org.json.simple.JSONObject;
 */
 
 /**
- * Response object used for commands that derive from SaveRowsCommand.
+ * Response object used for commands that derive from TruncateTableCommand.
  * This response object provides helper methods for accessing the important
  * bits of the parsed response data.
  */
-public class TruncateTableResponse extends RowsResponse
+public class TruncateTableResponse extends CommandResponse
 {
     /**
-     * Constructs a new SaveRowsResponse given the response text and status code
+     * Constructs a new TruncateTableResponse given the response text and status code
      * @param text The response text.
      * @param statusCode The HTTP status code.
      * @param contentType The Content-Type header value.
@@ -44,8 +45,8 @@ public class TruncateTableResponse extends RowsResponse
     }
 
     /**
-     * Returns the 'rowsAffected' response property.
-     * @return The number of rows affected by the command, or null if this property
+     * Returns the 'deletedRows' response property.
+     * @return The number of rows deleted by the command, or null if this property
      * was not present in the response.
      */
     public Number getDeletedRowCount()
