@@ -17,6 +17,9 @@ public class PropertyDescriptor extends ResponseObject
     private Boolean _dimension = false;
     private String _propertyURI;
     private String _rangeURI;
+    private String _lookupSchema;
+    private String _lookupQuery;
+    private String _lookupContainer;
 
     public PropertyDescriptor()
     {
@@ -84,7 +87,26 @@ public class PropertyDescriptor extends ResponseObject
         result.put("propertyURI", _propertyURI);
         result.put("rangeURI", _rangeURI);
 
+        if (_lookupQuery != null && _lookupSchema != null)
+        {
+            result.put("lookupSchema", _lookupSchema);
+            result.put("lookupQuery", _lookupQuery);
+            result.put("lookupContainer", _lookupContainer);
+        }
         return result;
+    }
+
+    /**
+     * Convenience function for creating lookups
+     * @param schema
+     * @param query
+     * @param container set to null for current folder
+     */
+    public void setLookup(String schema, String query, String container)
+    {
+        _lookupSchema = schema;
+        _lookupQuery = query;
+        _lookupContainer = container;
     }
 
     public String getName()
