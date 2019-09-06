@@ -43,7 +43,7 @@ public class Test
     public static void main(String[] args) throws Exception
     {
         String baseUrl = "http://localhost:8080/labkey";
-        Connection cn = args.length < 2 ? new Connection(baseUrl) : new Connection(baseUrl, "israelh@labkey.com", "devdev1");
+        Connection cn = args.length < 2 ? new Connection(baseUrl) : new Connection(baseUrl, args[0], args[1]);
         //Connection cn = new Connection(baseUrl, new ApiKeyCredentialsProvider("session:d7c3a4aeb283e3e54c4126a707908420"));
         //Connection cn = new Connection(baseUrl, new NetRcCredentialsProvider(baseUrl));
 
