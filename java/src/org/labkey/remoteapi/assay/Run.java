@@ -34,6 +34,7 @@ public class Run extends ExpObject
     private List<Data> _dataOutputs = new ArrayList<Data>();
     private List<Material> _materialInputs = new ArrayList<>();
     private List<Material> _materialOutputs = new ArrayList<>();
+    private String _lsid;
 
     // Used when inserting new data via SaveAssayBatchAction
     private List<Map<String, Object>> _resultData;
@@ -83,6 +84,12 @@ public class Run extends ExpObject
             }
         }
         _comment = (String)json.get("comment");
+
+        if (json.containsKey("lsid"))
+        {
+            _lsid = (String) json.get("lsid");
+        }
+
     }
 
     @Override
@@ -103,6 +110,7 @@ public class Run extends ExpObject
         }
         result.put("dataOutputs", dataOutputs);
         result.put("comment", _comment);
+        result.put("lsid", _lsid);
 
         JSONArray materialInputs = new JSONArray();
         JSONArray materialOutputs = new JSONArray();
@@ -197,5 +205,15 @@ public class Run extends ExpObject
     public void setResultData(List<Map<String, Object>> resultData)
     {
         _resultData = resultData;
+    }
+
+    public String getLsid()
+    {
+        return _lsid;
+    }
+
+    public void setLsid(String lsid)
+    {
+        _lsid = lsid;
     }
 }

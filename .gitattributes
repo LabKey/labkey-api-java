@@ -26,6 +26,8 @@ java/src/org/labkey/remoteapi/assay/ImportRunCommand.java -text
 java/src/org/labkey/remoteapi/assay/ImportRunResponse.java -text
 java/src/org/labkey/remoteapi/assay/LoadAssayBatchCommand.java -text
 java/src/org/labkey/remoteapi/assay/LoadAssayBatchResponse.java -text
+java/src/org/labkey/remoteapi/assay/LoadAssayRunCommand.java -text
+java/src/org/labkey/remoteapi/assay/LoadAssayRunResponse.java -text
 java/src/org/labkey/remoteapi/assay/Material.java -text
 java/src/org/labkey/remoteapi/assay/Run.java -text
 java/src/org/labkey/remoteapi/assay/SaveAssayBatchCommand.java -text

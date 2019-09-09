@@ -13,15 +13,17 @@ import java.util.List;
  */
 public class SaveAssayRunCommand extends PostCommand<SaveAssayRunResponse>
 {
-    private List<Run> _runs = new ArrayList<Run>();
+    private List<Run> _runs;
+    private String _protocolName;
 
     /**
      * @param runs the runs to be saved
      */
-    public SaveAssayRunCommand(List<Run> runs)
+    public SaveAssayRunCommand(String protocolName, List<Run> runs)
     {
         super("assay", "saveAssayRun");
         _runs = runs;
+        _protocolName = protocolName;
     }
 
     public SaveAssayRunCommand(SaveAssayRunCommand source)
@@ -46,6 +48,33 @@ public class SaveAssayRunCommand extends PostCommand<SaveAssayRunResponse>
             runs.add(run.toJSONObject());
         }
         result.put("runs", runs);
+        result.put("protocolName", getProtocolName());
         return result;
+    }
+
+    @Override
+    protected SaveAssayRunResponse createResponse(String text, int status, String contentType, JSONObject json)
+    {
+        return new SaveAssayRunResponse(text, status, contentType, json, this);
+    }
+
+    public List<Run> getRuns()
+    {
+        return _runs;
+    }
+
+    public void setRuns(List<Run> runs)
+    {
+        _runs = runs;
+    }
+
+    public String getProtocolName()
+    {
+        return _protocolName;
+    }
+
+    public void setProtocolName(String protocolName)
+    {
+        _protocolName = protocolName;
     }
 }
