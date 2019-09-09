@@ -6,6 +6,8 @@ import org.labkey.remoteapi.CommandResponse;
 
 public class LoadAssayBatchResponse extends CommandResponse
 {
+
+    private Batch _batch;
     /**
      * Constructs a new CommandResponse, initialized with the provided
      * response text and status code.
@@ -19,5 +21,16 @@ public class LoadAssayBatchResponse extends CommandResponse
     public LoadAssayBatchResponse(String text, int statusCode, String contentType, JSONObject json, Command sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
+        _batch = new Batch((JSONObject) json.get("batch"));
+    }
+
+    public Batch getBatch()
+    {
+        return _batch;
+    }
+
+    public void setBatch(Batch batch)
+    {
+        _batch = batch;
     }
 }

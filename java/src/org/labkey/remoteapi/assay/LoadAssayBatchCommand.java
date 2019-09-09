@@ -73,4 +73,10 @@ public class LoadAssayBatchCommand extends PostCommand<LoadAssayBatchResponse>
     {
         return new LoadAssayBatchCommand(this);
     }
+
+    @Override
+    protected LoadAssayBatchResponse createResponse(String text, int status, String contentType, JSONObject json)
+    {
+        return new LoadAssayBatchResponse(text, status, contentType, json, this);
+    }
 }
