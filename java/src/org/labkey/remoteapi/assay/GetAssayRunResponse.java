@@ -4,7 +4,7 @@ import org.json.simple.JSONObject;
 import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 
-public class LoadAssayRunResponse extends CommandResponse
+public class GetAssayRunResponse extends CommandResponse
 {
     private Run _run;
 
@@ -28,13 +28,10 @@ public class LoadAssayRunResponse extends CommandResponse
      * @param json          The parsed JSONObject (or null if JSON was not returned).
      * @param sourceCommand A copy of the command that created this response
      */
-    public LoadAssayRunResponse(String text, int statusCode, String contentType, JSONObject json, Command sourceCommand)
+    public GetAssayRunResponse(String text, int statusCode, String contentType, JSONObject json, Command sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
         JSONObject runJson = (JSONObject) json.get("run");
-        _run = new Run();
-
-        _run.setName((String) runJson.get("name"));
-        _run.setLsid((String) runJson.get("lsid"));
+        _run = new Run(runJson);
     }
 }

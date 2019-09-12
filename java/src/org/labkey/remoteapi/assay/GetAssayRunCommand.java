@@ -7,19 +7,19 @@ import org.labkey.remoteapi.PostCommand;
 /**
  * Command for obtaining information about a run in a particular folder.
  */
-public class LoadAssayRunCommand extends PostCommand<LoadAssayRunResponse>
+public class GetAssayRunCommand extends PostCommand<GetAssayRunResponse>
 {
     private String _lsid;
 
-    public LoadAssayRunCommand(LoadAssayRunCommand source)
+    public GetAssayRunCommand(GetAssayRunCommand source)
     {
         super(source);
         _lsid = source.getLsid();
     }
 
-    public LoadAssayRunCommand(String lsid)
+    public GetAssayRunCommand(String lsid)
     {
-        super("experiment", "loadAssayRun");
+        super("assay", "getAssayRun");
         _lsid = lsid;
     }
 
@@ -34,9 +34,9 @@ public class LoadAssayRunCommand extends PostCommand<LoadAssayRunResponse>
     }
 
     @Override
-    public LoadAssayRunCommand copy()
+    public GetAssayRunCommand copy()
     {
-        return new LoadAssayRunCommand(this);
+        return new GetAssayRunCommand(this);
     }
 
     @Override
@@ -49,8 +49,8 @@ public class LoadAssayRunCommand extends PostCommand<LoadAssayRunResponse>
     }
 
     @Override
-    protected LoadAssayRunResponse createResponse(String text, int status, String contentType, JSONObject json)
+    protected GetAssayRunResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new LoadAssayRunResponse(text, status, contentType, json, this);
+        return new GetAssayRunResponse(text, status, contentType, json, this);
     }
 }

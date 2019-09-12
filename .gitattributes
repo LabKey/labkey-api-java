@@ -22,12 +22,12 @@ java/src/org/labkey/remoteapi/assay/AssayListResponse.java -text
 java/src/org/labkey/remoteapi/assay/Batch.java -text
 java/src/org/labkey/remoteapi/assay/Data.java -text
 java/src/org/labkey/remoteapi/assay/ExpObject.java -text
+java/src/org/labkey/remoteapi/assay/GetAssayRunCommand.java -text
+java/src/org/labkey/remoteapi/assay/GetAssayRunResponse.java -text
 java/src/org/labkey/remoteapi/assay/ImportRunCommand.java -text
 java/src/org/labkey/remoteapi/assay/ImportRunResponse.java -text
 java/src/org/labkey/remoteapi/assay/LoadAssayBatchCommand.java -text
 java/src/org/labkey/remoteapi/assay/LoadAssayBatchResponse.java -text
-java/src/org/labkey/remoteapi/assay/LoadAssayRunCommand.java -text
-java/src/org/labkey/remoteapi/assay/LoadAssayRunResponse.java -text
 java/src/org/labkey/remoteapi/assay/Material.java -text
 java/src/org/labkey/remoteapi/assay/Run.java -text
 java/src/org/labkey/remoteapi/assay/SaveAssayBatchCommand.java -text
