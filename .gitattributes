@@ -32,8 +32,8 @@ java/src/org/labkey/remoteapi/assay/Material.java -text
 java/src/org/labkey/remoteapi/assay/Run.java -text
 java/src/org/labkey/remoteapi/assay/SaveAssayBatchCommand.java -text
 java/src/org/labkey/remoteapi/assay/SaveAssayBatchResponse.java -text
-java/src/org/labkey/remoteapi/assay/SaveAssayRunCommand.java -text
-java/src/org/labkey/remoteapi/assay/SaveAssayRunResponse.java -text
+java/src/org/labkey/remoteapi/assay/SaveAssayRunsCommand.java -text
+java/src/org/labkey/remoteapi/assay/SaveAssayRunsResponse.java -text
 java/src/org/labkey/remoteapi/assay/nab/NAbRunsCommand.java -text
 java/src/org/labkey/remoteapi/assay/nab/NAbRunsResponse.java -text
 java/src/org/labkey/remoteapi/assay/nab/model/NAbCurveParameters.java -text
@@ -59,6 +59,8 @@ java/src/org/labkey/remoteapi/domain/DomainCommand.java -text
 java/src/org/labkey/remoteapi/domain/DomainResponse.java -text
 java/src/org/labkey/remoteapi/domain/DropDomainCommand.java -text
 java/src/org/labkey/remoteapi/domain/GetDomainCommand.java -text
+java/src/org/labkey/remoteapi/domain/ListDomainsCommand.java -text
+java/src/org/labkey/remoteapi/domain/ListDomainsResponse.java -text
 java/src/org/labkey/remoteapi/domain/PropertyDescriptor.java -text
 java/src/org/labkey/remoteapi/domain/SaveDomainCommand.java -text
 java/src/org/labkey/remoteapi/experiment/LineageCommand.java -text

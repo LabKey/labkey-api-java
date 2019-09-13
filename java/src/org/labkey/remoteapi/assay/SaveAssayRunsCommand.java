@@ -5,13 +5,12 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.labkey.remoteapi.PostCommand;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Saves runs on the server.
  */
-public class SaveAssayRunCommand extends PostCommand<SaveAssayRunResponse>
+public class SaveAssayRunsCommand extends PostCommand<SaveAssayRunsResponse>
 {
     private List<Run> _runs;
     private String _protocolName;
@@ -19,14 +18,14 @@ public class SaveAssayRunCommand extends PostCommand<SaveAssayRunResponse>
     /**
      * @param runs the runs to be saved
      */
-    public SaveAssayRunCommand(String protocolName, List<Run> runs)
+    public SaveAssayRunsCommand(String protocolName, List<Run> runs)
     {
-        super("assay", "saveAssayRun");
+        super("assay", "saveAssayRuns");
         _runs = runs;
         _protocolName = protocolName;
     }
 
-    public SaveAssayRunCommand(SaveAssayRunCommand source)
+    public SaveAssayRunsCommand(SaveAssayRunsCommand source)
     {
         super(source);
         _runs = source._runs;
@@ -35,7 +34,7 @@ public class SaveAssayRunCommand extends PostCommand<SaveAssayRunResponse>
     @Override
     public PostCommand copy()
     {
-        return new SaveAssayRunCommand(this);
+        return new SaveAssayRunsCommand(this);
     }
 
     @Override
@@ -53,9 +52,9 @@ public class SaveAssayRunCommand extends PostCommand<SaveAssayRunResponse>
     }
 
     @Override
-    protected SaveAssayRunResponse createResponse(String text, int status, String contentType, JSONObject json)
+    protected SaveAssayRunsResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new SaveAssayRunResponse(text, status, contentType, json, this);
+        return new SaveAssayRunsResponse(text, status, contentType, json, this);
     }
 
     public List<Run> getRuns()

@@ -1,4 +1,4 @@
-package org.labkey.remoteapi.assay;
+package org.labkey.remoteapi.domain;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -8,10 +8,9 @@ import org.labkey.remoteapi.CommandResponse;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SaveAssayRunResponse extends CommandResponse
+public class ListDomainsResponse extends CommandResponse
 {
-    private List<Run> _runs = new ArrayList<>();
-
+    List<Domain> _domains = new ArrayList<>();
     /**
      * Constructs a new CommandResponse, initialized with the provided
      * response text and status code.
@@ -22,24 +21,23 @@ public class SaveAssayRunResponse extends CommandResponse
      * @param json          The parsed JSONObject (or null if JSON was not returned).
      * @param sourceCommand A copy of the command that created this response
      */
-    public SaveAssayRunResponse(String text, int statusCode, String contentType, JSONObject json, Command sourceCommand)
+    public ListDomainsResponse(String text, int statusCode, String contentType, JSONObject json, Command sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
-        JSONArray array = (JSONArray)json.get("runs");
-        for (Object o : array)
+        JSONArray domains = (JSONArray) json.get("domains");
+        for(Object domainJSON: domains)
         {
-            JSONObject run = (JSONObject) o;
-            _runs.add(new Run(run));
+            _domains.add(new Domain((JSONObject) domainJSON));
         }
     }
 
-    public List<Run> getRuns()
+    public List<Domain> getDomains()
     {
-        return _runs;
+        return _domains;
     }
 
-    public void setRuns(List<Run> runs)
+    public void setDomains(List<Domain> domains)
     {
-        _runs = runs;
+        _domains = domains;
     }
 }
