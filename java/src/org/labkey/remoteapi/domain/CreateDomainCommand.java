@@ -1,12 +1,11 @@
 package org.labkey.remoteapi.domain;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class CreateDomainCommand extends DomainCommand
+public class CreateDomainCommand extends AbstractDomainUpdateCommand
 {
     private String _kind;
     private Map<String, Object> _options = new HashMap<>();
@@ -16,7 +15,7 @@ public class CreateDomainCommand extends DomainCommand
         super("property", "createDomain");
         _kind = kind;
 
-        setDomainName(domainName);
+        getDomainDesign().setName(domainName);
     }
 
     @Override
@@ -24,24 +23,8 @@ public class CreateDomainCommand extends DomainCommand
     {
         JSONObject result = super.getJsonObject();
 
-        result.put("kind", getKind());
+        result.put("kind", _kind);
         result.put("options", _options);
-
-        JSONArray fields = new JSONArray();
-        fields.addAll(getColumns());
-
-        JSONObject domainDesign = new JSONObject();
-        domainDesign.put("name", getDomainName());
-        domainDesign.put("fields", fields);
-
-        result.put("domainDesign", domainDesign);
-
-        if (!getOptions().isEmpty())
-        {
-            JSONObject domainOptions = new JSONObject();
-            domainOptions.putAll(getOptions());
-            result.put("options", domainOptions);
-        }
 
         return result;
     }
@@ -56,4 +39,13 @@ public class CreateDomainCommand extends DomainCommand
         _kind = kind;
     }
 
+    public Map<String, Object> getOptions()
+    {
+        return _options;
+    }
+
+    public void setOptions(Map<String, Object> options)
+    {
+        _options = options;
+    }
 }

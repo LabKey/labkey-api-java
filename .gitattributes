@@ -55,7 +55,6 @@ java/src/org/labkey/remoteapi/di/UpdateTransformConfigurationResponse.java -text
 java/src/org/labkey/remoteapi/domain/AbstractDomainUpdateCommand.java -text
 java/src/org/labkey/remoteapi/domain/CreateDomainCommand.java -text
 java/src/org/labkey/remoteapi/domain/Domain.java -text
-java/src/org/labkey/remoteapi/domain/DomainCommand.java -text
 java/src/org/labkey/remoteapi/domain/DomainResponse.java -text
 java/src/org/labkey/remoteapi/domain/DropDomainCommand.java -text
 java/src/org/labkey/remoteapi/domain/GetDomainCommand.java -text
