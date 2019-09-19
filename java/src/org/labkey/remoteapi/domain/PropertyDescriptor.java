@@ -65,6 +65,13 @@ public class PropertyDescriptor extends ResponseObject
 
         _propertyURI = (String)json.get("propertyURI");
         _rangeURI = (String)json.get("rangeURI");
+
+        if (json.get("lookupSchema") != null)
+            _lookupSchema = (String)json.get("lookupSchema");
+        if (json.get("lookupQuery") != null)
+            _lookupQuery = (String)json.get("lookupQuery");
+        if (json.get("lookupContainer") != null)
+            _lookupContainer = (String)json.get("lookupContainer");
     }
 
     public JSONObject toJSONObject()
