@@ -15,6 +15,7 @@ public class PropertyDescriptor extends ResponseObject
     private String _format;
     private Boolean _measure = false;
     private Boolean _dimension = false;
+    private Boolean _mvEnabled = false;
     private String _propertyURI;
     private String _rangeURI;
     private String _lookupSchema;
@@ -72,6 +73,8 @@ public class PropertyDescriptor extends ResponseObject
             _lookupQuery = (String)json.get("lookupQuery");
         if (json.get("lookupContainer") != null)
             _lookupContainer = (String)json.get("lookupContainer");
+        if (json.get("mvEnabled") != null)
+            _mvEnabled = (Boolean)json.get("mvEnabled");
     }
 
     public JSONObject toJSONObject()
@@ -90,6 +93,7 @@ public class PropertyDescriptor extends ResponseObject
         result.put("propertyId", _propertyId);
         result.put("format", _format);
         result.put("measure", _measure);
+        result.put("mvEnabled", _mvEnabled);
         result.put("dimension", _dimension);
         result.put("propertyURI", _propertyURI);
         result.put("rangeURI", _rangeURI);
@@ -109,11 +113,12 @@ public class PropertyDescriptor extends ResponseObject
      * @param query
      * @param container set to null for current folder
      */
-    public void setLookup(String schema, String query, String container)
+    public PropertyDescriptor setLookup(String schema, String query, String container)
     {
         _lookupSchema = schema;
         _lookupQuery = query;
         _lookupContainer = container;
+        return this;
     }
 
     public String getName()
@@ -131,9 +136,10 @@ public class PropertyDescriptor extends ResponseObject
         return _label;
     }
 
-    public void setLabel(String label)
+    public PropertyDescriptor setLabel(String label)
     {
         _label = label;
+        return this;
     }
 
     public String getDescription()
@@ -141,9 +147,10 @@ public class PropertyDescriptor extends ResponseObject
         return _description;
     }
 
-    public void setDescription(String description)
+    public PropertyDescriptor setDescription(String description)
     {
         _description = description;
+        return this;
     }
 
     public Boolean getHidden()
@@ -151,9 +158,10 @@ public class PropertyDescriptor extends ResponseObject
         return _hidden;
     }
 
-    public void setHidden(Boolean hidden)
+    public PropertyDescriptor setHidden(Boolean hidden)
     {
         _hidden = hidden;
+        return this;
     }
 
     public Boolean getRequired()
@@ -161,9 +169,10 @@ public class PropertyDescriptor extends ResponseObject
         return _required;
     }
 
-    public void setRequired(Boolean required)
+    public PropertyDescriptor setRequired(Boolean required)
     {
         _required = required;
+        return this;
     }
 
     public String getPHI()
@@ -171,9 +180,10 @@ public class PropertyDescriptor extends ResponseObject
         return _PHI;
     }
 
-    public void setPHI(String PHI)
+    public PropertyDescriptor setPHI(String PHI)
     {
         _PHI = PHI;
+        return this;
     }
 
     public Long getPropertyId()
@@ -181,9 +191,10 @@ public class PropertyDescriptor extends ResponseObject
         return _propertyId;
     }
 
-    public void setPropertyId(Long propertyId)
+    public PropertyDescriptor setPropertyId(Long propertyId)
     {
         _propertyId = propertyId;
+        return this;
     }
 
     public String getFormat()
@@ -191,9 +202,10 @@ public class PropertyDescriptor extends ResponseObject
         return _format;
     }
 
-    public void setFormat(String format)
+    public PropertyDescriptor setFormat(String format)
     {
         _format = format;
+        return this;
     }
 
     public Boolean getMeasure()
@@ -201,9 +213,10 @@ public class PropertyDescriptor extends ResponseObject
         return _measure;
     }
 
-    public void setMeasure(Boolean measure)
+    public PropertyDescriptor setMeasure(Boolean measure)
     {
         _measure = measure;
+        return this;
     }
 
     public Boolean getDimension()
@@ -211,9 +224,10 @@ public class PropertyDescriptor extends ResponseObject
         return _dimension;
     }
 
-    public void setDimension(Boolean dimension)
+    public PropertyDescriptor setDimension(Boolean dimension)
     {
         _dimension = dimension;
+        return this;
     }
 
     public String getPropertyURI()
@@ -221,9 +235,10 @@ public class PropertyDescriptor extends ResponseObject
         return _propertyURI;
     }
 
-    public void setPropertyURI(String propertyURI)
+    public PropertyDescriptor setPropertyURI(String propertyURI)
     {
         _propertyURI = propertyURI;
+        return this;
     }
 
     public String getRangeURI()
@@ -231,8 +246,20 @@ public class PropertyDescriptor extends ResponseObject
         return _rangeURI;
     }
 
-    public void setRangeURI(String rangeURI)
+    public PropertyDescriptor setRangeURI(String rangeURI)
     {
         _rangeURI = rangeURI;
+        return this;
+    }
+
+    public Boolean getMvEnabled()
+    {
+        return _mvEnabled;
+    }
+
+    public PropertyDescriptor setMvEnabled(Boolean mvEnabled)
+    {
+        _mvEnabled = mvEnabled;
+        return this;
     }
 }
