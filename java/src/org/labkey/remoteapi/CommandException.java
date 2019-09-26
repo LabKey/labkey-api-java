@@ -15,6 +15,9 @@
  */
 package org.labkey.remoteapi;
 
+import org.apache.http.impl.EnglishReasonPhraseCatalog;
+
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -71,11 +74,32 @@ public class CommandException extends Exception
      */
     public CommandException(String message, int statusCode, Map<String, Object> properties, String responseText, String contentType)
     {
-        super(message);
+        super(buildMessage(message, statusCode));
         _statusCode = statusCode;
         _properties = properties;
         _responseText = responseText;
         _contentType = contentType;
+    }
+
+    private static String buildMessage(String message, int statusCode)
+    {
+        if (statusCode == 0 || (message != null && !message.trim().isEmpty()))
+        {
+            return message;
+        }
+
+        // Use status code as message if none is specified
+        StringBuilder sb = new StringBuilder();
+        sb.append(statusCode);
+        try
+        {
+            String reasonPhrase = EnglishReasonPhraseCatalog.INSTANCE.getReason(statusCode, Locale.getDefault());
+            sb.append(" : ");
+            sb.append(reasonPhrase);
+        }
+        catch (IllegalArgumentException ignore) { /* Unknown status code */ }
+
+        return sb.toString();
     }
 
     public String getContentType()
