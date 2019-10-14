@@ -109,9 +109,10 @@ public class PropertyDescriptor extends ResponseObject
 
     /**
      * Convenience function for creating lookups
-     * @param schema
-     * @param query
+     * @param schema the schema for the lookup
+     * @param query the query for the lookup
      * @param container set to null for current folder
+     * @return property descriptor for the lookup in the given container for the given schema and query
      */
     public PropertyDescriptor setLookup(String schema, String query, String container)
     {

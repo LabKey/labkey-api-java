@@ -16,6 +16,7 @@ public class SaveAssayRunsCommand extends PostCommand<SaveAssayRunsResponse>
     private String _protocolName;
 
     /**
+     * @param protocolName name of the protocol to use
      * @param runs the runs to be saved
      */
     public SaveAssayRunsCommand(String protocolName, List<Run> runs)
