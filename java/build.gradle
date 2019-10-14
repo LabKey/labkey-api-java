@@ -1,8 +1,6 @@
 
 plugins {
     id 'java'
-//    id 'java-library'
-    id 'maven'
     id 'maven-publish'
 }
 
@@ -25,13 +23,13 @@ project.configurations {
 }
 
 dependencies {
-    compile "org.apache.httpcomponents:httpmime:${httpmimeVersion}"
-    compile ("com.googlecode.json-simple:json-simple:${jsonSimpleVersion}")
+    implementation "org.apache.httpcomponents:httpmime:${httpmimeVersion}"
+    implementation ("com.googlecode.json-simple:json-simple:${jsonSimpleVersion}")
             {
                 // exclude this because it gets in the way of our own JSON object implementations from server/api
                 exclude group: "org.json", module:"json"
             }
-    compile "net.sf.opencsv:opencsv:${opencsvVersion}"
+    implementation "net.sf.opencsv:opencsv:${opencsvVersion}"
 }
 
 jar {
@@ -65,14 +63,14 @@ project.task("fatJar",
         {
             Jar jar ->
                 jar.from sourceSets.main.output
-                jar.from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }}
-                jar.baseName artifactPrefix
-                jar.version project.version
+                jar.from { configurations.default.collect { it.isDirectory() ? it : zipTree(it) }}
+                jar.archiveBaseName = artifactPrefix
+                jar.archiveVersion = project.version
                 jar.classifier LabKey.FAT_JAR_CLASSIFIER
                 jar.dependsOn project.tasks.jar
                 jar.into('lib') {
                     from tasks.jar
-                    from configurations.compile
+                    from configurations.default
                 }
         }
 )
@@ -89,7 +87,7 @@ if (project.hasProperty('javaClientDir'))
 project.task('javadocJar', description: "Generate jar file of javadoc files", type: Jar) {Jar jar ->
             jar.from project.tasks.javadoc.destinationDir
             jar.group GroupNames.DISTRIBUTION
-            jar.baseName artifactPrefix
+            jar.archiveBaseName = artifactPrefix
             jar.classifier LabKey.JAVADOC_CLASSIFIER
             jar.dependsOn project.tasks.javadoc
         }
@@ -98,7 +96,7 @@ project.task('sourcesJar', description: "Generate jar file of source files", typ
             jar.from project.sourceSets.main.allJava
 
             jar.group GroupNames.DISTRIBUTION
-            jar.baseName artifactPrefix
+            jar.archiveBaseName = artifactPrefix
             jar.classifier LabKey.SOURCES_CLASSIFIER
 }
 
