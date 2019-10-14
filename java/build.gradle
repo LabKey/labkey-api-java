@@ -23,13 +23,13 @@ project.configurations {
 }
 
 dependencies {
-    implementation "org.apache.httpcomponents:httpmime:${httpmimeVersion}"
-    implementation ("com.googlecode.json-simple:json-simple:${jsonSimpleVersion}")
+    compile "org.apache.httpcomponents:httpmime:${httpmimeVersion}"
+    compile ("com.googlecode.json-simple:json-simple:${jsonSimpleVersion}")
             {
                 // exclude this because it gets in the way of our own JSON object implementations from server/api
                 exclude group: "org.json", module:"json"
             }
-    implementation "net.sf.opencsv:opencsv:${opencsvVersion}"
+    compile "net.sf.opencsv:opencsv:${opencsvVersion}"
 }
 
 jar {
@@ -63,14 +63,14 @@ project.task("fatJar",
         {
             Jar jar ->
                 jar.from sourceSets.main.output
-                jar.from { configurations.default.collect { it.isDirectory() ? it : zipTree(it) }}
+                jar.from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }}
                 jar.archiveBaseName = artifactPrefix
                 jar.archiveVersion = project.version
                 jar.classifier LabKey.FAT_JAR_CLASSIFIER
                 jar.dependsOn project.tasks.jar
                 jar.into('lib') {
                     from tasks.jar
-                    from configurations.default
+                    from configurations.compile
                 }
         }
 )
