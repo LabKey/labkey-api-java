@@ -24,13 +24,13 @@ project.configurations {
 }
 
 dependencies {
-    compile "org.apache.httpcomponents:httpmime:${httpmimeVersion}"
-    compile ("com.googlecode.json-simple:json-simple:${jsonSimpleVersion}")
+    implementation "org.apache.httpcomponents:httpmime:${httpmimeVersion}"
+    implementation ("com.googlecode.json-simple:json-simple:${jsonSimpleVersion}")
             {
                 // exclude this because it gets in the way of our own JSON object implementations from server/api
                 exclude group: "org.json", module:"json"
             }
-    compile "net.sf.opencsv:opencsv:${opencsvVersion}"
+    implementation "net.sf.opencsv:opencsv:${opencsvVersion}"
 }
 
 jar {
