@@ -28,11 +28,13 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -274,11 +276,23 @@ public class Command<ResponseType extends CommandResponse>
 
         public InputStream getInputStream() throws IOException
         {
+            if (_responseText != null)
+            {
+                // We've already consumed the input stream and stashed the result, so use that instead of going back
+                // to the stream
+                return new ByteArrayInputStream(_responseText.getBytes(StandardCharsets.UTF_8));
+            }
             return _httpResponse.getEntity().getContent();
         }
 
         public Reader getReader() throws IOException
         {
+            if (_responseText != null)
+            {
+                // We've already consumed the input stream and stashed the result, so use that instead of going back
+                // to the stream
+                return new StringReader(_responseText);
+            }
             return new BufferedReader(new InputStreamReader(getInputStream(), StandardCharsets.UTF_8));
         }
 
@@ -295,6 +309,7 @@ public class Command<ResponseType extends CommandResponse>
         }
 
         // Caller is responsible for closing the response
+        @Override
         public void close() throws IOException
         {
             _httpResponse.close();
