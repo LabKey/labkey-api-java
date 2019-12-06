@@ -108,8 +108,8 @@ public class PostCommand<ResponseType extends CommandResponse> extends Command<R
 
         if (null != json)
         {
-            if (!json.containsKey("apiVersion"))
-                json.put("apiVersion", getRequiredVersion());
+            if (!json.containsKey(CommonParameters.apiVersion.name()) && getRequiredVersion() > 0)
+                json.put(CommonParameters.apiVersion.name(), getRequiredVersion());
 
             request.setEntity(new StringEntity(json.toString(), ContentType.APPLICATION_JSON));
         }
