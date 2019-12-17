@@ -49,6 +49,11 @@ public class Domain extends ResponseObject
 
     public JSONObject toJSONObject()
     {
+        return toJSONObject(false);
+    }
+
+    public JSONObject toJSONObject(boolean forProtocol)
+    {
         JSONObject result = new JSONObject();
 
         if (getAllProperties() != null)
@@ -63,7 +68,7 @@ public class Domain extends ResponseObject
         result.put("fields", fields);
         for (PropertyDescriptor field : _fields)
         {
-            fields.add(field.toJSONObject());
+            fields.add(field.toJSONObject(forProtocol));
         }
         return result;
     }

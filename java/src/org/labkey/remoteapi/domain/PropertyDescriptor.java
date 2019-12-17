@@ -79,6 +79,11 @@ public class PropertyDescriptor extends ResponseObject
 
     public JSONObject toJSONObject()
     {
+        return toJSONObject(false);
+    }
+
+    public JSONObject toJSONObject(boolean forProtocol)
+    {
         JSONObject result = new JSONObject();
 
         if (getAllProperties() != null)
@@ -104,6 +109,15 @@ public class PropertyDescriptor extends ResponseObject
             result.put("lookupQuery", _lookupQuery);
             result.put("lookupContainer", _lookupContainer);
         }
+
+        if (forProtocol)
+        {
+            result.put("url", result.get("URL"));
+            result.remove("URL");
+            result.put("phi", result.get("PHI"));
+            result.remove("PHI");
+        }
+
         return result;
     }
 
