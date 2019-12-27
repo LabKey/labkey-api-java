@@ -1,5 +1,5 @@
 * text=auto !eol
-java/README.html -text
+java/README.md -text
 java/build.gradle -text
 java/gradle.properties -text
 java/src/META-INF/services/java.sql.Driver -text
