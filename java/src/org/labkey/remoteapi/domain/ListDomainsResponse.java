@@ -24,7 +24,7 @@ public class ListDomainsResponse extends CommandResponse
     public ListDomainsResponse(String text, int statusCode, String contentType, JSONObject json, Command sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
-        JSONArray domains = (JSONArray) json.get("domains");
+        JSONArray domains = (JSONArray) json.get("data");
         for(Object domainJSON: domains)
         {
             _domains.add(new Domain((JSONObject) domainJSON));
