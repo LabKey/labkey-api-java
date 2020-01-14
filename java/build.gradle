@@ -1,7 +1,12 @@
+import org.labkey.gradle.plugin.LabKey
+import org.labkey.gradle.util.BuildUtils
+import org.labkey.gradle.util.GroupNames
+import org.labkey.gradle.task.PomFile
 
 plugins {
+    id 'java-library'
     id 'java'
-    id 'maven'
+    id 'maven' // TODO this has been deprecated
     id 'maven-publish'
 }
 
@@ -12,29 +17,18 @@ def artifactPrefix = 'labkey-client-api'
 def description = "The client-side library for Java developers is a separate JAR from the LabKey Server code base. It can be used by any Java program, including another Java web application."
 def orgUrl = "http://www.labkey.org"
 
-
-
-import org.labkey.gradle.plugin.LabKey
-import org.labkey.gradle.util.BuildUtils
-import org.labkey.gradle.util.GroupNames
-import org.labkey.gradle.task.PomFile
-
-project.configurations {
-    api.extendsFrom(compile) // added for use by PomFile task
-}
-
 dependencies {
-    compile "org.apache.httpcomponents:httpmime:${httpmimeVersion}"
-    compile ("com.googlecode.json-simple:json-simple:${jsonSimpleVersion}")
+    api "org.apache.httpcomponents:httpmime:${httpmimeVersion}"
+    api ("com.googlecode.json-simple:json-simple:${jsonSimpleVersion}")
             {
                 // exclude this because it gets in the way of our own JSON object implementations from server/api
                 exclude group: "org.json", module:"json"
             }
-    compile "net.sf.opencsv:opencsv:${opencsvVersion}"
+    api "net.sf.opencsv:opencsv:${opencsvVersion}"
 }
 
 jar {
-    baseName artifactPrefix
+    archiveBaseName.set(artifactPrefix)
 
     sourceCompatibility = project.sourceCompatibility
     targetCompatibility = project.targetCompatibility
@@ -64,14 +58,14 @@ project.task("fatJar",
         {
             Jar jar ->
                 jar.from sourceSets.main.output
-                jar.from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }}
-                jar.archiveBaseName = artifactPrefix
-                jar.archiveVersion = project.version
+                jar.from { configurations.default.collect { it.isDirectory() ? it : zipTree(it) }}
+                jar.archiveBaseName.set(artifactPrefix)
+                jar.setArchiveVersion(project.version)
                 jar.classifier LabKey.FAT_JAR_CLASSIFIER
                 jar.dependsOn project.tasks.jar
                 jar.into('lib') {
                     from tasks.jar
-                    from configurations.compile
+                    from configurations.default
                 }
         }
 )
@@ -88,8 +82,8 @@ if (project.hasProperty('javaClientDir'))
 project.task('javadocJar', description: "Generate jar file of javadoc files", type: Jar) {Jar jar ->
             jar.from project.tasks.javadoc.destinationDir
             jar.group GroupNames.DISTRIBUTION
-            jar.archiveBaseName = artifactPrefix
-            jar.classifier LabKey.JAVADOC_CLASSIFIER
+            jar.archiveBaseName.set(artifactPrefix)
+            jar.archiveClassifier.set(LabKey.JAVADOC_CLASSIFIER)
             jar.dependsOn project.tasks.javadoc
         }
 
@@ -97,7 +91,7 @@ project.task('sourcesJar', description: "Generate jar file of source files", typ
             jar.from project.sourceSets.main.allJava
 
             jar.group GroupNames.DISTRIBUTION
-            jar.archiveBaseName = artifactPrefix
+            jar.archiveBaseName.set(artifactPrefix)
             jar.classifier LabKey.SOURCES_CLASSIFIER
 }
 
@@ -108,6 +102,7 @@ project.artifacts {
 }
 
 Properties pomProperties = new Properties()
+pomProperties.put('groupId', project.group)
 pomProperties.put("ArtifactId", artifactPrefix)
 pomProperties.put("Organization", "LabKey")
 pomProperties.put("OrganizationURL", orgUrl)
@@ -124,12 +119,12 @@ pomProperties.put("LicenseURL", "http://www.apache.org/licenses/LICENSE-2.0.txt"
 // an ordering.  And so we have two, which I really don't like.
 def pomConfig = {
    organization {
-      name 'LabKey'
+      name = 'LabKey'
       url orgUrl
    }
    licenses {
       license {
-         name 'The Apache Software License, Version 2.0'
+         name = 'The Apache Software License, Version 2.0'
          url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
          distribution 'repo'
       }
@@ -142,7 +137,7 @@ def pomConfig = {
    developers {
         developer {
             id 'labkey-team'
-            name 'The LabKey Development Team'
+            name = 'The LabKey Development Team'
             organization 'LabKey.org'
             organizationUrl orgUrl
         }
