@@ -119,12 +119,12 @@ pomProperties.put("LicenseURL", "http://www.apache.org/licenses/LICENSE-2.0.txt"
 // an ordering.  And so we have two, which I really don't like.
 def pomConfig = {
    organization {
-      name = 'LabKey'
+      name 'LabKey'
       url orgUrl
    }
    licenses {
       license {
-         name = 'The Apache Software License, Version 2.0'
+         name  'The Apache Software License, Version 2.0'
          url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
          distribution 'repo'
       }
@@ -137,7 +137,7 @@ def pomConfig = {
    developers {
         developer {
             id 'labkey-team'
-            name = 'The LabKey Development Team'
+            name 'The LabKey Development Team'
             organization 'LabKey.org'
             organizationUrl orgUrl
         }
