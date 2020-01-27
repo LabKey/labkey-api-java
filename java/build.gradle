@@ -17,6 +17,9 @@ def artifactPrefix = 'labkey-client-api'
 def description = "The client-side library for Java developers is a separate JAR from the LabKey Server code base. It can be used by any Java program, including another Java web application."
 def orgUrl = "http://www.labkey.org"
 
+group "org.labkey.api"
+version "1.0.0"
+
 dependencies {
     api "org.apache.httpcomponents:httpmime:${httpmimeVersion}"
     api ("com.googlecode.json-simple:json-simple:${jsonSimpleVersion}")
