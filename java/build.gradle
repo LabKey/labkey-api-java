@@ -18,7 +18,8 @@ def description = "The client-side library for Java developers is a separate JAR
 def orgUrl = "http://www.labkey.org"
 
 group "org.labkey.api"
-version "1.0.0"
+//Issue #39336 (comment 4): Updating to use SNAPSHOT until migration to git
+version "1.0.1-SNAPSHOT"
 
 dependencies {
     api "org.apache.httpcomponents:httpmime:${httpmimeVersion}"
