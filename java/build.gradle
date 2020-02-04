@@ -1,21 +1,16 @@
 import org.labkey.gradle.plugin.LabKey
 import org.labkey.gradle.util.BuildUtils
 import org.labkey.gradle.util.GroupNames
-import org.labkey.gradle.task.PomFile
 
 plugins {
     id 'java-library'
     id 'java'
-    id 'maven' // TODO this has been deprecated
     id 'maven-publish'
 }
-
 
 buildDir = new File(project.rootProject.buildDir, "/remoteapi/java")
 
 def artifactPrefix = 'labkey-client-api'
-def description = "The client-side library for Java developers is a separate JAR from the LabKey Server code base. It can be used by any Java program, including another Java web application."
-def orgUrl = "http://www.labkey.org"
 
 group "org.labkey.api"
 //Issue #39336 (comment 4): Updating to use SNAPSHOT until migration to git
@@ -54,6 +49,13 @@ project.tasks.withType(JavaCompile) {
     targetCompatibility = project.ext.targetCompatibility
 }
 
+// The maven-publish plugin will, by default, publish a metadata file alongside the other
+// artifacts.  Its extension is .module, which might get confused with our own .module files.
+// We could publish these files for everything but .module files, but for now we disable always
+// https://docs.gradle.org/current/userguide/publishing_gradle_module_metadata.html
+project.tasks.withType(GenerateModuleMetadata) {
+    enabled = false
+}
 
 project.task("fatJar",
         description: "Generate single jar file containing the api and all its dependent classes",
@@ -62,6 +64,7 @@ project.task("fatJar",
         {
             Jar jar ->
                 jar.from sourceSets.main.output
+                jar.duplicatesStrategy = 'exclude'
                 jar.from { configurations.default.collect { it.isDirectory() ? it : zipTree(it) }}
                 jar.archiveBaseName.set(artifactPrefix)
                 jar.setArchiveVersion(project.version)
@@ -105,69 +108,44 @@ project.artifacts {
     archives project.tasks.fatJar
 }
 
-Properties pomProperties = new Properties()
-pomProperties.put('groupId', project.group)
-pomProperties.put("ArtifactId", artifactPrefix)
-pomProperties.put("Organization", "LabKey")
-pomProperties.put("OrganizationURL", orgUrl)
-pomProperties.put("Description", description )
-pomProperties.put("License", "The Apache Software License, Version 2.0")
-pomProperties.put("LicenseURL", "http://www.apache.org/licenses/LICENSE-2.0.txt")
-
-// N.B.  This seems redundant with the properties above, but artifactoryPublish needs to have a pom file, and I
-// can't figure out how to make it depend on the default pom file task (using tasks.generatePomFileForLibsPublication
-// produces an error complaining about not knowing what this task is).  Using the pomFileTask as a dependency for
-// bintrayUpload does not work because the default generatePomFile... task runs after the pomFileTask and thus
-// the pom file we attempt to publish with does not have any of the properties specified above.  Since I
-// can't figure out how to grab onto this task (don't know what type it is either), I can't disable it or specify
-// an ordering.  And so we have two, which I really don't like.
-def pomConfig = {
-   organization {
-      name 'LabKey'
-      url orgUrl
-   }
-   licenses {
-      license {
-         name  'The Apache Software License, Version 2.0'
-         url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-         distribution 'repo'
-      }
-   }
-   scm {
-        url 'http://svn.mgt.labkey.host/stedi/trunk'
-        connection 'http://svn.mgt.labkey.host/stedi/trunk'
-        developerConnection 'http://svn.mgt.labkey.host/stedi/trunk'
-   }
-   developers {
-        developer {
-            id 'labkey-team'
-            name 'The LabKey Development Team'
-            organization 'LabKey.org'
-            organizationUrl orgUrl
-        }
-    }
-}
+def description = "The client-side library for Java developers is a separate JAR from the LabKey Server code base. It can be used by any Java program, including another Java web application."
+def orgUrl = "http://www.labkey.org"
 
 project.afterEvaluate {
-    Task pomFileTask = project.task("pomFile",
-            group: GroupNames.PUBLISHING,
-            description: "create the pom file for this project",
-            type: PomFile,
-            {
-                PomFile pom ->
-                    pom.pomProperties = pomProperties
-            }
-    )
     project.publishing {
         publications {
             libs(MavenPublication) {
+                groupId = project.group
                 from components.java
-                pom.withXml {
-                    asNode().appendNode('url', orgUrl)
-                    asNode().appendNode('name', artifactPrefix)
-                    asNode().appendNode('description', description)
-                    asNode().children().last() + pomConfig
+                artifactId = artifactPrefix
+                versionMapping {
+                    usage('java-api') {
+                        fromResolutionOf('runtimeClasspath')
+                    }
+                    usage('java-runtime') {
+                        fromResolutionResult()
+                    }
                 }
+                pom {
+                    name = "LabKey Server Java Client API"
+                    description = "The client-side library for Java developers is a separate JAR from the LabKey Server code base. It can be used by any Java program, including another Java web application."
+                    licenses {
+                        license {
+                            name = 'The Apache License, Version 2.0'
+                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+                    organization {
+                        name = "LabKey"
+                        url = orgUrl
+                    }
+                    scm {
+                        connection = 'http://svn.mgt.labkey.host/stedi/trunk'
+                        developerConnection = 'http://svn.mgt.labkey.host/stedi/trunk'
+                        url = 'http://svn.mgt.labkey.host/stedi/trunk'
+                    }
+                }
+
                 project.tasks.each {
                     if (it instanceof Jar)
                     {
@@ -187,7 +165,7 @@ project.afterEvaluate {
                         dependsOn it
                     }
                 }
-                dependsOn pomFileTask
+//                dependsOn pomFileTask
                 publications('libs')
             }
         }
