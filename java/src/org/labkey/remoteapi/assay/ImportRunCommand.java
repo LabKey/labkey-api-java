@@ -48,6 +48,7 @@ public class ImportRunCommand extends PostCommand<ImportRunResponse>
     private List<Map<String, Object>> _dataRows;
     private File _file;
     private String _runFilePath;
+    private JSONObject _plateMetadata;
 
     public ImportRunCommand(int assayId)
     {
@@ -113,6 +114,11 @@ public class ImportRunCommand extends PostCommand<ImportRunResponse>
         _batchProperties = batchProperties;
     }
 
+    public void setPlateMetadata(JSONObject plateMetadata)
+    {
+        _plateMetadata = plateMetadata;
+    }
+
     @Override
     public ImportRunCommand copy()
     {
@@ -124,6 +130,7 @@ public class ImportRunCommand extends PostCommand<ImportRunResponse>
         cmd._batchId = _batchId;
         cmd._batchProperties = _batchProperties;
         cmd._runFilePath = _runFilePath;
+        cmd._plateMetadata = _plateMetadata;
 
         return cmd;
     }
@@ -167,6 +174,8 @@ public class ImportRunCommand extends PostCommand<ImportRunResponse>
                 json.put("dataRows", _dataRows);
             if (_runFilePath != null)
                 json.put("runFilePath", _runFilePath);
+            if (_plateMetadata != null)
+                json.put("plateMetadata", _plateMetadata);
 
             builder.addTextBody("json", json.toJSONString(), ContentType.APPLICATION_JSON);
         }
@@ -197,6 +206,8 @@ public class ImportRunCommand extends PostCommand<ImportRunResponse>
                 builder.addTextBody("dataRows", JSONArray.toJSONString(_dataRows), ContentType.APPLICATION_JSON);
             if (_runFilePath != null)
                 builder.addTextBody("runFilePath", _runFilePath);
+            if (_plateMetadata != null)
+                builder.addTextBody("plateMetadata", _plateMetadata.toJSONString());
         }
 
         // UNDONE: set content type based on extension

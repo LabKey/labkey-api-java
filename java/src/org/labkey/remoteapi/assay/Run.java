@@ -35,6 +35,7 @@ public class Run extends ExpObject
     private List<Material> _materialInputs = new ArrayList<>();
     private List<Material> _materialOutputs = new ArrayList<>();
     private String _lsid;
+    private JSONObject _plateMetadata;
 
     // Used when inserting new data via SaveAssayBatchAction
     private List<Map<String, Object>> _resultData;
@@ -90,6 +91,10 @@ public class Run extends ExpObject
             _lsid = (String) json.get("lsid");
         }
 
+        if (json.containsKey("plateMetadata"))
+        {
+            _plateMetadata = (JSONObject)json.get("plateMetadata");
+        }
     }
 
     @Override
@@ -141,6 +146,9 @@ public class Run extends ExpObject
             }
             result.put("dataRows", dataRows);
         }
+
+        if (_plateMetadata != null)
+            result.put("plateMetadata", _plateMetadata);
 
         return result;
     }
@@ -215,5 +223,15 @@ public class Run extends ExpObject
     public void setLsid(String lsid)
     {
         _lsid = lsid;
+    }
+
+    public JSONObject getPlateMetadata()
+    {
+        return _plateMetadata;
+    }
+
+    public void setPlateMetadata(JSONObject plateMetadata)
+    {
+        _plateMetadata = plateMetadata;
     }
 }
