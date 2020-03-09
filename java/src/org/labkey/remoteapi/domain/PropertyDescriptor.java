@@ -101,7 +101,9 @@ public class PropertyDescriptor extends ResponseObject
         result.put("mvEnabled", _mvEnabled);
         result.put("dimension", _dimension);
         result.put("propertyURI", _propertyURI);
-        result.put("rangeURI", _rangeURI);
+
+        if (_rangeURI != null)
+            result.put("rangeURI", _rangeURI);
 
         if (_lookupQuery != null && _lookupSchema != null)
         {
