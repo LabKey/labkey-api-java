@@ -14,7 +14,7 @@ def artifactPrefix = 'labkey-client-api'
 
 group "org.labkey.api"
 //Issue #39336 (comment 4): Updating to use SNAPSHOT until migration to git
-version "1.0.1-SNAPSHOT"
+version "1.1.1-SNAPSHOT"
 
 dependencies {
     api "org.apache.httpcomponents:httpmime:${httpmimeVersion}"
