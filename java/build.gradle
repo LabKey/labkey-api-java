@@ -156,19 +156,24 @@ project.afterEvaluate {
             }
         }
 
-        if (BuildUtils.shouldPublish(project))
-        {
-            project.artifactoryPublish {
-                project.tasks.each {
-                    if (it instanceof Jar)
-                    {
-                        dependsOn it
-                    }
-                }
-//                dependsOn pomFileTask
-                publications('libs')
-            }
-        }
+        // Comment this out for now as we don't need to publish snapshot versions of the remoteapi jar file all the time since
+        // we are referencing the release version in our builds and this code changes infrequently.  Without a modification
+        // to this file. this publishing fails when the LabKey version is a release version because the repository set for
+        // publishing is a release repository, but the version set in this file will be a SNAPSHOT version.  Could probalby be fixed
+        // with some configuration work, but it will be easier once this is moved to its own git repository.
+//        if (BuildUtils.shouldPublish(project))
+//        {
+//            project.artifactoryPublish {
+//                project.tasks.each {
+//                    if (it instanceof Jar)
+//                    {
+//                        dependsOn it
+//                    }
+//                }
+////                dependsOn pomFileTask
+//                publications('libs')
+//            }
+//        }
 
     }
     project.model {
