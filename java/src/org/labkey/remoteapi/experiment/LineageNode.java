@@ -26,7 +26,7 @@ import java.util.Set;
 public class LineageNode extends ResponseObject
 {
     private final String _lsid;
-    private final Integer _rowId;
+    private final Integer _id;
     private final String _name;
     private final String _url;
     private final String _type;
@@ -40,7 +40,7 @@ public class LineageNode extends ResponseObject
     {
         super(map);
         _lsid = lsid;
-        _rowId = ((Long)map.get("rowId")).intValue();
+        _id = ((Long)map.get("id")).intValue();
         _name = (String)map.get("name");
         _type = (String)map.get("type");
         _cpasType = (String)map.get("cpasType");
@@ -70,9 +70,9 @@ public class LineageNode extends ResponseObject
         return _lsid;
     }
 
-    public Integer getRowId()
+    public Integer getId()
     {
-        return _rowId;
+        return _id;
     }
 
     public String getName()
@@ -107,7 +107,7 @@ public class LineageNode extends ResponseObject
 
     void dump(int indent, StringBuilder sb, Set<String> seen)
     {
-        indent(indent, sb).append("> ").append(getName()).append(" (").append(getRowId()).append(")");
+        indent(indent, sb).append("> ").append(getName()).append(" (").append(getId()).append(")");
         if (seen.contains(getLsid()))
         {
             sb.append(" **\n");
