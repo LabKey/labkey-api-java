@@ -35,7 +35,10 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.labkey.remoteapi.security.EnsureLoginCommand;
+import org.labkey.remoteapi.security.ImpersonateUserCommand;
 import org.labkey.remoteapi.security.LogoutCommand;
+import org.labkey.remoteapi.security.StopImpersonatingCommand;
+import org.labkey.remoteapi.security.WhoAmICommand;
 
 import java.io.IOException;
 import java.net.URI;
@@ -44,6 +47,7 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * Represents connection information for a particular LabKey Server.
@@ -108,6 +112,11 @@ public class Connection
     private int _timeout = DEFAULT_TIMEOUT;
     private String _proxyHost;
     private Integer _proxyPort;
+    private String _csrf;
+
+    // The user email when impersonating a user
+    private String _impersonateUser;
+    private String _impersonatePath;
 
     /**
      * Constructs a new Connection object given a base URL and a credentials provider.
@@ -221,24 +230,21 @@ public class Connection
 
 
 
-    private String csrf = null;
-
-    protected void beforeExecute(HttpRequest request)
+    protected void beforeExecute(HttpRequest request) throws IOException, CommandException
     {
-        if (null == csrf && request instanceof HttpPost)
+        if (null == _csrf && request instanceof HttpPost)
         {
-            // need to preemptively login
-            // we're not really using the login form, just getting a JSESSIONID
+            // make a request to get a JSESSIONID
             try
             {
-                new Command("login", "login").execute(this, "/");
+                new WhoAmICommand().execute(this, "/");
             }
             catch (Exception ignored)
             {
             }
         }
-        if (null != csrf)
-            request.setHeader("X-LABKEY-CSRF", csrf);
+        if (null != _csrf)
+            request.setHeader("X-LABKEY-CSRF", _csrf);
     }
 
 
@@ -248,7 +254,7 @@ public class Connection
         for (Cookie c : _httpClientContext.getCookieStore().getCookies())
         {
             if ("JSESSIONID".equals(c.getName()))
-                csrf = c.getValue();
+                _csrf = c.getValue();
         }
     }
 
@@ -278,7 +284,68 @@ public class Connection
         return getHttpClient();
     }
 
-    CloseableHttpResponse executeRequest(HttpUriRequest request, Integer timeout) throws IOException, URISyntaxException, AuthenticationException
+    /**
+     * For site-admins only, start impersonating a user.
+     *
+     * Admins may impersonate other users to perform actions on their behalf.
+     * Site admins may impersonate any user in any project. Project admins must
+     * provide a <code>projectPath</code> and may only impersonate within the
+     * project in which they have admin permission.
+     *
+     * @param email The user to impersonate
+     * @see Connection#stopImpersonate()
+     */
+    public Connection impersonate(/*@NotNull*/ String email) throws IOException, CommandException
+    {
+        return impersonate(email, null);
+    }
+
+    /**
+     * For site-admins or project-admins only, start impersonating a user.
+     *
+     * Admins may impersonate other users to perform actions on their behalf.
+     * Site admins may impersonate any user in any project. Project admins must
+     * provide a <code>projectPath</code> and may only impersonate within the
+     * project in which they have admin permission.
+     *
+     * @param email The user to impersonate
+     * @param projectPath The project path within which the user will be impersonated.
+     * @see Connection#stopImpersonate()
+     */
+    public Connection impersonate(/*@NotNull*/ String email, /*@Nullable*/ String projectPath) throws IOException, CommandException
+    {
+        Objects.requireNonNull(email, "email");
+
+        CommandResponse resp = new ImpersonateUserCommand(email).execute(this, projectPath);
+        if (resp.getStatusCode() != 200)
+            throw new CommandException("Failed to impersonate user");
+
+        _impersonateUser = email;
+        _impersonatePath = projectPath;
+        return this;
+    }
+
+    /**
+     * Stop impersonating a user.
+     */
+    public Connection stopImpersonate() throws IOException, CommandException
+    {
+        if (_impersonateUser != null)
+        {
+            CommandResponse resp = new StopImpersonatingCommand().execute(this, _impersonatePath);
+
+            // on success, a 302 redirect response is returned
+            if (resp.getStatusCode() != 302)
+                throw new CommandException("Failed to stop impersonating");
+
+            _impersonateUser = null;
+            _impersonatePath = null;
+        }
+
+        return this;
+    }
+
+    CloseableHttpResponse executeRequest(HttpUriRequest request, Integer timeout) throws IOException, URISyntaxException, AuthenticationException, CommandException
     {
         // Delegate authentication setup to CredentialsProvider
         _credentialsProvider.configureRequest(getBaseUrl(), request, _httpClientContext);

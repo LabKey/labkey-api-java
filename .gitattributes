@@ -135,10 +135,14 @@ java/src/org/labkey/remoteapi/security/GetGroupPermsResponse.java -text
 java/src/org/labkey/remoteapi/security/GetUsersCommand.java -text
 java/src/org/labkey/remoteapi/security/GetUsersResponse.java -text
 java/src/org/labkey/remoteapi/security/GroupMembersCommand.java -text
+java/src/org/labkey/remoteapi/security/ImpersonateUserCommand.java -text
 java/src/org/labkey/remoteapi/security/LogoutCommand.java -text
 java/src/org/labkey/remoteapi/security/RemoveGroupMembersCommand.java -text
 java/src/org/labkey/remoteapi/security/RenameGroupCommand.java -text
 java/src/org/labkey/remoteapi/security/RenameGroupResponse.java -text
+java/src/org/labkey/remoteapi/security/StopImpersonatingCommand.java -text
+java/src/org/labkey/remoteapi/security/WhoAmICommand.java -text
+java/src/org/labkey/remoteapi/security/WhoAmIResponse.java -text
 java/src/org/labkey/remoteapi/study/CheckForStudyReloadCommand.java -text
 java/src/org/labkey/remoteapi/study/ParticipantGroup.java -text
 java/src/org/labkey/remoteapi/study/UpdateParticipantGroupCommand.java -text
