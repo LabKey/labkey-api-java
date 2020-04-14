@@ -2,6 +2,11 @@
 java/README.md -text
 java/build.gradle -text
 java/gradle.properties -text
+java/gradle/wrapper/gradle-wrapper.jar -text
+java/gradle/wrapper/gradle-wrapper.properties -text
+java/gradlew -text
+java/gradlew.bat -text
+java/settings.gradle -text
 java/src/META-INF/services/java.sql.Driver -text
 java/src/log4j.xml -text
 java/src/org/labkey/remoteapi/ApiKeyCredentialsProvider.java -text
