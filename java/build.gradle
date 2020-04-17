@@ -54,7 +54,7 @@ repositories {
     }
 }
 
-buildDir = new File(project.rootProject.buildDir, "/remoteapi/java")
+buildDir = new File(project.rootProject.buildDir, "/remoteapi/labkey-api-java")
 
 def artifactPrefix = 'labkey-client-api'
 
