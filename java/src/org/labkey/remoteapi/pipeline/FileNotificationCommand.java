@@ -16,7 +16,7 @@
 package org.labkey.remoteapi.pipeline;
 
 import org.json.simple.JSONObject;
-import org.labkey.remoteapi.Command;
+import org.labkey.remoteapi.PostCommand;
 
 /**
  * Notifies the server that files may have become available for the pipeline to process. Causes the server to
@@ -25,7 +25,7 @@ import org.labkey.remoteapi.Command;
  * User: jeckels
  * Date: Feb 15, 2011
  */
-public class FileNotificationCommand extends Command<FileNotificationResponse>
+public class FileNotificationCommand extends PostCommand<FileNotificationResponse>
 {
     public FileNotificationCommand()
     {
