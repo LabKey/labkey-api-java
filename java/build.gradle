@@ -110,7 +110,7 @@ project.task("fatJar",
         {
             Jar jar ->
                 jar.from sourceSets.main.output
-                jar.duplicatesStrategy = 'exclude'
+                jar.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
                 jar.from { configurations.default.collect { it.isDirectory() ? it : zipTree(it) }}
                 jar.archiveBaseName.set(artifactPrefix)
                 jar.setArchiveVersion(project.version)
@@ -178,7 +178,7 @@ project.afterEvaluate {
                     url = orgUrl
                     developers {
                         developer {
-                            id = 'lakbkey-team'
+                            id = 'labkey-team'
                             name = 'The LabKey Development Team'
                             organization = 'LabKey.org'
                             organizationUrl = 'http://www.labkey.org'
@@ -195,9 +195,9 @@ project.afterEvaluate {
                         url = orgUrl
                     }
                     scm {
-                        connection = 'http://svn.mgt.labkey.host/stedi/trunk'
-                        developerConnection = 'http://svn.mgt.labkey.host/stedi/trunk'
-                        url = 'http://svn.mgt.labkey.host/stedi/trunk'
+                        connection = 'https://github.com/LabKey/labkey-api-java'
+                        developerConnection = 'https://github.com/LabKey/labkey-api-java'
+                        url = 'https://github.com/LabKey/labkey-api-java'
                     }
                 }
 
