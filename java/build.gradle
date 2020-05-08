@@ -195,9 +195,9 @@ project.afterEvaluate {
                         url = orgUrl
                     }
                     scm {
-                        connection = 'https://github.com/LabKey/labkey-api-java'
-                        developerConnection = 'https://github.com/LabKey/labkey-api-java'
-                        url = 'https://github.com/LabKey/labkey-api-java'
+                        connection = 'scm:git:https://github.com/LabKey/labkey-api-java'
+                        developerConnection = 'scm:git:https://github.com/LabKey/labkey-api-java'
+                        url = 'scm:git:https://github.com/LabKey/labkey-api-java/java'
                     }
                 }
 
