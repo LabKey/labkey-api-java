@@ -13,7 +13,7 @@ see our [Community Support Forums](https://www.labkey.org/home/Support/LabKey%20
 
 This library is licensed under the [Apache 2.0 open-source license](http://www.apache.org/licenses/LICENSE-2.0).
 
-See the [change log](remoteapi/labkey-api-java/java/CHANGELOG.md) for information on the release versions and their
+See the [change log](CHANGELOG.md) for information on the release versions and their
 compatibility with LabKey Server versions.
 
 ## Development
