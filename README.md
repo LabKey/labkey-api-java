@@ -7,7 +7,7 @@ you should clone this repository into the `$LABKEY_ROOT/remoteapi` directory.
 
 See the individual packages' documentation for more information.
 
-| Package | README | Change log
+| Package | README | Change log | labkey.org docs
 | --- | --- |
-| java | [README](java/README.md) | [Change log](java/CHANGELOG.md)
-| sas | [README](sas/README.md) | [Change log](sas/CHANGELOG.md)
+| java | [README](java/README.md) | [Change log](java/CHANGELOG.md) | [docs](https://www.labkey.org/Documentation/wiki-page.view?name=javaAPI)
+| sas | [README](sas/README.md) | [Change log](sas/CHANGELOG.md) | [docs](https://www.labkey.org/Documentation/wiki-page.view?name=sasAPI)
