@@ -43,7 +43,7 @@ having to publish.
 it is a version number not in use by another branch, including `develop`.  A good practice to 
 follow is to use your feature branch in the naming of that version (e.g., `X.Y.Z-myNewFeature-SNAPSHOT`). 
 TeamCity will automatically publish new SNAPSHOT versions from feature branches.
-- Update your `$LABKEY_ROOT/settings.gradle` file to include this project (`include ':remoteapi:labkey-api-java:java'`)
+- Update your `$LABKEY_ROOT/settings.gradle` file to include this project (`include ':remoteapi:labkey-api-java:labkey-client-api'`)
 
 After making these changes, in all places where a dependency on the Java API has been declared like so: 
 
