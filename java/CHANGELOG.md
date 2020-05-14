@@ -2,20 +2,18 @@
 
 ## version TBD
 *Released* : TBD
-*Earliest Compatible LabKey Version*:
 
 * Update FileNotificationCommand to do a POST, as now required
+* Add documentation
 
 ## version 1.2.0
 *Released*: 16 April 2020
-*Earliest Compatible LabKey Version*: TBD
 
 * small fixes to LABKEY.Experiment APIs
 * Support impersonation via Java client API
 
 ## version 1.1.0
 *Released*: 19 March 2020
-*Earliest Compatible LabKey Version*: TBD
 
 * Support for plate metadata in saveBatch and importRun APIs
 * Don't post invalid 'rangeURI' to server
@@ -23,7 +21,6 @@
 
 ## version 1.0.0
 *Released*: 06 February 2020
-*Earliest Compatible LabKey Version*: TBD
 
 - Migration to [SemVer](https://semver.org/) for library versioning. With 1.0.0 we will move away from using the LabKey server version 
 and adopt the standard used in our other API libraries. Version 1.0.0 will succeed the previous published version of : 19.1.0.
