@@ -1,5 +1,6 @@
 import org.labkey.gradle.util.BuildUtils
 import org.labkey.gradle.util.GroupNames
+import org.labkey.gradle.util.PomFileHelper
 import org.labkey.gradle.plugin.extension.TeamCityExtension
 
 buildscript {
@@ -51,13 +52,12 @@ repositories {
     }
 }
 
+// TODO remove once client-api distribution no longer requires this
 buildDir = new File(project.rootProject.buildDir, "/remoteapi/sas")
 
 group 'org.labkey.api'
 
 version '1.0.0-SNAPSHOT'
-
-def artifactPrefix = "labkey-api-sas"
 
 // We add the TeamCity extension here if it doesn't exist because we will use the build
 // number property from TeamCity in the distribution artifact names, if present.
@@ -71,12 +71,12 @@ configurations {
 
 BuildUtils.addLabKeyDependency(project: project, config: "remoteApi", depProjectPath: BuildUtils.getRemoteApiProjectPath(gradle), depVersion: project.labkeyClientApiVersion)
 
+// TODO change name and destination once client-api no longer requires this
 project.task("distribution",
         group: GroupNames.DISTRIBUTION,
         description: "Create a zip file for the SAS API client distribution containing the SAS macros, java client api jar and its dependencies",
         type: Zip,
         {Zip zip ->
-            zip.archiveBaseName.set(artifactPrefix)
             zip.from (project.file("macros"))
             zip.from project.configurations.remoteApi
             zip.into zip.archiveBaseName
@@ -93,29 +93,14 @@ project.afterEvaluate {
         publications {
             libs(MavenPublication) {
                 groupId = project.group
-                artifactId = artifactPrefix
                 artifact project.tasks.distribution
                 pom {
                     name = "LabKey Server SAS Client API"
                     description = "Library of macros for use in accessing LabKey Server via SAS"
-                    developers {
-                        developer {
-                            id = 'labkey-team'
-                            name = 'The LabKey Development Team'
-                            organization = 'LabKey.org'
-                            organizationUrl = 'http://www.labkey.org'
-                        }
-                    }
-                    licenses {
-                        license {
-                            name = 'The Apache License, Version 2.0'
-                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                        }
-                    }
-                    organization {
-                        name = "LabKey"
-                        url = "http://www.labkey.org"
-                    }
+                    url = PomFileHelper.LABKEY_ORG_URL
+                    developers PomFileHelper.getLabKeyTeamDevelopers()
+                    licenses PomFileHelper.getApacheLicense()
+                    organization PomFileHelper.getLabKeyOrganization()
                     scm {
                         connection = 'scm:git:https://github.com/LabKey/labkey-api-java/sas'
                         developerConnection = 'scm:git:https://github.com/LabKey/labkey-api-java/sas'
