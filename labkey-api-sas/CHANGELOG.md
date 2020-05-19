@@ -2,7 +2,6 @@
 
 ## version 1.0.0
 *Released* : TBD
-*Required for LabKey Version*:
 
 * Initial publication using [SemVer](https://semver.org/) for library versioning.
   With 1.0.0, we will move away from using the LabKey server version 
