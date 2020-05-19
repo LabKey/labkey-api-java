@@ -55,7 +55,7 @@ repositories {
     }
 }
 
-// TODO remove this and use defualt once client-api distribution doesn't need it
+// TODO remove this and use default once client-api distribution doesn't need it
 buildDir = new File(project.rootProject.buildDir, "/remoteapi/labkey-api-java")
 
 group "org.labkey.api"

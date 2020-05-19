@@ -8,7 +8,7 @@ see our [Java API](https://www.labkey.org/Documentation/wiki-page.view?name=java
 which includes a link to the [JavaDoc](https://www.labkey.org/download/clientapi_docs/java-api/)
 where you can get details about the classes and programming interfaces. 
 
-If you have any questions about this library or the LabKey Server, 
+If you have any questions about this library or LabKey Server, 
 see our [Community Support Forums](https://www.labkey.org/home/Support/LabKey%20Support%20Forum/project-begin.view?).
 
 This library is licensed under the [Apache 2.0 open-source license](http://www.apache.org/licenses/LICENSE-2.0).
