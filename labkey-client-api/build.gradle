@@ -1,6 +1,7 @@
 import org.labkey.gradle.plugin.LabKey
 import org.labkey.gradle.util.BuildUtils
 import org.labkey.gradle.util.GroupNames
+import org.labkey.gradle.util.PomFileHelper
 
 buildscript {
     repositories {
@@ -54,9 +55,8 @@ repositories {
     }
 }
 
+// TODO remove this and use default once client-api distribution doesn't need it
 buildDir = new File(project.rootProject.buildDir, "/remoteapi/labkey-api-java")
-
-def artifactPrefix = 'labkey-client-api'
 
 group "org.labkey.api"
 
@@ -73,8 +73,6 @@ dependencies {
 }
 
 jar {
-    archiveBaseName.set(artifactPrefix)
-
     sourceCompatibility = project.sourceCompatibility
     targetCompatibility = project.targetCompatibility
 
@@ -110,9 +108,8 @@ project.task("fatJar",
         {
             Jar jar ->
                 jar.from sourceSets.main.output
-                jar.duplicatesStrategy = 'exclude'
+                jar.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
                 jar.from { configurations.default.collect { it.isDirectory() ? it : zipTree(it) }}
-                jar.archiveBaseName.set(artifactPrefix)
                 jar.setArchiveVersion(project.version)
                 jar.classifier LabKey.FAT_JAR_CLASSIFIER
                 jar.dependsOn project.tasks.jar
@@ -135,7 +132,6 @@ if (project.hasProperty('javaClientDir'))
 project.task('javadocJar', description: "Generate jar file of javadoc files", type: Jar) {Jar jar ->
             jar.from project.tasks.javadoc.destinationDir
             jar.group GroupNames.DISTRIBUTION
-            jar.archiveBaseName.set(artifactPrefix)
             jar.archiveClassifier.set(LabKey.JAVADOC_CLASSIFIER)
             jar.dependsOn project.tasks.javadoc
         }
@@ -144,7 +140,6 @@ project.task('sourcesJar', description: "Generate jar file of source files", typ
             jar.from project.sourceSets.main.allJava
 
             jar.group GroupNames.DISTRIBUTION
-            jar.archiveBaseName.set(artifactPrefix)
             jar.classifier LabKey.SOURCES_CLASSIFIER
 }
 
@@ -155,7 +150,6 @@ project.artifacts {
 }
 
 def libDescription = "The client-side library for Java developers is a separate JAR from the LabKey Server code base. It can be used by any Java program, including another Java web application."
-def orgUrl = "http://www.labkey.org"
 
 project.afterEvaluate {
     project.publishing {
@@ -163,7 +157,6 @@ project.afterEvaluate {
             libs(MavenPublication) {
                 groupId = project.group
                 from components.java
-                artifactId = artifactPrefix
                 versionMapping {
                     usage('java-api') {
                         fromResolutionOf('runtimeClasspath')
@@ -175,36 +168,20 @@ project.afterEvaluate {
                 pom {
                     name = "LabKey Server Java Client API"
                     description = libDescription
-                    url = orgUrl
-                    developers {
-                        developer {
-                            id = 'lakbkey-team'
-                            name = 'The LabKey Development Team'
-                            organization = 'LabKey.org'
-                            organizationUrl = 'http://www.labkey.org'
-                        }
-                    }
-                    licenses {
-                        license {
-                            name = 'The Apache License, Version 2.0'
-                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                        }
-                    }
-                    organization {
-                        name = "LabKey"
-                        url = orgUrl
-                    }
+                    url = PomFileHelper.LABKEY_ORG_URL
+                    developers PomFileHelper.getLabKeyTeamDevelopers()
+                    licenses PomFileHelper.getApacheLicense()
+                    organization PomFileHelper.getLabKeyOrganization()
                     scm {
-                        connection = 'http://svn.mgt.labkey.host/stedi/trunk'
-                        developerConnection = 'http://svn.mgt.labkey.host/stedi/trunk'
-                        url = 'http://svn.mgt.labkey.host/stedi/trunk'
+                        connection = 'scm:git:https://github.com/LabKey/labkey-api-java'
+                        developerConnection = 'scm:git:https://github.com/LabKey/labkey-api-java'
+                        url = 'scm:git:https://github.com/LabKey/labkey-api-java/java'
                     }
                 }
 
                 project.tasks.each {
                     if (it instanceof Jar)
                     {
-                        artifactId artifactPrefix
                         artifact it
                     }
                 }
@@ -270,7 +247,7 @@ if (project.hasProperty('bintray_user')
             repo = project.version.endsWith('SNAPSHOT') ? 'libs-snapshot' : 'libs-release'
             desc = libDescription
             websiteUrl = orgUrl
-            name = artifactPrefix
+            name = project.name
             userOrg = 'labkey'
             licenses = ['Apache-2.0']
             vcsUrl = 'https://svn.mgt.labkey.host/stedi/'

@@ -294,6 +294,9 @@ public class Connection
      *
      * @param email The user to impersonate
      * @see Connection#stopImpersonate()
+     * @return this connection
+     * @throws IOException Thrown if there was an IO problem.
+     * @throws CommandException if the server returned a non-success status code.
      */
     public Connection impersonate(/*@NotNull*/ String email) throws IOException, CommandException
     {
@@ -311,6 +314,9 @@ public class Connection
      * @param email The user to impersonate
      * @param projectPath The project path within which the user will be impersonated.
      * @see Connection#stopImpersonate()
+     * @return this connection
+     * @throws IOException Thrown if there was an IO problem.
+     * @throws CommandException if the server returned a non-success status code.
      */
     public Connection impersonate(/*@NotNull*/ String email, /*@Nullable*/ String projectPath) throws IOException, CommandException
     {
@@ -327,6 +333,9 @@ public class Connection
 
     /**
      * Stop impersonating a user.
+     * @return this connection
+     * @throws IOException Thrown if there was an IO problem.
+     * @throws CommandException if the server returned a non-success status code.
      */
     public Connection stopImpersonate() throws IOException, CommandException
     {
