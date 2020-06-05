@@ -10,4 +10,4 @@ See the individual packages' documentation for more information.
 | Package |  |  |  |
 | --- | --- | --- | --- |
 | java | [README](labkey-client-api/README.md) | [Change log](labkey-client-api/CHANGELOG.md) | [labkey.org docs](https://www.labkey.org/Documentation/wiki-page.view?name=javaAPI)
-| sas | [README](labkey-api-sas/README.md) | [Change log](labkey-api-sas/CHANGELOG.md) | [docs](https://www.labkey.org/Documentation/wiki-page.view?name=sasAPI)
+| sas | [README](labkey-api-sas/README.md) | [Change log](labkey-api-sas/CHANGELOG.md) | [labkey.org docs](https://www.labkey.org/Documentation/wiki-page.view?name=sasAPI)
