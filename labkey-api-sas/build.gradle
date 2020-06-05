@@ -57,7 +57,7 @@ buildDir = new File(project.rootProject.buildDir, "/remoteapi/sas")
 
 group 'org.labkey.api'
 
-version '1.1.0-SNAPSHOT'
+version '1.0.0-SNAPSHOT'
 
 // We add the TeamCity extension here if it doesn't exist because we will use the build
 // number property from TeamCity in the distribution artifact names, if present.
