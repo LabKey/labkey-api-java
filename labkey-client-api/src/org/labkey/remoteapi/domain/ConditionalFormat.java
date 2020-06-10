@@ -4,12 +4,12 @@ import org.json.simple.JSONObject;
 
 public class ConditionalFormat
 {
-    String queryFilter;
-    String textColor = "";
-    String backgroundColor = "";
-    Boolean bold = false;
-    Boolean italic = false;
-    Boolean strikethrough = false;
+    private String queryFilter;
+    private String textColor = "";
+    private String backgroundColor = "";
+    private Boolean bold = false;
+    private Boolean italic = false;
+    private Boolean strikethrough = false;
 
     public ConditionalFormat(String queryFilter, String textColor, String backgroundColor, Boolean bold, Boolean italic, Boolean strikethrough)
     {
@@ -46,5 +46,65 @@ public class ConditionalFormat
         conditionalFormat.put("italic", italic);
         conditionalFormat.put("textColor", textColor);
         return conditionalFormat;
+    }
+
+    public String getQueryFilter()
+    {
+        return queryFilter;
+    }
+
+    public void setQueryFilter(String queryFilter)
+    {
+        this.queryFilter = queryFilter;
+    }
+
+    public String getTextColor()
+    {
+        return textColor;
+    }
+
+    public void setTextColor(String textColor)
+    {
+        this.textColor = textColor;
+    }
+
+    public String getBackgroundColor()
+    {
+        return backgroundColor;
+    }
+
+    public void setBackgroundColor(String backgroundColor)
+    {
+        this.backgroundColor = backgroundColor;
+    }
+
+    public Boolean getBold()
+    {
+        return bold;
+    }
+
+    public void setBold(Boolean bold)
+    {
+        this.bold = bold;
+    }
+
+    public Boolean getItalic()
+    {
+        return italic;
+    }
+
+    public void setItalic(Boolean italic)
+    {
+        this.italic = italic;
+    }
+
+    public Boolean getStrikethrough()
+    {
+        return strikethrough;
+    }
+
+    public void setStrikethrough(Boolean strikethrough)
+    {
+        this.strikethrough = strikethrough;
     }
 }
