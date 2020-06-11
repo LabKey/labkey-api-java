@@ -4,107 +4,115 @@ import org.json.simple.JSONObject;
 
 public class ConditionalFormat
 {
-    private String queryFilter;
-    private String textColor = "";
-    private String backgroundColor = "";
-    private Boolean bold = false;
-    private Boolean italic = false;
-    private Boolean strikethrough = false;
+    private QueryFilter _queryFilter;
+    private String _textColor;
+    private String _backgroundColor;
+    private Boolean _bold;
+    private Boolean _italic;
+    private Boolean _strikethrough;
 
-    public ConditionalFormat(String queryFilter, String textColor, String backgroundColor, Boolean bold, Boolean italic, Boolean strikethrough)
+    public ConditionalFormat(QueryFilter filters, String textColor, String backgroundColor, Boolean bold, Boolean italic, Boolean strikethrough)
     {
-        this.queryFilter = queryFilter;
-        this.textColor = textColor;
-        this.backgroundColor = backgroundColor;
-        this.bold = bold;
-        this.italic = italic;
-        this.strikethrough = strikethrough;
+        _queryFilter = filters;
+        _textColor = (null == textColor) ? "" : textColor;
+        _backgroundColor = (null == backgroundColor) ? "" : backgroundColor;
+        _bold = (null == bold) ? false : bold;
+        _italic = (null == italic) ? false : italic;
+        _strikethrough = (null == strikethrough) ? false : strikethrough;
     }
 
-    public ConditionalFormat(String queryFilter, String textColor, String backgroundColor)
+    public ConditionalFormat(QueryFilter filters, String textColor, String backgroundColor)
     {
-        this.queryFilter = queryFilter;
-        this.textColor = textColor;
-        this.backgroundColor = backgroundColor;
+        this(filters, textColor, backgroundColor, null, null, null);
     }
 
-    public ConditionalFormat(String queryFilter, Boolean bold, Boolean italic, Boolean strikethrough)
+    public ConditionalFormat(QueryFilter filters, Boolean bold, Boolean italic, Boolean strikethrough)
     {
-        this.queryFilter = queryFilter;
-        this.bold = bold;
-        this.italic = italic;
-        this.strikethrough = strikethrough;
+        this(filters, null, null, bold, italic, strikethrough);
     }
 
     public JSONObject toJSON()
     {
         JSONObject conditionalFormat = new JSONObject();
-        conditionalFormat.put("filter", queryFilter);
-        conditionalFormat.put("backgroundColor", backgroundColor);
-        conditionalFormat.put("bold", bold);
-        conditionalFormat.put("strikethrough", strikethrough);
-        conditionalFormat.put("italic", italic);
-        conditionalFormat.put("textColor", textColor);
+        conditionalFormat.put("filter", _queryFilter.toJSONString());
+        conditionalFormat.put("backgroundColor", _backgroundColor);
+        conditionalFormat.put("bold", _bold);
+        conditionalFormat.put("strikethrough", _strikethrough);
+        conditionalFormat.put("italic", _italic);
+        conditionalFormat.put("textColor", _textColor);
         return conditionalFormat;
     }
 
-    public String getQueryFilter()
+    static public ConditionalFormat fromJSON(JSONObject json)
     {
-        return queryFilter;
+        String filterStr = (String) json.get("filter");
+        return new ConditionalFormat(
+                QueryFilter.fromJSONString(filterStr),
+                (String) json.get("textColor"),
+                (String) json.get("backgroundColor"),
+                (Boolean) json.get("bold"),
+                (Boolean) json.get("italic"),
+                (Boolean) json.get("strikethrough")
+        );
     }
 
-    public void setQueryFilter(String queryFilter)
+    public QueryFilter getQueryFilter()
     {
-        this.queryFilter = queryFilter;
+        return _queryFilter;
+    }
+
+    public void setQueryFilter(QueryFilter filters)
+    {
+        _queryFilter = filters;
     }
 
     public String getTextColor()
     {
-        return textColor;
+        return _textColor;
     }
 
     public void setTextColor(String textColor)
     {
-        this.textColor = textColor;
+        _textColor = textColor;
     }
 
     public String getBackgroundColor()
     {
-        return backgroundColor;
+        return _backgroundColor;
     }
 
     public void setBackgroundColor(String backgroundColor)
     {
-        this.backgroundColor = backgroundColor;
+        _backgroundColor = backgroundColor;
     }
 
     public Boolean getBold()
     {
-        return bold;
+        return _bold;
     }
 
     public void setBold(Boolean bold)
     {
-        this.bold = bold;
+        _bold = bold;
     }
 
     public Boolean getItalic()
     {
-        return italic;
+        return _italic;
     }
 
     public void setItalic(Boolean italic)
     {
-        this.italic = italic;
+        _italic = italic;
     }
 
     public Boolean getStrikethrough()
     {
-        return strikethrough;
+        return _strikethrough;
     }
 
     public void setStrikethrough(Boolean strikethrough)
     {
-        this.strikethrough = strikethrough;
+        _strikethrough = strikethrough;
     }
 }

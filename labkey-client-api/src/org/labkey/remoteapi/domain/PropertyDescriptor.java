@@ -76,15 +76,7 @@ public class PropertyDescriptor extends ResponseObject
         JSONArray cfs = (JSONArray) json.get("conditionalFormats");
         cfs.forEach(cf -> {
             JSONObject cfObj = (JSONObject) cf;
-            _conditionalFormats.add(
-                    new ConditionalFormat(
-                    (String) cfObj.get("filter"),
-                    (String) cfObj.get("textColor"),
-                    (String) cfObj.get("backgroundColor"),
-                    (Boolean) cfObj.get("bold"),
-                    (Boolean) cfObj.get("italic"),
-                    (Boolean) cfObj.get("strikethrough"))
-            );
+            _conditionalFormats.add(ConditionalFormat.fromJSON(cfObj));
         });
 
         if (json.get("lookupSchema") != null)

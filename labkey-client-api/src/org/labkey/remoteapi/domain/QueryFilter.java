@@ -1,83 +1,65 @@
 package org.labkey.remoteapi.domain;
 
+import org.labkey.remoteapi.query.Filter;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class QueryFilter
 {
-    public enum Type
+    private List<Filter> _queryFilter;
+
+    public QueryFilter(List<Filter> filters)
     {
-        HAS_ANY_VALUE(""),
+        _queryFilter = filters;
+    }
 
-        EQUAL("eq"),
-        DATE_EQUAL("dateeq"),
+    public List<Filter> getQueryFilter()
+    {
+        return Collections.unmodifiableList(_queryFilter);
+    }
 
-        NEQ("neq"),
-        NOT_EQUAL("neq"),
-        DATE_NOT_EQUAL("dateneq"),
+    public void setFilters(List<Filter> filters)
+    {
+        _queryFilter = filters;
+    }
 
-        NEQ_OR_NULL("neqornull"),
-        NOT_EQUAL_OR_MISSING("neqornull"),
+    static public QueryFilter fromJSONString(String filterStr)
+    {
+        List<Filter> queryFilter = new ArrayList<>();
 
-        GT("gt"),
-        GREATER_THAN("gt"),
-        DATE_GREATER_THAN("dategt"),
+        String[] filterStrs = filterStr.split("&");
+        for (String filter : filterStrs)
+        {
+            String filterExp = filter.substring(filter.indexOf("~") + 1, filter.indexOf("="));
+            Filter.Operator op = Filter.Operator.getOperatorFromUrlKey(filterExp);
 
-        LT("lt"),
-        LESS_THAN("lt"),
-        DATE_LESS_THAN("datelt"),
-
-        GTE("gte"),
-        GREATER_THAN_OR_EQUAL("gte"),
-        DATE_GREATER_THAN_OR_EQUAL("dategte"),
-
-        LTE("lte"),
-        LESS_THAN_OR_EQUAL("lte"),
-        DATE_LESS_THAN_OR_EQUAL("datelte"),
-
-        STARTS_WITH("startswith"),
-        DOES_NOT_START_WITH("doesnotstartwith"),
-
-        CONTAINS("contains"),
-        DOES_NOT_CONTAIN("doesnotcontain"),
-
-        CONTAINS_ONE_OF("containsoneof"),
-        CONTAINS_NONE_OF("containsnoneof"),
-
-        IN("in"),
-
-        EQUALS_ONE_OF("in"),
-
-        NOT_IN("notin"),
-        EQUALS_NONE_OF("notin"),
-
-        BETWEEN("between"),
-        NOT_BETWEEN("notbetween"),
-
-        IS_BLANK("isblank"),
-        IS_NOT_BLANK("isnonblank"),
-
-        MEMBER_OF("memberof");
-
-        public final String label;
-
-        Type(String label) {
-            this.label = label;
+            String value = filter.substring(filter.lastIndexOf("=") + 1);
+            queryFilter.add(new Filter((Object) value, op));
         }
+
+        return new QueryFilter(queryFilter);
     }
 
-    final private String queryFilter;
-
-    public QueryFilter(String value, String filterType)
+    public String toJSONString()
     {
-        this.queryFilter = String.format("format.column~%s=%s", filterType, value);
-    }
+        ArrayList<String> stringForm = new ArrayList();
+        for (Filter f : _queryFilter)
+        {
+            String filterUrlKey = f.getOperator().getUrlKey();
+            String value = f.getQueryStringParamValue();
+            String s = String.format("format.column~%s=%s", filterUrlKey, value);
+            stringForm.add(s);
+        }
 
-    public QueryFilter(String value, String filterType, String additionalValue, String additionalFilter)
-    {
-        this.queryFilter = String.format("format.column~%s=%s&format.column~%s=%s",
-                filterType, value, additionalFilter, additionalValue);
-    }
-
-    public String getQueryFilter()
-    {
-        return queryFilter;
+        if (stringForm.size() == 1)
+        {
+            return stringForm.get(0);
+        }
+        else
+        {
+            return String.format("%s&%s", stringForm.get(0), stringForm.get(1));
+        }
     }
 }
