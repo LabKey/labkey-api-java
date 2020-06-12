@@ -210,12 +210,6 @@ public class Filter
         _operator = operator;
     }
 
-    public Filter(Object value, Operator operator)
-    {
-        _value = value;
-        _operator = operator;
-    }
-
     public Filter(Filter source)
     {
         _columnName = source._columnName;
