@@ -246,7 +246,7 @@ if (project.hasProperty('bintray_user')
         pkg {
             repo = project.version.endsWith('SNAPSHOT') ? 'libs-snapshot' : 'libs-release'
             desc = libDescription
-            websiteUrl = orgUrl
+            websiteUrl = PomFileHelper.LABKEY_ORG_URL
             name = project.name
             userOrg = 'labkey'
             licenses = ['Apache-2.0']
