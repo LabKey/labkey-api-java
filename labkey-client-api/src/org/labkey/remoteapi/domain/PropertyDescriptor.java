@@ -1,7 +1,12 @@
 package org.labkey.remoteapi.domain;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.labkey.remoteapi.ResponseObject;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class PropertyDescriptor extends ResponseObject
 {
@@ -21,6 +26,7 @@ public class PropertyDescriptor extends ResponseObject
     private String _lookupSchema;
     private String _lookupQuery;
     private String _lookupContainer;
+    private List<ConditionalFormat> _conditionalFormats = new ArrayList<>();
 
     public PropertyDescriptor()
     {
@@ -67,6 +73,12 @@ public class PropertyDescriptor extends ResponseObject
         _propertyURI = (String)json.get("propertyURI");
         _rangeURI = (String)json.get("rangeURI");
 
+        JSONArray cfs = (JSONArray) json.get("conditionalFormats");
+        cfs.forEach(cf -> {
+            JSONObject cfObj = (JSONObject) cf;
+            _conditionalFormats.add(ConditionalFormat.fromJSON(cfObj));
+        });
+
         if (json.get("lookupSchema") != null)
             _lookupSchema = (String)json.get("lookupSchema");
         if (json.get("lookupQuery") != null)
@@ -101,6 +113,7 @@ public class PropertyDescriptor extends ResponseObject
         result.put("mvEnabled", _mvEnabled);
         result.put("dimension", _dimension);
         result.put("propertyURI", _propertyURI);
+        result.put("conditionalFormats", serializeConditionalFormats());
 
         if (_rangeURI != null)
             result.put("rangeURI", _rangeURI);
@@ -121,6 +134,17 @@ public class PropertyDescriptor extends ResponseObject
         }
 
         return result;
+    }
+
+    private JSONArray serializeConditionalFormats()
+    {
+        JSONArray cfs = new JSONArray();
+        for (ConditionalFormat conditionalFormat : _conditionalFormats)
+        {
+            JSONObject cf = conditionalFormat.toJSON();
+            cfs.add(cf);
+        }
+        return cfs;
     }
 
     /**
@@ -278,5 +302,16 @@ public class PropertyDescriptor extends ResponseObject
     {
         _mvEnabled = mvEnabled;
         return this;
+    }
+
+    public PropertyDescriptor setConditionalFormats(List<ConditionalFormat> conditionalFormats)
+    {
+        _conditionalFormats = conditionalFormats;
+        return this;
+    }
+
+    public List<ConditionalFormat> getConditionalFormats()
+    {
+        return Collections.unmodifiableList(_conditionalFormats);
     }
 }

@@ -60,7 +60,7 @@ buildDir = new File(project.rootProject.buildDir, "/remoteapi/labkey-api-java")
 
 group "org.labkey.api"
 
-version "1.2.1-SNAPSHOT"
+version "1.3.0-SNAPSHOT"
 
 dependencies {
     api "org.apache.httpcomponents:httpmime:${httpmimeVersion}"
@@ -250,7 +250,7 @@ if (project.hasProperty('bintray_user')
             name = project.name
             userOrg = 'labkey'
             licenses = ['Apache-2.0']
-            vcsUrl = 'https://svn.mgt.labkey.host/stedi/'
+            vcsUrl = 'https://github.com/LabKey/labkey-api-java'
             version {
                 name = project.version
                 desc = "LabKey Java Client API ${project.version}"

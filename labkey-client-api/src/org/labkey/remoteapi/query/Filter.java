@@ -109,6 +109,14 @@ public class Filter
                 _programmaticNameToOperator.put(o.getProgrammaticName(), o);
         }
 
+        private static final Map<String, Operator> _urlKeyToOperator = new HashMap<>(Operator.values().length);
+
+        static
+        {
+            for (Operator o : Operator.values())
+                _urlKeyToOperator.put(o.getUrlKey(), o);
+        }
+
         private final String _urlKey;
         private final String _displayValue;
         private final String _programmaticName;
@@ -146,6 +154,11 @@ public class Filter
         public static Operator getOperator(String programmaticName)
         {
             return _programmaticNameToOperator.get(programmaticName);
+        }
+
+        public static Operator getOperatorFromUrlKey(String urlKey)
+        {
+            return _urlKeyToOperator.get(urlKey);
         }
 
         @Deprecated // Use getDisplayValue()... this method is for backward compatibility
