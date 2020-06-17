@@ -1,8 +1,9 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## version TBD
-*Released* : TBD
+## version 1.3.0
+*Released* : 16 June 2020
 
+* 7368: Conditional Formats of Fields
 * Update FileNotificationCommand to do a POST, as now required
 * Add documentation
 
@@ -17,7 +18,7 @@
 
 * Support for plate metadata in saveBatch and importRun APIs
 * Don't post invalid 'rangeURI' to server
-* Update source compatability to 1.8
+* Update source compatibility to 1.8
 
 ## version 1.0.0
 *Released*: 06 February 2020
