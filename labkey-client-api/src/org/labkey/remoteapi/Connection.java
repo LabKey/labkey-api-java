@@ -102,6 +102,8 @@ public class Connection
 {
     private static final int DEFAULT_TIMEOUT = 60000;    // 60 seconds
     private static final HttpClientConnectionManager _connectionManager = new PoolingHttpClientConnectionManager();
+    private static final String X_LABKEY_CSRF = "X-LABKEY-CSRF";
+    private static final String JSESSIONID = "JSESSIONID";
 
     private final String _baseUrl;
     private final CredentialsProvider _credentialsProvider;
@@ -113,6 +115,7 @@ public class Connection
     private String _proxyHost;
     private Integer _proxyPort;
     private String _csrf;
+    private String _sessionId;
 
     // The user email when impersonating a user
     private String _impersonateUser;
@@ -244,7 +247,9 @@ public class Connection
             }
         }
         if (null != _csrf)
-            request.setHeader("X-LABKEY-CSRF", _csrf);
+            request.setHeader(X_LABKEY_CSRF, _csrf);
+        if (null != _sessionId)
+            request.setHeader(JSESSIONID, _csrf);
     }
 
 
@@ -253,8 +258,11 @@ public class Connection
         // Always update our CSRF token as the session may be new since our last request
         for (Cookie c : _httpClientContext.getCookieStore().getCookies())
         {
-            if ("JSESSIONID".equals(c.getName()))
+            if (X_LABKEY_CSRF.equals(c.getName()))
                 _csrf = c.getValue();
+
+            if (JSESSIONID.equals(c.getName()))
+                _sessionId = c.getValue();
         }
     }
 
@@ -462,6 +470,12 @@ public class Connection
         cookie.setExpiryDate(expiry);
         cookie.setSecure(isSecure);
         _httpClientContext.getCookieStore().addCookie(cookie);
+
+        if (X_LABKEY_CSRF.equals(name))
+            _csrf = value;
+        if (JSESSIONID.equals(name))
+            _sessionId = value;
+
         return this;
     }
 
