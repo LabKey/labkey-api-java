@@ -100,10 +100,11 @@ import java.util.Objects;
  */
 public class Connection
 {
+    public static final String X_LABKEY_CSRF = "X-LABKEY-CSRF";
+    public static final String JSESSIONID = "JSESSIONID";
+
     private static final int DEFAULT_TIMEOUT = 60000;    // 60 seconds
     private static final HttpClientConnectionManager _connectionManager = new PoolingHttpClientConnectionManager();
-    private static final String X_LABKEY_CSRF = "X-LABKEY-CSRF";
-    private static final String JSESSIONID = "JSESSIONID";
 
     private final String _baseUrl;
     private final CredentialsProvider _credentialsProvider;
@@ -249,7 +250,7 @@ public class Connection
         if (null != _csrf)
             request.setHeader(X_LABKEY_CSRF, _csrf);
         if (null != _sessionId)
-            request.setHeader(JSESSIONID, _csrf);
+            request.setHeader(JSESSIONID, _sessionId);
     }
 
 
