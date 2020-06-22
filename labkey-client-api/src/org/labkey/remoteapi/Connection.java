@@ -20,13 +20,11 @@ import org.apache.http.HttpRequest;
 import org.apache.http.auth.AuthenticationException;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.BasicCookieStore;
@@ -34,6 +32,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.labkey.remoteapi.security.EnsureLoginCommand;
 import org.labkey.remoteapi.security.ImpersonateUserCommand;
 import org.labkey.remoteapi.security.LogoutCommand;
@@ -236,7 +235,8 @@ public class Connection
 
     protected void beforeExecute(HttpRequest request) throws IOException, CommandException
     {
-        if (null == _csrf && request instanceof HttpPost)
+        if (null == _csrf &&
+                request instanceof HttpRequestBase && !"GET".equals(((HttpRequestBase) request).getMethod()))
         {
             // make a request to get a JSESSIONID
             try
