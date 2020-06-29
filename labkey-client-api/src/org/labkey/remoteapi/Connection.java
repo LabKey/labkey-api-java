@@ -106,6 +106,7 @@ public class Connection
     private static final HttpClientConnectionManager _connectionManager = new PoolingHttpClientConnectionManager();
 
     private final String _baseUrl;
+    private final URI _baseURI;
     private final CredentialsProvider _credentialsProvider;
     private final HttpClientContext _httpClientContext;
 
@@ -142,6 +143,14 @@ public class Connection
      */
     public Connection(String baseUrl, CredentialsProvider credentialsProvider)
     {
+        try
+        {
+            _baseURI = new URI(getBaseUrl());
+        }
+        catch (URISyntaxException e)
+        {
+            throw new IllegalArgumentException("Invalid target server URL. " + baseUrl);
+        }
         _baseUrl = baseUrl;
         _credentialsProvider = credentialsProvider;
         _httpClientContext = HttpClientContext.create();
@@ -231,9 +240,12 @@ public class Connection
         return builder;
     }
 
-
-
-    protected void beforeExecute(HttpRequest request) throws IOException, CommandException
+    /**
+     * If necessary, prime the Connection for non-GET requests.
+     * Executes a dummy command to trigger authentication and populate CSRF and session info.
+     * @param request HttpRequest that is about to be executed
+     */
+    protected void beforeExecute(HttpRequest request)
     {
         if (null == _csrf &&
                 request instanceof HttpRequestBase && !"GET".equals(((HttpRequestBase) request).getMethod()))
@@ -363,7 +375,7 @@ public class Connection
         return this;
     }
 
-    CloseableHttpResponse executeRequest(HttpUriRequest request, Integer timeout) throws IOException, URISyntaxException, AuthenticationException, CommandException
+    CloseableHttpResponse executeRequest(HttpUriRequest request, Integer timeout) throws IOException, URISyntaxException, AuthenticationException
     {
         // Delegate authentication setup to CredentialsProvider
         _credentialsProvider.configureRequest(getBaseUrl(), request, _httpClientContext);
@@ -472,12 +484,22 @@ public class Connection
         cookie.setSecure(isSecure);
         _httpClientContext.getCookieStore().addCookie(cookie);
 
-        if (X_LABKEY_CSRF.equals(name))
-            _csrf = value;
-        if (JSESSIONID.equals(name))
-            _sessionId = value;
+        // Don't use session info from different server
+        if (combineHostPath(_baseURI.getHost(), _baseURI.getPath()).equals(combineHostPath(domain, path)))
+        {
+            if (X_LABKEY_CSRF.equals(name))
+                _csrf = value;
+            if (JSESSIONID.equals(name))
+                _sessionId = value;
+        }
 
         return this;
+    }
+
+    private String combineHostPath(String host, String path)
+    {
+        String hostPath = (host == null ? "" : host.trim()) + (path == null ? "" : path.trim());
+        return hostPath.replaceAll("//+", "/").replaceFirst("/$", "");
     }
 
 }
