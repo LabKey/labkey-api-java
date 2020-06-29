@@ -145,7 +145,7 @@ public class Connection
     {
         try
         {
-            _baseURI = new URI(getBaseUrl());
+            _baseURI = new URI(baseUrl);
         }
         catch (URISyntaxException e)
         {
