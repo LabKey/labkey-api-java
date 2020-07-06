@@ -19,6 +19,7 @@ import org.apache.http.auth.AuthenticationException;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.HttpClientContext;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
@@ -26,5 +27,14 @@ import java.net.URISyntaxException;
  */
 public interface CredentialsProvider
 {
-    void configureRequest(String baseUrl, HttpUriRequest request, HttpClientContext httpClientContext) throws AuthenticationException, URISyntaxException;
+    /**
+     * @deprecated Use {@link #configureRequest(URI, HttpUriRequest, HttpClientContext)}
+     */
+    @Deprecated
+    default void configureRequest(String baseUrl, HttpUriRequest request, HttpClientContext httpClientContext) throws AuthenticationException, URISyntaxException
+    {
+        configureRequest(new URI(baseUrl), request, httpClientContext);
+    }
+
+    void configureRequest(URI baseURI, HttpUriRequest request, HttpClientContext httpClientContext) throws AuthenticationException;
 }

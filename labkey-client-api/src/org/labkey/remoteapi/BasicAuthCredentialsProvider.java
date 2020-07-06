@@ -25,7 +25,6 @@ import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 
 /**
  * Created by adam on 4/15/2016.
@@ -42,9 +41,9 @@ public class BasicAuthCredentialsProvider implements CredentialsProvider
     }
 
     @Override
-    public void configureRequest(String baseUrl, HttpUriRequest request, HttpClientContext httpClientContext) throws AuthenticationException, URISyntaxException
+    public void configureRequest(URI baseURI, HttpUriRequest request, HttpClientContext httpClientContext) throws AuthenticationException
     {
-        AuthScope scope = new AuthScope(new URI(baseUrl).getHost(), AuthScope.ANY_PORT, AuthScope.ANY_REALM);
+        AuthScope scope = new AuthScope(baseURI.getHost(), AuthScope.ANY_PORT, AuthScope.ANY_REALM);
         BasicCredentialsProvider provider = new BasicCredentialsProvider();
         Credentials credentials = new UsernamePasswordCredentials(_email, _password);
         provider.setCredentials(scope, credentials);
