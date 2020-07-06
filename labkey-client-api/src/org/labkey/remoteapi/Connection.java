@@ -180,7 +180,7 @@ public class Connection
      */
     public Connection(String baseUrl) throws URISyntaxException, IOException
     {
-        this(toURI(baseUrl), new NetrcCredentialsProvider(new URI(baseUrl)));
+        this(toURI(baseUrl), new NetrcCredentialsProvider(toURI(baseUrl)));
     }
 
     /**
