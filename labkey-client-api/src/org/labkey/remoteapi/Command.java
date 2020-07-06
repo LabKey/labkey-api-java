@@ -489,9 +489,7 @@ public class Command<ResponseType extends CommandResponse>
      */
     protected URI getActionUrl(Connection connection, String folderPath) throws URISyntaxException
     {
-        //start with the connection's base URL
-        // Use a URI so that it correctly encodes each section of the overall URI
-        URI uri = new URI(connection.getBaseUrl().replace('\\','/'));
+        URI uri = connection.getBaseURI();
 
         StringBuilder path = new StringBuilder(uri.getPath() == null || "".equals(uri.getPath()) ? "/" : uri.getPath());
 

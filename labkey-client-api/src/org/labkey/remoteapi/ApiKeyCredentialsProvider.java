@@ -19,7 +19,7 @@ import org.apache.http.auth.AuthenticationException;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.HttpClientContext;
 
-import java.net.URISyntaxException;
+import java.net.URI;
 
 /**
  * Created by adam on 4/15/2016.
@@ -34,7 +34,7 @@ public class ApiKeyCredentialsProvider implements CredentialsProvider
     }
 
     @Override
-    public void configureRequest(String baseUrl, HttpUriRequest request, HttpClientContext httpClientContext) throws AuthenticationException, URISyntaxException
+    public void configureRequest(URI baseURI, HttpUriRequest request, HttpClientContext httpClientContext) throws AuthenticationException
     {
         request.setHeader("apikey", _apiKey);
     }

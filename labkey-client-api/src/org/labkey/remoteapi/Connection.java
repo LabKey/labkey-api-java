@@ -105,7 +105,6 @@ public class Connection
     private static final int DEFAULT_TIMEOUT = 60000;    // 60 seconds
     private static final HttpClientConnectionManager _connectionManager = new PoolingHttpClientConnectionManager();
 
-    private final String _baseUrl;
     private final URI _baseURI;
     private final CredentialsProvider _credentialsProvider;
     private final HttpClientContext _httpClientContext;
@@ -125,37 +124,49 @@ public class Connection
     /**
      * Constructs a new Connection object given a base URL and a credentials provider.
      * <p>
-     * The baseUrl parameter should include the protocol, domain name, port,
+     * The baseURI parameter should include the protocol, domain name, port,
      * and LabKey web application context path (if configured). For example
      * in a typical localhost configuration, the base URL would be:
      * </p>
-     * <code>http://localhost:8080/labkey</code>
+     * <code>new URI("http://localhost:8080/labkey")</code>
      * <p>
      * Note that https may also be used for the protocol. By default the
      * Connection is configured to deny self-signed SSL certificates.
      * If you want to accept self-signed certificates, use
      * <code>setAcceptSelfSignedCerts(false)</code> to enable this behavior.
      * </p>
-     * The email name and password should correspond to a valid user email
-     * and password on the target server.
-     * @param baseUrl The base URL
+     * @param baseURI Base URI for this Connection
      * @param credentialsProvider A credentials provider
      */
-    public Connection(String baseUrl, CredentialsProvider credentialsProvider)
+    public Connection(URI baseURI, CredentialsProvider credentialsProvider)
     {
-        try
+        if (baseURI.getHost() == null || baseURI.getScheme() == null)
         {
-            _baseURI = new URI(baseUrl);
+            throw new IllegalArgumentException("Invalid server URL: " + baseURI.toString());
         }
-        catch (URISyntaxException e)
-        {
-            throw new IllegalArgumentException("Invalid target server URL. " + baseUrl);
-        }
-        _baseUrl = baseUrl;
+        _baseURI = baseURI;
         _credentialsProvider = credentialsProvider;
         _httpClientContext = HttpClientContext.create();
         _httpClientContext.setCookieStore(new BasicCookieStore());
         setAcceptSelfSignedCerts(false);
+    }
+
+    /**
+     * Constructs a new Connection object given a base URL and a credentials provider.
+     * <p>
+     * The baseUrl parameter should include the protocol, domain name, port,
+     * and LabKey web application context path (if configured). For example
+     * in a typical localhost configuration, the base URL would be:
+     * </p>
+     * <code>http://localhost:8080/labkey</code>
+     * <p>
+     * @param baseUrl The base URL
+     * @param credentialsProvider A credentials provider
+     * @see #Connection(URI, CredentialsProvider)
+     */
+    public Connection(String baseUrl, CredentialsProvider credentialsProvider)
+    {
+        this(toURI(baseUrl), credentialsProvider);
     }
 
     /**
@@ -164,34 +175,49 @@ public class Connection
      * @param baseUrl The base URL
      * @throws URISyntaxException if the given url is not a valid URI
      * @throws IOException if there are problems reading the credentials
-     * @see #Connection(String, CredentialsProvider)
+     * @see NetrcCredentialsProvider
+     * @see #Connection(URI, CredentialsProvider)
      */
     public Connection(String baseUrl) throws URISyntaxException, IOException
     {
-        this(baseUrl, new NetrcCredentialsProvider(new URI(baseUrl)));
+        this(toURI(baseUrl), new NetrcCredentialsProvider(toURI(baseUrl)));
     }
 
     /**
      * Constructs a new Connection object for a base URL that attempts basic authentication.
      * <p>
      * This is equivalent to calling <code>Connection(baseUrl, new BasicAuthCredentialsProvider(email, password))</code>.
+     * The email and password should correspond to a valid user email
+     * and password on the target server.
      * @param baseUrl The base URL
      * @param email The user email address to pass for authentication
      * @param password The user password to send for authentication
-     * @see #Connection(String, CredentialsProvider)
+     * @see BasicAuthCredentialsProvider#BasicAuthCredentialsProvider(String, String)
+     * @see #Connection(URI, CredentialsProvider)
      */
     public Connection(String baseUrl, String email, String password)
     {
-        this(baseUrl, new BasicAuthCredentialsProvider(email, password));
+        this(toURI(baseUrl), new BasicAuthCredentialsProvider(email, password));
     }
 
     /**
      * Returns the base URL for this connection.
      * @return The base URL.
+     * @deprecated Use {@link #getBaseURI()}
      */
+    @Deprecated
     public String getBaseUrl()
     {
-        return _baseUrl;
+        return _baseURI.toString();
+    }
+
+    /**
+     * Returns the base URI for this connection.
+     * @return The target LabKey instance's base URI
+     */
+    public URI getBaseURI()
+    {
+        return _baseURI;
     }
 
     /**
@@ -378,7 +404,7 @@ public class Connection
     CloseableHttpResponse executeRequest(HttpUriRequest request, Integer timeout) throws IOException, URISyntaxException, AuthenticationException
     {
         // Delegate authentication setup to CredentialsProvider
-        _credentialsProvider.configureRequest(getBaseUrl(), request, _httpClientContext);
+        _credentialsProvider.configureRequest(getBaseURI(), request, _httpClientContext);
 
         CloseableHttpClient client = getHttpClient();
 
@@ -502,4 +528,18 @@ public class Connection
         return hostPath.replaceAll("//+", "/").replaceFirst("/$", "");
     }
 
+    /**
+     * Utility method to construct a URI without modifying constructor signature
+     */
+    private static URI toURI(String baseUrl)
+    {
+        try
+        {
+            return new URI(baseUrl);
+        }
+        catch (URISyntaxException e)
+        {
+            throw new IllegalArgumentException("Invalid target server URL: " + baseUrl);
+        }
+    }
 }

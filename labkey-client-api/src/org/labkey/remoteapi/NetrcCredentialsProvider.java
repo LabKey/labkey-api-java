@@ -21,14 +21,11 @@ import org.apache.http.client.protocol.HttpClientContext;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 
 /**
  * Created by adam on 4/15/2016.
- */
-
-/**
+ *
  * Attempts to find a .netrc or _netrc file and entry for the given host. If found, it will attempt basic auth using
  * the email and password in the entry. If file or entry are not found, it connects as guest.
  */
@@ -65,8 +62,8 @@ public class NetrcCredentialsProvider implements CredentialsProvider
     }
 
     @Override
-    public void configureRequest(String baseUrl, HttpUriRequest request, HttpClientContext httpClientContext) throws AuthenticationException, URISyntaxException
+    public void configureRequest(URI baseURI, HttpUriRequest request, HttpClientContext httpClientContext) throws AuthenticationException
     {
-        _wrappedCredentialsProvider.configureRequest(baseUrl, request, httpClientContext);
+        _wrappedCredentialsProvider.configureRequest(baseURI, request, httpClientContext);
     }
 }
