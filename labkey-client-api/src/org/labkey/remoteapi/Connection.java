@@ -20,13 +20,11 @@ import org.apache.http.HttpRequest;
 import org.apache.http.auth.AuthenticationException;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.BasicCookieStore;
@@ -34,6 +32,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.labkey.remoteapi.security.EnsureLoginCommand;
 import org.labkey.remoteapi.security.ImpersonateUserCommand;
 import org.labkey.remoteapi.security.LogoutCommand;
@@ -100,10 +99,13 @@ import java.util.Objects;
  */
 public class Connection
 {
+    public static final String X_LABKEY_CSRF = "X-LABKEY-CSRF";
+    public static final String JSESSIONID = "JSESSIONID";
+
     private static final int DEFAULT_TIMEOUT = 60000;    // 60 seconds
     private static final HttpClientConnectionManager _connectionManager = new PoolingHttpClientConnectionManager();
 
-    private final String _baseUrl;
+    private final URI _baseURI;
     private final CredentialsProvider _credentialsProvider;
     private final HttpClientContext _httpClientContext;
 
@@ -113,10 +115,41 @@ public class Connection
     private String _proxyHost;
     private Integer _proxyPort;
     private String _csrf;
+    private String _sessionId;
 
     // The user email when impersonating a user
     private String _impersonateUser;
     private String _impersonatePath;
+
+    /**
+     * Constructs a new Connection object given a base URL and a credentials provider.
+     * <p>
+     * The baseURI parameter should include the protocol, domain name, port,
+     * and LabKey web application context path (if configured). For example
+     * in a typical localhost configuration, the base URL would be:
+     * </p>
+     * <code>new URI("http://localhost:8080/labkey")</code>
+     * <p>
+     * Note that https may also be used for the protocol. By default the
+     * Connection is configured to deny self-signed SSL certificates.
+     * If you want to accept self-signed certificates, use
+     * <code>setAcceptSelfSignedCerts(false)</code> to enable this behavior.
+     * </p>
+     * @param baseURI Base URI for this Connection
+     * @param credentialsProvider A credentials provider
+     */
+    public Connection(URI baseURI, CredentialsProvider credentialsProvider)
+    {
+        if (baseURI.getHost() == null || baseURI.getScheme() == null)
+        {
+            throw new IllegalArgumentException("Invalid server URL: " + baseURI.toString());
+        }
+        _baseURI = baseURI;
+        _credentialsProvider = credentialsProvider;
+        _httpClientContext = HttpClientContext.create();
+        _httpClientContext.setCookieStore(new BasicCookieStore());
+        setAcceptSelfSignedCerts(false);
+    }
 
     /**
      * Constructs a new Connection object given a base URL and a credentials provider.
@@ -127,23 +160,13 @@ public class Connection
      * </p>
      * <code>http://localhost:8080/labkey</code>
      * <p>
-     * Note that https may also be used for the protocol. By default the
-     * Connection is configured to deny self-signed SSL certificates.
-     * If you want to accept self-signed certificates, use
-     * <code>setAcceptSelfSignedCerts(false)</code> to enable this behavior.
-     * </p>
-     * The email name and password should correspond to a valid user email
-     * and password on the target server.
      * @param baseUrl The base URL
      * @param credentialsProvider A credentials provider
+     * @see #Connection(URI, CredentialsProvider)
      */
     public Connection(String baseUrl, CredentialsProvider credentialsProvider)
     {
-        _baseUrl = baseUrl;
-        _credentialsProvider = credentialsProvider;
-        _httpClientContext = HttpClientContext.create();
-        _httpClientContext.setCookieStore(new BasicCookieStore());
-        setAcceptSelfSignedCerts(false);
+        this(toURI(baseUrl), credentialsProvider);
     }
 
     /**
@@ -152,34 +175,49 @@ public class Connection
      * @param baseUrl The base URL
      * @throws URISyntaxException if the given url is not a valid URI
      * @throws IOException if there are problems reading the credentials
-     * @see #Connection(String, CredentialsProvider)
+     * @see NetrcCredentialsProvider
+     * @see #Connection(URI, CredentialsProvider)
      */
     public Connection(String baseUrl) throws URISyntaxException, IOException
     {
-        this(baseUrl, new NetrcCredentialsProvider(new URI(baseUrl)));
+        this(toURI(baseUrl), new NetrcCredentialsProvider(toURI(baseUrl)));
     }
 
     /**
      * Constructs a new Connection object for a base URL that attempts basic authentication.
      * <p>
      * This is equivalent to calling <code>Connection(baseUrl, new BasicAuthCredentialsProvider(email, password))</code>.
+     * The email and password should correspond to a valid user email
+     * and password on the target server.
      * @param baseUrl The base URL
      * @param email The user email address to pass for authentication
      * @param password The user password to send for authentication
-     * @see #Connection(String, CredentialsProvider)
+     * @see BasicAuthCredentialsProvider#BasicAuthCredentialsProvider(String, String)
+     * @see #Connection(URI, CredentialsProvider)
      */
     public Connection(String baseUrl, String email, String password)
     {
-        this(baseUrl, new BasicAuthCredentialsProvider(email, password));
+        this(toURI(baseUrl), new BasicAuthCredentialsProvider(email, password));
     }
 
     /**
      * Returns the base URL for this connection.
      * @return The base URL.
+     * @deprecated Use {@link #getBaseURI()}
      */
+    @Deprecated
     public String getBaseUrl()
     {
-        return _baseUrl;
+        return _baseURI.toString();
+    }
+
+    /**
+     * Returns the base URI for this connection.
+     * @return The target LabKey instance's base URI
+     */
+    public URI getBaseURI()
+    {
+        return _baseURI;
     }
 
     /**
@@ -228,11 +266,15 @@ public class Connection
         return builder;
     }
 
-
-
-    protected void beforeExecute(HttpRequest request) throws IOException, CommandException
+    /**
+     * If necessary, prime the Connection for non-GET requests.
+     * Executes a dummy command to trigger authentication and populate CSRF and session info.
+     * @param request HttpRequest that is about to be executed
+     */
+    protected void beforeExecute(HttpRequest request)
     {
-        if (null == _csrf && request instanceof HttpPost)
+        if (null == _csrf &&
+                request instanceof HttpRequestBase && !"GET".equals(((HttpRequestBase) request).getMethod()))
         {
             // make a request to get a JSESSIONID
             try
@@ -244,7 +286,9 @@ public class Connection
             }
         }
         if (null != _csrf)
-            request.setHeader("X-LABKEY-CSRF", _csrf);
+            request.setHeader(X_LABKEY_CSRF, _csrf);
+        if (null != _sessionId)
+            request.setHeader(JSESSIONID, _sessionId);
     }
 
 
@@ -253,8 +297,11 @@ public class Connection
         // Always update our CSRF token as the session may be new since our last request
         for (Cookie c : _httpClientContext.getCookieStore().getCookies())
         {
-            if ("JSESSIONID".equals(c.getName()))
+            if (X_LABKEY_CSRF.equals(c.getName()))
                 _csrf = c.getValue();
+
+            if (JSESSIONID.equals(c.getName()))
+                _sessionId = c.getValue();
         }
     }
 
@@ -354,10 +401,10 @@ public class Connection
         return this;
     }
 
-    CloseableHttpResponse executeRequest(HttpUriRequest request, Integer timeout) throws IOException, URISyntaxException, AuthenticationException, CommandException
+    CloseableHttpResponse executeRequest(HttpUriRequest request, Integer timeout) throws IOException, URISyntaxException, AuthenticationException
     {
         // Delegate authentication setup to CredentialsProvider
-        _credentialsProvider.configureRequest(getBaseUrl(), request, _httpClientContext);
+        _credentialsProvider.configureRequest(getBaseURI(), request, _httpClientContext);
 
         CloseableHttpClient client = getHttpClient();
 
@@ -462,7 +509,37 @@ public class Connection
         cookie.setExpiryDate(expiry);
         cookie.setSecure(isSecure);
         _httpClientContext.getCookieStore().addCookie(cookie);
+
+        // Don't use session info from different server
+        if (combineHostPath(_baseURI.getHost(), _baseURI.getPath()).equals(combineHostPath(domain, path)))
+        {
+            if (X_LABKEY_CSRF.equals(name))
+                _csrf = value;
+            if (JSESSIONID.equals(name))
+                _sessionId = value;
+        }
+
         return this;
     }
 
+    private String combineHostPath(String host, String path)
+    {
+        String hostPath = (host == null ? "" : host.trim()) + (path == null ? "" : path.trim());
+        return hostPath.replaceAll("//+", "/").replaceFirst("/$", "");
+    }
+
+    /**
+     * Utility method to construct a URI without modifying constructor signature
+     */
+    private static URI toURI(String baseUrl)
+    {
+        try
+        {
+            return new URI(baseUrl);
+        }
+        catch (URISyntaxException e)
+        {
+            throw new IllegalArgumentException("Invalid target server URL: " + baseUrl);
+        }
+    }
 }
