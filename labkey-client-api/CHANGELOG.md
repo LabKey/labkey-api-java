@@ -6,6 +6,7 @@
 * Fix pre-population of session ID and CSRF token in Connection
 * Identify target server with a `URI` instead of a `String`
 * Add support for Log4J 2
+* Add some missing dependency declarations 
 
 ## version 1.3.0
 *Released* : 16 June 2020
