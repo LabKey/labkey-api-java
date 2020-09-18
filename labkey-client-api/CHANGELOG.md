@@ -1,7 +1,7 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## version 1.3.1 (TBD)
-*Released* : TBD
+## version 1.3.1
+*Released* : 18 September 2020
 
 * Fix pre-population of session ID and CSRF token in Connection
 * Identify target server with a `URI` instead of a `String`
