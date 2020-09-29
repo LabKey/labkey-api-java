@@ -63,13 +63,17 @@ group "org.labkey.api"
 version "1.4.0-SNAPSHOT"
 
 dependencies {
-    api "org.apache.httpcomponents:httpmime:${httpmimeVersion}"
+    implementation "org.apache.httpcomponents:httpmime:${httpmimeVersion}"
     api ("com.googlecode.json-simple:json-simple:${jsonSimpleVersion}")
             {
                 // exclude this because it gets in the way of our own JSON object implementations from server/api
                 exclude group: "org.json", module:"json"
             }
-    api "net.sf.opencsv:opencsv:${opencsvVersion}"
+    implementation "net.sf.opencsv:opencsv:${opencsvVersion}"
+    implementation "commons-logging:commons-logging:${commonsLoggingVersion}"
+    api "org.apache.httpcomponents:httpclient:${httpclientVersion}"
+    implementation "commons-codec:commons-codec:${commonsCodecVersion}"
+    api "org.apache.httpcomponents:httpcore:${httpcoreVersion}"
 }
 
 jar {
