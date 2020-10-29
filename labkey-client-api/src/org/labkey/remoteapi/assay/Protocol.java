@@ -40,7 +40,7 @@ public class Protocol extends ResponseObject
     private Map<String, String> _availableMetadataInputFormats;
     private String _selectedMetadataInputFormat;
 
-    private List<String> _availablePlateTemplates;
+    private List<String> _availablePlateTemplates = new ArrayList<>();
     private String _selectedPlateTemplate;
 
     private Map<String, String> _protocolParameters;
@@ -154,7 +154,7 @@ public class Protocol extends ResponseObject
             result.put("selectedMetadataInputFormat", _selectedMetadataInputFormat);
 
         if (_selectedPlateTemplate != null)
-            result.put("seletedPlateTemplate", _selectedPlateTemplate);
+            result.put("selectedPlateTemplate", _selectedPlateTemplate);
 
         if (_protocolParameters != null)
             result.put("protocolParameters", _protocolParameters);
@@ -316,6 +316,17 @@ public class Protocol extends ResponseObject
     public String getSelectedDetectionMethod()
     {
         return _selectedDetectionMethod;
+    }
+
+    public Protocol setSelectedMetadataInputFormat(String inputFormat)
+    {
+        _selectedMetadataInputFormat = inputFormat;
+        return this;
+    }
+
+    public String getSelectedMetadataInputFormat()
+    {
+        return _selectedMetadataInputFormat;
     }
 
     public List<String> getAvailablePlateTemplates()
