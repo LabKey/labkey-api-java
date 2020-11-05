@@ -1,7 +1,8 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## version TBD
-*Released* :TBD
+## version 1.3.2
+*Released* : 05 November 2020
+* Fix `selectedMetadataInputFormat` serialization
 * Add some missing dependency declarations 
 
 ## version 1.3.1
@@ -10,7 +11,6 @@
 * Fix pre-population of session ID and CSRF token in Connection
 * Identify target server with a `URI` instead of a `String`
 * Add support for Log4J 2
-
 
 ## version 1.3.0
 *Released* : 16 June 2020
