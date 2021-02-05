@@ -5,7 +5,7 @@ import org.labkey.gradle.util.PomFileHelper
 
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
         maven {
             url "${artifactory_contextUrl}/plugins-release"
         }
@@ -37,7 +37,6 @@ plugins {
 }
 
 repositories {
-    jcenter()
     maven {
         url "${artifactory_contextUrl}/libs-release"
 

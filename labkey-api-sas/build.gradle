@@ -5,7 +5,7 @@ import org.labkey.gradle.plugin.extension.TeamCityExtension
 
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
         maven {
             url "${artifactory_contextUrl}/plugins-release"
         }
