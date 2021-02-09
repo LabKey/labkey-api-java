@@ -217,6 +217,11 @@ public class Filter
         _value = source._value; //might be a shallow copy
     }
 
+    public Filter()
+    {
+        // No-arg constructor for serialization
+    }
+    
     public String getColumnName()
     {
         return _columnName;
