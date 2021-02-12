@@ -33,7 +33,7 @@ plugins {
     id 'java-library'
     id 'java'
     id 'maven-publish'
-    id "com.jfrog.bintray" version "${bintrayPluginVersion}" apply false
+    id 'signing'
 }
 
 repositories {
@@ -53,9 +53,6 @@ repositories {
         }
     }
 }
-
-// TODO remove this and use default once client-api distribution doesn't need it
-buildDir = new File(project.rootProject.buildDir, "/remoteapi/labkey-api-java")
 
 group "org.labkey.api"
 
@@ -112,13 +109,13 @@ project.task("fatJar",
             Jar jar ->
                 jar.from sourceSets.main.output
                 jar.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-                jar.from { configurations.default.collect { it.isDirectory() ? it : zipTree(it) }}
+                jar.from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }}
                 jar.setArchiveVersion(project.version)
-                jar.classifier LabKey.FAT_JAR_CLASSIFIER
+                jar.archiveClassifier.set(LabKey.FAT_JAR_CLASSIFIER)
                 jar.dependsOn project.tasks.jar
                 jar.into('lib') {
                     from tasks.jar
-                    from configurations.default
+                    from configurations.runtimeClasspath
                 }
         }
 )
@@ -141,9 +138,8 @@ project.task('javadocJar', description: "Generate jar file of javadoc files", ty
 
 project.task('sourcesJar', description: "Generate jar file of source files", type: Jar) {Jar jar ->
             jar.from project.sourceSets.main.allJava
-
             jar.group GroupNames.DISTRIBUTION
-            jar.classifier LabKey.SOURCES_CLASSIFIER
+            jar.archiveClassifier.set(LabKey.SOURCES_CLASSIFIER)
 }
 
 project.artifacts {
@@ -154,125 +150,100 @@ project.artifacts {
 
 def libDescription = "The client-side library for Java developers is a separate JAR from the LabKey Server code base. It can be used by any Java program, including another Java web application."
 
-project.afterEvaluate {
-    project.publishing {
-        publications {
-            libs(MavenPublication) {
-                groupId = project.group
-                from components.java
-                versionMapping {
-                    usage('java-api') {
-                        fromResolutionOf('runtimeClasspath')
-                    }
-                    usage('java-runtime') {
-                        fromResolutionResult()
-                    }
+project.publishing {
+    publications {
+        libs(MavenPublication) {
+            groupId = project.group
+            from components.java
+            artifact(jar)
+            artifact(sourcesJar) {
+                classifier = LabKey.SOURCES_CLASSIFIER
+            }
+            artifact(javadocJar) {
+                classifier = LabKey.JAVADOC_CLASSIFIER
+            }
+            artifact(fatJar) {
+                classifier = LabKey.FAT_JAR_CLASSIFIER
+            }
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
                 }
-                pom {
-                    name = "LabKey Server Java Client API"
-                    description = libDescription
-                    url = PomFileHelper.LABKEY_ORG_URL
-                    developers PomFileHelper.getLabKeyTeamDevelopers()
-                    licenses PomFileHelper.getApacheLicense()
-                    organization PomFileHelper.getLabKeyOrganization()
-                    scm {
-                        connection = 'scm:git:https://github.com/LabKey/labkey-api-java'
-                        developerConnection = 'scm:git:https://github.com/LabKey/labkey-api-java'
-                        url = 'scm:git:https://github.com/LabKey/labkey-api-java/labkey-client-api'
-                    }
+                usage('java-runtime') {
+                    fromResolutionResult()
                 }
-
-                project.tasks.each {
-                    if (it instanceof Jar)
-                    {
-                        artifact it
-                    }
+            }
+            pom {
+                name = "LabKey Server Java Client API"
+                description = libDescription
+                url = PomFileHelper.LABKEY_ORG_URL
+                developers PomFileHelper.getLabKeyTeamDevelopers()
+                licenses PomFileHelper.getApacheLicense()
+                organization PomFileHelper.getLabKeyOrganization()
+                scm {
+                    connection = 'scm:git:https://github.com/LabKey/labkey-api-java'
+                    developerConnection = 'scm:git:https://github.com/LabKey/labkey-api-java'
+                    url = 'scm:git:https://github.com/LabKey/labkey-api-java/labkey-client-api'
                 }
             }
         }
-
-        if (project.hasProperty('doClientApiPublishing'))
-        {
-            apply plugin: 'com.jfrog.artifactory'
-            artifactory {
-                contextUrl = "${artifactory_contextUrl}"   //The base Artifactory URL if not overridden by the publisher/resolver
-                publish {
-                    repository {
-                        repoKey = BuildUtils.getRepositoryKey(project)
-                        if (project.hasProperty('artifactory_user') && project.hasProperty('artifactory_password'))
-                        {
-                            username = artifactory_user
-                            password = artifactory_password
-                        }
-                        maven = true
-                    }
-                    defaults
-                            {
-                                publishPom = true
-                                publishIvy = false
-                            }
-                }
-            }
-
-            project.artifactoryPublish {
-                project.tasks.each {
-                    if (it instanceof Jar)
-                    {
-                        dependsOn it
-                    }
-                }
-                publications('libs')
-            }
-        }
-
     }
-    project.model {
-        tasks.publishLibsPublicationToMavenLocal {
-            enabled = false
+    if (project.hasProperty("sonatype_staging_url") && project.hasProperty("sonatype_username") && project.hasProperty("sonatype_password"))
+    {
+        repositories {
+            maven {
+                url sonatype_staging_url
+                credentials {
+                    username sonatype_username
+                    password sonatype_password
+                }
+            }
         }
+    }
+
+    apply plugin: 'com.jfrog.artifactory'
+    artifactory {
+        contextUrl = "${artifactory_contextUrl}"
+        //The base Artifactory URL if not overridden by the publisher/resolver
+        publish {
+            repository {
+                repoKey = BuildUtils.getRepositoryKey(project)
+                if (project.hasProperty('artifactory_user') && project.hasProperty('artifactory_password'))
+                {
+                    username = artifactory_user
+                    password = artifactory_password
+                }
+                maven = true
+            }
+            defaults
+                    {
+                        publishPom = true
+                        publishIvy = false
+                    }
+        }
+    }
+
+    project.artifactoryPublish {
+        project.tasks.each {
+            if (it instanceof Jar)
+            {
+                dependsOn it
+            }
+        }
+        publications('libs')
     }
 }
 
-// This section is used for publishing the jar files to bintray and then on to maven central.
-if (project.hasProperty('bintray_user')
-        && project.hasProperty('bintray_api_key')
-        && project.hasProperty('gpg_passphrase')
-        && project.hasProperty('sonatype_username')
-        && project.hasProperty('sonatype_password'))
-{
-    apply plugin: 'com.jfrog.bintray'
-    bintray {
-        user = project.bintray_user
-        key = project.bintray_api_key
-        publications = ['libs']
-        publish = true
-        pkg {
-            repo = project.version.endsWith('SNAPSHOT') ? 'libs-snapshot' : 'libs-release'
-            desc = libDescription
-            websiteUrl = PomFileHelper.LABKEY_ORG_URL
-            name = project.name
-            userOrg = 'labkey'
-            licenses = ['Apache-2.0']
-            vcsUrl = 'https://github.com/LabKey/labkey-api-java'
-            version {
-                name = project.version
-                desc = "LabKey Java Client API ${project.version}"
-                released = new Date()
-                gpg {
-                    sign = true
-                    passphrase = project.gpg_passphrase
-                }
+project.model {
+    tasks.publishLibsPublicationToMavenLocal {
+        enabled = false
+    }
+}
 
-                mavenCentralSync {
-                    sync = true //[Default: true] Determines whether to sync the version to Maven Central.
-                    user = project.sonatype_username //OSS user token: mandatory
-                    password = project.sonatype_password //OSS user password: mandatory
-                    close = '1'
-                    //Optional property. By default the staging repository is closed and artifacts are released to Maven Central. 
-                    //You can optionally turn this behaviour off (by puting 0 as value) and release the version manually.
-                }
-            }
-        }
+if (project.hasProperty("signing.keyId") && project.hasProperty("signing.password") || project.hasProperty("signing.secretKeyRingFile"))
+{
+    signing {
+        sign publishing.publications.libs
     }
 }
 
