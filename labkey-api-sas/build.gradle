@@ -76,44 +76,46 @@ artifacts {
     archives project.tasks.distribution
 }
 
-project.publishing {
-    publications {
-        libs(MavenPublication) {
-            groupId = project.group
-            artifact project.tasks.distribution
-            pom {
-                name = "LabKey Server SAS Client API"
-                description = "Library of macros for use in accessing LabKey Server via SAS"
-                url = PomFileHelper.LABKEY_ORG_URL
-                developers PomFileHelper.getLabKeyTeamDevelopers()
-                licenses PomFileHelper.getApacheLicense()
-                organization PomFileHelper.getLabKeyOrganization()
-                scm {
-                    connection = 'scm:git:https://github.com/LabKey/labkey-api-java/sas'
-                    developerConnection = 'scm:git:https://github.com/LabKey/labkey-api-java/sas'
-                    url = 'scm:git:https://github.com/LabKey/labkey-api-java/sas'
+if (hasProperty('artifactory_user') && hasProperty('artifactory_password'))
+{
+    project.publishing {
+        publications {
+            libs(MavenPublication) {
+                groupId = project.group
+                artifact project.tasks.distribution
+                pom {
+                    name = "LabKey Server SAS Client API"
+                    description = "Library of macros for use in accessing LabKey Server via SAS"
+                    url = PomFileHelper.LABKEY_ORG_URL
+                    developers PomFileHelper.getLabKeyTeamDevelopers()
+                    licenses PomFileHelper.getApacheLicense()
+                    organization PomFileHelper.getLabKeyOrganization()
+                    scm {
+                        connection = 'scm:git:https://github.com/LabKey/labkey-api-java/sas'
+                        developerConnection = 'scm:git:https://github.com/LabKey/labkey-api-java/sas'
+                        url = 'scm:git:https://github.com/LabKey/labkey-api-java/sas'
+                    }
+                }
+            }
+        }
+        repositories {
+            maven {
+                url project.version.contains("SNAPSHOT") ? "${artifactory_contextUrl}/libs-snapshot-local" : "${artifactory_contextUrl}/libs-release-local"
+                credentials {
+                    username = artifactory_user
+                    password = artifactory_password
+                }
+                authentication {
+                    basic(BasicAuthentication)
+                    // enable preemptive authentication to get around https://www.jfrog.com/jira/browse/RTFACT-4434
                 }
             }
         }
     }
-    repositories {
-        maven {
-            url project.version.contains("SNAPSHOT") ? "${artifactory_contextUrl}/libs-snapshot-local" : "${artifactory_contextUrl}/libs-release-local"
-            credentials {
-                username = artifactory_user
-                password = artifactory_password
-            }
-            authentication {
-                basic(BasicAuthentication)
-                // enable preemptive authentication to get around https://www.jfrog.com/jira/browse/RTFACT-4434
-            }
+
+    project.model {
+        tasks.publishLibsPublicationToMavenLocal {
+            enabled = false
         }
     }
 }
-
-project.model {
-    tasks.publishLibsPublicationToMavenLocal {
-        enabled = false
-    }
-}
-

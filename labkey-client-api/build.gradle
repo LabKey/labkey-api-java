@@ -141,78 +141,81 @@ project.artifacts {
 
 def libDescription = "The client-side library for Java developers is a separate JAR from the LabKey Server code base. It can be used by any Java program, including another Java web application."
 
-project.publishing {
-    publications {
-        libs(MavenPublication) {
-            groupId = project.group
-            from components.java
-            artifact(sourcesJar) {
-                classifier = LabKey.SOURCES_CLASSIFIER
-            }
-            artifact(javadocJar) {
-                classifier = LabKey.JAVADOC_CLASSIFIER
-            }
-            artifact(fatJar) {
-                classifier = LabKey.FAT_JAR_CLASSIFIER
-            }
-            versionMapping {
-                usage('java-api') {
-                    fromResolutionOf('runtimeClasspath')
-                }
-                usage('java-runtime') {
-                    fromResolutionResult()
-                }
-            }
-            pom {
-                name = "LabKey Server Java Client API"
-                description = libDescription
-                url = PomFileHelper.LABKEY_ORG_URL
-                developers PomFileHelper.getLabKeyTeamDevelopers()
-                licenses PomFileHelper.getApacheLicense()
-                organization PomFileHelper.getLabKeyOrganization()
-                scm {
-                    connection = 'scm:git:https://github.com/LabKey/labkey-api-java'
-                    developerConnection = 'scm:git:https://github.com/LabKey/labkey-api-java'
-                    url = 'scm:git:https://github.com/LabKey/labkey-api-java/labkey-client-api'
-                }
-            }
-        }
-    }
-    repositories {
-        if (project.hasProperty("sonatype_staging_url") && project.hasProperty("sonatype_username") && project.hasProperty("sonatype_password"))
-        {
-            maven {
-                url sonatype_staging_url
-                credentials {
-                    username sonatype_username
-                    password sonatype_password
-                }
-            }
-        }
-
-        maven {
-            url project.version.contains("SNAPSHOT") ? "${artifactory_contextUrl}/libs-snapshot-local" : "${artifactory_contextUrl}/libs-release-local"
-            credentials {
-                username = artifactory_user
-                password = artifactory_password
-            }
-            authentication {
-                basic(BasicAuthentication)
-                // enable preemptive authentication to get around https://www.jfrog.com/jira/browse/RTFACT-4434
-            }
-        }
-    }
-}
-
-project.model {
-    tasks.publishLibsPublicationToMavenLocal {
-        enabled = false
-    }
-}
-
-if (project.hasProperty("signing.keyId") && project.hasProperty("signing.password") || project.hasProperty("signing.secretKeyRingFile"))
+if (hasProperty('artifactory_user') && hasProperty('artifactory_password'))
 {
-    signing {
-        sign publishing.publications.libs
+    project.publishing {
+        publications {
+            libs(MavenPublication) {
+                groupId = project.group
+                from components.java
+                artifact(sourcesJar) {
+                    classifier = LabKey.SOURCES_CLASSIFIER
+                }
+                artifact(javadocJar) {
+                    classifier = LabKey.JAVADOC_CLASSIFIER
+                }
+                artifact(fatJar) {
+                    classifier = LabKey.FAT_JAR_CLASSIFIER
+                }
+                versionMapping {
+                    usage('java-api') {
+                        fromResolutionOf('runtimeClasspath')
+                    }
+                    usage('java-runtime') {
+                        fromResolutionResult()
+                    }
+                }
+                pom {
+                    name = "LabKey Server Java Client API"
+                    description = libDescription
+                    url = PomFileHelper.LABKEY_ORG_URL
+                    developers PomFileHelper.getLabKeyTeamDevelopers()
+                    licenses PomFileHelper.getApacheLicense()
+                    organization PomFileHelper.getLabKeyOrganization()
+                    scm {
+                        connection = 'scm:git:https://github.com/LabKey/labkey-api-java'
+                        developerConnection = 'scm:git:https://github.com/LabKey/labkey-api-java'
+                        url = 'scm:git:https://github.com/LabKey/labkey-api-java/labkey-client-api'
+                    }
+                }
+            }
+        }
+        repositories {
+            if (project.hasProperty("sonatype_staging_url") && project.hasProperty("sonatype_username") && project.hasProperty("sonatype_password"))
+            {
+                maven {
+                    url sonatype_staging_url
+                    credentials {
+                        username sonatype_username
+                        password sonatype_password
+                    }
+                }
+            }
+
+            maven {
+                url project.version.contains("SNAPSHOT") ? "${artifactory_contextUrl}/libs-snapshot-local" : "${artifactory_contextUrl}/libs-release-local"
+                credentials {
+                    username = artifactory_user
+                    password = artifactory_password
+                }
+                authentication {
+                    basic(BasicAuthentication)
+                    // enable preemptive authentication to get around https://www.jfrog.com/jira/browse/RTFACT-4434
+                }
+            }
+        }
+    }
+
+    project.model {
+        tasks.publishLibsPublicationToMavenLocal {
+            enabled = false
+        }
+    }
+
+    if (project.hasProperty("signing.keyId") && project.hasProperty("signing.password") || project.hasProperty("signing.secretKeyRingFile"))
+    {
+        signing {
+            sign publishing.publications.libs
+        }
     }
 }
