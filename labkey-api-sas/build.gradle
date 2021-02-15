@@ -18,14 +18,6 @@ buildscript {
     }
     dependencies {
         classpath "org.labkey.build:gradlePlugins:${gradlePluginsVersion}"
-        // N.B.  We use the "old-fashioned" way of applying the artifactory plugin because if we use
-        // the plugins block below and specify a version number, the following error happens if building
-        // in conjunction with LabKey server (i.e., when including this project in the server's build.gradle
-        //    Error resolving plugin [id: 'com.jfrog.artifactory', version: '4.13.0', apply: false]
-        //    > Plugin request for plugin already on the classpath must not include a version
-        // We could instead include the plugin without a version number, which would work until
-        // some change in the latest version of the plugin came along that we aren't compatible with.
-        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:${artifactoryPluginVersion}"
     }
 }
 
@@ -52,9 +44,6 @@ repositories {
     }
 }
 
-// TODO remove once client-api distribution no longer requires this
-buildDir = new File(project.rootProject.buildDir, "/remoteapi/sas")
-
 group 'org.labkey.api'
 
 version '1.0.0-SNAPSHOT'
@@ -71,7 +60,6 @@ configurations {
 
 BuildUtils.addLabKeyDependency(project: project, config: "remoteApi", depProjectPath: BuildUtils.getRemoteApiProjectPath(gradle), depVersion: project.labkeyClientApiVersion)
 
-// TODO change name and destination once client-api no longer requires this
 project.task("distribution",
         group: GroupNames.DISTRIBUTION,
         description: "Create a zip file for the SAS API client distribution containing the SAS macros, java client api jar and its dependencies",
@@ -88,59 +76,44 @@ artifacts {
     archives project.tasks.distribution
 }
 
-project.afterEvaluate {
-    project.publishing {
-        publications {
-            libs(MavenPublication) {
-                groupId = project.group
-                artifact project.tasks.distribution
-                pom {
-                    name = "LabKey Server SAS Client API"
-                    description = "Library of macros for use in accessing LabKey Server via SAS"
-                    url = PomFileHelper.LABKEY_ORG_URL
-                    developers PomFileHelper.getLabKeyTeamDevelopers()
-                    licenses PomFileHelper.getApacheLicense()
-                    organization PomFileHelper.getLabKeyOrganization()
-                    scm {
-                        connection = 'scm:git:https://github.com/LabKey/labkey-api-java/sas'
-                        developerConnection = 'scm:git:https://github.com/LabKey/labkey-api-java/sas'
-                        url = 'scm:git:https://github.com/LabKey/labkey-api-java/sas'
-                    }
+project.publishing {
+    publications {
+        libs(MavenPublication) {
+            groupId = project.group
+            artifact project.tasks.distribution
+            pom {
+                name = "LabKey Server SAS Client API"
+                description = "Library of macros for use in accessing LabKey Server via SAS"
+                url = PomFileHelper.LABKEY_ORG_URL
+                developers PomFileHelper.getLabKeyTeamDevelopers()
+                licenses PomFileHelper.getApacheLicense()
+                organization PomFileHelper.getLabKeyOrganization()
+                scm {
+                    connection = 'scm:git:https://github.com/LabKey/labkey-api-java/sas'
+                    developerConnection = 'scm:git:https://github.com/LabKey/labkey-api-java/sas'
+                    url = 'scm:git:https://github.com/LabKey/labkey-api-java/sas'
                 }
-            }
-        }
-
-        if (project.hasProperty('doClientApiPublishing'))
-        {
-            apply plugin: 'com.jfrog.artifactory'
-            artifactory {
-                contextUrl = "${artifactory_contextUrl}"   //The base Artifactory URL if not overridden by the publisher/resolver
-                publish {
-                    repository {
-                        repoKey = BuildUtils.getRepositoryKey(project)
-                        if (project.hasProperty('artifactory_user') && project.hasProperty('artifactory_password'))
-                        {
-                            username = artifactory_user
-                            password = artifactory_password
-                        }
-                        maven = true
-                    }
-                    defaults
-                            {
-                                publishPom = true
-                                publishIvy = false
-                            }
-                }
-            }
-
-            project.artifactoryPublish {
-                publications('libs')
             }
         }
     }
-    project.model {
-        tasks.publishLibsPublicationToMavenLocal {
-            enabled = false
+    repositories {
+        maven {
+            url project.version.contains("SNAPSHOT") ? "${artifactory_contextUrl}/libs-snapshot-local" : "${artifactory_contextUrl}/libs-release-local"
+            credentials {
+                username = artifactory_user
+                password = artifactory_password
+            }
+            authentication {
+                basic(BasicAuthentication)
+                // enable preemptive authentication to get around https://www.jfrog.com/jira/browse/RTFACT-4434
+            }
         }
     }
 }
+
+project.model {
+    tasks.publishLibsPublicationToMavenLocal {
+        enabled = false
+    }
+}
+

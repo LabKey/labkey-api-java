@@ -1,5 +1,4 @@
 import org.labkey.gradle.plugin.LabKey
-import org.labkey.gradle.util.BuildUtils
 import org.labkey.gradle.util.GroupNames
 import org.labkey.gradle.util.PomFileHelper
 
@@ -18,14 +17,6 @@ buildscript {
     }
     dependencies {
         classpath "org.labkey.build:gradlePlugins:${gradlePluginsVersion}"
-        // N.B.  We use the "old-fashioned" way of applying the artifactory plugin because if we use
-        // the plugins block below and specify a version number, the following error happens if building
-        // in conjunction with LabKey server (i.e., when including this project in the server's build.gradle
-        //    Error resolving plugin [id: 'com.jfrog.artifactory', version: '4.13.0', apply: false]
-        //    > Plugin request for plugin already on the classpath must not include a version
-        // We could instead include the plugin without a version number, which would work until
-        // some change in the latest version of the plugin came along that we aren't compatible with.
-        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:${artifactoryPluginVersion}"
     }
 }
 
@@ -155,7 +146,6 @@ project.publishing {
         libs(MavenPublication) {
             groupId = project.group
             from components.java
-            artifact(jar)
             artifact(sourcesJar) {
                 classifier = LabKey.SOURCES_CLASSIFIER
             }
@@ -188,9 +178,9 @@ project.publishing {
             }
         }
     }
-    if (project.hasProperty("sonatype_staging_url") && project.hasProperty("sonatype_username") && project.hasProperty("sonatype_password"))
-    {
-        repositories {
+    repositories {
+        if (project.hasProperty("sonatype_staging_url") && project.hasProperty("sonatype_username") && project.hasProperty("sonatype_password"))
+        {
             maven {
                 url sonatype_staging_url
                 credentials {
@@ -199,38 +189,18 @@ project.publishing {
                 }
             }
         }
-    }
 
-    apply plugin: 'com.jfrog.artifactory'
-    artifactory {
-        contextUrl = "${artifactory_contextUrl}"
-        //The base Artifactory URL if not overridden by the publisher/resolver
-        publish {
-            repository {
-                repoKey = BuildUtils.getRepositoryKey(project)
-                if (project.hasProperty('artifactory_user') && project.hasProperty('artifactory_password'))
-                {
-                    username = artifactory_user
-                    password = artifactory_password
-                }
-                maven = true
+        maven {
+            url project.version.contains("SNAPSHOT") ? "${artifactory_contextUrl}/libs-snapshot-local" : "${artifactory_contextUrl}/libs-release-local"
+            credentials {
+                username = artifactory_user
+                password = artifactory_password
             }
-            defaults
-                    {
-                        publishPom = true
-                        publishIvy = false
-                    }
-        }
-    }
-
-    project.artifactoryPublish {
-        project.tasks.each {
-            if (it instanceof Jar)
-            {
-                dependsOn it
+            authentication {
+                basic(BasicAuthentication)
+                // enable preemptive authentication to get around https://www.jfrog.com/jira/browse/RTFACT-4434
             }
         }
-        publications('libs')
     }
 }
 
@@ -246,4 +216,3 @@ if (project.hasProperty("signing.keyId") && project.hasProperty("signing.passwor
         sign publishing.publications.libs
     }
 }
-
