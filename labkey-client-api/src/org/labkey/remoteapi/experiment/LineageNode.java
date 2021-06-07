@@ -40,7 +40,7 @@ public class LineageNode extends ResponseObject
     {
         super(map);
         _lsid = lsid;
-        _id = ((Long)map.get("id")).intValue();
+        _id = ((Number)map.getOrDefault("id", -1)).intValue();
         _name = (String)map.get("name");
         _type = (String)map.get("type");
         _cpasType = (String)map.get("cpasType");
