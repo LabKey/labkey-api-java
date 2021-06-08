@@ -1,5 +1,10 @@
 # The LabKey Remote API Library for Java - Change Log
 
+## version 1.4.0-SNAPSHOT
+*Released*: TBD
+* Issue 43246: Lineage query NPE while processing an UploadedFile
+* Additional lineage options and support additional properties in response
+
 ## version 1.3.2
 *Released* : 05 November 2020
 * Fix `selectedMetadataInputFormat` serialization

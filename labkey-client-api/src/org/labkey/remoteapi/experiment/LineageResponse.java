@@ -16,25 +16,29 @@
 package org.labkey.remoteapi.experiment;
 
 import org.json.simple.JSONObject;
-import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 public class LineageResponse extends CommandResponse
 {
-    LineageNode _seed;
+    List<LineageNode> _seeds;
     Map<String, LineageNode> _nodes;
 
-    public LineageResponse(String text, int statusCode, String contentType, JSONObject json, Command sourceCommand)
+    public LineageResponse(String text, int statusCode, String contentType, JSONObject json, LineageCommand sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
 
-        String seedLsid = getProperty("seed");
+        List<String> seedLsids = getProperty("seeds");
+        List<LineageNode> seeds = new ArrayList<>(seedLsids.size());
+
         Map<String, Object> nodeMap = getProperty("nodes");
 
         Map<String, LineageNode> nodes = new HashMap<>();
@@ -45,19 +49,27 @@ public class LineageResponse extends CommandResponse
             LineageNode node = new LineageNode(lsid, (Map<String, Object>)entry.getValue());
             nodes.put(lsid, node);
 
-            if (_seed == null && lsid.equals(seedLsid))
-                _seed = node;
+            if (seeds.size() != seedLsids.size() && seedLsids.contains(lsid))
+                seeds.add(node);
         }
 
         for (LineageNode node : nodes.values())
             node.fixup(nodes);
 
+        _seeds = Collections.unmodifiableList(seeds);
         _nodes = Collections.unmodifiableMap(nodes);
     }
 
     public LineageNode getSeed()
     {
-        return _seed;
+        if (_seeds.size() > 0)
+            return _seeds.get(0);
+        return null;
+    }
+
+    public List<LineageNode> getSeeds()
+    {
+        return _seeds;
     }
 
     public Map<String, LineageNode> getNodes()
@@ -74,10 +86,17 @@ public class LineageResponse extends CommandResponse
 
     private void dump(StringBuilder sb)
     {
-        if (_seed == null)
-            sb.append("No seed found");
+        if (_seeds == null)
+        {
+            sb.append("No seeds found");
+            return;
+        }
 
-        _seed.dump(0, sb, new HashSet<String>());
+        Set<String> seen = new HashSet<>();
+        for (LineageNode seed : _seeds)
+        {
+            seed.dump(0, sb, seen);
+        }
     }
 
 }

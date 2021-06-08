@@ -19,71 +19,70 @@ import org.json.simple.JSONObject;
 import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.Connection;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
 public class LineageCommand extends Command<LineageResponse>
 {
-    // One of rowId or LSID required
-    private final Integer _rowId;
-    private final String _lsid;
+    // One or more LSIDs are required
+    private final List<String> _lsids;
 
+    // Optional parameters below
     private final Boolean _parents;
     private final Boolean _children;
     private final Integer _depth;
     private final String _expType;
     private final String _cpasType;
+    private final Boolean _includeProperties;
+    private final Boolean _includeInputsAndOutputs;
+    private final Boolean _includeRunSteps;
 
-    private LineageCommand(/*@Nullable*/ Integer rowId, /*@Nullable*/ String lsid, Boolean parents, Boolean children, Integer depth, String cpasType, String expType)
+    private LineageCommand(
+            List<String> lsids, Boolean parents, Boolean children, Integer depth, String cpasType, String expType,
+            Boolean includeProperites, Boolean includeInputsAndOutputs, Boolean includeRunSteps)
     {
         super("experiment", "lineage");
-        if (rowId == null && lsid == null)
-            throw new IllegalArgumentException("One of rowId or lsid required");
+        if (lsids == null || lsids.isEmpty())
+            throw new IllegalArgumentException("One or more starting LSIDs required");
 
-        if (lsid != null && rowId != null)
-            throw new IllegalArgumentException("Only one of rowId or lsid allowed");
-
-        _rowId = rowId;
-        _lsid = lsid;
+        _lsids = lsids;
         _depth = depth;
         _parents = parents;
         _children = children;
         _expType = expType;
         _cpasType = cpasType;
+        _includeProperties = includeProperites;
+        _includeInputsAndOutputs = includeInputsAndOutputs;
+        _includeRunSteps = includeRunSteps;
     }
 
     public static final class Builder
     {
-        private final Integer _rowId;
-        private final String _lsid;
+        private final List<String> _lsids;
 
         private Integer _depth;
         private Boolean _parents;
         private Boolean _children;
         private String _expType;
         private String _cpasType;
+        private Boolean _includeProperties;
+        private Boolean _includeInputsAndOutputs;
+        private Boolean _includeRunSteps;
 
         public Builder(String lsid)
         {
-            this(lsid, null);
+            this(Arrays.asList(lsid));
         }
 
-        public Builder(Integer rowId)
+        public Builder(List<String> lsids)
         {
-            this(null, rowId);
-        }
+            if (lsids == null || lsids.isEmpty())
+                throw new IllegalArgumentException("One or more starting LSIDs required");
 
-        public Builder(String lsid, Integer rowId)
-        {
-            if (lsid == null && rowId == null)
-                throw new IllegalArgumentException("One of rowId or lsid required");
-
-            if (lsid != null && rowId != null)
-                throw new IllegalArgumentException("Only one of rowId or lsid allowed");
-
-            _rowId = rowId;
-            _lsid = lsid;
+            _lsids = lsids;
         }
 
         public Builder setDepth(Integer depth)
@@ -116,9 +115,29 @@ public class LineageCommand extends Command<LineageResponse>
             return this;
         }
 
+        public Builder setIncludeProperties(Boolean includeProperties)
+        {
+            _includeProperties = includeProperties;
+            return this;
+        }
+
+        public Builder setIncludeInputsAndOutputs(Boolean includeInputsAndOutputs)
+        {
+            _includeInputsAndOutputs = includeInputsAndOutputs;
+            return this;
+        }
+
+        public Builder setIncludeRunSteps(Boolean includeRunSteps)
+        {
+            _includeRunSteps = includeRunSteps;
+            return this;
+        }
+
         public LineageCommand build()
         {
-            return new LineageCommand(_rowId, _lsid, _parents, _children, _depth, _cpasType, _expType);
+            return new LineageCommand(
+                    _lsids, _parents, _children, _depth, _cpasType, _expType,
+                    _includeProperties, _includeInputsAndOutputs, _includeRunSteps);
         }
     }
 
@@ -130,10 +149,7 @@ public class LineageCommand extends Command<LineageResponse>
     public Map<String, Object> getParameters()
     {
         Map<String,Object> params = new HashMap<>();
-        if (null != _rowId)
-            params.put("rowId", _rowId);
-        if (null != _lsid)
-            params.put("lsid", _lsid);
+        params.put("lsids", _lsids);
         if (null != _parents)
             params.put("parents", _parents);
         if (null != _children)
@@ -144,6 +160,12 @@ public class LineageCommand extends Command<LineageResponse>
             params.put("expType", _expType);
         if (null != _cpasType)
             params.put("cpasType", _cpasType);
+        if (null != _includeProperties)
+            params.put("includeProperties", _includeProperties);
+        if (null != _includeInputsAndOutputs)
+            params.put("includeInputsAndOutputs", _includeInputsAndOutputs);
+        if (null != _includeRunSteps)
+            params.put("includeRunSteps", _includeRunSteps);
 
         return params;
     }
@@ -152,28 +174,27 @@ public class LineageCommand extends Command<LineageResponse>
     @Override
     public LineageCommand copy()
     {
-        return new LineageCommand(_rowId, _lsid, _parents, _children, _depth, _cpasType, _expType);
+        return new LineageCommand(_lsids, _parents, _children, _depth, _cpasType, _expType,
+                _includeProperties, _includeInputsAndOutputs, _includeRunSteps);
     }
 
     public static void main(String[] args) throws Exception
     {
         String url = "http://localhost:8080/labkey";
-        String folderPath = "/bl";
+        String folderPath = "/AssayImportProvenance Test";
         String user = "kevink@labkey.com";
         String password = "xxxxxx";
 
-        String lsid = null;
-        Integer rowId = 7523;
-        Boolean parents = false;
-        Boolean children = null;
+        String lsid = "urn:lsid:labkey.com:GeneralAssayRun.Folder-4780:40166791-3d3f-1039-a854-9b7575483a25";
 
-        Builder builder = new Builder(lsid, rowId);
-        if (parents != null)
-            builder.setParents(parents);
-        if (children != null)
-            builder.setChildren(children);
+        LineageCommand cmd = new Builder(lsid)
+                .setParents(false)
+                .setChildren(true)
+                .setIncludeProperties(true)
+                .setIncludeInputsAndOutputs(true)
+                .setIncludeRunSteps(true)
+                .build();
 
-        LineageCommand cmd = builder.build();
         Connection conn = new Connection(url, user, password);
         LineageResponse resp = cmd.execute(conn, folderPath);
         System.out.println(resp.dump());
