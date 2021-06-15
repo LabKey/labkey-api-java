@@ -54,17 +54,6 @@ repositories {
     }
 }
 
-configurations.all
-        { Configuration config ->
-            resolutionStrategy {
-                // force versions so we can remain consistent with what comes through transitively
-                // in :server:modules:platform:api via jackson
-                force "org.hamcrest:hamcrest-core:${hamcrestVersion}"
-                force "org.hamcrest:hamcrest-library:${hamcrestVersion}"
-                force "junit:junit:${junitVersion}"
-            }
-        }
-
 group "org.labkey.api"
 
 version "1.4.0-versionUpdates217-SNAPSHOT"
@@ -83,13 +72,16 @@ dependencies {
     api "org.apache.httpcomponents:httpcore:${httpcoreVersion}"
 }
 
-//configurations.all
-//        {Configuration config ->
-//            resolutionStrategy {
-//                force "org.hamcrest:hamcrest-core:${hamcrestVersion}"
-//                force "org.hamcrest:hamcrest-library:${hamcrestVersion}"
-//                force "junit:junit:${junitVersion}"
-//            }
+configurations.all
+        { Configuration config ->
+            resolutionStrategy {
+                // force versions so we can remain consistent with what comes through transitively
+                // in :server:modules:platform:api via jackson
+                force "org.hamcrest:hamcrest-core:${hamcrestVersion}"
+                force "org.hamcrest:hamcrest-library:${hamcrestVersion}"
+                force "junit:junit:${junitVersion}"
+            }
+        }
 
 jar {
     sourceCompatibility = project.sourceCompatibility
