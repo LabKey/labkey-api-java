@@ -1,9 +1,11 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## version 1.4.0-SNAPSHOT
-*Released*: TBD
+## version 1.4.0
+*Released*: 16 June 2021
 * Issue 43246: Lineage query NPE while processing an UploadedFile
 * Additional lineage options and support additional properties in response
+* Update dependency version numbers
+* Update to Gradle 7.1
 
 ## version 1.3.2
 *Released* : 05 November 2020
