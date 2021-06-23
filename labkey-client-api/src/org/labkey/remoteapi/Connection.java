@@ -173,12 +173,11 @@ public class Connection
      * Constructs a new Connection object with a base URL that attempts authentication via .netrc/_netrc entry, if present.
      * If not present, connects as guest.
      * @param baseUrl The base URL
-     * @throws URISyntaxException if the given url is not a valid URI
      * @throws IOException if there are problems reading the credentials
      * @see NetrcCredentialsProvider
      * @see #Connection(URI, CredentialsProvider)
      */
-    public Connection(String baseUrl) throws URISyntaxException, IOException
+    public Connection(String baseUrl) throws IOException
     {
         this(toURI(baseUrl), new NetrcCredentialsProvider(toURI(baseUrl)));
     }

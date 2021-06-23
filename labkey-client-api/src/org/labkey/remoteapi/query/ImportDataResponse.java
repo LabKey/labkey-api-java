@@ -27,12 +27,14 @@ public class ImportDataResponse extends CommandResponse
 {
     private final Boolean _success;
     private final int _rowCount;
+    private final String _jobId;
 
     public ImportDataResponse(String text, int statusCode, String contentType, JSONObject json, Command sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
         _success = json.containsKey("success") ? (Boolean)json.get("success") : Boolean.FALSE;
         _rowCount = json.containsKey("rowCount") ? ((Number)json.get("rowCount")).intValue() : 0;
+        _jobId = (String)json.getOrDefault("jobId", null);
     }
 
     public Boolean getSuccess()
@@ -45,4 +47,12 @@ public class ImportDataResponse extends CommandResponse
         return _rowCount;
     }
 
+    /**
+     * When importing a file asynchronously, the jobId of the queued job is returned.
+     * @see ImportDataCommand#setUseAsync(boolean)
+     */
+    public String getJobId()
+    {
+        return _jobId;
+    }
 }
