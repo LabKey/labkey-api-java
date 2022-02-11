@@ -32,6 +32,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -297,7 +298,7 @@ public class ImportDataCommand extends PostCommand<ImportDataResponse>
         return new ImportDataCommand(this);
     }
 
-    public static void main(String[] args) throws IOException
+    public static void main(String[] args) throws IOException, URISyntaxException
     {
         // required
         String baseServerUrl = null;
