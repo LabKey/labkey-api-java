@@ -37,8 +37,9 @@ plugins {
 }
 
 repositories {
+    mavenCentral()
     maven {
-        url "${artifactory_contextUrl}/libs-release"
+        url "${artifactory_contextUrl}/libs-release-no-mc"
 
         if (hasProperty('artifactory_user') && hasProperty('artifactory_password'))
         {
