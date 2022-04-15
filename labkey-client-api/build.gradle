@@ -241,6 +241,7 @@ project.publishing {
                 maven = true
             }
             defaults {
+                publishBuildInfo = false
                 publishPom = true
                 publishIvy = false
             }
