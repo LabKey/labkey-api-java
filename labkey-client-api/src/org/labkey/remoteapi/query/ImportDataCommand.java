@@ -32,6 +32,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.net.URI;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -580,7 +581,7 @@ public class ImportDataCommand extends PostCommand<ImportDataResponse>
     private static String readFully(InputStream in) throws IOException
     {
         StringWriter sw = new StringWriter();
-        try (BufferedReader buf = new BufferedReader(new InputStreamReader(in)))
+        try (BufferedReader buf = new BufferedReader(new InputStreamReader(in, Charset.defaultCharset())))
         {
             String line;
             do
