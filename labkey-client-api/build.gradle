@@ -7,7 +7,7 @@ buildscript {
     repositories {
         mavenCentral()
         maven {
-            url "${artifactory_contextUrl}/plugins-release-no-mc"
+            url "${artifactory_contextUrl}/plugins-release"
         }
         if (gradlePluginsVersion.contains("SNAPSHOT"))
         {
@@ -39,7 +39,7 @@ plugins {
 repositories {
     mavenCentral()
     maven {
-        url "${artifactory_contextUrl}/libs-release-no-mc"
+        url "${artifactory_contextUrl}/libs-release"
 
         if (hasProperty('artifactory_user') && hasProperty('artifactory_password'))
         {
