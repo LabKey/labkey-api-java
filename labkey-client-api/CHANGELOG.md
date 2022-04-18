@@ -1,5 +1,12 @@
 # The LabKey Remote API Library for Java - Change Log
 
+## version TBD
+*Released*: TBD
+* Update gradle and various dependencies
+* Update signature of `Connection` constructor
+* Issue 43380: `ImportDataCommand` missing options supported by the query-import.api endpoint
+* Remove `CheckForStudyReloadCommand`.
+
 ## version 1.4.0
 *Released*: 16 June 2021
 * Issue 43246: Lineage query NPE while processing an UploadedFile
