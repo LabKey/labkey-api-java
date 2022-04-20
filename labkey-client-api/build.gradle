@@ -57,7 +57,7 @@ repositories {
 
 group "org.labkey.api"
 
-version "1.5.0-SNAPSHOT"
+version "1.5.0"
 
 dependencies {
     implementation "org.apache.httpcomponents:httpmime:${httpmimeVersion}"
