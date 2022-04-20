@@ -1,7 +1,7 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## version TBD
-*Released*: TBD
+## version 1.5.0
+*Released*: 20 April 2022
 * Update gradle and various dependencies
 * Update signature of `Connection` constructor
 * [Issue 43380](https://www.labkey.org/home/Developer/issues/issues-details.view?issueId=43380): `ImportDataCommand` missing options supported by the query-import.api endpoint
