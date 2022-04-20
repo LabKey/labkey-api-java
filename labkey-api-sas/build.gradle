@@ -27,6 +27,7 @@ plugins {
 }
 
 repositories {
+    mavenCentral()
     maven {
         url "${artifactory_contextUrl}/libs-release"
 

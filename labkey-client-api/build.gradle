@@ -37,6 +37,7 @@ plugins {
 }
 
 repositories {
+    mavenCentral()
     maven {
         url "${artifactory_contextUrl}/libs-release"
 
@@ -56,7 +57,7 @@ repositories {
 
 group "org.labkey.api"
 
-version "1.5.0-SNAPSHOT"
+version "1.6.0-SNAPSHOT"
 
 dependencies {
     implementation "org.apache.httpcomponents:httpmime:${httpmimeVersion}"
@@ -240,6 +241,7 @@ project.publishing {
                 maven = true
             }
             defaults {
+                publishBuildInfo = false
                 publishPom = true
                 publishIvy = false
             }

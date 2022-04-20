@@ -142,7 +142,7 @@ public class Connection
     {
         if (baseURI.getHost() == null || baseURI.getScheme() == null)
         {
-            throw new IllegalArgumentException("Invalid server URL: " + baseURI.toString());
+            throw new IllegalArgumentException("Invalid server URL: " + baseURI);
         }
         _baseURI = baseURI;
         _credentialsProvider = credentialsProvider;
