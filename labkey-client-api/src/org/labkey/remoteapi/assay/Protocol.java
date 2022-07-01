@@ -40,7 +40,7 @@ public class Protocol extends ResponseObject
     private Map<String, String> _availableMetadataInputFormats;
     private String _selectedMetadataInputFormat;
 
-    private List<String> _availablePlateTemplates = new ArrayList<>();
+    private List<String> _availablePlateTemplates;
     private String _selectedPlateTemplate;
 
     private Map<String, String> _protocolParameters;
@@ -90,31 +90,22 @@ public class Protocol extends ResponseObject
             _autoCopyTargetContainerId = (String)json.get("autoCopyTargetContainerId");
 
         if (json.get("availableDetectionMethods") instanceof JSONArray)
-        {
-            for (Object detectionMethod : (JSONArray)json.get("availableDetectionMethods"))
-                _availableDetectionMethods.add((String)detectionMethod);
-        }
+            _availableDetectionMethods = new ArrayList<>((JSONArray)json.get("availableDetectionMethods"));
         if (json.containsKey("selectedDetectionMethod"))
             _selectedDetectionMethod = (String)json.get("selectedDetectionMethod");
-        if (json.containsKey("availableMetadataInputFormats"))
-            _availableMetadataInputFormats = (HashMap<String,String>)json.get("availableMetadataInputFormats");
+        if (json.get("availableMetadataInputFormats") instanceof JSONObject)
+            _availableMetadataInputFormats = new HashMap<>((JSONObject)json.get("availableMetadataInputFormats"));
         if (json.containsKey("selectedMetadataInputFormat"))
             _selectedMetadataInputFormat = (String)json.get("selectedMetadataInputFormat");
         if (json.get("availablePlateTemplates") instanceof JSONArray)
-        {
-            for (Object plateTemplate : (JSONArray)json.get("availablePlateTemplates"))
-                _availablePlateTemplates.add((String)plateTemplate);
-        }
+            _availablePlateTemplates = new ArrayList<>((JSONArray)json.get("availablePlateTemplates"));
         if (json.containsKey("selectedPlateTemplate"))
             _selectedPlateTemplate = (String)json.get("selectedPlateTemplate");
 
-        if (json.get("protocolTransformScripts") instanceof JSONArray)
-        {
-            for (Object transformScript : (JSONArray)json.get("protocolTransformScripts"))
-                _protocolTransformScripts.add((String)transformScript);
-        }
+        if (json.containsKey("protocolTransformScripts"))
+            _protocolTransformScripts = new ArrayList<>((JSONArray)json.get("protocolTransformScripts"));
         if (json.containsKey("protocolParameters"))
-            _protocolParameters = (HashMap<String,String>)json.get("protocolParameters");
+            _protocolParameters = new HashMap<>((JSONObject) json.get("protocolParameters"));
     }
 
     public JSONObject toJSONObject()
@@ -316,6 +307,11 @@ public class Protocol extends ResponseObject
     public String getSelectedDetectionMethod()
     {
         return _selectedDetectionMethod;
+    }
+
+    public Map<String, String> getAvailableMetadataInputFormats()
+    {
+        return _availableMetadataInputFormats;
     }
 
     public Protocol setSelectedMetadataInputFormat(String inputFormat)
