@@ -1,5 +1,9 @@
 # The LabKey Remote API Library for Java - Change Log
 
+## version XX
+*Released* : XX
+* Add derivationDataScope to PropertyDescriptor
+
 ## version 1.5.0
 *Released*: 20 April 2022
 * Update gradle and various dependencies

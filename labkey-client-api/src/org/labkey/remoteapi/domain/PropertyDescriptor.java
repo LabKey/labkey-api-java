@@ -26,6 +26,7 @@ public class PropertyDescriptor extends ResponseObject
     private String _lookupSchema;
     private String _lookupQuery;
     private String _lookupContainer;
+    private String _derivationDataScope;
     private List<ConditionalFormat> _conditionalFormats = new ArrayList<>();
 
     public PropertyDescriptor()
@@ -85,6 +86,8 @@ public class PropertyDescriptor extends ResponseObject
             _lookupQuery = (String)json.get("lookupQuery");
         if (json.get("lookupContainer") != null)
             _lookupContainer = (String)json.get("lookupContainer");
+        if (json.get("derivationDataScope") != null)
+            _derivationDataScope = (String)json.get("derivationDataScope");
         if (json.get("mvEnabled") != null)
             _mvEnabled = (Boolean)json.get("mvEnabled");
     }
@@ -114,6 +117,9 @@ public class PropertyDescriptor extends ResponseObject
         result.put("dimension", _dimension);
         result.put("propertyURI", _propertyURI);
         result.put("conditionalFormats", serializeConditionalFormats());
+
+        if (_derivationDataScope != null)
+            result.put("derivationDataScope", _derivationDataScope);
 
         if (_rangeURI != null)
             result.put("rangeURI", _rangeURI);
@@ -314,4 +320,15 @@ public class PropertyDescriptor extends ResponseObject
     {
         return Collections.unmodifiableList(_conditionalFormats);
     }
+
+    public String getDerivationDataScope()
+    {
+        return _derivationDataScope;
+    }
+
+    public void setDerivationDataScope(String derivationDataScope)
+    {
+        _derivationDataScope = derivationDataScope;
+    }
+
 }
