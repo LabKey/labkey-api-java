@@ -1,5 +1,9 @@
 # The LabKey Remote API Library for Java - Change Log
 
+## version 1.5.1
+*Released*: TBD
+* Fix NPE when saving assay protocol with transform scripts
+
 ## version 1.5.0
 *Released*: 20 April 2022
 * Update gradle and various dependencies
