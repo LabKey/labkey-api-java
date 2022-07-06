@@ -57,7 +57,7 @@ repositories {
 
 group "org.labkey.api"
 
-version "1.5.1-fb-aliquotOptions-SNAPSHOT"
+version "1.5.2-fb-aliquotOptions-SNAPSHOT"
 
 dependencies {
     implementation "org.apache.httpcomponents:httpmime:${httpmimeVersion}"
