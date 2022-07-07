@@ -1,8 +1,9 @@
 # The LabKey Remote API Library for Java - Change Log
 
 ## version 1.5.1
-*Released*: TBD
+*Released*: 7 July 2022
 * Fix NPE when saving assay protocol with transform scripts
+* Add derivationDataScope to PropertyDescriptor
 
 ## version 1.5.0
 *Released*: 20 April 2022
