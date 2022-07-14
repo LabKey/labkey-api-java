@@ -18,6 +18,7 @@ package org.labkey.remoteapi.sas;
 import org.labkey.remoteapi.ApiKeyCredentialsProvider;
 import org.labkey.remoteapi.BasicAuthCredentialsProvider;
 import org.labkey.remoteapi.Connection;
+import org.labkey.remoteapi.CredentialsProvider;
 import org.labkey.remoteapi.NetrcCredentialsProvider;
 
 import java.io.IOException;
@@ -31,24 +32,30 @@ import java.net.URISyntaxException;
  */
 public class SASConnection extends Connection
 {
+    private SASConnection(String baseUrl, CredentialsProvider credentialsProvider)
+    {
+        super(baseUrl, credentialsProvider);
+        setUserAgent("LabKey SAS API");
+    }
+
     @SuppressWarnings({"UnusedDeclaration"})
     // Called from SAS macros via reflective JavaObj interface
-    public SASConnection(String baseUrl, String userName, String password) throws IOException, URISyntaxException
+    public SASConnection(String baseUrl, String userName, String password)
     {
-        super(baseUrl, new BasicAuthCredentialsProvider(userName, password));
+        this(baseUrl, new BasicAuthCredentialsProvider(userName, password));
     }
 
     @SuppressWarnings({"UnusedDeclaration"})
     // Called from SAS macros via reflective JavaObj interface
     public SASConnection(String baseUrl) throws IOException, URISyntaxException
     {
-        super(baseUrl, new NetrcCredentialsProvider(new URI(baseUrl)));
+        this(baseUrl, new NetrcCredentialsProvider(new URI(baseUrl)));
     }
 
     @SuppressWarnings({"UnusedDeclaration"})
     // Called from SAS macros via reflective JavaObj interface
-    public SASConnection(String baseUrl, String apiKey) throws IOException, URISyntaxException
+    public SASConnection(String baseUrl, String apiKey)
     {
-        super(baseUrl, new ApiKeyCredentialsProvider(apiKey));
+        this(baseUrl, new ApiKeyCredentialsProvider(apiKey));
     }
 }
