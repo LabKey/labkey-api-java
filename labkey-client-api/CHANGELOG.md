@@ -1,7 +1,7 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## version x.y.z
-*Released*: ??
+## version 1.5.2
+*Released*: 14 July 2022
 * Add Connection.setUserAgent() and Connection.getUserAgent()
 * Set Java library user agent to "LabKey Java API"
 * Set SAS library user agent to "LabKey SAS API"
