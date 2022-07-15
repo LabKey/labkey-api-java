@@ -1,5 +1,11 @@
 # The LabKey Remote API Library for Java - Change Log
 
+## version 1.5.2
+*Released*: 14 July 2022
+* Add Connection.setUserAgent() and Connection.getUserAgent()
+* Set Java library user agent to "LabKey Java API"
+* Set SAS library user agent to "LabKey SAS API"
+
 ## version 1.5.1
 *Released*: 7 July 2022
 * Fix NPE when saving assay protocol with transform scripts

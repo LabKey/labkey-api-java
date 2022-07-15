@@ -120,6 +120,7 @@ public class Connection
     // The user email when impersonating a user
     private String _impersonateUser;
     private String _impersonatePath;
+    private String _userAgent = "LabKey Java API";
 
     /**
      * Constructs a new Connection object given a base URL and a credentials provider.
@@ -261,6 +262,9 @@ public class Connection
                 throw new RuntimeException(e);
             }
         }
+
+        if (null != _userAgent)
+            builder.setUserAgent(_userAgent);
 
         return builder;
     }
@@ -489,6 +493,16 @@ public class Connection
         _acceptSelfSignedCerts = acceptSelfSignedCerts;
         _client = null;
         return this;
+    }
+
+    public String getUserAgent()
+    {
+        return _userAgent;
+    }
+
+    public void setUserAgent(String userAgent)
+    {
+        _userAgent = userAgent;
     }
 
     /**
