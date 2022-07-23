@@ -1,5 +1,9 @@
 # The LabKey Remote API Library for Java - Change Log
 
+## version 2.0.0
+*Released*: TBD
+* Require Java 17 to build and run
+
 ## version 1.5.2
 *Released*: 14 July 2022
 * Add Connection.setUserAgent() and Connection.getUserAgent()
