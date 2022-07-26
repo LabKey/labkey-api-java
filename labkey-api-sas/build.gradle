@@ -47,7 +47,7 @@ repositories {
 
 group 'org.labkey.api'
 
-version '1.0.0-artifactorySaaS-SNAPSHOT'
+version '1.0.1'
 
 // We add the TeamCity extension here if it doesn't exist because we will use the build
 // number property from TeamCity in the distribution artifact names, if present.
