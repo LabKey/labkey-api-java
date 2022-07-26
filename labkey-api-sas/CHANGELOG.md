@@ -1,5 +1,9 @@
 # The LabKey Remote API Library for SAS - Change Log
 
+## version 1.0.1
+*Released* : 26 July 2022
+* Update labkeyClientApi to v1.5.2
+
 ## version 1.0.0
 *Released* : 5 June 2020
 
