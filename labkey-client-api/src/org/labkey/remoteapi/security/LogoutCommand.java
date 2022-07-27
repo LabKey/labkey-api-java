@@ -17,11 +17,12 @@ package org.labkey.remoteapi.security;
 
 import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
+import org.labkey.remoteapi.PostCommand;
 
 /**
  * Ends the current HTTP session, if any is active.
  */
-public class LogoutCommand extends Command<CommandResponse>
+public class LogoutCommand extends PostCommand<CommandResponse>
 {
     public LogoutCommand()
     {

@@ -37,8 +37,7 @@ public class Filter
         // - java: Filter.java
         // - js: Filter.js
         // - R: makeFilter.R, makeFilter.Rd
-        // - SAS: labkeymakefilter.sas, labkey.org SAS docs
-        // - Python & Perl don't have an filter operator enum
+        // - Python & Perl don't have a filter operator enum
 
         //
         // These operators require a data value
