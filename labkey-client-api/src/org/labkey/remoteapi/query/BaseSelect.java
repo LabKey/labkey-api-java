@@ -26,7 +26,7 @@ import java.io.IOException;
  * Time: 11:06:20 AM
  */
 
-// Common methods implemented by SelectRowsCommand and ExecuteSqlCommand. Makes implementing SAS wrapper classes much easier.
+// Common methods implemented by SelectRowsCommand and ExecuteSqlCommand
 public interface BaseSelect
 {
     int getMaxRows();
