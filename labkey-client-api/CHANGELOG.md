@@ -1,5 +1,9 @@
 # The LabKey Remote API Library for Java - Change Log
 
+## version 2.?.?
+*Released*: TBD
+* Remove SAS macros and wrapper classes
+
 ## version 2.0.0
 *Released*: 25 July 2022
 * Require Java 17 to build and run
