@@ -4,6 +4,7 @@
 *Released*: TBD
 * Remove SAS macros and wrapper classes
 * Add `CreateProjectCommand`
+* Update `LogoutCommand` to use POST
 
 ## version 2.0.0
 *Released*: 25 July 2022

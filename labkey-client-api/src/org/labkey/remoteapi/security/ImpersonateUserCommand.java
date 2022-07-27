@@ -1,13 +1,7 @@
 package org.labkey.remoteapi.security;
 
-import org.json.simple.JSONObject;
-import org.labkey.remoteapi.Command;
-import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.CommandResponse;
-import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.PostCommand;
-
-import java.io.IOException;
 
 /**
  * For site-admins or project-admins only, start impersonating a user.
