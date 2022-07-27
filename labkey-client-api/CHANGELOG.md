@@ -3,7 +3,7 @@
 ## version 2.?.?
 *Released*: TBD
 * Remove SAS macros and wrapper classes
-* Add `CreateProjectCommand`
+* Add `CreateFolderCommand` and `CreateProjectCommand`
 * Update `LogoutCommand` to use POST
 
 ## version 2.0.0
