@@ -15,8 +15,8 @@
  */
 package org.labkey.remoteapi.ms2;
 
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
 import org.json.simple.JSONObject;
 import org.labkey.remoteapi.Command;
 

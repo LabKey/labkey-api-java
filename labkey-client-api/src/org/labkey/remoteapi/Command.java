@@ -18,12 +18,12 @@ package org.labkey.remoteapi;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.Header;
-import org.apache.http.auth.AuthenticationException;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.client.utils.URIBuilder;
+import org.apache.hc.client5.http.auth.AuthenticationException;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.net.URIBuilder;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
@@ -256,12 +256,12 @@ public class Command<ResponseType extends CommandResponse>
 
         public String getStatusText()
         {
-            return _httpResponse.getStatusLine().getReasonPhrase();
+            return _httpResponse.getReasonPhrase();
         }
 
         public int getStatusCode()
         {
-            return _httpResponse.getStatusLine().getStatusCode();
+            return _httpResponse.getCode();
         }
 
         public String getContentType()
@@ -328,7 +328,7 @@ public class Command<ResponseType extends CommandResponse>
         {
             //construct and initialize the HttpUriRequest
             request = getHttpRequest(connection, folderPath);
-            LogFactory.getLog(Command.class).info("Requesting URL: " + request.getURI().toString());
+            LogFactory.getLog(Command.class).info("Requesting URL: " + request.getRequestUri().toString());
 
             //execute the request
             httpResponse = connection.executeRequest(request, getTimeout());
@@ -460,7 +460,7 @@ public class Command<ResponseType extends CommandResponse>
         //(indicating that it has already been escaped)
         String queryString = getQueryString();
         if (null != queryString)
-            uri = new URIBuilder(uri).setQuery(queryString).build();
+            uri = new URIBuilder(uri).setCustomQuery(queryString).build();
 
         return createRequest(uri);
     }

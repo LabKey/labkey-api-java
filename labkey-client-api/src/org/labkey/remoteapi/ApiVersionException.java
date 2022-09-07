@@ -24,14 +24,6 @@ import java.util.Map;
  */
 public class ApiVersionException extends CommandException
 {
-    /**
-     * @deprecated Use {@link #ApiVersionException(String, int, Map, String, String)}
-     */
-    ApiVersionException(String message, int statusCode, Map<String, Object> properties, String responseText)
-    {
-        this(message, statusCode, properties, responseText, null);
-    }
-
     ApiVersionException(String message, int statusCode, Map<String, Object> properties, String responseText, String contentType)
     {
         super(message, statusCode, properties, responseText, contentType);

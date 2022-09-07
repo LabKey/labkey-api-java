@@ -15,24 +15,26 @@
  */
 package org.labkey.remoteapi;
 
-import org.apache.http.HttpHost;
-import org.apache.http.HttpRequest;
-import org.apache.http.auth.AuthenticationException;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.conn.HttpClientConnectionManager;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
-import org.apache.http.cookie.Cookie;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.impl.cookie.BasicClientCookie;
-import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.commons.logging.LogFactory;
+import org.apache.hc.client5.http.auth.AuthenticationException;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.cookie.BasicCookieStore;
+import org.apache.hc.client5.http.cookie.Cookie;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.cookie.BasicClientCookie;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.io.HttpClientConnectionManager;
+import org.apache.hc.client5.http.protocol.HttpClientContext;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
+import org.apache.hc.client5.http.ssl.TrustSelfSignedStrategy;
+import org.apache.hc.core5.http.HttpHost;
+import org.apache.hc.core5.http.HttpRequest;
+import org.apache.hc.core5.ssl.SSLContextBuilder;
 import org.labkey.remoteapi.security.EnsureLoginCommand;
 import org.labkey.remoteapi.security.ImpersonateUserCommand;
 import org.labkey.remoteapi.security.LogoutCommand;
@@ -47,6 +49,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Represents connection information for a particular LabKey Server.
@@ -103,7 +106,29 @@ public class Connection
     public static final String JSESSIONID = "JSESSIONID";
 
     private static final int DEFAULT_TIMEOUT = 60000;    // 60 seconds
-    private static final HttpClientConnectionManager _connectionManager = new PoolingHttpClientConnectionManager();
+    private static final HttpClientConnectionManager CONNECTION_MANAGER = new PoolingHttpClientConnectionManager();
+    private static final HttpClientConnectionManager CONNECTION_MANAGER_SELF_SIGNED = initializeSelfSignedConnectionManager();
+
+    private static HttpClientConnectionManager initializeSelfSignedConnectionManager()
+    {
+        HttpClientConnectionManager connectionManager = null;
+
+        try
+        {
+            SSLContextBuilder sslContextBuilder = new SSLContextBuilder();
+            sslContextBuilder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
+            SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContextBuilder.build());
+            connectionManager = PoolingHttpClientConnectionManagerBuilder.create()
+                .setSSLSocketFactory(sslConnectionSocketFactory)
+                .build();
+        }
+        catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException e)
+        {
+            LogFactory.getLog(Connection.class).warn("Can't initialize a connection manager that uses self-signed certs", e);
+        }
+
+        return connectionManager;
+    }
 
     private final URI _baseURI;
     private final CredentialsProvider _credentialsProvider;
@@ -201,17 +226,6 @@ public class Connection
     }
 
     /**
-     * Returns the base URL for this connection.
-     * @return The base URL.
-     * @deprecated Use {@link #getBaseURI()}
-     */
-    @Deprecated
-    public String getBaseUrl()
-    {
-        return _baseURI.toString();
-    }
-
-    /**
      * Returns the base URI for this connection.
      * @return The target LabKey instance's base URI
      */
@@ -240,28 +254,19 @@ public class Connection
      */
     protected HttpClientBuilder clientBuilder()
     {
+        if (_acceptSelfSignedCerts && null == CONNECTION_MANAGER_SELF_SIGNED)
+            throw new RuntimeException("Can't support self-signed certs; see previously logged warning");
+
+        final HttpClientConnectionManager connectionManager = _acceptSelfSignedCerts ? CONNECTION_MANAGER_SELF_SIGNED : CONNECTION_MANAGER;
+
         HttpClientBuilder builder = HttpClientBuilder.create()
-                .setConnectionManager(_connectionManager)
-                .setDefaultRequestConfig(RequestConfig.custom().setSocketTimeout(getTimeout()).build())
-                .setDefaultCookieStore(_httpClientContext.getCookieStore());
+            .setConnectionManager(connectionManager)
+            .setDefaultRequestConfig(RequestConfig.custom().setResponseTimeout(getTimeout(), TimeUnit.MILLISECONDS).build())
+            .setDefaultCookieStore(_httpClientContext.getCookieStore())
+            .setDefaultCredentialsProvider(_httpClientContext.getCredentialsProvider());
 
         if (_proxyHost != null && _proxyPort != null)
             builder.setProxy(new HttpHost(_proxyHost, _proxyPort));
-
-        if (_acceptSelfSignedCerts)
-        {
-            try
-            {
-                SSLContextBuilder sslContextBuilder = new SSLContextBuilder();
-                sslContextBuilder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
-                SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContextBuilder.build());
-                builder.setSSLSocketFactory(sslConnectionSocketFactory);
-            }
-            catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException e)
-            {
-                throw new RuntimeException(e);
-            }
-        }
 
         if (null != _userAgent)
             builder.setUserAgent(_userAgent);
@@ -277,7 +282,7 @@ public class Connection
     protected void beforeExecute(HttpRequest request)
     {
         if (null == _csrf &&
-                request instanceof HttpRequestBase && !"GET".equals(((HttpRequestBase) request).getMethod()))
+                request instanceof HttpUriRequestBase && !"GET".equals(request.getMethod()))
         {
             // make a request to get a JSESSIONID
             try
@@ -412,13 +417,12 @@ public class Connection
         CloseableHttpClient client = getHttpClient();
 
         // Set the timeout on the request if it is different the client's default
-        if (request instanceof HttpRequestBase && timeout != null && timeout != getTimeout())
+        if (request instanceof HttpUriRequestBase r && timeout != null && timeout != getTimeout())
         {
-            HttpRequestBase r = (HttpRequestBase)request;
             RequestConfig base = r.getConfig();
             if (base == null)
                 base = RequestConfig.DEFAULT;
-            r.setConfig(RequestConfig.copy(base).setSocketTimeout(timeout).build());
+            r.setConfig(RequestConfig.copy(base).setResponseTimeout(timeout, TimeUnit.MILLISECONDS).build());
         }
 
         beforeExecute(request);

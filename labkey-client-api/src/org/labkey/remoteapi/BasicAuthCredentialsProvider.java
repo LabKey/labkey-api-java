@@ -15,14 +15,14 @@
  */
 package org.labkey.remoteapi;
 
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.AuthenticationException;
-import org.apache.http.auth.Credentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.impl.auth.BasicScheme;
-import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.hc.client5.http.auth.AuthScope;
+import org.apache.hc.client5.http.auth.AuthenticationException;
+import org.apache.hc.client5.http.auth.Credentials;
+import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
+import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
+import org.apache.hc.client5.http.impl.auth.BasicScheme;
+import org.apache.hc.client5.http.protocol.HttpClientContext;
 
 import java.net.URI;
 
@@ -43,12 +43,10 @@ public class BasicAuthCredentialsProvider implements CredentialsProvider
     @Override
     public void configureRequest(URI baseURI, HttpUriRequest request, HttpClientContext httpClientContext) throws AuthenticationException
     {
-        AuthScope scope = new AuthScope(baseURI.getHost(), AuthScope.ANY_PORT, AuthScope.ANY_REALM);
         BasicCredentialsProvider provider = new BasicCredentialsProvider();
-        Credentials credentials = new UsernamePasswordCredentials(_email, _password);
+        AuthScope scope = new AuthScope(baseURI.getHost(), -1);
+        Credentials credentials = new UsernamePasswordCredentials(_email, _password.toCharArray());
         provider.setCredentials(scope, credentials);
-
         httpClientContext.setCredentialsProvider(provider);
-        request.addHeader(new BasicScheme().authenticate(credentials, request, httpClientContext));
     }
 }

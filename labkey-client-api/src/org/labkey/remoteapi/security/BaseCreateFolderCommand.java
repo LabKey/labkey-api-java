@@ -1,13 +1,12 @@
 package org.labkey.remoteapi.security;
 
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.message.BasicNameValuePair;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
+import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
+import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.PostCommand;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,16 +75,9 @@ public abstract class BaseCreateFolderCommand<COMMAND extends BaseCreateFolderCo
     @Override
     protected HttpUriRequest createRequest(URI uri)
     {
-        try
-        {
-            // CreateFolderAction and CreateProjectAction are not real API actions, so we POST form data instead of JSON
-            HttpPost request = new HttpPost(uri);
-            request.setEntity(new UrlEncodedFormEntity(getPostData()));
-            return request;
-        }
-        catch (UnsupportedEncodingException e)
-        {
-            throw new RuntimeException(e);
-        }
+        // CreateFolderAction and CreateProjectAction are not real API actions, so we POST form data instead of JSON
+        HttpPost request = new HttpPost(uri);
+        request.setEntity(new UrlEncodedFormEntity(getPostData()));
+        return request;
     }
 }

@@ -1,6 +1,6 @@
 package org.labkey.remoteapi.security;
 
-import org.apache.http.message.BasicNameValuePair;
+import org.apache.hc.core5.http.message.BasicNameValuePair;
 
 import java.util.List;
 
