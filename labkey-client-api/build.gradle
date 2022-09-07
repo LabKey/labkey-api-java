@@ -57,7 +57,7 @@ repositories {
 
 group "org.labkey.api"
 
-version "2.1.0-httpclient"
+version "2.1.0-httpclient-SNAPSHOT"
 
 dependencies {
     api ("com.googlecode.json-simple:json-simple:${jsonSimpleVersion}")
