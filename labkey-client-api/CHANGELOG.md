@@ -1,6 +1,6 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## version 2.?.?
+## version 2.1.0-httpclient-SNAPSHOT (will be 3.0.0)
 *Released*: TBD
 * Migrate internal HTTP handling to use Apache HttpClient 5.1.x
 * Remove deprecated methods:
@@ -13,7 +13,8 @@
   * Filter.getName() (use Filter.getUrlKey())
   * Filter.isDataValueRequired() (use Filter.isValueRequired())
 * Remove SAS macros and wrapper classes
-* Add `CreateFolderCommand` and `CreateProjectCommand`
+* Add `CreateFolderCommand`
+* Add `CreateProjectCommand` (earliest compatible LabKey Server version: 22.3.0)
 * Update `LogoutCommand` to use POST
 
 ## version 2.0.0
