@@ -15,7 +15,6 @@
  */
 package org.labkey.remoteapi;
 
-import org.apache.commons.logging.LogFactory;
 import org.apache.hc.client5.http.auth.AuthenticationException;
 import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
 import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
@@ -107,28 +106,8 @@ public class Connection
 
     private static final int DEFAULT_TIMEOUT = 60000;    // 60 seconds
     private static final HttpClientConnectionManager CONNECTION_MANAGER = new PoolingHttpClientConnectionManager();
-    private static final HttpClientConnectionManager CONNECTION_MANAGER_SELF_SIGNED = initializeSelfSignedConnectionManager();
 
-    private static HttpClientConnectionManager initializeSelfSignedConnectionManager()
-    {
-        HttpClientConnectionManager connectionManager = null;
-
-        try
-        {
-            SSLContextBuilder sslContextBuilder = new SSLContextBuilder();
-            sslContextBuilder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
-            SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContextBuilder.build());
-            connectionManager = PoolingHttpClientConnectionManagerBuilder.create()
-                .setSSLSocketFactory(sslConnectionSocketFactory)
-                .build();
-        }
-        catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException e)
-        {
-            LogFactory.getLog(Connection.class).warn("Can't initialize a connection manager that uses self-signed certs", e);
-        }
-
-        return connectionManager;
-    }
+    private static HttpClientConnectionManager CONNECTION_MANAGER_SELF_SIGNED = null; // Will be initialized if needed
 
     private final URI _baseURI;
     private final CredentialsProvider _credentialsProvider;
@@ -252,12 +231,9 @@ public class Connection
      * Create the HttpClientBuilder based on this Connection's configuration options.
      * @return The builder for an HttpClient
      */
-    protected HttpClientBuilder clientBuilder()
+    private HttpClientBuilder clientBuilder()
     {
-        if (_acceptSelfSignedCerts && null == CONNECTION_MANAGER_SELF_SIGNED)
-            throw new RuntimeException("Can't support self-signed certs; see previously logged warning");
-
-        final HttpClientConnectionManager connectionManager = _acceptSelfSignedCerts ? CONNECTION_MANAGER_SELF_SIGNED : CONNECTION_MANAGER;
+        final HttpClientConnectionManager connectionManager = _acceptSelfSignedCerts ? getSelfSignedConnectionManager() : CONNECTION_MANAGER;
 
         HttpClientBuilder builder = HttpClientBuilder.create()
             .setConnectionManager(connectionManager)
@@ -272,6 +248,33 @@ public class Connection
             builder.setUserAgent(_userAgent);
 
         return builder;
+    }
+
+    private static final Object SELF_SIGNED_LOCK = new Object();
+
+    private HttpClientConnectionManager getSelfSignedConnectionManager()
+    {
+        synchronized (SELF_SIGNED_LOCK)
+        {
+            if (null == CONNECTION_MANAGER_SELF_SIGNED)
+            {
+                try
+                {
+                    SSLContextBuilder sslContextBuilder = new SSLContextBuilder();
+                    sslContextBuilder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
+                    SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContextBuilder.build());
+                    CONNECTION_MANAGER_SELF_SIGNED = PoolingHttpClientConnectionManagerBuilder.create()
+                        .setSSLSocketFactory(sslConnectionSocketFactory)
+                        .build();
+                }
+                catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException e)
+                {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            return CONNECTION_MANAGER_SELF_SIGNED;
+        }
     }
 
     /**
