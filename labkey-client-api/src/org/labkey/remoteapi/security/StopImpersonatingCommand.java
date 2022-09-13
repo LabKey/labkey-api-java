@@ -10,6 +10,6 @@ public class StopImpersonatingCommand extends PostCommand<CommandResponse>
 {
     public StopImpersonatingCommand()
     {
-        super("login", "stopImpersonating.api");
+        super("login", "stopImpersonatingApi.api");
     }
 }
