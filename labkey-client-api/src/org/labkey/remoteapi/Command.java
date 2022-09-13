@@ -15,7 +15,6 @@
  */
 package org.labkey.remoteapi;
 
-import org.apache.commons.codec.EncoderException;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hc.client5.http.auth.AuthenticationException;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
@@ -447,15 +446,13 @@ public class Command<ResponseType extends CommandResponse>
 // TODO        (Dave 11/11/14 -- as far as I can tell the default of the AuthSchemes is to automatically handle challenges
 //        method.setDoAuthentication(true);
 
+        // NOTE: Fairly sure that the "unescaped" comment below is obsolete
+        // TODO: Combine getActionUrl() and addParameters() into a single method
         //construct a URI from the results of the getActionUrl method
         //note that this method returns an unescaped URL, so pass
         //false for the second parameter to escape it
         URI uri = getActionUrl(connection, folderPath);
-
-        // Note: setCustomQuery() encodes the query string
-        String queryString = getQueryString();
-        if (null != queryString)
-            uri = new URIBuilder(uri).setCustomQuery(queryString).build();
+        uri = addParameters(uri);
 
         return createRequest(uri);
     }
@@ -482,7 +479,7 @@ public class Command<ResponseType extends CommandResponse>
      * @return The URL
      * @throws URISyntaxException if the uri constructed from the parameters is malformed
      */
-    protected URI getActionUrl(Connection connection, String folderPath) throws URISyntaxException
+    private URI getActionUrl(Connection connection, String folderPath) throws URISyntaxException
     {
         URI uri = connection.getBaseURI();
 
@@ -515,12 +512,12 @@ public class Command<ResponseType extends CommandResponse>
     }
 
     /**
-     * Returns unencoded query string portion of the URL for this command.
+     * Adds all parameters to the passed URI
      * <p>
-     * @return The query string
-     * @throws CommandException Thrown if there is a problem encoding the query string parameter names or values
+     * @return The URI with parameters added
+     * @throws CommandException Thrown if there is a problem building the URI
      */
-    protected String getQueryString() throws CommandException
+    protected URI addParameters(URI uri) throws CommandException, URISyntaxException
     {
         Map<String, Object> params = getParameters();
 
@@ -528,45 +525,42 @@ public class Command<ResponseType extends CommandResponse>
         if (getRequiredVersion() > 0)
             params.put(CommonParameters.apiVersion.name(), getRequiredVersion());
 
-        StringBuilder qstring = new StringBuilder();
-        try
+        if (params.isEmpty())
+            return uri;
+
+        URIBuilder builder = new URIBuilder(uri);
+
+        for (String name : params.keySet())
         {
-            for (String name : params.keySet())
+            Object value = params.get(name);
+            if (value instanceof Collection<?> col)
             {
-                Object value = params.get(name);
-                if (value instanceof Collection<?> col)
+                for (Object o : col)
                 {
-                    for (Object o : col)
-                    {
-                        appendParameter(qstring, name, o);
-                    }
-                }
-                else
-                {
-                    appendParameter(qstring, name, value);
+                    addParameter(builder, name, o);
                 }
             }
+            else
+            {
+                addParameter(builder, name, value);
+            }
         }
-        catch(EncoderException e)
+
+        try
+        {
+            return builder.build();
+        }
+        catch (URISyntaxException e)
         {
             throw new CommandException(e.getMessage());
         }
-
-        return qstring.length() > 0 ? qstring.toString() : null;
     }
 
-    private void appendParameter(StringBuilder qstring, String name, Object value)
-            throws EncoderException
+    private void addParameter(URIBuilder builder, String name, Object value)
     {
         String strValue = null == value ? null : getParamValueAsString(value, name);
         if (null != strValue)
-        {
-            if (qstring.length() > 0)
-                qstring.append('&');
-            qstring.append(name);
-            qstring.append('=');
-            qstring.append(strValue);
-        }
+            builder.addParameter(name, strValue);
     }
 
     /**
