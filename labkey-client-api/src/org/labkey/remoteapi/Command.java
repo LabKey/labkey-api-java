@@ -16,7 +16,6 @@
 package org.labkey.remoteapi;
 
 import org.apache.commons.codec.EncoderException;
-import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hc.client5.http.auth.AuthenticationException;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
@@ -328,7 +327,7 @@ public class Command<ResponseType extends CommandResponse>
         {
             //construct and initialize the HttpUriRequest
             request = getHttpRequest(connection, folderPath);
-            LogFactory.getLog(Command.class).info("Requesting URL: " + request.getRequestUri().toString());
+            LogFactory.getLog(Command.class).info("Requesting URL: " + request.getRequestUri());
 
             //execute the request
             httpResponse = connection.executeRequest(request, getTimeout());
@@ -453,11 +452,7 @@ public class Command<ResponseType extends CommandResponse>
         //false for the second parameter to escape it
         URI uri = getActionUrl(connection, folderPath);
 
-        //the query string values will need to be escaped as they are
-        //put into the query string, and we don't want to re-escape the
-        //entire thing, as the %, & and = characters will be escaped again
-        //so add this separately as a raw value 
-        //(indicating that it has already been escaped)
+        // Note: setCustomQuery() encodes the query string
         String queryString = getQueryString();
         if (null != queryString)
             uri = new URIBuilder(uri).setCustomQuery(queryString).build();
@@ -520,9 +515,8 @@ public class Command<ResponseType extends CommandResponse>
     }
 
     /**
-     * Returns the query string portion of the URL for this command.
+     * Returns unencoded query string portion of the URL for this command.
      * <p>
-     * The parameters in the query string should be encoded to avoid parsing errors on the server.
      * @return The query string
      * @throws CommandException Thrown if there is a problem encoding the query string parameter names or values
      */
@@ -535,22 +529,21 @@ public class Command<ResponseType extends CommandResponse>
             params.put(CommonParameters.apiVersion.name(), getRequiredVersion());
 
         StringBuilder qstring = new StringBuilder();
-        URLCodec urlCodec = new URLCodec();
         try
         {
             for (String name : params.keySet())
             {
                 Object value = params.get(name);
-                if (value instanceof Collection)
+                if (value instanceof Collection<?> col)
                 {
-                    for (Object o : ((Collection) value))
+                    for (Object o : col)
                     {
-                        appendParameter(qstring, urlCodec, name, o);
+                        appendParameter(qstring, name, o);
                     }
                 }
                 else
                 {
-                    appendParameter(qstring, urlCodec, name, value);
+                    appendParameter(qstring, name, value);
                 }
             }
         }
@@ -562,17 +555,17 @@ public class Command<ResponseType extends CommandResponse>
         return qstring.length() > 0 ? qstring.toString() : null;
     }
 
-    private void appendParameter(StringBuilder qstring, URLCodec urlCodec, String name, Object value)
+    private void appendParameter(StringBuilder qstring, String name, Object value)
             throws EncoderException
     {
         String strValue = null == value ? null : getParamValueAsString(value, name);
-        if(null != strValue)
+        if (null != strValue)
         {
             if (qstring.length() > 0)
                 qstring.append('&');
-            qstring.append(urlCodec.encode(name));
+            qstring.append(name);
             qstring.append('=');
-            qstring.append(urlCodec.encode(strValue));
+            qstring.append(strValue);
         }
     }
 
