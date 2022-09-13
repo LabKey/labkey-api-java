@@ -29,10 +29,14 @@ import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
 import org.apache.hc.client5.http.io.HttpClientConnectionManager;
 import org.apache.hc.client5.http.protocol.HttpClientContext;
+import org.apache.hc.client5.http.protocol.RedirectStrategy;
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
 import org.apache.hc.client5.http.ssl.TrustSelfSignedStrategy;
+import org.apache.hc.core5.http.HttpException;
 import org.apache.hc.core5.http.HttpHost;
 import org.apache.hc.core5.http.HttpRequest;
+import org.apache.hc.core5.http.HttpResponse;
+import org.apache.hc.core5.http.protocol.HttpContext;
 import org.apache.hc.core5.ssl.SSLContextBuilder;
 import org.labkey.remoteapi.security.EnsureLoginCommand;
 import org.labkey.remoteapi.security.ImpersonateUserCommand;
@@ -239,7 +243,18 @@ public class Connection
             .setConnectionManager(connectionManager)
             .setDefaultRequestConfig(RequestConfig.custom().setResponseTimeout(getTimeout(), TimeUnit.MILLISECONDS).build())
             .setDefaultCookieStore(_httpClientContext.getCookieStore())
-            .setDefaultCredentialsProvider(_httpClientContext.getCredentialsProvider());
+            .setDefaultCredentialsProvider(_httpClientContext.getCredentialsProvider())
+            .setRedirectStrategy(new RedirectStrategy() {
+                @Override
+                public boolean isRedirected(HttpRequest request, HttpResponse response, HttpContext context) throws HttpException {
+                    return false;
+                }
+
+                @Override
+                public URI getLocationURI(HttpRequest request, HttpResponse response, HttpContext context) throws HttpException {
+                    return null;
+                }
+            });
 
         if (_proxyHost != null && _proxyPort != null)
             builder.setProxy(new HttpHost(_proxyHost, _proxyPort));
