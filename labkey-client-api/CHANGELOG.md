@@ -1,8 +1,10 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## version 2.1.0-httpclient-SNAPSHOT (will be 3.0.0)
-*Released*: TBD
+## version 3.0.0
+*Released*: 14 September 2022
 * Migrate internal HTTP handling to use Apache HttpClient 5.1.x
+* Switch `StopImpersonatingCommand` to disable redirects (mimicking previous behavior)
+* Add `Connection.stopImpersonating()` and deprecate `stopImpersonate()`
 * Remove deprecated methods:
   * ApiVersionException() (use constructor that takes contentType)
   * CommandException() (use constructor that takes contentType)
