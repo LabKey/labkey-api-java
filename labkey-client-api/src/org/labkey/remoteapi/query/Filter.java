@@ -85,8 +85,6 @@ public class Filter
         //
 
         ISBLANK("Is Blank", "isblank", "MISSING", false),
-        @Deprecated // Use NONBLANK instead... that name matches CompareType operator
-        NON_BLANK("Is Not Blank", "isnonblank", "NOT_MISSING", false),
         NONBLANK("Is Not Blank", "isnonblank", "NOT_MISSING", false),
 
         MV_INDICATOR("Has Missing Value Indicator", "hasmvvalue", "MV_INDICATOR", false),
@@ -158,24 +156,6 @@ public class Filter
         public static Operator getOperatorFromUrlKey(String urlKey)
         {
             return _urlKeyToOperator.get(urlKey);
-        }
-
-        @Deprecated // Use getDisplayValue()... this method is for backward compatibility
-        public String getCaption()
-        {
-            return _displayValue;
-        }
-
-        @Deprecated // Use getUrlKey()... this method is for backward compatibility
-        public String getName()
-        {
-            return _urlKey;
-        }
-
-        @Deprecated // Use isDataValueRequired()... this method is for backward compatibility
-        public boolean isValueRequired()
-        {
-            return _dataValueRequired;
         }
     }
 

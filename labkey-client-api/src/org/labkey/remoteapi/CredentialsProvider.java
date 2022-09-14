@@ -15,26 +15,16 @@
  */
 package org.labkey.remoteapi;
 
-import org.apache.http.auth.AuthenticationException;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.hc.client5.http.auth.AuthenticationException;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
+import org.apache.hc.client5.http.protocol.HttpClientContext;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 
 /**
  * Created by adam on 4/15/2016.
  */
 public interface CredentialsProvider
 {
-    /**
-     * @deprecated Use {@link #configureRequest(URI, HttpUriRequest, HttpClientContext)}
-     */
-    @Deprecated
-    default void configureRequest(String baseUrl, HttpUriRequest request, HttpClientContext httpClientContext) throws AuthenticationException, URISyntaxException
-    {
-        configureRequest(new URI(baseUrl), request, httpClientContext);
-    }
-
     void configureRequest(URI baseURI, HttpUriRequest request, HttpClientContext httpClientContext) throws AuthenticationException;
 }

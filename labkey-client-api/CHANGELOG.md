@@ -1,9 +1,22 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## version 2.?.?
-*Released*: TBD
+## version 3.0.0
+*Released*: 14 September 2022
+* Migrate internal HTTP handling to use Apache HttpClient 5.1.x
+* Switch `StopImpersonatingCommand` to disable redirects (mimicking previous behavior)
+* Add `Connection.stopImpersonating()` and deprecate `stopImpersonate()`
+* Remove deprecated methods:
+  * ApiVersionException() (use constructor that takes contentType)
+  * CommandException() (use constructor that takes contentType)
+  * Connection.getBaseUrl() (use Connection.getBaseURI())
+  * CredentialsProvider.configureRequest() (use variant that takes a URI)
+  * Filter.NON_BLANK (use Filter.NONBLANK)
+  * Filter.getCaption() (use Filter.getDisplayValue())
+  * Filter.getName() (use Filter.getUrlKey())
+  * Filter.isDataValueRequired() (use Filter.isValueRequired())
 * Remove SAS macros and wrapper classes
-* Add `CreateFolderCommand` and `CreateProjectCommand`
+* Add `CreateFolderCommand`
+* Add `CreateProjectCommand` (earliest compatible LabKey Server version: 22.3.0)
 * Update `LogoutCommand` to use POST
 
 ## version 2.0.0

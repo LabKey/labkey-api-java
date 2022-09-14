@@ -202,9 +202,10 @@ public class SelectRowsCommand extends BaseQueryCommand<SelectRowsResponse> impl
         return new SelectRowsResponse(text, status, contentType, json, this.copy());
     }
 
+    @Override
     public Map<String, Object> getParameters()
     {
-        Map<String,Object> params = new HashMap<String,Object>();
+        Map<String,Object> params = new HashMap<>();
         params.put("schemaName", getSchemaName());
         params.put("query.queryName", getQueryName());
         if(null != getViewName())

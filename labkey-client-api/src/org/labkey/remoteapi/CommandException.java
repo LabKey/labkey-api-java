@@ -15,7 +15,7 @@
  */
 package org.labkey.remoteapi;
 
-import org.apache.http.impl.EnglishReasonPhraseCatalog;
+import org.apache.hc.core5.http.impl.EnglishReasonPhraseCatalog;
 
 import java.util.Locale;
 import java.util.Map;
@@ -49,18 +49,6 @@ public class CommandException extends Exception
     public CommandException(String message)
     {
         this(message, 0, null, null, null);
-    }
-
-    /**
-     * @param message The message text (should not be null).
-     * @param statusCode The HTTP status code.
-     * @param properties The exception property map (may be null)
-     * @param responseText The full response text (may be null)
-     * @deprecated Use {@link #CommandException(String, int, Map, String, String)}
-     */
-    public CommandException(String message, int statusCode, Map<String, Object> properties, String responseText)
-    {
-        this(message, statusCode, properties, responseText, null);
     }
 
     /**
