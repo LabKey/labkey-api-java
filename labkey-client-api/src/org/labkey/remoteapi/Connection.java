@@ -351,7 +351,7 @@ public class Connection
      * project in which they have admin permission.
      *
      * @param email The user to impersonate
-     * @see Connection#stopImpersonate()
+     * @see Connection#stopImpersonating()
      * @return this connection
      * @throws IOException Thrown if there was an IO problem.
      * @throws CommandException if the server returned a non-success status code.
@@ -371,7 +371,7 @@ public class Connection
      *
      * @param email The user to impersonate
      * @param projectPath The project path within which the user will be impersonated.
-     * @see Connection#stopImpersonate()
+     * @see Connection#stopImpersonating()
      * @return this connection
      * @throws IOException Thrown if there was an IO problem.
      * @throws CommandException if the server returned a non-success status code.
@@ -395,15 +395,14 @@ public class Connection
      * @throws IOException Thrown if there was an IO problem.
      * @throws CommandException if the server returned a non-success status code.
      */
-    public Connection stopImpersonate() throws IOException, CommandException
+    public Connection stopImpersonating() throws IOException, CommandException
     {
         if (_impersonateUser != null)
         {
             CommandResponse resp = new StopImpersonatingCommand().execute(this, _impersonatePath);
-            resp = new StopImpersonatingCommand().execute(this, _impersonatePath);
 
-            // on success, a 200 response is returned
-            if (resp.getStatusCode() != 200)
+            // on success, a 302 response is returned (this command disables redirects)
+            if (resp.getStatusCode() != 302)
                 throw new CommandException("Failed to stop impersonating");
 
             _impersonateUser = null;
@@ -411,6 +410,12 @@ public class Connection
         }
 
         return this;
+    }
+
+    @Deprecated // Will be removed soon. Use stopImpersonating() instead.
+    public Connection stopImpersonate() throws IOException, CommandException
+    {
+        return stopImpersonating();
     }
 
     CloseableHttpResponse executeRequest(HttpUriRequest request, Integer timeout) throws IOException, URISyntaxException, AuthenticationException
