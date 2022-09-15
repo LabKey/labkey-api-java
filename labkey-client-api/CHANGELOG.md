@@ -1,5 +1,10 @@
 # The LabKey Remote API Library for Java - Change Log
 
+## version TBD
+*Released*: TBD September 2022
+* Add support for creating Freezer Manager freezer hierarchies via StorageController APIs (earliest compatible LabKey Server version: 22.10.0)
+  * CreateCommand, UpdateCommand, DeleteCommand
+
 ## version 3.0.0
 *Released*: 14 September 2022
 * Migrate internal HTTP handling to use Apache HttpClient 5.1.x
