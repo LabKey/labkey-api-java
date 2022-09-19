@@ -2,14 +2,14 @@ package org.labkey.remoteapi.storage;
 
 /**
  * <p>
- * Create a new LabKey Freezer Manager storage item which can then be combined to create a freezer hierarchy.
- * Freezer hierarchies consist of a top level freezer which can have any combination of child non-terminal storage
+ * Create a new LabKey Freezer Manager storage item that can be used in the creation of a freezer hierarchy.
+ * Freezer hierarchies consist of a top level Freezer, which can have any combination of child non-terminal storage
  * locations (i.e. those that do not directly contain samples but can contain other units) and terminal storage
- * locations (i.e. units in the freezer which directly contain samples and cannot contain other units).
+ * locations (i.e. units in the freezer that directly contain samples and cannot contain other units).
  * See the <a href="https://www.labkey.org/SampleManagerHelp/wiki-page.view?name=createFreezer">LabKey Documentation</a>
  * for further details.
  * </p><p>
- * A freezer may also have a parent hierarchy which defines the physical location of the freezer.
+ * A freezer may also have a parent hierarchy, which defines the physical location of the freezer.
  * See the <a href="https://www.labkey.org/SampleManagerHelp/wiki-page.view?name=freezerLocation">LabKey Documentation</a>
  * for further details.
  * </p><p>

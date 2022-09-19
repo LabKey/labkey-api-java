@@ -5,14 +5,18 @@ import org.json.simple.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The storage properties object used for the storage {@link CreateCommand}, {@link UpdateCommand}, and {@link DeleteCommand}.
+ * This object will define the type of the item along with the specific properties for that storage item.
+ */
 public class StorageRow
 {
-    private String _type;
+    private StorageItemTypes _type;
     private Map<String, Object> _props = new HashMap<>();
 
     public String getType()
     {
-        return _type;
+        return _type.getTitle();
     }
 
     /**
@@ -22,7 +26,7 @@ public class StorageRow
      * constructor.
      * @param type Type value for the given storage item/row
      */
-    public void setType(String type)
+    public void setType(StorageItemTypes type)
     {
         _type = type;
     }
