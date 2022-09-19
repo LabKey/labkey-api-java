@@ -1,22 +1,21 @@
 package org.labkey.remoteapi.storage;
 
 /**
- * <p>
  * Create a new LabKey Freezer Manager storage item that can be used in the creation of a freezer hierarchy.
  * Freezer hierarchies consist of a top level Freezer, which can have any combination of child non-terminal storage
  * locations (i.e. those that do not directly contain samples but can contain other units) and terminal storage
  * locations (i.e. units in the freezer that directly contain samples and cannot contain other units).
  * See the <a href="https://www.labkey.org/SampleManagerHelp/wiki-page.view?name=createFreezer">LabKey Documentation</a>
  * for further details.
- * </p><p>
+ * <p>
  * A freezer may also have a parent hierarchy, which defines the physical location of the freezer.
  * See the <a href="https://www.labkey.org/SampleManagerHelp/wiki-page.view?name=freezerLocation">LabKey Documentation</a>
  * for further details.
- * </p><p>
+ * <p>
  * Storage items can be of the following types: Physical Location, Freezer, Shelf, Rack, Canister,
  * Storage Unit Type, or Terminal Storage Location. One of these values must be set as the "type" for
  * the {@link StorageRow} provided to the CreateCommand constructor.
- * </p><p>
+ * <p>
  * The additional properties for the storage item being created can be provided as the "props" for the
  * {@link StorageRow}. The specific set of props will differ for each storage item type:
  * <ul>
@@ -26,7 +25,7 @@ package org.labkey.remoteapi.storage;
  *     <li>Storage Unit Type: name, description, unitType (one of the following: "Box", "Plate", "Bag", "Cane", "Tube Rack"), rows, cols (required if positionFormat is not "Num"), positionFormat (one of the following: "Num", "AlphaNum", "AlphaAlpha", "NumAlpha", "NumNum"), positionOrder (one of the following: "RowColumn", "ColumnRow")</li>
  *     <li>Terminal Storage Location: name, description, typeId (rowId of the Storage Unit Type), locationId (rowId of the parent freezer or Shelf/Rack/Canister)</li>
  * </ul>
- * </p>
+ * <p>
  * Examples:
  * <pre><code>
  *  // May need to add CONTEXT_PATH for dev instances

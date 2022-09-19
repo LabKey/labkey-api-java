@@ -1,13 +1,12 @@
 package org.labkey.remoteapi.storage;
 
 /**
- * <p>
  * Update an existing LabKey Freezer Manager storage item to change its properties or location within the freezer hierarchy.
- * </p><p>
+ * <p>
  * Storage items can be of the following types: Physical Location, Freezer, Shelf, Rack, Canister,
  * Storage Unit Type, or Terminal Storage Location. One of these values must be set as the "type" for
  * the {@link StorageRow} provided to the UpdateCommand constructor.
- * </p><p>
+ * <p>
  * The additional properties for the storage item being updated can be provided as the "props" for the
  * {@link StorageRow}. The specific set of props will differ for each storage item type:
  * <ul>
@@ -17,10 +16,10 @@ package org.labkey.remoteapi.storage;
  *     <li>Storage Unit Type: name, description, unitType (one of the following: "Box", "Plate", "Bag", "Cane", "Tube Rack"), rows, cols (required if positionFormat is not "Num"), positionFormat (one of the following: "Num", "AlphaNum", "AlphaAlpha", "NumAlpha", "NumNum"), positionOrder (one of the following: "RowColumn", "ColumnRow")</li>
  *     <li>Terminal Storage Location: name, description, typeId (rowId of the Storage Unit Type), locationId (rowId of the parent freezer or Shelf/Rack/Canister)</li>
  * </ul>
- * </p><p>
+ * <p>
  * For the UpdateCommand, the "rowId" primary key value is required to be set within the {@link StorageRow}.
  * This can be set directly in the "props" map or via the {@link StorageRow} setRowId() method.
- * </p>
+ * <p>
  * Examples:
  * <pre><code>
  *  // May need to add CONTEXT_PATH for dev instances

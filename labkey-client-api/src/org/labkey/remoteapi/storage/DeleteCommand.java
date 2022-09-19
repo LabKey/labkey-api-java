@@ -1,18 +1,17 @@
 package org.labkey.remoteapi.storage;
 
 /**
- * <p>
  * Delete an existing LabKey Freezer Manager storage item. Note that deletion of freezers or locations within the
  * freezer hierarchy will cascade the delete down the hierarchy to remove child locations and terminal storage locations.
  * Samples in the deleted freezer location(s) will not be deleted but will be removed from storage.
- * </p><p>
+ * <p>
  * Storage items can be of the following types: Physical Location, Freezer, Shelf, Rack, Canister,
  * Storage Unit Type, or Terminal Storage Location. One of these values must be set as the "type" for
  * the {@link StorageRow} provided to the DeleteCommand constructor.
- * </p><p>
+ * <p>
  * For the DeleteCommand, the "rowId" primary key value is required to be set within the {@link StorageRow}.
  * This can be set directly in the "props" map or via the {@link StorageRow} setRowId() method.
- * </p>
+ * <p>
  * Examples:
  * <pre><code>
  *  // May need to add CONTEXT_PATH for dev instances
