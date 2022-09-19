@@ -278,7 +278,7 @@ public class Connection
     }
 
     /**
-     * If first request, prime the Connection by forcing authentication and populating CSRF & session info.
+     * If first request, prime the Connection by forcing authentication and populating CSRF and session info.
      * @param request HttpRequest that is about to be executed
      */
     protected void beforeExecute(HttpRequest request)
