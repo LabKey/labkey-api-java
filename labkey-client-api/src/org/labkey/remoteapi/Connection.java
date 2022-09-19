@@ -38,7 +38,6 @@ import org.labkey.remoteapi.security.EnsureLoginCommand;
 import org.labkey.remoteapi.security.ImpersonateUserCommand;
 import org.labkey.remoteapi.security.LogoutCommand;
 import org.labkey.remoteapi.security.StopImpersonatingCommand;
-import org.labkey.remoteapi.security.WhoAmICommand;
 
 import java.io.IOException;
 import java.net.URI;
@@ -120,6 +119,7 @@ public class Connection
     private Integer _proxyPort;
     private String _csrf;
     private String _sessionId;
+    private boolean _firstRequest = true;
 
     // The user email when impersonating a user
     private String _impersonateUser;
@@ -278,19 +278,19 @@ public class Connection
     }
 
     /**
-     * If necessary, prime the Connection for non-GET requests.
-     * Executes a dummy command to trigger authentication and populate CSRF and session info.
+     * If first request, prime the Connection by forcing authentication and populating CSRF & session info.
      * @param request HttpRequest that is about to be executed
      */
     protected void beforeExecute(HttpRequest request)
     {
-        if (null == _csrf &&
-                request instanceof HttpUriRequestBase && !"GET".equals(request.getMethod()))
+        if (_firstRequest)
         {
-            // make a request to get a JSESSIONID
+            // Make an initial request to ensure login (especially important when invoking @RequiresNoPermission actions),
+            // get a JSESSIONID, and get a CSRF token
             try
             {
-                new WhoAmICommand().execute(this, "/");
+                _firstRequest = false;
+                ensureAuthenticated();
             }
             catch (Exception ignored)
             {
@@ -322,6 +322,7 @@ public class Connection
      * @throws IOException if there is an IO problem executing the command to ensure login
      * @throws CommandException if the server returned a non-success status code.
      */
+    // TODO: For next major release, stop returning CloseableHttpClient?
     public CloseableHttpClient ensureAuthenticated() throws IOException, CommandException
     {
         EnsureLoginCommand command = new EnsureLoginCommand();
@@ -335,6 +336,7 @@ public class Connection
      * @throws IOException if there is an IO problem executing the command to ensure logout
      * @throws CommandException if the server returned a non-success status code.
      */
+    // TODO: For next major release, stop returning CloseableHttpClient?
     public CloseableHttpClient logout() throws IOException, CommandException
     {
         LogoutCommand command = new LogoutCommand();
@@ -492,7 +494,7 @@ public class Connection
     }
 
     /**
-     * Sets the accept self-signed certificates option. Set to false
+     * Sets the accept-self-signed certificates option. Set to false
      * to disable automatic acceptance of self-signed SSL certificates
      * when using HTTPS.
      * NOTE: Changing this setting will force the underlying http client to be recreated.
@@ -502,7 +504,6 @@ public class Connection
      */
     public Connection setAcceptSelfSignedCerts(boolean acceptSelfSignedCerts)
     {
-        // Handled in getHttpClient using 4.3.x approach documented here http://stackoverflow.com/questions/19517538/ignoring-ssl-certificate-in-apache-httpclient-4-3
         _acceptSelfSignedCerts = acceptSelfSignedCerts;
         _client = null;
         return this;
