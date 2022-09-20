@@ -1,12 +1,12 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## version TBD
-*Released*: TBD September 2022
+## version 3.1.0
+*Released*: 20 September 2022
+* Add support for creating Freezer Manager freezer hierarchies via StorageController APIs (earliest compatible LabKey Server version: 22.10.0)
+  * CreateCommand, UpdateCommand, DeleteCommand
 * Restore proactive authentication behavior. A change in v3.0.0 caused some invocations of `@NoPermissionsRequired`
   actions (e.g., `GetContainersCommand`) to use guest credentials instead of the configured user credentials. The library
   now always authenticates using the configured credentials, matching pre-v3.0.0 behavior.
-* Add support for creating Freezer Manager freezer hierarchies via StorageController APIs (earliest compatible LabKey Server version: 22.10.0)
-  * CreateCommand, UpdateCommand, DeleteCommand
 
 ## version 3.0.0
 *Released*: 14 September 2022
