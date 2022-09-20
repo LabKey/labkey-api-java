@@ -97,7 +97,7 @@ public class SelectRowsResponse extends RowsResponse
      */
     public Rowset getRowset()
     {
-        return new RowsResponseRowset((List<Map<String,Object>>)getProperty("rows"));
+        return new RowsResponseRowset(getProperty("rows"));
     }
 
     /**
@@ -113,7 +113,7 @@ public class SelectRowsResponse extends RowsResponse
      * </ul>
      * @return The meta-data section of the response, or null if no section was returned by the server.
      */
-    public Map<String,Object> getMetaData()
+    public Map<String, Object> getMetaData()
     {
         return getProperty("metaData");
     }
@@ -124,13 +124,13 @@ public class SelectRowsResponse extends RowsResponse
      * @param columnName The requested column name.
      * @return The meta-data for that column or null if that column was not found.
      */
-    public Map<String,Object> getMetaData(String columnName)
+    public Map<String, Object> getMetaData(String columnName)
     {
         assert null != columnName;
-        List<Map<String,Object>> metaData = getProperty("metaData.fields");
+        List<Map<String, Object>> metaData = getProperty("metaData.fields");
         if(null == metaData)
             return null;
-        for(Map<String,Object> entry : metaData)
+        for(Map<String, Object> entry : metaData)
         {
             if(columnName.equalsIgnoreCase((String)entry.get("name")))
                 return entry;
@@ -145,7 +145,7 @@ public class SelectRowsResponse extends RowsResponse
      */
     public ColumnDataType getColumnDataType(String columnName)
     {
-        Map<String,Object> meta = getMetaData(columnName);
+        Map<String, Object> meta = getMetaData(columnName);
         if(null == meta)
             return null;
         String type = (String)meta.get("type");
@@ -181,7 +181,7 @@ public class SelectRowsResponse extends RowsResponse
      * </ul> 
      * @return The column model, or null if none was returned by the server.
      */
-    public List<Map<String,Object>> getColumnModel()
+    public List<Map<String, Object>> getColumnModel()
     {
         return getProperty("columnModel");
     }
@@ -192,9 +192,8 @@ public class SelectRowsResponse extends RowsResponse
      * @param columnName The column name.
      * @return The properties for the specified column, or null if the column was not found.
      */
-    public Map<String,Object> getColumnModel(String columnName)
+    public Map<String, Object> getColumnModel(String columnName)
     {
         return findObject(getColumnModel(), "dataIndex", columnName);
     }
-
 }

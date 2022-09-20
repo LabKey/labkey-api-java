@@ -49,7 +49,7 @@ import java.util.Map;
  *     Connection cn = new Connection("https://www.labkey.org");
  *     SelectRowsCommand cmd = new SelectRowsCommand("study", "Physical Exam");
  *     SelectRowsResponse response = cmd.execute(cn, "Home/Study/demo");
- *     for(Map&lt;String,Object&gt; row : response.getRows())
+ *     for(Map&lt;String, Object&gt; row : response.getRows())
  *     {
  *         System.out.println(row.get("ParticipantId") + " weighs " + row.get("APXwtkg"));
  *     }
@@ -61,7 +61,7 @@ public class SelectRowsCommand extends BaseQueryCommand<SelectRowsResponse> impl
     private String _schemaName;
     private String _queryName;
     private String _viewName;
-    private List<String> _columns = new ArrayList<String>();
+    private List<String> _columns = new ArrayList<>();
 
     /**
      * Constructs a new SelectRowsCommand for the given schema
@@ -197,6 +197,7 @@ public class SelectRowsCommand extends BaseQueryCommand<SelectRowsResponse> impl
      * @param json The parsed JSONObject (or null if JSON was not returned).
      * @return A SelectRowsResponse object.
      */
+    @Override
     protected SelectRowsResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
         return new SelectRowsResponse(text, status, contentType, json, this.copy());
@@ -205,7 +206,7 @@ public class SelectRowsCommand extends BaseQueryCommand<SelectRowsResponse> impl
     @Override
     public Map<String, Object> getParameters()
     {
-        Map<String,Object> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         params.put("schemaName", getSchemaName());
         params.put("query.queryName", getQueryName());
         if(null != getViewName())

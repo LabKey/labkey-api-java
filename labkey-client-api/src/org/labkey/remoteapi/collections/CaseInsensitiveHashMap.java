@@ -79,7 +79,7 @@ public class CaseInsensitiveHashMap<V> extends HashMap<String, V>
         super.remove(correctCaseKey);
         //Now remove all the cached casings.
         //Need to do this in two loops to avoid modification while iterating
-        ArrayList<String> casings = new ArrayList<String>();
+        ArrayList<String> casings = new ArrayList<>();
         for (String s : caseMap.keySet())
         {
             if (s.equalsIgnoreCase(key))

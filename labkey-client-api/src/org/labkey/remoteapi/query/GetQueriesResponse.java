@@ -15,13 +15,13 @@
  */
 package org.labkey.remoteapi.query;
 
-import org.labkey.remoteapi.CommandResponse;
 import org.json.simple.JSONObject;
+import org.labkey.remoteapi.CommandResponse;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Collections;
-import java.util.ArrayList;
 
 /*
 * User: Dave
@@ -54,12 +54,12 @@ public class GetQueriesResponse extends CommandResponse
      */
     public List<String> getQueryNames()
     {
-        List<Map<String,Object>> queries = getProperty("queries");
+        List<Map<String, Object>> queries = getProperty("queries");
         if(null == queries)
             return Collections.emptyList();
 
-        ArrayList<String> queryNames = new ArrayList<String>();
-        for(Map<String,Object> query : queries)
+        ArrayList<String> queryNames = new ArrayList<>();
+        for(Map<String, Object> query : queries)
         {
             if(query.containsKey("name"))
                 queryNames.add((String)query.get("name"));
@@ -80,11 +80,11 @@ public class GetQueriesResponse extends CommandResponse
 
     private Map<String, Object> getQuery(String queryName)
     {
-        List<Map<String,Object>> queries = getProperty("queries");
+        List<Map<String, Object>> queries = getProperty("queries");
         if(null == queries)
             return null;
 
-        for(Map<String,Object> query : queries)
+        for(Map<String, Object> query : queries)
         {
             if(queryName.equals(query.get("name")))
             {
@@ -110,11 +110,11 @@ public class GetQueriesResponse extends CommandResponse
         Map<String, Object> query = getQuery(queryName);
         if (query != null && query.containsKey("columns"))
         {
-            List<String> colNames = new ArrayList<String>();
-            List<Map<String,Object>> cols = (List<Map<String,Object>>)query.get("columns");
+            List<String> colNames = new ArrayList<>();
+            List<Map<String, Object>> cols = (List<Map<String, Object>>)query.get("columns");
             if(null != cols)
             {
-                for(Map<String,Object> col : cols)
+                for(Map<String, Object> col : cols)
                     colNames.add((String)col.get("name"));
             }
 

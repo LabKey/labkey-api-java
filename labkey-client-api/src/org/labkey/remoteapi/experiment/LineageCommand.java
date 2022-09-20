@@ -141,6 +141,7 @@ public class LineageCommand extends Command<LineageResponse>
         }
     }
 
+    @Override
     protected LineageResponse createResponse(String text, int statusCode, String contentType, JSONObject json)
     {
         return new LineageResponse(text, statusCode, contentType, json, this);
@@ -148,7 +149,7 @@ public class LineageCommand extends Command<LineageResponse>
 
     public Map<String, Object> getParameters()
     {
-        Map<String,Object> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         params.put("lsids", _lsids);
         if (null != _parents)
             params.put("parents", _parents);

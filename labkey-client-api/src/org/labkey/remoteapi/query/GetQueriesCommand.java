@@ -15,11 +15,11 @@
  */
 package org.labkey.remoteapi.query;
 
-import org.labkey.remoteapi.Command;
 import org.json.simple.JSONObject;
+import org.labkey.remoteapi.Command;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /*
 * User: Dave
@@ -94,11 +94,12 @@ public class GetQueriesCommand extends Command<GetQueriesResponse>
         _includeColumns = includeColumns;
     }
 
+    @Override
     public Map<String, Object> getParameters()
     {
         assert null != getSchemaName() : "You must set the schema name before executing the GetQueriesCommand!";
 
-        Map<String,Object> params = new HashMap<String,Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("schemaName", getSchemaName());
 
         if(!isIncludeColumns())
@@ -109,6 +110,7 @@ public class GetQueriesCommand extends Command<GetQueriesResponse>
         return params;
     }
 
+    @Override
     protected GetQueriesResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
         return new GetQueriesResponse(text, status, contentType, json, this.copy());

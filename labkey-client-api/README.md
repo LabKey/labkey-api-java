@@ -21,7 +21,7 @@ compatibility with LabKey Server versions.
 ### Dependency Declaration
 To declare a dependency on this jar file, you can use the following in Gradle
 
-```compile(group: 'org.labkey.api', name: 'labkey-client-api', version: '1.2.0')```
+```compile(group: 'org.labkey.api', name: 'labkey-client-api', version: '3.1.0')```
 
 If using the LabKey Gradle plugins and building a LabKey module, it is best to 
 use this utility method instead to facilitate testing of any local changes to
@@ -59,7 +59,7 @@ When your feature development is done, you should:
 
 - Update the version number in the `build.gradle` file to the next logical SNAPSHOT version corresponding to your changes
 following the [SemVer](https://semver.org/) guidelines.  Make sure this is a SNAPSHOT version (e.g., `1.2.3-SNAPSHOT`).
-- Update the [change log](CHANGELOG.md) to document what has changed.  You can leave the release date and version alone at this 
+- Update the [change log](CHANGELOG.md) to document what has changed. You can leave the release date and version alone at this 
 point; they will get updated when the next release is published.
 - **TBD** Run tests using your SNAPSHOT version of the tests
 - Merge your branch into develop if appropriate tests are passing.

@@ -73,7 +73,7 @@ public class GetUsersResponse extends CommandResponse
     public List<UserInfo> getUsersInfo()
     {
         List<Map<String, Object>> usersNode = (List<Map<String, Object>>)getParsedData().get("users");
-        List<UserInfo> result = new ArrayList<UserInfo>();
+        List<UserInfo> result = new ArrayList<>();
         for (Map<String, Object> map : usersNode)
         {
             result.add(new UserInfo(map));

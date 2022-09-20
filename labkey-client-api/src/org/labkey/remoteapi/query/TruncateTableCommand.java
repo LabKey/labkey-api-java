@@ -95,6 +95,7 @@ public class TruncateTableCommand extends PostCommand<TruncateTableResponse>
         return new TruncateTableResponse(text, status, contentType, json, copy());
     }
 
+    @Override
     public JSONObject getJsonObject()
     {
         JSONObject json = new JSONObject();

@@ -108,7 +108,7 @@ public class SaveAssayBatchDemo
         batch.getRuns().add(run);
 
         // Add each of the files to the run
-        List<Data> inputFiles = new ArrayList<Data>();
+        List<Data> inputFiles = new ArrayList<>();
         Data data = new Data();
         data.setAbsolutePath(fileName);
         System.out.println("Adding usage \"" + description + " \" for file \"" + fileName + "\"");

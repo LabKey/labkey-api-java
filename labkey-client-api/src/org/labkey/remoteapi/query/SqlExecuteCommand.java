@@ -43,7 +43,7 @@ public class SqlExecuteCommand extends PostCommand<CommandResponse>
 
     private String _schemaName;
     private String _sql;
-    private Map<String,Object> _queryParameters = new HashMap<>();
+    private Map<String, Object> _queryParameters = new HashMap<>();
     private String _sep = us_char + "\t";
     private String _eol = us_char + "\n";
     private boolean _compact = true;
@@ -145,6 +145,7 @@ public class SqlExecuteCommand extends PostCommand<CommandResponse>
         return _sep;
     }
 
+    @Override
     public JSONObject getJsonObject()
     {
         JSONObject json = new JSONObject();

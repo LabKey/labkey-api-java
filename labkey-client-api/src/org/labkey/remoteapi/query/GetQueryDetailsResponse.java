@@ -83,11 +83,11 @@ public class GetQueryDetailsResponse extends CommandResponse
     @SuppressWarnings("unchecked")
     public List<Column> getColumns()
     {
-        List<Column> result = new ArrayList<Column>();
+        List<Column> result = new ArrayList<>();
         JSONArray columns = getProperty("columns");
-        for (int i = 0; i < columns.size(); i++)
+        for (Object column : columns)
         {
-            result.add(new Column((Map<String, Object>)columns.get(i)));
+            result.add(new Column((Map<String, Object>) column));
         }
         return result;
     }

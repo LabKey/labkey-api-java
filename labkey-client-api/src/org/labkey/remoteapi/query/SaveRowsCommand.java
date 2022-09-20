@@ -20,11 +20,7 @@ import org.json.simple.JSONObject;
 import org.labkey.remoteapi.PostCommand;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /*
 * User: Dave
@@ -62,7 +58,7 @@ import java.util.Map;
  *  //Insert Rows Command
  *  InsertRowsCommand cmd = new InsertRowsCommand("lists", "People");
  *
- *  Map&lt;String,Object&gt; row = new HashMap&lt;String,Object&gt;();
+ *  Map&lt;String, Object&gt; row = new HashMap&lt;String, Object&gt;();
  *  row.put("FirstName", "Insert");
  *  row.put("LastName", "Test");
  *
@@ -74,7 +70,7 @@ import java.util.Map;
  *
  *  //Update Rows Command
  *  UpdateRowsCommand cmdUpd = new UpdateRowsCommand("lists", "People");
- *  row = new HashMap&lt;String,Object&gt;();
+ *  row = new HashMap&lt;String, Object&gt;();
  *  row.put("Key", newKey);
  *  row.put("LastName", "Test UPDATED");
  *  cmdUpd.addRow(row);
@@ -82,7 +78,7 @@ import java.util.Map;
  *
  *  //Delete Rows Command
  *  DeleteRowsCommand cmdDel = new DeleteRowsCommand("lists", "People");
- *  row = new HashMap&lt;String,Object&gt;();
+ *  row = new HashMap&lt;String, Object&gt;();
  *  row.put("Key", newKey);
  *  cmdDel.addRow(row);
  *  resp = cmdDel.execute(cn, "PROJECT_NAME");
@@ -93,7 +89,7 @@ public abstract class SaveRowsCommand extends PostCommand<SaveRowsResponse>
     private String _schemaName;
     private String _queryName;
     private Map<String, Object> _extraContext;
-    private List<Map<String,Object>> _rows = new ArrayList<Map<String,Object>>();
+    private List<Map<String, Object>> _rows = new ArrayList<>();
 
     /**
      * Constructs a new SaveRowsCommand for a given schema, query and action name.
@@ -117,10 +113,10 @@ public abstract class SaveRowsCommand extends PostCommand<SaveRowsResponse>
         _schemaName = source._schemaName;
         _extraContext = source._extraContext;
         //deep copy rows
-        _rows = new ArrayList<Map<String,Object>>();
-        for(Map<String,Object> row : source._rows)
+        _rows = new ArrayList<>();
+        for(Map<String, Object> row : source._rows)
         {
-            _rows.add(new HashMap<String,Object>(row));
+            _rows.add(new HashMap<>(row));
         }
     }
 
@@ -201,7 +197,7 @@ public abstract class SaveRowsCommand extends PostCommand<SaveRowsResponse>
      * Adds a row to the list of rows to be sent to the server.
      * @param row The row to add
      */
-    public void addRow(Map<String,Object> row)
+    public void addRow(Map<String, Object> row)
     {
         _rows.add(row);
     }
@@ -211,6 +207,7 @@ public abstract class SaveRowsCommand extends PostCommand<SaveRowsResponse>
      * schema name, query name and rows list.
      * @return The JSON object to send.
      */
+    @Override
     @SuppressWarnings("unchecked")
     public JSONObject getJsonObject()
     {
@@ -227,7 +224,7 @@ public abstract class SaveRowsCommand extends PostCommand<SaveRowsResponse>
         if(null != getRows())
         {
             SimpleDateFormat fmt = new SimpleDateFormat("d MMM yyyy HH:mm:ss Z");
-            for(Map<String,Object> row : getRows())
+            for(Map<String, Object> row : getRows())
             {
                 JSONObject jsonRow;
                 if(row instanceof JSONObject) //optimization
@@ -236,7 +233,7 @@ public abstract class SaveRowsCommand extends PostCommand<SaveRowsResponse>
                 {
                     jsonRow = new JSONObject();
                     //row map entries must be scalar values (no embedded maps or arrays)
-                    for(Map.Entry<String,Object> entry : row.entrySet())
+                    for(Map.Entry<String, Object> entry : row.entrySet())
                     {
                         Object value = entry.getValue();
 
@@ -253,10 +250,12 @@ public abstract class SaveRowsCommand extends PostCommand<SaveRowsResponse>
         return json;
     }
 
+    @Override
     protected SaveRowsResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
         return new SaveRowsResponse(text, status, contentType, json, this.copy());
     }
 
+    @Override
     public abstract SaveRowsCommand copy();
 }

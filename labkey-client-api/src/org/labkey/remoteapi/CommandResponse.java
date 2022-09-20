@@ -132,7 +132,7 @@ public class CommandResponse
      * @return The parsed data as a property map.
      */
     @SuppressWarnings("unchecked")
-    public Map<String,Object> getParsedData()
+    public Map<String, Object> getParsedData()
     {
         if(null == _data && null != getText()
                 && null != _contentType && _contentType.contains(Command.CONTENT_TYPE_JSON))
@@ -174,7 +174,7 @@ public class CommandResponse
      * @return The property value, or null if not found.
      */
     @SuppressWarnings("unchecked")
-    protected <T> T getProperty(String[] path, int pathIndex, Map<String,Object> parent)
+    protected <T> T getProperty(String[] path, int pathIndex, Map<String, Object> parent)
     {
         if(null == parent)
             return null;
@@ -206,7 +206,7 @@ public class CommandResponse
         {
             //recurse if prop is non-null and instance of map
             return (null != prop && prop instanceof Map)
-                ? (T)getProperty(path, pathIndex + 1, (Map<String,Object>)prop)
+                ? (T)getProperty(path, pathIndex + 1, (Map<String, Object>)prop)
                 : null;
         }
     }

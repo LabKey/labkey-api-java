@@ -18,9 +18,9 @@ package org.labkey.remoteapi.query;
 import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -32,10 +32,10 @@ public abstract class BaseQueryCommand<ResponseType extends CommandResponse> ext
 {
     protected int _maxRows = -1;
     protected int _offset = 0;
-    protected List<Sort> _sorts = new ArrayList<Sort>();
-    protected List<Filter> _filters = new ArrayList<Filter>();
+    protected List<Sort> _sorts = new ArrayList<>();
+    protected List<Filter> _filters = new ArrayList<>();
     protected ContainerFilter _containerFilter;
-    private Map<String, String> _queryParameters = new HashMap<String, String>();
+    private Map<String, String> _queryParameters = new HashMap<>();
 
     public BaseQueryCommand(BaseQueryCommand<ResponseType> source)
     {

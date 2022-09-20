@@ -1,8 +1,17 @@
 # The LabKey Remote API Library for Java - Change Log
 
+## version 3.1.0
+*Released*: 20 September 2022
+* Add support for creating Freezer Manager freezer hierarchies via StorageController APIs (earliest compatible LabKey Server version: 22.10.0)
+  * CreateCommand, UpdateCommand, DeleteCommand
+* Restore proactive authentication behavior. A change in v3.0.0 caused some invocations of `@NoPermissionsRequired`
+  actions (e.g., `GetContainersCommand`) to use guest credentials instead of the configured user credentials. The library
+  now always authenticates using the configured credentials, matching pre-v3.0.0 behavior.
+
 ## version 3.0.0
 *Released*: 14 September 2022
 * Migrate internal HTTP handling to use Apache HttpClient 5.1.x
+* Migrate from preemptive to challenge-response Basic authentication 
 * Switch `StopImpersonatingCommand` to disable redirects (mimicking previous behavior)
 * Add `Connection.stopImpersonating()` and deprecate `stopImpersonate()`
 * Remove deprecated methods:

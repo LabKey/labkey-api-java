@@ -16,14 +16,16 @@
 package org.labkey.remoteapi.test;
 
 import au.com.bytecode.opencsv.CSVReader;
+import org.labkey.remoteapi.CommandException;
+import org.labkey.remoteapi.Connection;
+import org.labkey.remoteapi.assay.Batch;
+import org.labkey.remoteapi.assay.Data;
+import org.labkey.remoteapi.assay.Run;
+import org.labkey.remoteapi.assay.SaveAssayBatchCommand;
+import org.labkey.remoteapi.ms2.StartSearchCommand;
 
 import java.io.*;
 import java.util.*;
-
-import org.labkey.remoteapi.CommandException;
-import org.labkey.remoteapi.Connection;
-import org.labkey.remoteapi.assay.*;
-import org.labkey.remoteapi.ms2.StartSearchCommand;
 
 /**
  * Demo code that accepts one or more CSV files on the command line. It creates assay runs to hold the metadata
@@ -59,10 +61,10 @@ public class MS2SearchClient
     /** Simple bean class to hold the values that uniquely identify the files to be submitted in one search */
     private static class SearchInfo
     {
-        private String _sample;
-        private String _protocol;
-        private String _folder;
-        private String _path;
+        private final String _sample;
+        private final String _protocol;
+        private final String _folder;
+        private final String _path;
 
         private SearchInfo(String sample, String protocol, String folder, String path)
         {
@@ -348,7 +350,7 @@ public class MS2SearchClient
         run.setName(fileName);
         run.getProperties().putAll(runProperties);
         batch.getRuns().add(run);
-        List<Data> outputFiles = new ArrayList<Data>();
+        List<Data> outputFiles = new ArrayList<>();
         Data data = new Data();
         data.setAbsolutePath(path + File.separator + fileName);
         outputFiles.add(data);
@@ -356,7 +358,7 @@ public class MS2SearchClient
     }
 
     /** Finds a column by name given the column headers */
-    private static int findIndex(String headers[], String propertyName)
+    private static int findIndex(String[] headers, String propertyName)
     {
         for (int i = 0; i < headers.length; i++)
         {

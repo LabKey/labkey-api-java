@@ -15,12 +15,12 @@
  */
 package org.labkey.remoteapi.security;
 
+import org.json.simple.JSONObject;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.PostCommand;
-import org.json.simple.JSONObject;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /*
 * User: dave
@@ -34,7 +34,7 @@ import java.util.ArrayList;
 public abstract class GroupMembersCommand extends PostCommand<CommandResponse>
 {
     private int _groupId = 0;
-    private List<Integer> _principals = new ArrayList<Integer>();
+    private final List<Integer> _principals = new ArrayList<>();
 
     protected GroupMembersCommand(String actionName, int groupId)
     {

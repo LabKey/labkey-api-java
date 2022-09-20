@@ -30,8 +30,8 @@ import java.util.Map;
 public class Run extends ExpObject
 {
     private String _comment;
-    private List<Data> _dataInputs = new ArrayList<Data>();
-    private List<Data> _dataOutputs = new ArrayList<Data>();
+    private List<Data> _dataInputs = new ArrayList<>();
+    private List<Data> _dataOutputs = new ArrayList<>();
     private List<Material> _materialInputs = new ArrayList<>();
     private List<Material> _materialOutputs = new ArrayList<>();
     private String _lsid;

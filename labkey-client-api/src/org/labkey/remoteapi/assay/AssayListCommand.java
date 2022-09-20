@@ -117,6 +117,7 @@ public class AssayListCommand extends PostCommand<AssayListResponse>
         _id = id;
     }
 
+    @Override
     protected AssayListResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
         return new AssayListResponse(text, status, contentType, json, this.copy());
@@ -134,9 +135,10 @@ public class AssayListCommand extends PostCommand<AssayListResponse>
         return obj;
     }
 
+    @Override
     public Map<String, Object> getParameters()
     {
-        Map<String,Object> params = new HashMap<String,Object>();
+        Map<String, Object> params = new HashMap<>();
         if(null != getName())
             params.put("name", getName());
         if(null != getType())

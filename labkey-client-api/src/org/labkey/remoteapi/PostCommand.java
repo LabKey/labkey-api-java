@@ -61,7 +61,7 @@ public class PostCommand<ResponseType extends CommandResponse> extends Command<R
         super(controllerName, actionName);
     }
 
-    public PostCommand(PostCommand source)
+    public PostCommand(PostCommand<ResponseType> source)
     {
         super(source);
         if (null != source.getJsonObject())
@@ -120,6 +120,6 @@ public class PostCommand<ResponseType extends CommandResponse> extends Command<R
     @Override
     public PostCommand copy()
     {
-        return new PostCommand(this);
+        return new PostCommand<>(this);
     }
 }
