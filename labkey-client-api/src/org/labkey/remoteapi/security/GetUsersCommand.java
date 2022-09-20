@@ -38,7 +38,7 @@ public class GetUsersCommand extends Command<GetUsersResponse>
         super("user", "getUsers");
     }
 
-    public GetUsersCommand(Command source, String group, int groupId, String name)
+    public GetUsersCommand(GetUsersCommand source, String group, int groupId, String name)
     {
         super(source);
         setGroup(group);
@@ -115,7 +115,7 @@ public class GetUsersCommand extends Command<GetUsersResponse>
     @Override
     public Map<String, Object> getParameters()
     {
-        Map<String,Object> params = new HashMap<String,Object>();
+        Map<String, Object> params = new HashMap<>();
         if (_group != null)
         {
             params.put("group", _group);

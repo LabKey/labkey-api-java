@@ -34,7 +34,7 @@ public class GetProtocolCommand extends Command<ProtocolResponse>
     @Override
     public Map<String, Object> getParameters()
     {
-        Map<String,Object> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         if (_protocolId != null)
         {
             params.put("protocolId", _protocolId);

@@ -16,8 +16,8 @@
 package org.labkey.remoteapi.query;
 
 import java.util.Iterator;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 /*
 * User: dave
@@ -26,9 +26,9 @@ import java.util.List;
 */
 public class RowsResponseRowset implements Rowset
 {
-    private List<Map<String,Object>> _rows;
+    private List<Map<String, Object>> _rows;
 
-    public RowsResponseRowset(List<Map<String,Object>> rows)
+    public RowsResponseRowset(List<Map<String, Object>> rows)
     {
         _rows = rows;
     }

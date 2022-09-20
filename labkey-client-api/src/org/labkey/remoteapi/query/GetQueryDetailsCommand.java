@@ -88,12 +88,13 @@ public class GetQueryDetailsCommand extends Command<GetQueryDetailsResponse>
         _queryName = queryName;
     }
 
+    @Override
     public Map<String, Object> getParameters()
     {
         assert null != getSchemaName() : "You must set the schema name before executing the GetQueryDetailsCommand!";
         assert null != getQueryName() : "You must set the query name before executing the GetQueryDetailsCommand!";
 
-        Map<String,Object> params = new HashMap<String,Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("schemaName", getSchemaName());
         params.put("queryName", getQueryName());
         params.put("includeSuggestedQueryColumns", _includeSuggestedQueryColumns);
@@ -101,6 +102,7 @@ public class GetQueryDetailsCommand extends Command<GetQueryDetailsResponse>
         return params;
     }
 
+    @Override
     protected GetQueryDetailsResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
         return new GetQueryDetailsResponse(text, status, contentType, json, this.copy());

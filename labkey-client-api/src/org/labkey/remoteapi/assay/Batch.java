@@ -27,7 +27,7 @@ import java.util.List;
 */
 public class Batch extends ExpObject
 {
-    private List<Run> _runs = new ArrayList<Run>();
+    private List<Run> _runs = new ArrayList<>();
 
     public Batch()
     {

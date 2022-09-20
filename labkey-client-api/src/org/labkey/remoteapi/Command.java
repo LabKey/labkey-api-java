@@ -441,18 +441,12 @@ public class Command<ResponseType extends CommandResponse>
      * @throws CommandException Thrown if there is a problem encoding or parsing the URL
      * @throws URISyntaxException Thrown if there is a problem parsing the base URL in the connection.
      */
+
+    // TODO: For next major release, remove CommandException from throws list
     protected HttpUriRequest getHttpRequest(Connection connection, String folderPath) throws CommandException, URISyntaxException
     {
-// TODO        (Dave 11/11/14 -- as far as I can tell the default of the AuthSchemes is to automatically handle challenges
-//        method.setDoAuthentication(true);
-
-        // NOTE: Fairly sure that the "unescaped" comment below is obsolete
-        // TODO: Combine getActionUrl() and addParameters() into a single method
-        //construct a URI from the results of the getActionUrl method
-        //note that this method returns an unescaped URL, so pass
-        //false for the second parameter to escape it
-        URI uri = getActionUrl(connection, folderPath);
-        uri = addParameters(uri);
+        //construct a URI from connection base URI, folder path, and current parameters
+        URI uri = createURI(connection, folderPath);
 
         return createRequest(uri);
     }
@@ -469,17 +463,14 @@ public class Command<ResponseType extends CommandResponse>
     }
 
     /**
-     * Returns the portion of the URL before the query string for this command.
-     * <p>
-     * Note that the URL returned should <em>not</em> be encoded, as the calling function will encode it.
-     * <p>
-     * For example: "http://localhost:8080/labkey/MyProject/MyFolder/selectRows.api"
+     * Returns a full URI for this Command, including base URI, folder path, and query string.
+     *
      * @param connection The connection to use.
      * @param folderPath The folder path to use.
-     * @return The URL
+     * @return The URI
      * @throws URISyntaxException if the uri constructed from the parameters is malformed
      */
-    private URI getActionUrl(Connection connection, String folderPath) throws URISyntaxException
+    private URI createURI(Connection connection, String folderPath) throws URISyntaxException
     {
         URI uri = connection.getBaseURI();
 
@@ -508,52 +499,34 @@ public class Command<ResponseType extends CommandResponse>
         if (!actionName.endsWith(".api"))
             path.append(".api");
 
-        return new URIBuilder(uri).setPath(path.toString()).build();
-    }
+        URIBuilder builder = new URIBuilder(uri).setPath(path.toString());
 
-    /**
-     * Adds all parameters to the passed URI
-     * <p>
-     * @return The URI with parameters added
-     * @throws CommandException Thrown if there is a problem building the URI
-     */
-    protected URI addParameters(URI uri) throws CommandException, URISyntaxException
-    {
         Map<String, Object> params = getParameters();
 
         //add the required version if it's > 0
         if (getRequiredVersion() > 0)
             params.put(CommonParameters.apiVersion.name(), getRequiredVersion());
 
-        if (params.isEmpty())
-            return uri;
-
-        URIBuilder builder = new URIBuilder(uri);
-
-        for (String name : params.keySet())
+        if (!params.isEmpty())
         {
-            Object value = params.get(name);
-            if (value instanceof Collection<?> col)
+            for (String name : params.keySet())
             {
-                for (Object o : col)
+                Object value = params.get(name);
+                if (value instanceof Collection<?> col)
                 {
-                    addParameter(builder, name, o);
+                    for (Object o : col)
+                    {
+                        addParameter(builder, name, o);
+                    }
+                }
+                else
+                {
+                    addParameter(builder, name, value);
                 }
             }
-            else
-            {
-                addParameter(builder, name, value);
-            }
         }
 
-        try
-        {
-            return builder.build();
-        }
-        catch (URISyntaxException e)
-        {
-            throw new CommandException(e.getMessage());
-        }
+        return builder.build();
     }
 
     private void addParameter(URIBuilder builder, String name, Object value)
@@ -592,7 +565,7 @@ public class Command<ResponseType extends CommandResponse>
      * Sets the required version number for this API call.
      * By default, the required version is 8.3, meaning that
      * this call requires LabKey Server version 8.3 or higher.
-     * Set this to a higher number to required a later
+     * Set this to a higher number to require a later
      * version of the server.
      * @param requiredVersion The new required version
      */
@@ -606,8 +579,9 @@ public class Command<ResponseType extends CommandResponse>
      * to copy their own data members   
      * @return A copy of this object
      */
+    // TODO: For next major release, genericize this return value (Command<ResponseType>)
     public Command copy()
     {
-        return new Command(this);
+        return new Command<>(this);
     }
 }

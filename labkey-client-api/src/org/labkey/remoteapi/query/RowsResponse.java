@@ -16,10 +16,10 @@
 package org.labkey.remoteapi.query;
 
 import org.apache.commons.logging.LogFactory;
-import org.labkey.remoteapi.CommandResponse;
-import org.labkey.remoteapi.Command;
-import org.labkey.remoteapi.collections.CaseInsensitiveHashMap;
 import org.json.simple.JSONObject;
+import org.labkey.remoteapi.Command;
+import org.labkey.remoteapi.CommandResponse;
+import org.labkey.remoteapi.collections.CaseInsensitiveHashMap;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -61,7 +61,7 @@ abstract class RowsResponse extends CommandResponse
      * The most reliable way to work with them is to use the Number class.
      * For example:
      * <pre><code>
-     * for (Map&lt;String,Object&gt; row : response.getRows())
+     * for (Map&lt;String, Object&gt; row : response.getRows())
      * {
      *     Number key = (Number)row.get("Key");
      *     // use Number.intValue(), doubleValue(), longValue(), etc to get various primitive types
@@ -70,7 +70,7 @@ abstract class RowsResponse extends CommandResponse
      * @return The list of rows (each row is a Map), or null if
      * the rows list was not included in the response.
      */
-    public List<Map<String,Object>> getRows()
+    public List<Map<String, Object>> getRows()
     {
         return getProperty("rows");
     }
@@ -95,11 +95,11 @@ abstract class RowsResponse extends CommandResponse
         List<String> dateFields = new ArrayList<>();
         List<String> intFields = new ArrayList<>();
         List<String> floatFields = new ArrayList<>();
-        List<Map<String,Object>> fields = getProperty("metaData.fields");
+        List<Map<String, Object>> fields = getProperty("metaData.fields");
         if(null == fields)
             return;
 
-        for(Map<String,Object> field : fields)
+        for(Map<String, Object> field : fields)
         {
             String type = (String)field.get("type");
             if("date".equalsIgnoreCase(type))
@@ -115,7 +115,7 @@ abstract class RowsResponse extends CommandResponse
             return;
 
         //run the rows array and fixup date fields
-        List<Map<String,Object>> rows = getRows();
+        List<Map<String, Object>> rows = getRows();
         if(null == rows || rows.size() == 0)
             return;
 
@@ -191,11 +191,11 @@ abstract class RowsResponse extends CommandResponse
     private void caseInsensitizeRowMaps()
     {
         //copy the row maps into case-insensitive hash maps
-        List<Map<String,Object>> ciRows = new ArrayList<>();
+        List<Map<String, Object>> ciRows = new ArrayList<>();
 
         if (getRows() != null)
         {
-            for(Map<String,Object> row : getRows())
+            for(Map<String, Object> row : getRows())
             {
                 //copy the row map into a case-insensitive hash map
                 ciRows.add(new CaseInsensitiveHashMap<>(row));

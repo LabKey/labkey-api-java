@@ -64,14 +64,16 @@ public class NAbRunsCommand extends BaseQueryCommand<NAbRunsResponse>
         _calculateNeut = source._calculateNeut;
     }
 
+    @Override
     protected NAbRunsResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
         return new NAbRunsResponse(text, status, contentType, json, this.copy());
     }
 
+    @Override
     public Map<String, Object> getParameters()
     {
-        Map<String,Object> params = super.getParameters();
+        Map<String, Object> params = super.getParameters();
 
         if (null != getAssayName())
             params.put("assayName", getAssayName());

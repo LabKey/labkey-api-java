@@ -15,11 +15,11 @@
  */
 package org.labkey.remoteapi.security;
 
-import org.labkey.remoteapi.Command;
 import org.json.simple.JSONObject;
+import org.labkey.remoteapi.Command;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /*
 * User: Dave
@@ -61,14 +61,16 @@ public class GetGroupPermsCommand extends Command<GetGroupPermsResponse>
         _includeSubfolders = includeSubfolders;
     }
 
+    @Override
     protected GetGroupPermsResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
         return new GetGroupPermsResponse(text, status, contentType, json, this.copy());
     }
 
+    @Override
     public Map<String, Object> getParameters()
     {
-        Map<String,Object> params = new HashMap<String,Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("includeSubfolders", isIncludeSubfolders());
         return params;
     }

@@ -15,13 +15,8 @@
  */
 package org.labkey.remoteapi.query;
 
-import org.labkey.remoteapi.Command;
-import org.labkey.remoteapi.CommandResponse;
-import org.labkey.remoteapi.Connection;
-import org.labkey.remoteapi.CommandException;
 import org.json.simple.JSONObject;
-
-import java.io.IOException;
+import org.labkey.remoteapi.Command;
 
 /*
 * User: Dave
@@ -44,6 +39,7 @@ public class GetSchemasCommand extends Command<GetSchemasResponse>
         super(source);
     }
 
+    @Override
     protected GetSchemasResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
         return new GetSchemasResponse(text, status, contentType, json, this.copy());

@@ -320,6 +320,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
         _containerFilter = containerFilter;
     }
 
+    @Override
     protected SelectRowsResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
         assert null != _schemaName : "You must set the schemaName before executing!";
@@ -327,6 +328,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
         return new SelectRowsResponse(text, status, contentType, json, this.copy());
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public JSONObject getJsonObject()
     {
@@ -354,7 +356,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
     @Override
     public Map<String, Object> getParameters()
     {
-        Map<String,Object> params = new HashMap<String,Object>();
+        Map<String, Object> params = new HashMap<>();
         if(null != getSorts() && getSorts().size() > 0)
             params.put("query.sort", Sort.getSortQueryStringParam(getSorts()));
         for (Map.Entry<String, String> entry : getQueryParameters().entrySet())

@@ -15,11 +15,11 @@
  */
 package org.labkey.remoteapi.security;
 
-import org.labkey.remoteapi.CommandResponse;
 import org.json.simple.JSONObject;
+import org.labkey.remoteapi.CommandResponse;
 
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 /*
 * User: Dave
@@ -45,7 +45,7 @@ public class GetContainersResponse extends CommandResponse
 
     public Integer getUserPermissions(String containerPath)
     {
-        Map<String,Object> containerInfo = findContainer(containerPath, getParsedData());
+        Map<String, Object> containerInfo = findContainer(containerPath, getParsedData());
         return (null == containerInfo) ? null : ((Number)containerInfo.get("userPermissions")).intValue();
     }
 
@@ -62,7 +62,7 @@ public class GetContainersResponse extends CommandResponse
     }
 
     @SuppressWarnings("unchecked")
-    protected Map<String,Object> findContainer(String containerPath, Map<String,Object> root)
+    protected Map<String, Object> findContainer(String containerPath, Map<String, Object> root)
     {
         if(null == containerPath)
             return root; //assumed by code above
@@ -76,7 +76,7 @@ public class GetContainersResponse extends CommandResponse
     }
 
     @SuppressWarnings("unchecked")
-    protected Map<String,Object> findContainer(String[] containerPath, int index, Map<String,Object> root)
+    protected Map<String, Object> findContainer(String[] containerPath, int index, Map<String, Object> root)
     {
         //if current root name doesn't match this path part, return null
         if(!containerPath[index].equalsIgnoreCase((String)root.get("name")))
@@ -86,9 +86,8 @@ public class GetContainersResponse extends CommandResponse
         if(containerPath.length - 1 == index)
             return root;
 
-        List<Map<String,Object>> children = (List<Map<String,Object>>)root.get("children");
-        Map<String,Object> child = (null == children) ? null : findObject(children, "name", containerPath[index + 1]);
+        List<Map<String, Object>> children = (List<Map<String, Object>>)root.get("children");
+        Map<String, Object> child = (null == children) ? null : findObject(children, "name", containerPath[index + 1]);
         return (null == child) ? null : findContainer(containerPath, index + 1, child);
     }
-
 }

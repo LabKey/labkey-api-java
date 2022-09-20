@@ -100,7 +100,7 @@ public class StartSearchCommand extends Command<StartSearchResponse>
     @Override
     public Map<String, Object> getParameters()
     {
-        Map<String, Object> result = new HashMap<String, Object>();
+        Map<String, Object> result = new HashMap<>();
         result.put("path", _path);
         result.put("file", _files);
         result.put("protocol", _protocol);

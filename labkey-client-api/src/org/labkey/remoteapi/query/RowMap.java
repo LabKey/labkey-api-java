@@ -24,7 +24,7 @@ import java.util.Map;
 */
 public class RowMap implements Row
 {
-    private Map<String,Object> _row;
+    private Map<String, Object> _row;
     private boolean _extendedFormat = false;
 
     public RowMap()
@@ -36,7 +36,7 @@ public class RowMap implements Row
         setMap(row);
     }
 
-    public void setMap(Map<String,Object> row)
+    public void setMap(Map<String, Object> row)
     {
         _row = row;
         _extendedFormat = _row.size() > 0 && row.values().iterator().next() instanceof Map;
@@ -45,31 +45,31 @@ public class RowMap implements Row
     public Object getValue(String columnName)
     {
         Object col = _row.get(columnName);
-        return null == col || !_extendedFormat ? col : ((Map<String,Object>)col).get("value");
+        return null == col || !_extendedFormat ? col : ((Map<String, Object>)col).get("value");
     }
 
     public Object getDisplayValue(String columnName)
     {
         Object col = _row.get(columnName);
-        return null == col || !_extendedFormat ? null : ((Map<String,Object>)col).get("displayValue");
+        return null == col || !_extendedFormat ? null : ((Map<String, Object>)col).get("displayValue");
     }
 
     public String getUrl(String columnName)
     {
         Object col = _row.get(columnName);
-        return null == col || !_extendedFormat ? null : (String)((Map<String,Object>)col).get("url");
+        return null == col || !_extendedFormat ? null : (String)((Map<String, Object>)col).get("url");
     }
 
     public String getMvValue(String columnName)
     {
         Object col = _row.get(columnName);
-        return null == col || !_extendedFormat ? null : (String)((Map<String,Object>)col).get("mvValue");
+        return null == col || !_extendedFormat ? null : (String)((Map<String, Object>)col).get("mvValue");
     }
 
     public Object getMvRawValue(String columnName)
     {
         Object col = _row.get(columnName);
-        return null == col || !_extendedFormat ? null : ((Map<String,Object>)col).get("mvRawValue");
+        return null == col || !_extendedFormat ? null : ((Map<String, Object>)col).get("mvRawValue");
     }
 
     @Override
