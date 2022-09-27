@@ -30,10 +30,10 @@ public class Domain extends ResponseObject
     {
         super(json.toMap());
 
-        _name = (String)json.get("name");
-        _description = (String)json.get("description");
-        _domainId = (Long)json.get("domainId");
-        _domainURI = (String)json.get("domainURI");
+        _name = json.getString("name");
+        _description = json.optString("description");
+        _domainId = json.getLong("domainId");
+        _domainURI = json.getString("domainURI");
 
         if (json.get("fields") instanceof JSONArray)
         {
