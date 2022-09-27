@@ -16,6 +16,7 @@
 package org.labkey.remoteapi;
 
 import org.apache.hc.core5.http.impl.EnglishReasonPhraseCatalog;
+import org.json.JSONObject;
 
 import java.util.Locale;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class CommandException extends Exception
 {
     private final String _contentType;
     private final int _statusCode;
-    private final Map<String, Object> _properties;
+    private final JSONObject _jsonProperties;
     private final String _responseText;
 
     /**
@@ -56,15 +57,15 @@ public class CommandException extends Exception
      * exception property map, responseText, and contentType.
      * @param message The message text (should not be null).
      * @param statusCode The HTTP status code.
-     * @param properties The exception property map (may be null)
+     * @param jsonProperties The exception property JSONObject (may be null)
      * @param responseText The full response text (may be null)
      * @param contentType The response content type (may be null)
      */
-    public CommandException(String message, int statusCode, Map<String, Object> properties, String responseText, String contentType)
+    public CommandException(String message, int statusCode, JSONObject jsonProperties, String responseText, String contentType)
     {
         super(buildMessage(message, statusCode));
         _statusCode = statusCode;
-        _properties = properties;
+        _jsonProperties = jsonProperties;
         _responseText = responseText;
         _contentType = contentType;
     }
@@ -119,6 +120,6 @@ public class CommandException extends Exception
      */
     public Map<String, Object> getProperties()
     {
-        return _properties;
+        return null == _jsonProperties ? null : _jsonProperties.toMap();
     }
 }
