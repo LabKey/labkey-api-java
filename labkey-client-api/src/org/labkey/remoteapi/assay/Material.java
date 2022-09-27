@@ -15,7 +15,7 @@
  */
 package org.labkey.remoteapi.assay;
 
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 
 public class Material extends ExpObject
 {
@@ -31,7 +31,7 @@ public class Material extends ExpObject
     {
         super(json);
 
-        if (json.containsKey("sampleSet"))
+        if (json.has("sampleSet"))
         {
             JSONObject sampleSet = (JSONObject)json.get("sampleSet");
 

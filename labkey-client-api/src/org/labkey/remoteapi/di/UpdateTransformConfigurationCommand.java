@@ -15,7 +15,7 @@
  */
 package org.labkey.remoteapi.di;
 
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 
 /**
  * User: tgaluhn

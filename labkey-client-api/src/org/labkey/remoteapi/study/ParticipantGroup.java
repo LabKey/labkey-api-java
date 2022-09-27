@@ -15,8 +15,8 @@
  */
 package org.labkey.remoteapi.study;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -108,7 +108,7 @@ public class ParticipantGroup
         if (_participantIds != null)
         {
             JSONArray value = new JSONArray();
-            value.addAll(_participantIds);
+            value.putAll(_participantIds);
             result.put("participantIds", value);
         }
         if (_label != null)

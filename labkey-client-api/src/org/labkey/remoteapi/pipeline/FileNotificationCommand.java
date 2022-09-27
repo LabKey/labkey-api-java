@@ -15,7 +15,7 @@
  */
 package org.labkey.remoteapi.pipeline;
 
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 import org.labkey.remoteapi.PostCommand;
 
 /**

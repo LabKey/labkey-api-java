@@ -15,8 +15,8 @@
  */
 package org.labkey.remoteapi.security;
 
+import org.json.JSONObject;
 import org.labkey.remoteapi.PostCommand;
-import org.json.simple.JSONObject;
 
 /*
 * User: dave

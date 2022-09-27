@@ -1,7 +1,7 @@
 package org.labkey.remoteapi.domain;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.labkey.remoteapi.ResponseObject;
 
 import java.util.ArrayList;
@@ -51,7 +51,7 @@ public class PropertyDescriptor extends ResponseObject
 
     public PropertyDescriptor(JSONObject json)
     {
-        super(json);
+        super(json.toMap());
 
         _name = (String)json.get("name");
         _label = (String)json.get("label");
@@ -74,7 +74,7 @@ public class PropertyDescriptor extends ResponseObject
         _propertyURI = (String)json.get("propertyURI");
         _rangeURI = (String)json.get("rangeURI");
 
-        JSONArray cfs = (JSONArray) json.get("conditionalFormats");
+        JSONArray cfs = json.getJSONArray("conditionalFormats");
         cfs.forEach(cf -> {
             JSONObject cfObj = (JSONObject) cf;
             _conditionalFormats.add(ConditionalFormat.fromJSON(cfObj));
@@ -102,7 +102,7 @@ public class PropertyDescriptor extends ResponseObject
         JSONObject result = new JSONObject();
 
         if (getAllProperties() != null)
-            result.putAll(getAllProperties());
+            getAllProperties().forEach(result::put);
 
         result.put("name", _name);
         result.put("label", _label);
@@ -148,7 +148,7 @@ public class PropertyDescriptor extends ResponseObject
         for (ConditionalFormat conditionalFormat : _conditionalFormats)
         {
             JSONObject cf = conditionalFormat.toJSON();
-            cfs.add(cf);
+            cfs.put(cf);
         }
         return cfs;
     }

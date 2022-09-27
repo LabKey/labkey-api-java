@@ -15,7 +15,7 @@
  */
 package org.labkey.remoteapi.di;
 
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 
 /**
  * Resets the stored state of an ETL, allowing it to be rerun from scratch by forgetting any retained last modified dates
@@ -45,5 +45,4 @@ public class ResetTransformStateCommand extends BaseTransformCommand<ResetTransf
     {
         return new ResetTransformStateResponse(text, status, contentType, json, this);
     }
-
 }

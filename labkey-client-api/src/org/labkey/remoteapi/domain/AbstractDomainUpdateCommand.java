@@ -1,6 +1,6 @@
 package org.labkey.remoteapi.domain;
 
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 import org.labkey.remoteapi.PostCommand;
 
 public abstract class AbstractDomainUpdateCommand extends PostCommand<DomainResponse>

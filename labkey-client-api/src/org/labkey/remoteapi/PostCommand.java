@@ -19,7 +19,7 @@ import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.io.entity.StringEntity;
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 
 import java.net.URI;
 
@@ -108,7 +108,7 @@ public class PostCommand<ResponseType extends CommandResponse> extends Command<R
 
         if (null != json)
         {
-            if (!json.containsKey(CommonParameters.apiVersion.name()) && getRequiredVersion() > 0)
+            if (!json.has(CommonParameters.apiVersion.name()) && getRequiredVersion() > 0)
                 json.put(CommonParameters.apiVersion.name(), getRequiredVersion());
 
             request.setEntity(new StringEntity(json.toString(), ContentType.APPLICATION_JSON));

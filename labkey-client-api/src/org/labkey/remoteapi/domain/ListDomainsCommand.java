@@ -1,7 +1,7 @@
 package org.labkey.remoteapi.domain;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.labkey.remoteapi.PostCommand;
 
 import java.util.Set;
@@ -76,7 +76,7 @@ public class ListDomainsCommand extends PostCommand<ListDomainsResponse>
 
         for(String domainKind: getDomainKinds())
         {
-            domainKinds.add(domainKind);
+            domainKinds.put(domainKind);
         }
 
         result.put("containerPath", _containerPath);

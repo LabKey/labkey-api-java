@@ -22,17 +22,9 @@ import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.net.URIBuilder;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
+import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -218,7 +210,7 @@ public class Command<ResponseType extends CommandResponse>
                 if (null != contentType && contentType.contains(Command.CONTENT_TYPE_JSON))
                 {
                     // Read entire response body and parse into JSON object
-                    json = (JSONObject) JSONValue.parse(response.getReader());
+                    json = new JSONObject(response.getReader());
                 }
                 else
                 {
@@ -387,21 +379,21 @@ public class Command<ResponseType extends CommandResponse>
             // Parse JSON
             if (responseText != null && responseText.length() > 0)
             {
-                json = (JSONObject) JSONValue.parse(responseText);
-                if (json != null && json.containsKey("exception"))
+                json = new JSONObject(responseText);
+                if (json.has("exception"))
                 {
                     message = (String)json.get("exception");
 
                     if ("org.labkey.api.action.ApiVersionException".equals(json.get("exceptionClass")))
-                        throw new ApiVersionException(message, r.getStatusCode(), json, responseText, contentType);
+                        throw new ApiVersionException(message, r.getStatusCode(), json.toMap(), responseText, contentType);
 
-                    throw new CommandException(message, r.getStatusCode(), json, responseText, contentType);
+                    throw new CommandException(message, r.getStatusCode(), json.toMap(), responseText, contentType);
                 }
             }
         }
 
         if (throwByDefault)
-            throw new CommandException(message, r.getStatusCode(), json, responseText, contentType);
+            throw new CommandException(message, r.getStatusCode(), json.toMap(), responseText, contentType);
 
         // If we didn't encounter an exception property on the json object, save the fully consumed text and parsed json on the Response object
         r._json = json;

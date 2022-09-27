@@ -1,7 +1,7 @@
 package org.labkey.remoteapi.domain;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.labkey.remoteapi.ResponseObject;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class Domain extends ResponseObject
 
     public Domain(JSONObject json)
     {
-        super(json);
+        super(json.toMap());
 
         _name = (String)json.get("name");
         _description = (String)json.get("description");
@@ -37,7 +37,7 @@ public class Domain extends ResponseObject
 
         if (json.get("fields") instanceof JSONArray)
         {
-            for (Object field : ((JSONArray)json.get("fields")))
+            for (Object field : json.getJSONArray("fields"))
             {
                 _fields.add(new PropertyDescriptor((JSONObject)field));
             }
@@ -57,7 +57,7 @@ public class Domain extends ResponseObject
         JSONObject result = new JSONObject();
 
         if (getAllProperties() != null)
-            result.putAll(getAllProperties());
+            getAllProperties().forEach(result::put);
 
         result.put("name", _name);
         result.put("description", _description);
@@ -68,7 +68,7 @@ public class Domain extends ResponseObject
         result.put("fields", fields);
         for (PropertyDescriptor field : _fields)
         {
-            fields.add(field.toJSONObject(forProtocol));
+            fields.put(field.toJSONObject(forProtocol));
         }
         return result;
     }

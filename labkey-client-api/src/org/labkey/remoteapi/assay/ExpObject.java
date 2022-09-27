@@ -15,7 +15,7 @@
  */
 package org.labkey.remoteapi.assay;
 
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 import org.labkey.remoteapi.ResponseObject;
 
 import java.util.HashMap;
@@ -39,8 +39,8 @@ public abstract class ExpObject extends ResponseObject
 
     public ExpObject(JSONObject json)
     {
-        super(json);
-        _id = json.containsKey("id") ? ((Number)json.get("id")).intValue() : 0;
+        super(json.toMap());
+        _id = json.has("id") ? ((Number)json.get("id")).intValue() : 0;
         _name = (String)json.get("name");
         if (json.get("properties") != null)
         {
@@ -71,7 +71,7 @@ public abstract class ExpObject extends ResponseObject
     {
         JSONObject props = new JSONObject();
 
-        for(Map.Entry entry : properties.entrySet())
+        for(Map.Entry<String, Object> entry : properties.entrySet())
         {
             Object val = entry.getValue();
             val = val instanceof java.util.Date ?

@@ -60,11 +60,7 @@ group "org.labkey.api"
 version "3.2.0-SNAPSHOT"
 
 dependencies {
-    api ("com.googlecode.json-simple:json-simple:${jsonSimpleVersion}")
-            {
-                // exclude this because it gets in the way of our own JSON object implementations from server/api
-                exclude group: "org.json", module:"json"
-            }
+    api "org.json:json:${jsonObjectVersion}"
     api "org.apache.httpcomponents.client5:httpclient5:${httpclient5Version}"
     api "org.apache.httpcomponents.core5:httpcore5:${httpcore5Version}"
     implementation "net.sf.opencsv:opencsv:${opencsvVersion}"

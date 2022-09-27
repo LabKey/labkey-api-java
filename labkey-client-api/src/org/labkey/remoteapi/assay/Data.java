@@ -15,7 +15,7 @@
  */
 package org.labkey.remoteapi.assay;
 
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 
 /**
 * Represents a data file that may be used in a run. In order to successfully look up a data file when saving a run,

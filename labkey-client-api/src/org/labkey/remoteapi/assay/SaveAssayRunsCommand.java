@@ -1,8 +1,8 @@
 package org.labkey.remoteapi.assay;
 
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.labkey.remoteapi.PostCommand;
 
 import java.util.List;
@@ -45,7 +45,7 @@ public class SaveAssayRunsCommand extends PostCommand<SaveAssayRunsResponse>
         JSONArray runs = new JSONArray();
         for (Run run : _runs)
         {
-            runs.add(run.toJSONObject());
+            runs.put(run.toJSONObject());
         }
         result.put("runs", runs);
         result.put("protocolName", getProtocolName());

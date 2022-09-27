@@ -15,8 +15,8 @@
  */
 package org.labkey.remoteapi.assay;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,36 +49,36 @@ public class Run extends ExpObject
     {
         super(json);
 
-        if (json.containsKey("dataInputs"))
+        if (json.has("dataInputs"))
         {
-            JSONArray array = (JSONArray)json.get("dataInputs");
+            JSONArray array = json.getJSONArray("dataInputs");
             for (Object o : array)
             {
                 _dataInputs.add(new Data((JSONObject) o));
             }
         }
 
-        if (json.containsKey("dataOutputs"))
+        if (json.has("dataOutputs"))
         {
-            JSONArray array = (JSONArray)json.get("dataOutputs");
+            JSONArray array = json.getJSONArray("dataOutputs");
             for (Object o : array)
             {
                 _dataOutputs.add(new Data((JSONObject) o));
             }
         }
 
-        if (json.containsKey("materialInputs"))
+        if (json.has("materialInputs"))
         {
-            JSONArray array = (JSONArray)json.get("materialInputs");
+            JSONArray array = json.getJSONArray("materialInputs");
             for (Object o : array)
             {
                 _materialInputs.add(new Material((JSONObject) o));
             }
         }
 
-        if (json.containsKey("materialOutputs"))
+        if (json.has("materialOutputs"))
         {
-            JSONArray array = (JSONArray)json.get("materialOutputs");
+            JSONArray array = json.getJSONArray("materialOutputs");
             for (Object o : array)
             {
                 _materialOutputs.add(new Material((JSONObject) o));
@@ -86,12 +86,12 @@ public class Run extends ExpObject
         }
         _comment = (String)json.get("comment");
 
-        if (json.containsKey("lsid"))
+        if (json.has("lsid"))
         {
             _lsid = (String) json.get("lsid");
         }
 
-        if (json.containsKey("plateMetadata"))
+        if (json.has("plateMetadata"))
         {
             _plateMetadata = (JSONObject)json.get("plateMetadata");
         }
@@ -104,14 +104,14 @@ public class Run extends ExpObject
         JSONArray dataInputs = new JSONArray();
         for (Data data : _dataInputs)
         {
-            dataInputs.add(data.toJSONObject());
+            dataInputs.put(data.toJSONObject());
         }
         result.put("dataInputs", dataInputs);
 
         JSONArray dataOutputs = new JSONArray();
         for (Data data : _dataOutputs)
         {
-            dataOutputs.add(data.toJSONObject());
+            dataOutputs.put(data.toJSONObject());
         }
         result.put("dataOutputs", dataOutputs);
         result.put("comment", _comment);
@@ -122,13 +122,13 @@ public class Run extends ExpObject
 
         for (Material material : _materialInputs)
         {
-            materialInputs.add(material.toJSONObject());
+            materialInputs.put(material.toJSONObject());
         }
         result.put("materialInputs", materialInputs);
 
         for (Material material : _materialOutputs)
         {
-            materialOutputs.add(material.toJSONObject());
+            materialOutputs.put(material.toJSONObject());
         }
         result.put("materialOutputs", materialOutputs);
 
@@ -142,7 +142,7 @@ public class Run extends ExpObject
                 {
                     o.put(entry.getKey(), entry.getValue());
                 }
-                dataRows.add(o);
+                dataRows.put(o);
             }
             result.put("dataRows", dataRows);
         }

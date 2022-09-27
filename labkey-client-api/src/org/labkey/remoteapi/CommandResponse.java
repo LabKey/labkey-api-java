@@ -15,8 +15,7 @@
  */
 package org.labkey.remoteapi;
 
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
+import org.json.JSONObject;
 
 import java.util.List;
 import java.util.Map;
@@ -136,8 +135,8 @@ public class CommandResponse
     {
         if(null == _data && null != getText()
                 && null != _contentType && _contentType.contains(Command.CONTENT_TYPE_JSON))
-            _data = (JSONObject)JSONValue.parse(getText());
-        return _data;
+            _data = new JSONObject(getText());
+        return _data.toMap();
     }
 
     /**

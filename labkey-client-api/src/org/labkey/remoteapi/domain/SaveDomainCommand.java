@@ -1,6 +1,6 @@
 package org.labkey.remoteapi.domain;
 
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 
 public class SaveDomainCommand extends AbstractDomainUpdateCommand
 {

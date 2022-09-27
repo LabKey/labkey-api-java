@@ -16,7 +16,7 @@
 package org.labkey.remoteapi.query;
 
 import org.apache.commons.logging.LogFactory;
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.collections.CaseInsensitiveHashMap;

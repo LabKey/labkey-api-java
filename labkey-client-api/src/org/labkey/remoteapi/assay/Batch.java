@@ -15,8 +15,8 @@
  */
 package org.labkey.remoteapi.assay;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,9 +37,9 @@ public class Batch extends ExpObject
     public Batch(JSONObject json)
     {
         super(json);
-        if (json.containsKey("runs"))
+        if (json.has("runs"))
         {
-            JSONArray array = (JSONArray)json.get("runs");
+            JSONArray array = json.getJSONArray("runs");
             for (Object o : array)
             {
                 JSONObject run = (JSONObject) o;
@@ -65,7 +65,7 @@ public class Batch extends ExpObject
         JSONArray runs = new JSONArray();
         for (Run run : _runs)
         {
-            runs.add(run.toJSONObject());
+            runs.put(run.toJSONObject());
         }
         result.put("runs", runs);
         return result;

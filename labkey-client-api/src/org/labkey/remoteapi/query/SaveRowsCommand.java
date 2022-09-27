@@ -15,8 +15,8 @@
  */
 package org.labkey.remoteapi.query;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.labkey.remoteapi.PostCommand;
 
 import java.text.SimpleDateFormat;
@@ -243,7 +243,7 @@ public abstract class SaveRowsCommand extends PostCommand<SaveRowsResponse>
                         jsonRow.put(entry.getKey(), value);
                     }
                 }
-                jsonRows.add(jsonRow);
+                jsonRows.put(jsonRow);
             }
         }
         json.put("rows", jsonRows);
