@@ -388,7 +388,7 @@ public class Command<ResponseType extends CommandResponse>
                 {
                     message = (String)json.get("exception");
 
-                    if ("org.labkey.api.action.ApiVersionException".equals(json.get("exceptionClass")))
+                    if ("org.labkey.api.action.ApiVersionException".equals(json.opt("exceptionClass")))
                         throw new ApiVersionException(message, r.getStatusCode(), json.toMap(), responseText, contentType);
 
                     throw new CommandException(message, r.getStatusCode(), json.toMap(), responseText, contentType);
