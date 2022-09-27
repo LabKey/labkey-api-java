@@ -42,11 +42,12 @@ import java.util.regex.Pattern;
  */
 public class CommandResponse
 {
-    private String _text;
-    private int _statusCode;
-    private String _contentType;
+    private final String _text;
+    private final int _statusCode;
+    private final String _contentType;
+    private final Command _sourceCommand;
+
     private JSONObject _data = null;
-    private Command _sourceCommand;
 
     /**
      * Constructs a new CommandResponse, initialized with the provided
@@ -157,9 +158,9 @@ public class CommandResponse
     {
         assert null != path;
         String[] pathParts = path.split("\\.");
-        if(null == pathParts || pathParts.length == 0)
+        if (pathParts.length == 0)
             return null;
-        return (T)getProperty(pathParts, 0, getParsedData());
+        return getProperty(pathParts, 0, getParsedData());
     }
 
     /**
@@ -191,7 +192,7 @@ public class CommandResponse
         Object prop = parent.get(key);
         if (arrayIndex != null)
         {
-            if (prop != null && prop instanceof List && ((List)prop).size() > arrayIndex)
+            if (prop instanceof List && ((List) prop).size() > arrayIndex)
                 prop = ((List)prop).get(arrayIndex);
             else
                 return null;
@@ -199,12 +200,12 @@ public class CommandResponse
 
         //if this was the last path part, return the prop
         //will return null if final path part not found
-        if(pathIndex == (path.length -1))
+        if (pathIndex == (path.length -1))
             return (T)prop;
         else
         {
             //recurse if prop is non-null and instance of map
-            return (null != prop && prop instanceof Map)
+            return (prop instanceof Map)
                 ? (T)getProperty(path, pathIndex + 1, (Map<String, Object>)prop)
                 : null;
         }

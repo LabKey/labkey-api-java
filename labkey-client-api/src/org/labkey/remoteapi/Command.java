@@ -23,6 +23,7 @@ import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.net.URIBuilder;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.io.*;
 import java.net.URI;
@@ -210,7 +211,10 @@ public class Command<ResponseType extends CommandResponse>
                 if (null != contentType && contentType.contains(Command.CONTENT_TYPE_JSON))
                 {
                     // Read entire response body and parse into JSON object
-                    json = new JSONObject(response.getReader());
+                    try (Reader reader = response.getReader())
+                    {
+                        json = new JSONObject(new JSONTokener(reader));
+                    }
                 }
                 else
                 {
