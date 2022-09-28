@@ -80,8 +80,7 @@ public class PropertyDescriptor extends ResponseObject
             _conditionalFormats.add(ConditionalFormat.fromJSON(cfObj));
         });
 
-        if (json.has("lookupSchema"))
-            _lookupSchema = json.getString("lookupSchema");
+        _lookupSchema = json.optString("lookupSchema", null);
         if (json.has("lookupQuery"))
             _lookupQuery = json.getString("lookupQuery");
         if (json.has("lookupContainer"))
