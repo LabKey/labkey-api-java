@@ -31,7 +31,7 @@ public class Domain extends ResponseObject
         super(json.toMap());
 
         _name = json.getString("name");
-        _description = json.optString("description");
+        _description = json.optString("description", null);
         _domainId = json.getLong("domainId");
         _domainURI = json.getString("domainURI");
 
