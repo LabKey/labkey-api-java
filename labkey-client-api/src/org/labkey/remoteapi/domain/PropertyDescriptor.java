@@ -81,10 +81,9 @@ public class PropertyDescriptor extends ResponseObject
         });
 
         _lookupSchema = json.optString("lookupSchema", null);
-        if (json.has("lookupQuery"))
-            _lookupQuery = json.getString("lookupQuery");
-        if (json.has("lookupContainer"))
-            _lookupContainer = json.getString("lookupContainer");
+        _lookupQuery = json.optString("lookupQuery", null);
+        _lookupContainer = json.optString("lookupContainer", null);
+
         if (json.has("derivationDataScope"))
             _derivationDataScope = json.getString("derivationDataScope");
         if (json.has("mvEnabled"))
