@@ -53,26 +53,26 @@ public class PropertyDescriptor extends ResponseObject
     {
         super(json.toMap());
 
-        _name = (String)json.get("name");
-        _label = (String)json.get("label");
-        _description = (String)json.get("description");
+        _name = json.getString("name");
+        _label = json.optString("label", null);
+        _description = json.getString("description");
 
-        if (json.get("hidden") != null)
-            _hidden = (Boolean)json.get("hidden");
-        if (json.get("required") != null)
-            _required = (Boolean)json.get("required");
+        if (json.has("hidden"))
+            _hidden = json.getBoolean("hidden");
+        if (json.has("required"))
+            _required = json.getBoolean("required");
 
-        _PHI = (String)json.get("PHI");
-        _propertyId = (Long)json.get("propertyId");
-        _format = (String)json.get("format");
+        _PHI = json.getString("PHI");
+        _propertyId = json.getLong("propertyId");
+        _format = json.getString("format");
 
         if (json.get("measure") != null)
-            _measure = (Boolean)json.get("measure");
+            _measure = json.getBoolean("measure");
         if (json.get("dimension") != null)
-            _dimension = (Boolean)json.get("dimension");
+            _dimension = json.getBoolean("dimension");
 
-        _propertyURI = (String)json.get("propertyURI");
-        _rangeURI = (String)json.get("rangeURI");
+        _propertyURI = json.getString("propertyURI");
+        _rangeURI = json.getString("rangeURI");
 
         JSONArray cfs = json.getJSONArray("conditionalFormats");
         cfs.forEach(cf -> {
@@ -81,15 +81,15 @@ public class PropertyDescriptor extends ResponseObject
         });
 
         if (json.get("lookupSchema") != null)
-            _lookupSchema = (String)json.get("lookupSchema");
+            _lookupSchema = json.getString("lookupSchema");
         if (json.get("lookupQuery") != null)
-            _lookupQuery = (String)json.get("lookupQuery");
+            _lookupQuery = json.getString("lookupQuery");
         if (json.get("lookupContainer") != null)
-            _lookupContainer = (String)json.get("lookupContainer");
+            _lookupContainer = json.getString("lookupContainer");
         if (json.get("derivationDataScope") != null)
-            _derivationDataScope = (String)json.get("derivationDataScope");
+            _derivationDataScope = json.getString("derivationDataScope");
         if (json.get("mvEnabled") != null)
-            _mvEnabled = (Boolean)json.get("mvEnabled");
+            _mvEnabled = json.getBoolean("mvEnabled");
     }
 
     public JSONObject toJSONObject()
