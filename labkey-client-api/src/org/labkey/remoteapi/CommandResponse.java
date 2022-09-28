@@ -47,7 +47,7 @@ public class CommandResponse
     private final String _contentType;
     private final Command _sourceCommand;
 
-    private Map<String, Object> _data = null;
+    private Map<String, Object> _data;
 
     /**
      * Constructs a new CommandResponse, initialized with the provided
@@ -63,7 +63,7 @@ public class CommandResponse
         _text = text;
         _statusCode = statusCode;
         _contentType = contentType;
-        _data = json.toMap();
+        _data = null != json ? json.toMap() : null;
         _sourceCommand = sourceCommand;
     }
 
