@@ -5,12 +5,12 @@ import org.labkey.remoteapi.PostCommand;
 
 public abstract class BaseStorageCommand extends PostCommand<StorageCommandResponse>
 {
-    private StorageRow _storageRow;
+    private final StorageRow _storageRow;
 
     public BaseStorageCommand(String action, StorageRow storageRow)
     {
         super("storage", action);
-        this._storageRow = storageRow;
+        _storageRow = storageRow;
     }
 
     @Override

@@ -47,7 +47,7 @@ public class CommandResponse
     private final String _contentType;
     private final Command _sourceCommand;
 
-    private JSONObject _data = null;
+    private Map<String, Object> _data = null;
 
     /**
      * Constructs a new CommandResponse, initialized with the provided
@@ -63,7 +63,7 @@ public class CommandResponse
         _text = text;
         _statusCode = statusCode;
         _contentType = contentType;
-        _data = json;
+        _data = json.toMap();
         _sourceCommand = sourceCommand;
     }
 
@@ -134,10 +134,10 @@ public class CommandResponse
     @SuppressWarnings("unchecked")
     public Map<String, Object> getParsedData()
     {
-        if(null == _data && null != getText()
+        if (null == _data && null != getText()
                 && null != _contentType && _contentType.contains(Command.CONTENT_TYPE_JSON))
-            _data = new JSONObject(getText());
-        return _data.toMap();
+            _data = new JSONObject(getText()).toMap();
+        return _data;
     }
 
     /**
@@ -176,7 +176,7 @@ public class CommandResponse
     @SuppressWarnings("unchecked")
     protected <T> T getProperty(String[] path, int pathIndex, Map<String, Object> parent)
     {
-        if(null == parent)
+        if (null == parent)
             return null;
 
         String key = path[pathIndex];

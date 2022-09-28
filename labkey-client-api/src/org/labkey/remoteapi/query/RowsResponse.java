@@ -81,7 +81,7 @@ abstract class RowsResponse extends CommandResponse
      */
     private void fixupParsedData()
     {
-        if(null == getParsedData())
+        if (null == getParsedData())
             return;
         
         //because JSON does not have a literal representation for dates
@@ -96,10 +96,10 @@ abstract class RowsResponse extends CommandResponse
         List<String> intFields = new ArrayList<>();
         List<String> floatFields = new ArrayList<>();
         List<Map<String, Object>> fields = getProperty("metaData.fields");
-        if(null == fields)
+        if (null == fields)
             return;
 
-        for(Map<String, Object> field : fields)
+        for (Map<String, Object> field : fields)
         {
             String type = (String)field.get("type");
             if("date".equalsIgnoreCase(type))
@@ -111,12 +111,12 @@ abstract class RowsResponse extends CommandResponse
         }
 
         //if no fields to fixup, just return
-        if(dateFields.size() == 0 && floatFields.size() == 0 && intFields.size() == 0)
+        if (dateFields.size() == 0 && floatFields.size() == 0 && intFields.size() == 0)
             return;
 
         //run the rows array and fixup date fields
         List<Map<String, Object>> rows = getRows();
-        if(null == rows || rows.size() == 0)
+        if (null == rows || rows.size() == 0)
             return;
 
         //The selectRows.api returns dates in a very particular format so that
@@ -128,22 +128,22 @@ abstract class RowsResponse extends CommandResponse
         boolean expandedFormat = getRequiredVersion() == 9.1;
         for (Map<String, Object> row : rows)
         {
-            for(String field : dateFields)
+            for (String field : dateFields)
             {
                 //in expanded format, the value is another JSONObject with several
                 //possible properties, including "value" which is the column's value
                 Object dateString = expandedFormat ? ((JSONObject)row.get(field)).get("value") : row.get(field);
 
-                if(null != dateString && dateString instanceof String)
+                if (dateString instanceof String)
                 {
                     //parse the string into a Java Date and
                     //reset the association
                     try
                     {
                         Date date = dateFormat.parse((String)dateString);
-                        if(null != date)
+                        if (null != date)
                         {
-                            if(expandedFormat)
+                            if (expandedFormat)
                                 ((JSONObject)row.get(field)).put("value", date);
                             else
                                 row.put(field, date);
