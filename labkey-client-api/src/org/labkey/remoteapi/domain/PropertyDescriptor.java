@@ -66,9 +66,9 @@ public class PropertyDescriptor extends ResponseObject
         _propertyId = json.getLong("propertyId");
         _format = json.optString("format", null);
 
-        if (json.get("measure") != null)
+        if (json.has("measure"))
             _measure = json.getBoolean("measure");
-        if (json.get("dimension") != null)
+        if (json.has("dimension"))
             _dimension = json.getBoolean("dimension");
 
         _propertyURI = json.getString("propertyURI");
@@ -80,15 +80,15 @@ public class PropertyDescriptor extends ResponseObject
             _conditionalFormats.add(ConditionalFormat.fromJSON(cfObj));
         });
 
-        if (json.get("lookupSchema") != null)
+        if (json.has("lookupSchema"))
             _lookupSchema = json.getString("lookupSchema");
-        if (json.get("lookupQuery") != null)
+        if (json.has("lookupQuery"))
             _lookupQuery = json.getString("lookupQuery");
-        if (json.get("lookupContainer") != null)
+        if (json.has("lookupContainer"))
             _lookupContainer = json.getString("lookupContainer");
-        if (json.get("derivationDataScope") != null)
+        if (json.has("derivationDataScope"))
             _derivationDataScope = json.getString("derivationDataScope");
-        if (json.get("mvEnabled") != null)
+        if (json.has("mvEnabled"))
             _mvEnabled = json.getBoolean("mvEnabled");
     }
 
