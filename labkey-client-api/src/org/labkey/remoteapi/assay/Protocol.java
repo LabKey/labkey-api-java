@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class Protocol extends ResponseObject
 {
-    private Long _protocolId;
+    private Integer _protocolId;
     private String _name;
     private String _description;
     private String _providerName;
@@ -55,7 +55,7 @@ public class Protocol extends ResponseObject
     {
         super(json.toMap());
 
-        _protocolId = (Long)json.opt("protocolId");
+        _protocolId = (Integer)json.opt("protocolId");
         _name = (String)json.get("name");
         _description = (String)json.get("description");
         _providerName = (String)json.get("providerName");
@@ -167,7 +167,7 @@ public class Protocol extends ResponseObject
         return result;
     }
 
-    public Long getProtocolId()
+    public Integer getProtocolId()
     {
         return _protocolId;
     }
