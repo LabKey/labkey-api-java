@@ -47,7 +47,7 @@ abstract class RowsResponse extends CommandResponse
      * @param json The parsed JSONObject (or null if JSON was not returned.
      * @param sourceCommand The source command object
      */
-    RowsResponse(String text, int statusCode, String contentType, JSONObject json, Command sourceCommand)
+    RowsResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends RowsResponse> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
         fixupParsedData();
@@ -55,11 +55,9 @@ abstract class RowsResponse extends CommandResponse
     }
 
     /**
-     * Returns the list of rows from the parsed response data.
-     * Note that numbers in the map values will be either of type
-     * Double or type Long depedning on the prescence of a decimal point.
-     * The most reliable way to work with them is to use the Number class.
-     * For example:
+     * Returns the list of rows from the parsed response data. Note that numbers in the map values will be either of
+     * type Double or type Long depending on the presence of a decimal point. The most reliable way to work with them
+     * is to use the Number class. For example:
      * <pre><code>
      * for (Map&lt;String, Object&gt; row : response.getRows())
      * {
@@ -67,8 +65,7 @@ abstract class RowsResponse extends CommandResponse
      *     // use Number.intValue(), doubleValue(), longValue(), etc to get various primitive types
      * }
      * </code></pre>
-     * @return The list of rows (each row is a Map), or null if
-     * the rows list was not included in the response.
+     * @return The list of rows (each row is a Map), or null if the rows list was not included in the response.
      */
     public List<Map<String, Object>> getRows()
     {
@@ -76,8 +73,7 @@ abstract class RowsResponse extends CommandResponse
     }
 
     /**
-     * Fixes up the parsed data. Currently, this converts string-based
-     * date literals into real Java Date objects.
+     * Fixes up the parsed data. Currently, this converts string-based date literals into real Java Date objects.
      */
     private void fixupParsedData()
     {
@@ -130,21 +126,21 @@ abstract class RowsResponse extends CommandResponse
         {
             for (String field : dateFields)
             {
-                //in expanded format, the value is another JSONObject with several
+                //in expanded format, the value is a Map<String, Object> with several
                 //possible properties, including "value" which is the column's value
-                Object dateString = expandedFormat ? ((JSONObject)row.get(field)).get("value") : row.get(field);
+                Object dateString = expandedFormat ? ((Map<String, Object>)row.get(field)).get("value") : row.get(field);
 
-                if (dateString instanceof String)
+                if (dateString instanceof String ds)
                 {
                     //parse the string into a Java Date and
                     //reset the association
                     try
                     {
-                        Date date = dateFormat.parse((String)dateString);
+                        Date date = dateFormat.parse(ds);
                         if (null != date)
                         {
                             if (expandedFormat)
-                                ((JSONObject)row.get(field)).put("value", date);
+                                ((Map<String, Object>)row.get(field)).put("value", date);
                             else
                                 row.put(field, date);
                         }
@@ -161,12 +157,12 @@ abstract class RowsResponse extends CommandResponse
             //floats
             for (String field : floatFields)
             {
-                Object value = expandedFormat ? ((JSONObject)row.get(field)).get("value") : row.get(field);
+                Object value = expandedFormat ? ((Map<String, Object>)row.get(field)).get("value") : row.get(field);
                 if (value instanceof Number)
                 {
                     Double number = ((Number) value).doubleValue();
-                    if(expandedFormat)
-                        ((JSONObject)row.get(field)).put("value", number);
+                    if (expandedFormat)
+                        ((Map<String, Object>)row.get(field)).put("value", number);
                     else
                         row.put(field, number);
                 }
@@ -175,12 +171,12 @@ abstract class RowsResponse extends CommandResponse
             //ints
             for (String field : intFields)
             {
-                Object value = expandedFormat ? ((JSONObject)row.get(field)).get("value") : row.get(field);
+                Object value = expandedFormat ? ((Map<String, Object>)row.get(field)).get("value") : row.get(field);
                 if (value instanceof Number)
                 {
                     Integer number = ((Number) value).intValue();
-                    if(expandedFormat)
-                        ((JSONObject)row.get(field)).put("value", number);
+                    if (expandedFormat)
+                        ((Map<String, Object>)row.get(field)).put("value", number);
                     else
                         row.put(field, number);
                 }
