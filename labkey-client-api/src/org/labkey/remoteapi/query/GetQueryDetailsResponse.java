@@ -84,10 +84,10 @@ public class GetQueryDetailsResponse extends CommandResponse
     public List<Column> getColumns()
     {
         List<Column> result = new ArrayList<>();
-        JSONArray columns = getProperty("columns");
-        for (Object column : columns)
+        List<Map<String, Object>> columns = getProperty("columns");
+        for (Map<String, Object> column : columns)
         {
-            result.add(new Column((Map<String, Object>) column));
+            result.add(new Column(column));
         }
         return result;
     }
