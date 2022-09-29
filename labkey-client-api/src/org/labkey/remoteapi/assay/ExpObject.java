@@ -42,7 +42,7 @@ public abstract class ExpObject extends ResponseObject
         super(json.toMap());
         _id = json.has("id") ? ((Number)json.get("id")).intValue() : 0;
         _name = (String)json.get("name");
-        if (json.get("properties") != null)
+        if (json.opt("properties") != null)
         {
             _properties = (Map<String, Object>)json.get("properties");
         }
