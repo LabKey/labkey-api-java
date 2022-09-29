@@ -55,7 +55,7 @@ public class Protocol extends ResponseObject
     {
         super(json.toMap());
 
-        _protocolId = (Integer)json.opt("protocolId");
+        _protocolId = (Integer)json.optNumber("protocolId", null);
         _name = (String)json.get("name");
         _description = (String)json.get("description");
         _providerName = (String)json.get("providerName");
