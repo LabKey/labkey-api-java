@@ -57,7 +57,7 @@ public class Protocol extends ResponseObject
 
         _protocolId = (Integer)json.optNumber("protocolId", null);
         _name = (String)json.get("name");
-        _description = (String)json.get("description");
+        _description = json.optString("description", null);
         _providerName = (String)json.get("providerName");
 
         if (json.get("domains") instanceof JSONArray)

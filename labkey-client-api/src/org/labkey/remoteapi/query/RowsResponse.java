@@ -80,12 +80,9 @@ abstract class RowsResponse extends CommandResponse
         if (null == getParsedData())
             return;
         
-        //because JSON does not have a literal representation for dates
-        //we need to fixup date values in the response rows for columns
-        //of type date.
-
-        //we also should convert numeric values to their proper Java types
-        //based on the meta-data type name (int vs float)
+        // Because JSON does not have a literal representation for dates we fixup date values in the response rows for
+        // columns of type date. We also convert numeric values to their proper Java types based on the meta-data type
+        // name (int vs float).
 
         //build up the list of date fields
         List<String> dateFields = new ArrayList<>();
@@ -98,7 +95,7 @@ abstract class RowsResponse extends CommandResponse
         for (Map<String, Object> field : fields)
         {
             String type = (String)field.get("type");
-            if("date".equalsIgnoreCase(type))
+            if ("date".equalsIgnoreCase(type))
                 dateFields.add((String)field.get("name"));
             else if ("float".equalsIgnoreCase(type))
                 floatFields.add((String)field.get("name"));
@@ -106,43 +103,40 @@ abstract class RowsResponse extends CommandResponse
                 intFields.add((String)field.get("name"));
         }
 
-        //if no fields to fixup, just return
+        // If no fields to fixup, just return
         if (dateFields.size() == 0 && floatFields.size() == 0 && intFields.size() == 0)
             return;
 
-        //run the rows array and fixup date fields
+        // If no rows, just return
         List<Map<String, Object>> rows = getRows();
         if (null == rows || rows.size() == 0)
             return;
 
-        //The selectRows.api returns dates in a very particular format so that
-        //JavaScript can parse them into actual date classes. If this format ever
-        //changes, we'll need to change the format string used here.
-        //CONSIDER: use a library like ConvertUtils to avoid this dependency?
+        // The selectRows.api returns dates in a very particular format so that JavaScript can parse them into actual
+        // date classes. If this format ever changes, we'll need to change the format string used here.
+        // CONSIDER: use a library like ConvertUtils to avoid this dependency?
         DateParser dateFormat = new DateParser();
-
         boolean expandedFormat = getRequiredVersion() == 9.1;
+
         for (Map<String, Object> row : rows)
         {
             for (String field : dateFields)
             {
                 //in expanded format, the value is a Map<String, Object> with several
                 //possible properties, including "value" which is the column's value
-                Object dateString = expandedFormat ? ((Map<String, Object>)row.get(field)).get("value") : row.get(field);
+                String valueFieldName = expandedFormat ? "value" : field;
+                Map<String, Object> map = expandedFormat ? (Map<String, Object>)row.get(field) : row;
+                Object dateString = map.get(valueFieldName);
 
                 if (dateString instanceof String ds)
                 {
-                    //parse the string into a Java Date and
-                    //reset the association
+                    //parse the string into a Java Date and reset the association
                     try
                     {
                         Date date = dateFormat.parse(ds);
                         if (null != date)
                         {
-                            if (expandedFormat)
-                                ((Map<String, Object>)row.get(field)).put("value", date);
-                            else
-                                row.put(field, date);
+                            map.put(valueFieldName, date);
                         }
                     }
                     catch(ParseException e)
@@ -157,28 +151,26 @@ abstract class RowsResponse extends CommandResponse
             //floats
             for (String field : floatFields)
             {
-                Object value = expandedFormat ? ((Map<String, Object>)row.get(field)).get("value") : row.get(field);
-                if (value instanceof Number)
+                String valueFieldName = expandedFormat ? "value" : field;
+                Map<String, Object> map = expandedFormat ? (Map<String, Object>)row.get(field) : row;
+                Object value = map.get(valueFieldName);
+
+                if (value instanceof Number num)
                 {
-                    Double number = ((Number) value).doubleValue();
-                    if (expandedFormat)
-                        ((Map<String, Object>)row.get(field)).put("value", number);
-                    else
-                        row.put(field, number);
+                    map.put(valueFieldName, num.doubleValue());
                 }
             }
 
             //ints
             for (String field : intFields)
             {
-                Object value = expandedFormat ? ((Map<String, Object>)row.get(field)).get("value") : row.get(field);
-                if (value instanceof Number)
+                String valueFieldName = expandedFormat ? "value" : field;
+                Map<String, Object> map = expandedFormat ? (Map<String, Object>)row.get(field) : row;
+                Object value = map.get(valueFieldName);
+
+                if (value instanceof Number num)
                 {
-                    Integer number = ((Number) value).intValue();
-                    if (expandedFormat)
-                        ((Map<String, Object>)row.get(field)).put("value", number);
-                    else
-                        row.put(field, number);
+                    map.put(valueFieldName, num.intValue());
                 }
             }
         } //for each row
@@ -191,7 +183,7 @@ abstract class RowsResponse extends CommandResponse
 
         if (getRows() != null)
         {
-            for(Map<String, Object> row : getRows())
+            for (Map<String, Object> row : getRows())
             {
                 //copy the row map into a case-insensitive hash map
                 ciRows.add(new CaseInsensitiveHashMap<>(row));
