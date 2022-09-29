@@ -38,7 +38,7 @@ public class Data extends ExpObject
     public Data(JSONObject json)
     {
         super(json);
-        _dataFileURL = (String)json.get("dataFileURL");
+        _dataFileURL = json.optString("dataFileURL");
         _absolutePath = (String)json.get("absolutePath");
         _pipelinePath = (String)json.get("pipelinePath");
     }
