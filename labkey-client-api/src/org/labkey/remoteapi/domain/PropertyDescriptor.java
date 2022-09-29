@@ -71,8 +71,8 @@ public class PropertyDescriptor extends ResponseObject
         if (json.has("dimension"))
             _dimension = json.getBoolean("dimension");
 
-        _propertyURI = json.getString("propertyURI");
-        _rangeURI = json.getString("rangeURI");
+        _propertyURI = json.optString("propertyURI", null);
+        _rangeURI = json.optString("rangeURI", null);
 
         JSONArray cfs = json.getJSONArray("conditionalFormats");
         cfs.forEach(cf -> {
