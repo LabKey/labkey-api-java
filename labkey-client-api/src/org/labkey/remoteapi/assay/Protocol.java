@@ -86,8 +86,7 @@ public class Protocol extends ResponseObject
             _allowSpacesInPath = (Boolean)json.get("allowSpacesInPath");
         if (json.has("allowTransformationScript"))
             _allowTransformationScript = (Boolean)json.get("allowTransformationScript");
-        if (json.has("autoCopyTargetContainerId"))
-            _autoCopyTargetContainerId = (String)json.get("autoCopyTargetContainerId");
+        _autoCopyTargetContainerId = json.optString("autoCopyTargetContainerId", null);
 
         if (json.get("availableDetectionMethods") instanceof JSONArray)
             _availableDetectionMethods = convert(json.getJSONArray("availableDetectionMethods"));
