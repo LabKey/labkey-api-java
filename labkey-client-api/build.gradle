@@ -56,8 +56,6 @@ dependencies {
             {
                 // exclude this because it gets in the way of our own JSON object implementations from server/api
                 exclude group: "org.json", module:"json"
-                // exclude this since it's not required for non-test usage of this dependency
-                exclude group: "junit", module:"junit"
             }
     api "org.apache.httpcomponents.client5:httpclient5:${httpclient5Version}"
     api "org.apache.httpcomponents.core5:httpcore5:${httpcore5Version}"
