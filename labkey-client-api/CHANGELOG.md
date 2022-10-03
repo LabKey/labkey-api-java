@@ -1,5 +1,10 @@
 # The LabKey Remote API Library for Java - Change Log
 
+## version TBD
+*Released*: TBD
+* Remove `lib` directory from `fatJar` in favor of pulling dependencies via the published pom files when needed
+* Remove artifactory plugin since we use the maven `publish` command now
+
 ## version 3.1.0
 *Released*: 20 September 2022
 * Add support for creating Freezer Manager freezer hierarchies via StorageController APIs (earliest compatible LabKey Server version: 22.10.0)
