@@ -2,7 +2,7 @@
 
 ## version TBD
 *Released*: TBD
-* Remove `lib` directory from `fatJar` in favor of pulling dependencies via the published pom files when needed
+* Issue 46321: Remove `lib` directory from `fatJar` in favor of pulling dependencies via the published pom files when needed
 * Remove artifactory plugin since we use the maven `publish` command now
 
 ## version 3.1.0
