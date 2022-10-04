@@ -30,7 +30,7 @@ public abstract class ExpObject extends ResponseObject
 {
     private int _id;
     private String _name;
-    private Map<String, Object> _properties = new HashMap<String, Object>();
+    private Map<String, Object> _properties = new HashMap<>();
 
     public ExpObject()
     {
@@ -40,8 +40,8 @@ public abstract class ExpObject extends ResponseObject
     public ExpObject(JSONObject json)
     {
         super(json.toMap());
-        _id = json.has("id") ? ((Number)json.get("id")).intValue() : 0;
-        _name = (String)json.get("name");
+        _id = json.optInt("id");
+        _name = json.getString("name");
         if (json.opt("properties") != null)
         {
             _properties = (Map<String, Object>)json.get("properties");
@@ -56,34 +56,8 @@ public abstract class ExpObject extends ResponseObject
             result.put("id", _id);
         }
         result.put("name", _name);
-        result.put("properties", toJSON(_properties));
+        result.put("properties", _properties);
         return result;
-    }
-
-    /**
-     * Temp Fix for Issue: 23708
-     *      The Simple JSON library isn't properly serializing Dates, and generates invalid JSON.
-     *  TODO: Investigate and replace with a different JSON library
-     * @param properties Map to serialize
-     * @return the JSON object corresponding to the given properties
-     */
-    public JSONObject toJSON(Map<String, Object> properties)
-    {
-        JSONObject props = new JSONObject();
-
-        for(Map.Entry<String, Object> entry : properties.entrySet())
-        {
-            Object val = entry.getValue();
-            val = val instanceof java.util.Date ?
-                val.toString() :
-                val instanceof java.util.Map ?
-                    toJSON((java.util.Map) val):
-                    val;
-
-            props.put(entry.getKey(), val);
-        }
-
-        return props;
     }
 
     /** @return the auto-generated rowId for this object */
