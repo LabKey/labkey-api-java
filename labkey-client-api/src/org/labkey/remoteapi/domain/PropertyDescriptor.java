@@ -128,7 +128,7 @@ public class PropertyDescriptor extends ResponseObject
 
         if (forProtocol)
         {
-            result.put("url", result.get("URL"));
+            result.put("url", result.optString("URL", null));
             result.remove("URL");
             result.put("phi", result.get("PHI"));
             result.remove("PHI");
