@@ -40,7 +40,7 @@ public class Data extends ExpObject
         super(json);
         _dataFileURL = json.optString("dataFileURL", null);
         _absolutePath = json.optString("absolutePath", null);
-        _pipelinePath = (String)json.get("pipelinePath");
+        _pipelinePath = json.optString("pipelinePath", null);
     }
 
     @Override

@@ -96,8 +96,7 @@ public class Protocol extends ResponseObject
         _selectedMetadataInputFormat = json.optString("selectedMetadataInputFormat", null);
         if (json.get("availablePlateTemplates") instanceof JSONArray)
             _availablePlateTemplates = convert(json.getJSONArray("availablePlateTemplates"));
-        if (json.has("selectedPlateTemplate"))
-            _selectedPlateTemplate = (String)json.get("selectedPlateTemplate");
+        _selectedPlateTemplate = json.optString("selectedPlateTemplate", null);
 
         if (json.has("protocolTransformScripts"))
             _protocolTransformScripts = convert(json.getJSONArray("protocolTransformScripts"));
