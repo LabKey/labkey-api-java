@@ -6,7 +6,9 @@
   [json-simple](https://github.com/fangyidong/json-simple) is no longer maintained (last released in early 2012) and
   lacks support for basic features like generics. This is an incompatible API change for developers who *write* their own
   Command classes; they will need to update their Command classes if/when they upgrade to v4.0.0. Developers who simply
-  *use* Command classes should be able to upgrade without changes. 
+  *use* Command classes should be able to upgrade without changes.
+* Issue 46321: Remove `lib` directory from `fatJar` in favor of pulling dependencies via the published pom files when needed
+* Remove artifactory plugin since we use the maven `publish` command now
 
 ## version 3.1.0
 *Released*: 20 September 2022
