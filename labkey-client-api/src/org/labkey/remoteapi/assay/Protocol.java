@@ -56,9 +56,9 @@ public class Protocol extends ResponseObject
         super(json.toMap());
 
         _protocolId = (Integer)json.optNumber("protocolId", null);
-        _name = (String)json.get("name");
+        _name = json.getString("name");
         _description = json.optString("description", null);
-        _providerName = (String)json.get("providerName");
+        _providerName = json.getString("providerName");
 
         if (json.get("domains") instanceof JSONArray)
         {
@@ -93,8 +93,7 @@ public class Protocol extends ResponseObject
         _selectedDetectionMethod = json.optString("selectedDetectionMethod", null);
         if (json.get("availableMetadataInputFormats") instanceof JSONObject)
             _availableMetadataInputFormats = convert(json.getJSONObject("availableMetadataInputFormats"));
-        if (json.has("selectedMetadataInputFormat"))
-            _selectedMetadataInputFormat = (String)json.get("selectedMetadataInputFormat");
+        _selectedMetadataInputFormat = json.optString("selectedMetadataInputFormat", null);
         if (json.get("availablePlateTemplates") instanceof JSONArray)
             _availablePlateTemplates = convert(json.getJSONArray("availablePlateTemplates"));
         if (json.has("selectedPlateTemplate"))
