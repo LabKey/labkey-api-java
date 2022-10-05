@@ -90,7 +90,7 @@ public class Protocol extends ResponseObject
 
         if (json.get("availableDetectionMethods") instanceof JSONArray)
             _availableDetectionMethods = convert(json.getJSONArray("availableDetectionMethods"));
-        _selectedDetectionMethod = json.optString("selectedDetectionMethod");
+        _selectedDetectionMethod = json.optString("selectedDetectionMethod", null);
         if (json.get("availableMetadataInputFormats") instanceof JSONObject)
             _availableMetadataInputFormats = convert(json.getJSONObject("availableMetadataInputFormats"));
         if (json.has("selectedMetadataInputFormat"))
