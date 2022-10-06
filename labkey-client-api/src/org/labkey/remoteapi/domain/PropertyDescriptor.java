@@ -130,7 +130,7 @@ public class PropertyDescriptor extends ResponseObject
         {
             result.put("url", result.optString("URL", null));
             result.remove("URL");
-            result.put("phi", result.get("PHI"));
+            result.put("phi", result.optString("PHI", null));
             result.remove("PHI");
         }
 
