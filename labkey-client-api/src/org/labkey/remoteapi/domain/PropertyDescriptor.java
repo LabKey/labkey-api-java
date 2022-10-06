@@ -62,7 +62,7 @@ public class PropertyDescriptor extends ResponseObject
         if (json.has("required"))
             _required = json.getBoolean("required");
 
-        _PHI = json.getString("PHI");
+        _PHI = json.optString("PHI", null);
         _propertyId = json.getLong("propertyId");
         _format = json.optString("format", null);
 
