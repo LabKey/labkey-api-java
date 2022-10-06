@@ -31,7 +31,7 @@ public class CreateUserResponse extends CommandResponse
         super(text, statusCode, contentType, json, sourceCommand);
     }
 
-    public Number getUserId()
+    public Integer getUserId()
     {
         return getProperty("userId");
     }
