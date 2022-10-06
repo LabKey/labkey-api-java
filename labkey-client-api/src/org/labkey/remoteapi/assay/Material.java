@@ -33,10 +33,10 @@ public class Material extends ExpObject
 
         if (json.has("sampleSet"))
         {
-            JSONObject sampleSet = (JSONObject)json.get("sampleSet");
+            JSONObject sampleSet = json.getJSONObject("sampleSet");
 
-            _sampleSetName = (String) sampleSet.get("name");
-            _sampleSetId = (Long) sampleSet.opt("id");
+            _sampleSetName = sampleSet.getString("name");
+            _sampleSetId = sampleSet.optLong("id");
         }
     }
 
