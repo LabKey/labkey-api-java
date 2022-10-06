@@ -84,17 +84,9 @@ public class Run extends ExpObject
                 _materialOutputs.add(new Material((JSONObject) o));
             }
         }
-        _comment = (String)json.get("comment");
-
-        if (json.has("lsid"))
-        {
-            _lsid = (String) json.get("lsid");
-        }
-
-        if (json.has("plateMetadata"))
-        {
-            _plateMetadata = (JSONObject)json.get("plateMetadata");
-        }
+        _comment = json.optString("comment", null);
+        _lsid = json.optString("lsid", null);
+        _plateMetadata = json.optJSONObject("plateMetadata");
     }
 
     @Override
