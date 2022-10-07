@@ -20,7 +20,11 @@ import org.json.JSONObject;
 import org.labkey.remoteapi.PostCommand;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /*
 * User: Dave
@@ -240,7 +244,8 @@ public abstract class SaveRowsCommand extends PostCommand<SaveRowsResponse>
                         if(value instanceof Date)
                             value = fmt.format((Date)value);
 
-                        jsonRow.put(entry.getKey(), value);
+                        // JSONObject.wrap allows us to save 'null' values.
+                        jsonRow.put(entry.getKey(), JSONObject.wrap(value));
                     }
                 }
                 jsonRows.put(jsonRow);
