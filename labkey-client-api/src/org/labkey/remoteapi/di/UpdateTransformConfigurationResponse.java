@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import org.labkey.remoteapi.Command;
 
 import java.util.Date;
+import java.util.Map;
 
 /**
  * User: tgaluhn
@@ -41,7 +42,7 @@ public class UpdateTransformConfigurationResponse extends BaseTransformResponse
         super(text, statusCode, contentType, json, sourceCommand);
     }
 
-    public JSONObject getResult()
+    public Map<String, Object> getResult()
     {
         return getProperty("result");
     }
