@@ -40,7 +40,7 @@ public abstract class ExpObject extends ResponseObject
     public ExpObject(JSONObject json)
     {
         super(json.toMap());
-        _id = (Integer)json.opt("id");
+        _id = json.optInt("id", 0);
         _name = json.optString("name", null);
         if (json.has("properties"))
         {
