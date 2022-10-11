@@ -28,7 +28,7 @@ import java.util.Map;
 */
 public abstract class ExpObject extends ResponseObject
 {
-    private int _id;
+    private Number _id;
     private String _name;
     private Map<String, Object> _properties = new HashMap<>();
 
@@ -40,7 +40,7 @@ public abstract class ExpObject extends ResponseObject
     public ExpObject(JSONObject json)
     {
         super(json.toMap());
-        _id = json.optInt("id", 0);
+        _id = json.optNumber("id");
         _name = json.optString("name", null);
         if (json.has("properties"))
         {
@@ -51,19 +51,16 @@ public abstract class ExpObject extends ResponseObject
     public JSONObject toJSONObject()
     {
         JSONObject result = new JSONObject();
-        if (_id != 0)
-        {
-            result.put("id", _id);
-        }
+        result.put("id", _id);
         result.put("name", _name);
         result.put("properties", _properties);
         return result;
     }
 
     /** @return the auto-generated rowId for this object */
-    public int getId()
+    public Integer getId()
     {
-        return _id;
+        return _id == null ? null : _id.intValue();
     }
 
     /** @param id the auto-generated rowId for this object */

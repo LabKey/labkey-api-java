@@ -20,7 +20,7 @@ import org.json.JSONObject;
 public class Material extends ExpObject
 {
     private String _sampleSetName;
-    private Long _sampleSetId;
+    private Number _sampleSetId;
 
     public Material()
     {
@@ -36,7 +36,7 @@ public class Material extends ExpObject
             JSONObject sampleSet = json.getJSONObject("sampleSet");
 
             _sampleSetName = sampleSet.getString("name");
-            _sampleSetId = sampleSet.optLong("id");
+            _sampleSetId = sampleSet.optNumber("id");
         }
     }
 
@@ -71,7 +71,7 @@ public class Material extends ExpObject
 
     public Long getSampleSetId()
     {
-        return _sampleSetId;
+        return _sampleSetId == null ? null : _sampleSetId.longValue();
     }
 
     public void setSampleSetId(Long sampleSetId)
