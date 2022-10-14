@@ -23,8 +23,6 @@ import java.util.Map;
 
 /**
  * Returns a list of users given selection criteria. This may be called by any logged-in user.
- * User: jeckels
- * Date: Jan 26, 2010
  */
 public class GetUsersCommand extends Command<GetUsersResponse>
 {
@@ -107,7 +105,7 @@ public class GetUsersCommand extends Command<GetUsersResponse>
     }
 
     @Override
-    public Command copy()
+    public GetUsersCommand copy()
     {
         return new GetUsersCommand(this, getGroup(), getGroupId(), getName());
     }

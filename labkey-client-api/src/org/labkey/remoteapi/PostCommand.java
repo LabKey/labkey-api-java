@@ -23,12 +23,6 @@ import org.json.JSONObject;
 
 import java.net.URI;
 
-/*
-* User: Dave
-* Date: Jul 11, 2008
-* Time: 3:17:18 PM
-*/
-
 /**
  * Base class for all commands that needs to post data to the server,
  * rather than providing parameters in the query string.
@@ -43,9 +37,6 @@ import java.net.URI;
  * PostCommand object directly, providing the controller and action name for
  * the new API. The post body may then be supplied by overriding the
  * {@link #getJsonObject()} method, returning the JSON object to post.
- *  
- * @author Dave Stearns, LabKey Corporation
- * @version 1.0
  */
 public class PostCommand<ResponseType extends CommandResponse> extends Command<ResponseType>
 {
@@ -90,7 +81,7 @@ public class PostCommand<ResponseType extends CommandResponse> extends Command<R
 
     /**
      * Overrides {@link Command#createRequest(URI)} to create an
-     * <code>HttpPost</code> object.
+     * {@link HttpPost} object.
      * <p>
      * Override this method if your post command sends something other
      * than JSON in the post body. In your override, create the PostMethod
@@ -98,7 +89,6 @@ public class PostCommand<ResponseType extends CommandResponse> extends Command<R
      * @return The PostMethod object.
      */
     @Override
-    @SuppressWarnings("unchecked")
     protected HttpUriRequest createRequest(URI uri)
     {
         HttpPost request = new HttpPost(uri);
@@ -118,7 +108,7 @@ public class PostCommand<ResponseType extends CommandResponse> extends Command<R
     }
 
     @Override
-    public PostCommand copy()
+    public PostCommand<?> copy()
     {
         return new PostCommand<>(this);
     }

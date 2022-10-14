@@ -25,7 +25,14 @@ import org.apache.hc.core5.net.URIBuilder;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -45,16 +52,13 @@ import java.util.Scanner;
  * However, if future versions of the LabKey Server expose new HTTP APIs
  * that are not yet supported with a specialized class in this library,
  * the developer may still invoke these APIs by creating an instance of the
- * Command object directly, providing the controller and action name for
- * the new API. Parameters may then be specified by calling the <code>setParameters()</code>
+ * {@link Command} class directly, providing the controller and action name for
+ * the new API. Parameters may then be specified by calling the {@link #setParameters(Map)}
  * method, passing a populated parameter <code>Map&lt;String, Object&gt;</code>
  * <p>
  * Note that this class is not thread-safe. Do not share instances of this class
  * or its descendants between threads, unless the descendant declares explicitly that
  * it is thread-safe.
- *
- * @author Dave Stearns, LabKey Corporation
- * @version 1.0
  */
 public class Command<ResponseType extends CommandResponse>
 {
@@ -386,7 +390,7 @@ public class Command<ResponseType extends CommandResponse>
                 json = new JSONObject(responseText);
                 if (json.has("exception"))
                 {
-                    message = (String)json.get("exception");
+                    message = json.getString("exception");
 
                     if ("org.labkey.api.action.ApiVersionException".equals(json.opt("exceptionClass")))
                         throw new ApiVersionException(message, r.getStatusCode(), json, responseText, contentType);
@@ -575,8 +579,7 @@ public class Command<ResponseType extends CommandResponse>
      * to copy their own data members   
      * @return A copy of this object
      */
-    // TODO: For next major release, genericize this return value (Command<ResponseType>)
-    public Command copy()
+    public Command<?> copy()
     {
         return new Command<>(this);
     }

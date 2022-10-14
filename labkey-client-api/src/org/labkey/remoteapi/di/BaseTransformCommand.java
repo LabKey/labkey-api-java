@@ -19,18 +19,14 @@ import org.json.JSONObject;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.PostCommand;
 
-/**
- * User: tgaluhn
- * Date: 10/29/13
- */
 public abstract class BaseTransformCommand<ResponseType extends CommandResponse> extends PostCommand<ResponseType>
 {
-    protected String _transformId;
+    private String _transformId;
 
-    public BaseTransformCommand(BaseTransformCommand source)
+    public BaseTransformCommand(BaseTransformCommand<ResponseType> source)
     {
         super(source);
-        _transformId = (source.getTransformId());
+        setTransformId(source.getTransformId());
     }
 
     public BaseTransformCommand(String controllerName, String actionName)
@@ -59,5 +55,19 @@ public abstract class BaseTransformCommand<ResponseType extends CommandResponse>
         result.put("transformId", _transformId);
         setJsonObject(result);
         return result;
+    }
+
+    @Override
+    public BaseTransformCommand<ResponseType> copy()
+    {
+        return new TransformCommandCopy<>(this);
+    }
+}
+
+class TransformCommandCopy<R extends CommandResponse> extends BaseTransformCommand<R>
+{
+    public TransformCommandCopy(BaseTransformCommand<R> source)
+    {
+        super(source);
     }
 }

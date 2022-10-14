@@ -19,8 +19,6 @@ import org.json.JSONObject;
 
 /**
  * Queues an ETL to run on the server.
- * User: tgaluhn
- * Date: 10/29/13
  */
 public class RunTransformCommand extends BaseTransformCommand<RunTransformResponse>
 {
@@ -34,7 +32,7 @@ public class RunTransformCommand extends BaseTransformCommand<RunTransformRespon
     public RunTransformCommand(String transformId)
     {
         super("dataintegration", "runTransform");
-        _transformId = transformId;
+        setTransformId(transformId);
     }
 
     @Override

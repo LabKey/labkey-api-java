@@ -18,11 +18,6 @@ package org.labkey.remoteapi.assay.nab.model;
 import java.util.List;
 import java.util.Map;
 
-/*
- * User: brittp
- * Date: May 15, 2009
- * Time: 1:20:49 PM
- */
 public class NAbWellGroup
 {
     private Long _min;
@@ -41,7 +36,7 @@ public class NAbWellGroup
             _stddev = ((Number) properties.get("stddev")).doubleValue();
         }
 
-        if (properties.keySet().contains("wells"))
+        if (properties.containsKey("wells"))
         {
             List<Map<String, Object>> wells = (List<Map<String, Object>>) properties.get("wells");
             _wells = new NAbWell[wells.size()];

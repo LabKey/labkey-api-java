@@ -15,19 +15,11 @@
  */
 package org.labkey.remoteapi.assay.nab.model;
 
-import java.util.Map;
-
-/*
- * User: brittp
- * Date: May 15, 2009
- * Time: 1:27:21 PM
- */
-
 public class NAbNeutralizationResult
 {
-    private long _cutoff;
-    private double _curveBasedDilution;
-    private double _pointBasedDilution;
+    private final long _cutoff;
+    private final double _curveBasedDilution;
+    private final double _pointBasedDilution;
 
     public NAbNeutralizationResult(long cutoff, double curveBasedDilution, double pointBasedDilution)
     {

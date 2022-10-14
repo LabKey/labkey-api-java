@@ -18,11 +18,6 @@ package org.labkey.remoteapi.security;
 import org.json.JSONObject;
 import org.labkey.remoteapi.CommandResponse;
 
-/*
-* User: Dave
-* Date: Sep 9, 2008
-* Time: 2:15:51 PM
-*/
 public class GetGroupPermsResponse extends CommandResponse
 {
     public GetGroupPermsResponse(String text, int statusCode, String contentType, JSONObject json, GetGroupPermsCommand sourceCommand)

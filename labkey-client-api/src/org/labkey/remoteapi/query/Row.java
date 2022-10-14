@@ -15,12 +15,6 @@
  */
 package org.labkey.remoteapi.query;
 
-/*
-* User: dave
-* Date: Oct 7, 2009
-* Time: 11:40:28 AM
-*/
-
 /**
  * Provides a format-neutral way of obtaining a row's value. If you requested the extended format
  * (see SelectRowsCommand.setExtendedFormat()), you may also get the display value (if different),
@@ -35,28 +29,28 @@ public interface Row
      * @param columnName The column name.
      * @return The column's raw value or null if the column was not found.
      */
-    public Object getValue(String columnName);
+    Object getValue(String columnName);
 
     /**
      * Returns a column's display value (if different from value).
      * @param columnName The column name.
      * @return The display value, or null if the column was not found or does not have a different display value.
      */
-    public Object getDisplayValue(String columnName);
+    Object getDisplayValue(String columnName);
 
     /**
      * Returns a column's URL
      * @param columnName The column name.
      * @return The column's URL value, or null if the column was not found or does not have a URL.
      */
-    public String getUrl(String columnName);
+    String getUrl(String columnName);
 
     /**
      * Returns a column's missing-value indicator.
      * @param columName The column name.
      * @return The column's mising-value indicator, or null if the column was not found or is not missing-value enabled.
      */
-    public String getMvValue(String columName);
+    String getMvValue(String columName);
 
     /**
      * Returns the column's missing-value raw value. This is the actual value imported into the database along
@@ -64,5 +58,5 @@ public interface Row
      * @param columnName The column name.
      * @return The column's mising-value raw value, or null if the column was not found or is not missing-value enabled.
      */
-    public Object getMvRawValue(String columnName);
+    Object getMvRawValue(String columnName);
 }

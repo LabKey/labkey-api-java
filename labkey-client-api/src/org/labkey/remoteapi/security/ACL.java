@@ -15,11 +15,6 @@
  */
 package org.labkey.remoteapi.security;
 
-/*
-* User: Dave
-* Date: Oct 27, 2008
-* Time: 1:32:27 PM
-*/
 public class ACL
 {
     public static final int PERM_NONE = 0x00000000;

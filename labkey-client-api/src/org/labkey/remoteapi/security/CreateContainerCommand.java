@@ -21,8 +21,6 @@ import org.labkey.remoteapi.PostCommand;
 
 /**
  * Create a container (project/folder/workbook) on the server
- * User: jeckels
- * Date: Jul 20, 2012
  */
 public class CreateContainerCommand extends PostCommand<CreateContainerResponse>
 {

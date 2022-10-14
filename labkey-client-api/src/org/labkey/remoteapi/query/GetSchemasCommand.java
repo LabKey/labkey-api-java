@@ -18,12 +18,6 @@ package org.labkey.remoteapi.query;
 import org.json.JSONObject;
 import org.labkey.remoteapi.Command;
 
-/*
-* User: Dave
-* Date: Oct 21, 2008
-* Time: 2:57:10 PM
-*/
-
 /**
  * Command to obtain the list of schemas available in a given folder path.
  */

@@ -21,7 +21,7 @@ import java.util.Map;
 
 public class CaseInsensitiveHashMap<V> extends HashMap<String, V>
 {
-    private Map<String, String> caseMap = new HashMap<String, String>();
+    private final Map<String, String> caseMap = new HashMap<>();
 
     public CaseInsensitiveHashMap()
     {
@@ -29,8 +29,7 @@ public class CaseInsensitiveHashMap<V> extends HashMap<String, V>
 
     public CaseInsensitiveHashMap(Map<String, V> map)
     {
-        for (Map.Entry<String, V> entry : map.entrySet())
-            put(entry.getKey(), entry.getValue());
+        this.putAll(map);
     }
 
     public CaseInsensitiveHashMap(int count)
@@ -96,17 +95,13 @@ public class CaseInsensitiveHashMap<V> extends HashMap<String, V>
     public V put(String str, V o1)
     {
         String lcase = str == null ? null : str.toLowerCase();
-        String correctCase = caseMap.get(lcase);
-        if (null == correctCase)
-        {
-            correctCase = str;
-            caseMap.put(lcase, correctCase);
-        }
+        String correctCase = caseMap.computeIfAbsent(lcase, k -> str);
         caseMap.put(str, correctCase);
         return super.put(correctCase, o1);
     }
 
 
+    @Override
     public V getOrDefault(Object key, V defaultValue)
     {
         if (containsKey(key))
@@ -115,6 +110,7 @@ public class CaseInsensitiveHashMap<V> extends HashMap<String, V>
         return defaultValue;
     }
 
+    @Override
     public V putIfAbsent(String key, V value)
     {
         if (containsKey(key))

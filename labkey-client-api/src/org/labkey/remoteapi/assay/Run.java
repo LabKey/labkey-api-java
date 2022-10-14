@@ -24,8 +24,6 @@ import java.util.Map;
 
 /**
 * Represents a single assay run
-* User: jeckels
-* Date: Apr 28, 2010
 */
 public class Run extends ExpObject
 {

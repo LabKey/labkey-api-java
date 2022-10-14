@@ -5,6 +5,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.labkey.remoteapi.PostCommand;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,11 +30,12 @@ public class SaveAssayRunsCommand extends PostCommand<SaveAssayRunsResponse>
     public SaveAssayRunsCommand(SaveAssayRunsCommand source)
     {
         super(source);
-        _runs = source._runs;
+        _runs = new ArrayList<>(source._runs);
+        _protocolName = source._protocolName;
     }
 
     @Override
-    public PostCommand copy()
+    public SaveAssayRunsCommand copy()
     {
         return new SaveAssayRunsCommand(this);
     }

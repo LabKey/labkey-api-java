@@ -21,11 +21,6 @@ import org.labkey.remoteapi.Command;
 import java.util.HashMap;
 import java.util.Map;
 
-/*
-* User: Dave
-* Date: Sep 9, 2008
-* Time: 2:12:46 PM
-*/
 public class GetGroupPermsCommand extends Command<GetGroupPermsResponse>
 {
     private boolean _includeSubfolders = false;

@@ -17,17 +17,11 @@ package org.labkey.remoteapi.assay.nab.model;
 
 import java.util.Map;
 
-/*
- * User: brittp
- * Date: May 15, 2009
- * Time: 1:21:41 PM
- */
-
 public class NAbWell
 {
-    private long _row;
-    private long _column;
-    private long _value;
+    private final long _row;
+    private final long _column;
+    private final long _value;
 
     public NAbWell(Map<String, Object> properties)
     {

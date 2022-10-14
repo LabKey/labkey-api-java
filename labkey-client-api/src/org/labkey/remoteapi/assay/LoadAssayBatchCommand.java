@@ -3,7 +3,6 @@ package org.labkey.remoteapi.assay;
 import org.json.JSONObject;
 import org.labkey.remoteapi.PostCommand;
 
-
 /**
  * Command for obtaining information about the current batch in a particular folder.
  */

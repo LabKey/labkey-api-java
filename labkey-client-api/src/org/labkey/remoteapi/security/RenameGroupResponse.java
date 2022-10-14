@@ -19,14 +19,9 @@ import org.json.JSONObject;
 import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 
-/*
-* User: dave
-* Date: Sep 28, 2009
-* Time: 3:12:16 PM
-*/
 public class RenameGroupResponse extends CommandResponse
 {
-    public RenameGroupResponse(String text, int statusCode, String contentType, JSONObject json, Command sourceCommand)
+    public RenameGroupResponse(String text, int statusCode, String contentType, JSONObject json, Command<?> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
     }

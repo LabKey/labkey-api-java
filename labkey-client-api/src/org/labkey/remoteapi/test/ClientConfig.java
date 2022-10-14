@@ -34,7 +34,7 @@ public class ClientConfig
     /**
      * Defaults to looking in the working directory for a config.properties file. Can be pointed to another file
      * if one of the arguments is -config=&lt;PATH TO CONFIG FILE&gt;
-     *
+     * <p>
      * Looks for a "debug" property - if set to true, enables verbose debug logging for the HTTP connection 
      *
      * @param args command-line arguments to the program
@@ -51,14 +51,9 @@ public class ClientConfig
 
         _properties = new Properties();
 
-        InputStream in = new FileInputStream(propertiesFile);
-        try
+        try (InputStream in = new FileInputStream(propertiesFile))
         {
             _properties.load(in);
-        }
-        finally
-        {
-            in.close();
         }
 
         if("true".equalsIgnoreCase(getProperty("debug", "false")))

@@ -20,10 +20,8 @@ import org.labkey.remoteapi.PostCommand;
 
 /**
  * Notifies the server that files may have become available for the pipeline to process. Causes the server to
- * look through all of the jobs that are blocked, waiting for files, and release the ones whose files are now
+ * look through all the jobs that are blocked, waiting for files, and release the ones whose files are now
  * available.
- * User: jeckels
- * Date: Feb 15, 2011
  */
 public class FileNotificationCommand extends PostCommand<FileNotificationResponse>
 {

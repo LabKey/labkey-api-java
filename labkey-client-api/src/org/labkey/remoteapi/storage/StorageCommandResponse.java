@@ -4,7 +4,7 @@ import org.json.JSONObject;
 import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -14,8 +14,8 @@ import java.util.Map;
  */
 public class StorageCommandResponse extends CommandResponse
 {
-    private String _message;
-    private Map<String, Object> _data;
+    private final String _message;
+    private final Map<String, Object> _data;
 
     /**
      * Constructs a new StorageCommandResponse, initialized with the provided
@@ -27,11 +27,11 @@ public class StorageCommandResponse extends CommandResponse
      * @param json          The parsed JSONObject (or null if JSON was not returned).
      * @param sourceCommand A copy of the command that created this response
      */
-    public StorageCommandResponse(String text, int statusCode, String contentType, JSONObject json, Command sourceCommand)
+    public StorageCommandResponse(String text, int statusCode, String contentType, JSONObject json, Command<?> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
         _message = json.get("message").toString();
-        _data = new HashMap<>(json.getJSONObject("data").toMap());
+        _data = Collections.unmodifiableMap(json.getJSONObject("data").toMap());
     }
 
     /**

@@ -20,16 +20,9 @@ import org.json.JSONObject;
 /**
  * Resets the stored state of an ETL, allowing it to be rerun from scratch by forgetting any retained last modified dates
  * or similar.
- * User: tgaluhn
- * Date: 10/29/13
  */
 public class ResetTransformStateCommand extends BaseTransformCommand<ResetTransformStateResponse>
 {
-    public ResetTransformStateCommand(RunTransformCommand source)
-    {
-        super(source);
-    }
-
     /**
      *  Reset an ETL transform to its initial state, as if it has never been run
      *  @param transformId the name of the transform to reset
@@ -37,7 +30,7 @@ public class ResetTransformStateCommand extends BaseTransformCommand<ResetTransf
     public ResetTransformStateCommand(String transformId)
     {
         super("dataintegration", "resetTransformState");
-        _transformId = transformId;
+        setTransformId(transformId);
     }
 
     @Override

@@ -21,10 +21,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
-* User: jeckels
-* Date: Apr 28, 2010
-*/
 public class Batch extends ExpObject
 {
     private List<Run> _runs = new ArrayList<>();

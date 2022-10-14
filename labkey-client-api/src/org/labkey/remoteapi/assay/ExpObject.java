@@ -22,10 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
-* Base class for experiment objects, including Run, Data, Batch, etc
-* User: jeckels
-* Date: Apr 28, 2010
-*/
+ * Base class for experiment objects, including Run, Data, Batch, etc
+ */
 public abstract class ExpObject extends ResponseObject
 {
     private Number _id;

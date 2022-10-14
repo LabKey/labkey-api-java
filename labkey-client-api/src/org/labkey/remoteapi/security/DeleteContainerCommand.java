@@ -21,8 +21,6 @@ import org.labkey.remoteapi.PostCommand;
 /**
  * Delete a container (project/folder/workbook) and all of its children. Takes no configuration, just a target container
  * path when executing the command.
- * User: jeckels
- * Date: 9/11/12
  */
 public class DeleteContainerCommand extends PostCommand<DeleteContainerResponse>
 {

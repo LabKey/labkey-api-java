@@ -21,12 +21,6 @@ import org.labkey.remoteapi.Command;
 import java.util.HashMap;
 import java.util.Map;
 
-/*
-* User: Dave
-* Date: Oct 21, 2008
-* Time: 3:05:51 PM
-*/
-
 /**
  *  Command for obtaining the list of queries available within a given schema.
  */

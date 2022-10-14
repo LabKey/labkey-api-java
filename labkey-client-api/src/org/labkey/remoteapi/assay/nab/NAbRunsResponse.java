@@ -22,11 +22,6 @@ import org.labkey.remoteapi.assay.nab.model.NAbRun;
 
 import java.util.List;
 import java.util.Map;
-/*
- * User: brittp
- * Date: May 15, 2009
- * Time: 11:22:49 AM
- */
 
 /**
  * Response class for the {@link NAbRunsCommand}. This class
@@ -87,7 +82,7 @@ public class NAbRunsResponse extends CommandResponse
      * @param json          The parsed JSONObject (or null if JSON was not returned).
      * @param sourceCommand A copy of the command that created this response
      */
-    public NAbRunsResponse(String text, int statusCode, String contentType, JSONObject json, Command sourceCommand)
+    public NAbRunsResponse(String text, int statusCode, String contentType, JSONObject json, Command<NAbRunsResponse> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
     }

@@ -16,19 +16,14 @@
 package org.labkey.remoteapi;
 
 import org.apache.hc.client5.http.auth.AuthScope;
-import org.apache.hc.client5.http.auth.AuthenticationException;
 import org.apache.hc.client5.http.auth.Credentials;
 import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
 import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
 import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
-import org.apache.hc.client5.http.impl.auth.BasicScheme;
 import org.apache.hc.client5.http.protocol.HttpClientContext;
 
 import java.net.URI;
 
-/**
- * Created by adam on 4/15/2016.
- */
 public class BasicAuthCredentialsProvider implements CredentialsProvider
 {
     private final String _email;
@@ -41,7 +36,7 @@ public class BasicAuthCredentialsProvider implements CredentialsProvider
     }
 
     @Override
-    public void configureRequest(URI baseURI, HttpUriRequest request, HttpClientContext httpClientContext) throws AuthenticationException
+    public void configureRequest(URI baseURI, HttpUriRequest request, HttpClientContext httpClientContext)
     {
         BasicCredentialsProvider provider = new BasicCredentialsProvider();
         AuthScope scope = new AuthScope(baseURI.getHost(), -1);

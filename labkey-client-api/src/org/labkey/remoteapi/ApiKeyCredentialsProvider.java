@@ -15,15 +15,11 @@
  */
 package org.labkey.remoteapi;
 
-import org.apache.hc.client5.http.auth.AuthenticationException;
 import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
 import org.apache.hc.client5.http.protocol.HttpClientContext;
 
 import java.net.URI;
 
-/**
- * Created by adam on 4/15/2016.
- */
 public class ApiKeyCredentialsProvider implements CredentialsProvider
 {
     private final String _apiKey;
@@ -34,7 +30,7 @@ public class ApiKeyCredentialsProvider implements CredentialsProvider
     }
 
     @Override
-    public void configureRequest(URI baseURI, HttpUriRequest request, HttpClientContext httpClientContext) throws AuthenticationException
+    public void configureRequest(URI baseURI, HttpUriRequest request, HttpClientContext httpClientContext)
     {
         request.setHeader("apikey", _apiKey);
     }

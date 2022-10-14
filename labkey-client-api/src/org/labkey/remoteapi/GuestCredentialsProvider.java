@@ -21,8 +21,6 @@ import org.apache.hc.client5.http.protocol.HttpClientContext;
 import java.net.URI;
 
 /**
- * Created by adam on 4/15/2016.
- *
  * A credentials provider that provides no credentials. Connections using
  * this provider will be granted guest access only.
  */

@@ -20,13 +20,11 @@ import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 
 /**
- * Response from a DeleteContainerResponse. Contains no real response data, just indicates if the delete was successful or not.
- * User: jeckels
- * Date: 9/11/12
+ * Response from a DeleteContainerResponse. Contains no real response data, just indicates if the deletion was successful or not.
  */
 public class DeleteContainerResponse extends CommandResponse
 {
-    public DeleteContainerResponse(String text, int statusCode, String contentType, JSONObject json, Command sourceCommand)
+    public DeleteContainerResponse(String text, int statusCode, String contentType, JSONObject json, Command<?> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
     }

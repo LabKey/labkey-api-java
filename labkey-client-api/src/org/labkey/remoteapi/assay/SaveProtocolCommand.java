@@ -5,7 +5,7 @@ import org.labkey.remoteapi.PostCommand;
 
 public class SaveProtocolCommand extends PostCommand<ProtocolResponse>
 {
-    private Protocol _protocol;
+    private final Protocol _protocol;
 
     public SaveProtocolCommand(Protocol protocol)
     {

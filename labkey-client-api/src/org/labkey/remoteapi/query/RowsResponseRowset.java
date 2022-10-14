@@ -19,35 +19,35 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-/*
-* User: dave
-* Date: Oct 7, 2009
-* Time: 11:43:43 AM
-*/
 public class RowsResponseRowset implements Rowset
 {
-    private List<Map<String, Object>> _rows;
+    private final List<Map<String, Object>> _rows;
 
     public RowsResponseRowset(List<Map<String, Object>> rows)
     {
         _rows = rows;
     }
 
+    @Override
     public int getSize()
     {
         return null != _rows ? _rows.size() : 0;
     }
 
+    @Override
     public Iterator<Row> iterator()
     {
-        return new Iterator<Row>(){
+        return new Iterator<>()
+        {
             private int _idx = 0;
 
+            @Override
             public boolean hasNext()
             {
                 return null != _rows && _idx < _rows.size();
             }
 
+            @Override
             public Row next()
             {
                 RowMap row = new RowMap(_rows.get(_idx));
@@ -55,6 +55,7 @@ public class RowsResponseRowset implements Rowset
                 return row;
             }
 
+            @Override
             public void remove()
             {
                 throw new UnsupportedOperationException("You may not remove rows from the rowset.");

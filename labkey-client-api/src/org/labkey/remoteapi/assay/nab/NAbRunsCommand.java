@@ -20,12 +20,6 @@ import org.labkey.remoteapi.query.BaseQueryCommand;
 
 import java.util.Map;
 
-/*
- * User: brittp
- * Date: May 15, 2009
- * Time: 11:22:43 AM
- */
-
 /**
  * Command for obtaining information about the current assay definitions
  * in a particular folder.

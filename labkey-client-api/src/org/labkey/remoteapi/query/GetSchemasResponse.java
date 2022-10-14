@@ -20,11 +20,6 @@ import org.labkey.remoteapi.CommandResponse;
 
 import java.util.List;
 
-/*
-* User: Dave
-* Date: Oct 21, 2008
-* Time: 2:58:17 PM
-*/
 /**
  * Represents the response of a GetSchemasCommand.
  */

@@ -22,7 +22,7 @@ public class SaveAssayRunsResponse extends CommandResponse
      * @param json          The parsed JSONObject (or null if JSON was not returned).
      * @param sourceCommand A copy of the command that created this response
      */
-    public SaveAssayRunsResponse(String text, int statusCode, String contentType, JSONObject json, Command sourceCommand)
+    public SaveAssayRunsResponse(String text, int statusCode, String contentType, JSONObject json, Command<?> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
         JSONArray array = json.getJSONArray("runs");

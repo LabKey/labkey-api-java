@@ -30,9 +30,6 @@ import java.util.Map;
 
 /**
  * Import a new assay run.  If no batch is specified, a new batch will be inserted.
- *
- * User: kevink
- * Date: 9/12/12
  */
 public class ImportRunCommand extends PostCommand<ImportRunResponse>
 {
@@ -185,9 +182,9 @@ public class ImportRunCommand extends PostCommand<ImportRunResponse>
             if (_batchId > 0)
                 builder.addTextBody("batchId", String.valueOf(_batchId));
             if (_name != null)
-                builder.addTextBody("name", String.valueOf(_name));
+                builder.addTextBody("name", _name);
             if (_comment != null)
-                builder.addTextBody("comment", String.valueOf(_comment));
+                builder.addTextBody("comment", _comment);
             if (_properties != null)
             {
                 for (Map.Entry<String, Object> entry : _properties.entrySet())

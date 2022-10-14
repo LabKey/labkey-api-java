@@ -15,14 +15,8 @@
  */
 package org.labkey.remoteapi.query;
 
-import java.util.Map;
 import java.util.HashMap;
-
-/*
-* User: Dave
-* Date: Jul 10, 2008
-* Time: 4:17:57 PM
-*/
+import java.util.Map;
 
 /**
  * Represents a filter definition for a query

@@ -18,20 +18,14 @@ package org.labkey.remoteapi.assay.nab.model;
 import java.util.List;
 import java.util.Map;
 
-/*
- * User: brittp
- * Date: May 15, 2009
- * Time: 12:57:21 PM
- */
-
 public class NAbRun
 {
-    private long _runId;
-    private Map<String, Object> _properties;
-    private String _containerPath;
-    private String _containerId;
-    private long[] _cutoffs;
-    private NAbSample[] _samples;
+    private final long _runId;
+    private final Map<String, Object> _properties;
+    private final String _containerPath;
+    private final String _containerId;
+    private final long[] _cutoffs;
+    private final NAbSample[] _samples;
     private NAbWellGroup _cellControl;
     private NAbWellGroup _virusControl;
 

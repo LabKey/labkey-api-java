@@ -17,11 +17,6 @@ package org.labkey.remoteapi.query;
 
 import org.json.JSONObject;
 
-/*
-* User: Dave
-* Date: Jul 14, 2008
-* Time: 1:16:58 PM
-*/
 /**
  * Response object used for commands that derive from SaveRowsCommand.
  * This response object provides helper methods for accessing the important

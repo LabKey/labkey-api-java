@@ -27,7 +27,7 @@ public class WhoAmIResponse extends CommandResponse
 
     public boolean isImpersonated()
     {
-        return (Boolean)getProperty("impersonated");
+        return getProperty("impersonated");
     }
 
     public String getCSRF()

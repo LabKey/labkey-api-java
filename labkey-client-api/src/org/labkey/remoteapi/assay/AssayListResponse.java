@@ -21,11 +21,6 @@ import org.labkey.remoteapi.CommandResponse;
 import java.util.List;
 import java.util.Map;
 
-/*
-* User: Dave
-* Date: Jul 14, 2008
-* Time: 1:59:49 PM
-*/
 /**
  * Response class for the {@link AssayListCommand}. This class
  * provides helpful getter method to access particular bits of the parsed

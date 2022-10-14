@@ -23,12 +23,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-/*
-* User: Dave
-* Date: Oct 21, 2008
-* Time: 3:06:00 PM
-*/
-
 /**
  * Represents the response from a GetQueriesCommand.
  */

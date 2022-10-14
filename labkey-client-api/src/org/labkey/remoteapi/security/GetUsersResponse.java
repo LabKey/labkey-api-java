@@ -25,8 +25,6 @@ import java.util.Map;
 
 /**
  * The result of a GetUsersCommand request.
- * User: jeckels
- * Date: Jan 26, 2010
  */
 public class GetUsersResponse extends CommandResponse
 {

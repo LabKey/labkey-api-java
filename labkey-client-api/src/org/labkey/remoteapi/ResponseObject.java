@@ -17,10 +17,6 @@ package org.labkey.remoteapi;
 
 import java.util.Map;
 
-/**
- * User: jeckels
- * Date: Apr 3, 2010
- */
 public class ResponseObject
 {
     protected final Map<String, Object> _allProperties;

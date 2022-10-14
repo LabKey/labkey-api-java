@@ -21,12 +21,6 @@ import org.labkey.remoteapi.Command;
 import java.util.List;
 import java.util.Map;
 
-/*
-* User: Dave
-* Date: Jul 14, 2008
-* Time: 9:50:15 AM
-*/
-
 /**
  * The command response class returned from the
  * {@link SelectRowsCommand#execute(org.labkey.remoteapi.Connection, String)}

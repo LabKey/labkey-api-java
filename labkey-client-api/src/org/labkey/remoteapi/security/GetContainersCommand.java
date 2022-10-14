@@ -21,11 +21,6 @@ import org.labkey.remoteapi.Command;
 import java.util.HashMap;
 import java.util.Map;
 
-/*
-* User: Dave
-* Date: Oct 27, 2008
-* Time: 1:26:05 PM
-*/
 public class GetContainersCommand extends Command<GetContainersResponse>
 {
     private boolean _includeSubfolders = false;
@@ -57,6 +52,7 @@ public class GetContainersCommand extends Command<GetContainersResponse>
         return new GetContainersResponse(text, status, contentType, json, this.copy());
     }
 
+    @Override
     public Map<String, Object> getParameters()
     {
         Map<String, Object> params = new HashMap<>();

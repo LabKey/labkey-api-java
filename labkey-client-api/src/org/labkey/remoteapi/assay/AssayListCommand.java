@@ -21,11 +21,6 @@ import org.labkey.remoteapi.PostCommand;
 import java.util.HashMap;
 import java.util.Map;
 
-/*
-* User: Dave
-* Date: Jul 14, 2008
-* Time: 1:59:11 PM
-*/
 /**
  * Command for obtaining information about the current assay definitions
  * in a particular folder.

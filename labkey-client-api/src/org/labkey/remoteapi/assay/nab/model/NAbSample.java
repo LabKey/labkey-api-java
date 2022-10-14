@@ -15,24 +15,20 @@
  */
 package org.labkey.remoteapi.assay.nab.model;
 
+import java.util.List;
 import java.util.Map;
-import java.util.List;/*
- * User: brittp
- * Date: May 15, 2009
- * Time: 1:19:40 PM
- */
 
 public class NAbSample
 {
-    private Map<String, Object> _properties;
-    private String _wellgroupName;
-    private Long _minDilution;
-    private Long _maxDilution;
-    private long _objectId;
-    private Double _fitError;
-    private NAbCurveParameters _fitParameters;
-    private NAbReplicate[] _replicates;
-    private NAbNeutralizationResult[] _neutralizationResults;
+    private final Map<String, Object> _properties;
+    private final String _wellgroupName;
+    private final Long _minDilution;
+    private final Long _maxDilution;
+    private final long _objectId;
+    private final Double _fitError;
+    private final NAbCurveParameters _fitParameters;
+    private final NAbReplicate[] _replicates;
+    private final NAbNeutralizationResult[] _neutralizationResults;
 
     public NAbSample(Map<String, Object> properties, long[] cutoffs)
     {
@@ -44,12 +40,21 @@ public class NAbSample
             _minDilution = ((Number) properties.get("minDilution")).longValue();
             _maxDilution = ((Number) properties.get("maxDilution")).longValue();
         }
+        else
+        {
+            _minDilution = null;
+            _maxDilution = null;
+        }
 
         if (properties.containsKey("fitError"))
             _fitError = ((Number) properties.get("fitError")).doubleValue();
+        else
+            _fitError = null;
 
         if (properties.containsKey("fitParameters"))
             _fitParameters = new NAbCurveParameters((Map<String, Object>) properties.get("fitParameters"));
+        else
+            _fitParameters = null;
 
         if (properties.containsKey("replicates"))
         {
@@ -58,21 +63,27 @@ public class NAbSample
             for (int i = 0; i < replicates.size(); i++)
                 _replicates[i] = new NAbReplicate(replicates.get(i));
         }
-
-        if (cutoffs != null && cutoffs.length > 0)
+        else
         {
+            _replicates = null;
+        }
+
+        if (cutoffs != null && cutoffs.length > 0 &&
             // check to see if we have neutralization with this query:
-            if (properties.containsKey("curveIC" + cutoffs[0]))
+            properties.containsKey("curveIC" + cutoffs[0]))
+        {
+            _neutralizationResults = new NAbNeutralizationResult[cutoffs.length];
+            for (int i = 0; i < cutoffs.length; i++)
             {
-                _neutralizationResults = new NAbNeutralizationResult[cutoffs.length];
-                for (int i = 0; i < cutoffs.length; i++)
-                {
-                    long cutoff = cutoffs[i];
-                    double curveBasedDilution = convert(properties.get("curveIC" + cutoff));
-                    double pointBasedDilution = convert(properties.get("pointIC" + cutoff));
-                    _neutralizationResults[i] = new NAbNeutralizationResult(cutoff, curveBasedDilution, pointBasedDilution);
-                }
+                long cutoff = cutoffs[i];
+                double curveBasedDilution = convert(properties.get("curveIC" + cutoff));
+                double pointBasedDilution = convert(properties.get("pointIC" + cutoff));
+                _neutralizationResults[i] = new NAbNeutralizationResult(cutoff, curveBasedDilution, pointBasedDilution);
             }
+        }
+        else
+        {
+            _neutralizationResults = null;
         }
     }
 

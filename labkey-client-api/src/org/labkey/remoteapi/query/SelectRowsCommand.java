@@ -22,12 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/*
-* User: Dave
-* Date: Jul 10, 2008
-* Time: 10:54:45 AM
-*/
-
 /**
  * Command for selecting data from any LabKey schema/query exposed on the
  * server identified by the Connection object supplied to the

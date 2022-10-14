@@ -17,25 +17,16 @@ package org.labkey.remoteapi.di;
 
 import org.json.JSONObject;
 
-/**
- * User: tgaluhn
- * Date: 10/29/13
- */
 public class UpdateTransformConfigurationCommand extends BaseTransformCommand<UpdateTransformConfigurationResponse>
 {
     private Boolean enabled = null;
     private Boolean verboseLogging = null;
 
-    public UpdateTransformConfigurationCommand(UpdateTransformConfigurationCommand source)
-    {
-        super(source);
-    }
-
     /** @param transformId the name of the transform to update/read configuration */
     public UpdateTransformConfigurationCommand(String transformId)
     {
         super("dataintegration", "UpdateTransformConfiguration");
-        _transformId = transformId;
+        setTransformId(transformId);
     }
 
     @Override

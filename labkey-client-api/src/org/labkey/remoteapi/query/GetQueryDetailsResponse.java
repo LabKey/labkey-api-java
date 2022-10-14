@@ -15,7 +15,6 @@
  */
 package org.labkey.remoteapi.query;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.ResponseObject;
@@ -23,12 +22,6 @@ import org.labkey.remoteapi.ResponseObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-/*
-* User: Dave
-* Date: Oct 21, 2008
-* Time: 3:06:00 PM
-*/
 
 /**
  * Represents the response from a GetQueriesCommand.
@@ -80,7 +73,6 @@ public class GetQueryDetailsResponse extends CommandResponse
      * Returns the columns available in the given query name.
      * @return The list of columns available within that query.
      */
-    @SuppressWarnings("unchecked")
     public List<Column> getColumns()
     {
         List<Column> result = new ArrayList<>();
