@@ -50,7 +50,7 @@ public class DeleteUserCommand extends PostCommand<CommandResponse>
     }
 
     @Override
-    public PostCommand<?> copy()
+    public DeleteUserCommand copy()
     {
         return new DeleteUserCommand(this);
     }

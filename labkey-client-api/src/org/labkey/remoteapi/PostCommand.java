@@ -108,7 +108,7 @@ public class PostCommand<ResponseType extends CommandResponse> extends Command<R
     }
 
     @Override
-    public PostCommand<?> copy()
+    public PostCommand<ResponseType> copy()
     {
         return new PostCommand<>(this);
     }

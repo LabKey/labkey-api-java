@@ -83,7 +83,7 @@ public class CreateUserCommand extends PostCommand<CreateUserResponse>
     }
 
     @Override
-    public PostCommand<?> copy()
+    public CreateUserCommand copy()
     {
         return new CreateUserCommand(this);
     }

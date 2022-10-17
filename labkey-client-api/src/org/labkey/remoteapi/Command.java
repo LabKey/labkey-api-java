@@ -579,7 +579,7 @@ public class Command<ResponseType extends CommandResponse>
      * to copy their own data members   
      * @return A copy of this object
      */
-    public Command<?> copy()
+    public Command<ResponseType> copy()
     {
         return new Command<>(this);
     }

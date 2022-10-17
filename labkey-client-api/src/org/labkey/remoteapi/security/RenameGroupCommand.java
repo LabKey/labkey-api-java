@@ -41,7 +41,7 @@ public class RenameGroupCommand extends PostCommand<RenameGroupResponse>
     }
 
     @Override
-    public PostCommand<?> copy()
+    public RenameGroupCommand copy()
     {
         return new RenameGroupCommand(this);
     }

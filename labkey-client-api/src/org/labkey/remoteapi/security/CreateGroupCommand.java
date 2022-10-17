@@ -56,7 +56,7 @@ public class CreateGroupCommand extends PostCommand<CreateGroupResponse>
     }
 
     @Override
-    public PostCommand<?> copy()
+    public CreateGroupCommand copy()
     {
         return new CreateGroupCommand(this);
     }
