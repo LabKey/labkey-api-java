@@ -59,7 +59,7 @@ public class PropertyDescriptor extends ResponseObject
         _hidden = json.optBoolean("hidden");
         _required = json.optBoolean("required");
         _PHI = json.optString("PHI", null);
-        _propertyId = (Long) json.opt("propertyId");
+        _propertyId = json.getLong("propertyId");
         _format = json.optString("format", null);
         _measure = json.optBoolean("measure");
         _dimension = json.optBoolean("dimension");
