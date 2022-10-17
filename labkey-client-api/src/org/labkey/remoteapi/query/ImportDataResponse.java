@@ -32,9 +32,9 @@ public class ImportDataResponse extends CommandResponse
     public ImportDataResponse(String text, int statusCode, String contentType, JSONObject json, Command sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
-        _success = json.has("success") ? json.getBoolean("success") : Boolean.FALSE;
-        _rowCount = json.has("rowCount") ? json.getNumber("rowCount").intValue() : 0;
-        _jobId = json.has("jobId") ? json.getString("jobId") : null;
+        _success = json.optBoolean("success");
+        _rowCount = json.optInt("rowCount");
+        _jobId = json.optString("jobId");
     }
 
     public Boolean getSuccess()
