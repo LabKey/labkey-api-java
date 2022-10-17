@@ -56,20 +56,13 @@ public class PropertyDescriptor extends ResponseObject
         _name = json.getString("name");
         _label = json.optString("label", null);
         _description = json.optString("description", null);
-
-        if (json.has("hidden"))
-            _hidden = json.getBoolean("hidden");
-        if (json.has("required"))
-            _required = json.getBoolean("required");
-
+        _hidden = json.optBoolean("hidden");
+        _required = json.optBoolean("required");
         _PHI = json.optString("PHI", null);
-        _propertyId = json.getLong("propertyId");
+        _propertyId = (Long) json.opt("propertyId");
         _format = json.optString("format", null);
-
-        if (json.has("measure"))
-            _measure = json.getBoolean("measure");
-        if (json.has("dimension"))
-            _dimension = json.getBoolean("dimension");
+        _measure = json.optBoolean("measure");
+        _dimension = json.optBoolean("dimension");
 
         _propertyURI = json.optString("propertyURI", null);
         _rangeURI = json.optString("rangeURI", null);
