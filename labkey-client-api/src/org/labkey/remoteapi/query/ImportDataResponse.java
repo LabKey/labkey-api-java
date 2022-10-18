@@ -34,7 +34,7 @@ public class ImportDataResponse extends CommandResponse
         super(text, statusCode, contentType, json, sourceCommand);
         _success = json.optBoolean("success");
         _rowCount = json.optInt("rowCount");
-        _jobId = json.optString("jobId");
+        _jobId = json.optString("jobId", null);
     }
 
     public Boolean getSuccess()
