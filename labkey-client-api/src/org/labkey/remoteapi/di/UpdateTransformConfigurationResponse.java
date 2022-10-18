@@ -67,10 +67,10 @@ public class UpdateTransformConfigurationResponse extends BaseTransformResponse
 
     /**
      *
-     * @return JSON map of the state saved after the last transform run. Includes row count info,
+     * @return Map of the state saved after the last transform run. Includes row count info,
      * filter values (runId or modifiedSince) for next run, and persisted parameter values for stored procedure transforms.
      */
-    public JSONObject getState()
+    public Map<String, Object> getState()
     {
         return getProperty("result.state");
     }
