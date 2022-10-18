@@ -24,7 +24,7 @@ import org.labkey.remoteapi.CommandResponse;
  */
 public class FileNotificationResponse  extends CommandResponse
 {
-    public FileNotificationResponse(String text, int statusCode, String contentType, JSONObject json, Command<?> sourceCommand)
+    public FileNotificationResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends FileNotificationResponse> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
     }

@@ -16,6 +16,7 @@
 package org.labkey.remoteapi.query;
 
 import org.json.JSONObject;
+import org.labkey.remoteapi.Command;
 
 /**
  * Response object used for commands that derive from SaveRowsCommand.
@@ -32,7 +33,7 @@ public class SaveRowsResponse extends RowsResponse
      * @param json The parsed JSONObject (or null if JSON was not returned).
      * @param sourceCommand A copy of the command that created this response
      */
-    public SaveRowsResponse(String text, int statusCode, String contentType, JSONObject json, SaveRowsCommand sourceCommand)
+    public SaveRowsResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends SaveRowsResponse> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
     }

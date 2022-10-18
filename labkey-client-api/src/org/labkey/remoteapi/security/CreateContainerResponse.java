@@ -21,7 +21,7 @@ import org.labkey.remoteapi.CommandResponse;
 
 public class CreateContainerResponse extends CommandResponse
 {
-    public CreateContainerResponse(String text, int statusCode, String contentType, JSONObject json, Command<?> sourceCommand)
+    public CreateContainerResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends CreateContainerResponse> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
     }

@@ -26,7 +26,7 @@ import java.util.Map;
  */
 public class UpdateParticipantGroupResponse extends CommandResponse
 {
-    public UpdateParticipantGroupResponse(String text, int statusCode, String contentType, JSONObject json, Command<?> sourceCommand)
+    public UpdateParticipantGroupResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends UpdateParticipantGroupResponse> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
     }

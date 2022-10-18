@@ -24,7 +24,7 @@ public class SaveAssayBatchResponse extends CommandResponse
     private final Batch _batch;
     private final int _assayId;
 
-    public SaveAssayBatchResponse(String text, int statusCode, String contentType, JSONObject json, Command<?> sourceCommand)
+    public SaveAssayBatchResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends SaveAssayBatchResponse> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
         _batch = new Batch((JSONObject)json.get("batch"));

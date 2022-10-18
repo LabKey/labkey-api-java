@@ -16,11 +16,12 @@
 package org.labkey.remoteapi.security;
 
 import org.json.JSONObject;
+import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 
 public class GetGroupPermsResponse extends CommandResponse
 {
-    public GetGroupPermsResponse(String text, int statusCode, String contentType, JSONObject json, GetGroupPermsCommand sourceCommand)
+    public GetGroupPermsResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends GetGroupPermsResponse> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
     }

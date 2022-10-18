@@ -21,7 +21,7 @@ import org.labkey.remoteapi.CommandResponse;
 
 public class RenameGroupResponse extends CommandResponse
 {
-    public RenameGroupResponse(String text, int statusCode, String contentType, JSONObject json, Command<?> sourceCommand)
+    public RenameGroupResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends RenameGroupResponse> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
     }

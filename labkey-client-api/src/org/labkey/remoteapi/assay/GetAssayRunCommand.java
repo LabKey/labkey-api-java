@@ -51,6 +51,6 @@ public class GetAssayRunCommand extends PostCommand<GetAssayRunResponse>
     @Override
     protected GetAssayRunResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new GetAssayRunResponse(text, status, contentType, json, this);
+        return new GetAssayRunResponse(text, status, contentType, json, this.copy());
     }
 }

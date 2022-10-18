@@ -16,6 +16,7 @@
 package org.labkey.remoteapi.query;
 
 import org.json.JSONObject;
+import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ import java.util.Map;
  */
 public class GetQueriesResponse extends CommandResponse
 {
-    public GetQueriesResponse(String text, int statusCode, String contentType, JSONObject json, GetQueriesCommand sourceCommand)
+    public GetQueriesResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends GetQueriesResponse> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
     }

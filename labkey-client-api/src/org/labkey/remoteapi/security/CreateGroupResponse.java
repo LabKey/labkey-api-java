@@ -21,7 +21,7 @@ import org.labkey.remoteapi.CommandResponse;
 
 public class CreateGroupResponse extends CommandResponse
 {
-    public CreateGroupResponse(String text, int statusCode, String contentType, JSONObject json, Command<?> sourceCommand)
+    public CreateGroupResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends CreateGroupResponse> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
     }

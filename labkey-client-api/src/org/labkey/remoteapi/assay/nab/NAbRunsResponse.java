@@ -82,7 +82,7 @@ public class NAbRunsResponse extends CommandResponse
      * @param json          The parsed JSONObject (or null if JSON was not returned).
      * @param sourceCommand A copy of the command that created this response
      */
-    public NAbRunsResponse(String text, int statusCode, String contentType, JSONObject json, Command<NAbRunsResponse> sourceCommand)
+    public NAbRunsResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends NAbRunsResponse> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
     }

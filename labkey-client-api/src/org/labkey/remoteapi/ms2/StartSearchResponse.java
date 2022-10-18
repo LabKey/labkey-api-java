@@ -21,7 +21,7 @@ import org.labkey.remoteapi.CommandResponse;
 
 public class StartSearchResponse extends CommandResponse
 {
-    public StartSearchResponse(String text, int statusCode, String contentType, JSONObject json, Command<?> sourceCommand)
+    public StartSearchResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends StartSearchResponse> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
     }

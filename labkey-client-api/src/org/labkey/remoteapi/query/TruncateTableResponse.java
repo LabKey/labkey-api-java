@@ -16,6 +16,7 @@
 package org.labkey.remoteapi.query;
 
 import org.json.JSONObject;
+import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 
 /**
@@ -33,7 +34,7 @@ public class TruncateTableResponse extends CommandResponse
      * @param json The parsed JSONObject (or null if JSON was not returned).
      * @param sourceCommand A copy of the command that created this response
      */
-    public TruncateTableResponse(String text, int statusCode, String contentType, JSONObject json, TruncateTableCommand sourceCommand)
+    public TruncateTableResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends TruncateTableResponse> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
     }

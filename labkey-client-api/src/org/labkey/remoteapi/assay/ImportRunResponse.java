@@ -26,7 +26,7 @@ public class ImportRunResponse extends CommandResponse
     private final int _batchId;
     private final int _runId;
 
-    public ImportRunResponse(String text, int statusCode, String contentType, JSONObject json, Command<?> sourceCommand)
+    public ImportRunResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends ImportRunResponse> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
         _successURL = (String)json.get("successurl");

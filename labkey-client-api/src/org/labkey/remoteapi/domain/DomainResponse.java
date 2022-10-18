@@ -8,7 +8,7 @@ public class DomainResponse extends CommandResponse
 {
     private final Domain _domain;
 
-    public DomainResponse(String text, int statusCode, String contentType, JSONObject json, Command<DomainResponse> sourceCommand)
+    public DomainResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends DomainResponse> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
         _domain = new Domain(json);

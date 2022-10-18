@@ -25,7 +25,7 @@ public class ImportDataResponse extends CommandResponse
     private final int _rowCount;
     private final String _jobId;
 
-    public ImportDataResponse(String text, int statusCode, String contentType, JSONObject json, Command<?> sourceCommand)
+    public ImportDataResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends ImportDataResponse> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
         _success = json.optBoolean("success");
