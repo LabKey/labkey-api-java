@@ -29,21 +29,10 @@ public class DeleteContainerCommand extends PostCommand<DeleteContainerResponse>
         super("core", "deleteContainer");
     }
 
-    public DeleteContainerCommand(DeleteContainerCommand source)
-    {
-        super(source);
-    }
-
     @Override
     protected DeleteContainerResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
         return new DeleteContainerResponse(text, status, contentType, json, this);
-    }
-
-    @Override
-    public DeleteContainerCommand copy()
-    {
-        return new DeleteContainerCommand(this);
     }
 
 }

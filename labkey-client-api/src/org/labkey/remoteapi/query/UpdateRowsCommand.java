@@ -37,14 +37,4 @@ public class UpdateRowsCommand extends SaveRowsCommand
         super(schemaName, queryName, "updateRows");
     }
 
-    public UpdateRowsCommand(UpdateRowsCommand source)
-    {
-        super(source);
-    }
-
-    @Override
-    public UpdateRowsCommand copy()
-    {
-        return new UpdateRowsCommand(this);
-    }
 }

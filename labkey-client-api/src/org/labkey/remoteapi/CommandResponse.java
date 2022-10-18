@@ -36,7 +36,7 @@ public class CommandResponse
     private final String _text;
     private final int _statusCode;
     private final String _contentType;
-    private final Command<?> _sourceCommand;
+    private final double _requiredVersion;
 
     private Map<String, Object> _data;
 
@@ -55,7 +55,7 @@ public class CommandResponse
         _statusCode = statusCode;
         _contentType = contentType;
         _data = null != json ? json.toMap() : null;
-        _sourceCommand = sourceCommand;
+        _requiredVersion = sourceCommand.getRequiredVersion();
     }
 
     /**
@@ -101,16 +101,7 @@ public class CommandResponse
      */
     public double getRequiredVersion()
     {
-        return _sourceCommand.getRequiredVersion();
-    }
-
-    /**
-     * Returns a reference to a copy of the command that created this response
-     * @return The command that created this response
-     */
-    public Command<?> getSourceCommand()
-    {
-        return _sourceCommand;
+        return _requiredVersion;
     }
 
     /**

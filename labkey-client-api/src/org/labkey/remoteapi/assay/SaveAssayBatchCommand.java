@@ -58,21 +58,6 @@ public class SaveAssayBatchCommand extends PostCommand<SaveAssayBatchResponse>
         _batch = batch;
     }
 
-    public SaveAssayBatchCommand(SaveAssayBatchCommand source)
-    {
-        super(source);
-
-        _assayId = source._assayId;
-        _protocolName = source._protocolName;
-        _batch = source._batch;
-    }
-
-    @Override
-    public SaveAssayBatchCommand copy()
-    {
-        return new SaveAssayBatchCommand(this);
-    }
-
     @Override
     public JSONObject getJsonObject()
     {

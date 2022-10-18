@@ -23,7 +23,7 @@ import org.labkey.remoteapi.PostCommand;
  */
 public class RenameGroupCommand extends PostCommand<RenameGroupResponse>
 {
-    private int _groupId = -1;
+    private int _groupId;
     private String _newName;
 
     public RenameGroupCommand(int groupId, String newName)
@@ -31,19 +31,6 @@ public class RenameGroupCommand extends PostCommand<RenameGroupResponse>
         super("security", "renameGroup");
         _groupId = groupId;
         _newName = newName;
-    }
-
-    public RenameGroupCommand(RenameGroupCommand source)
-    {
-        super(source);
-        _groupId = source.getGroupId();
-        _newName = source.getNewName();
-    }
-
-    @Override
-    public RenameGroupCommand copy()
-    {
-        return new RenameGroupCommand(this);
     }
 
     public int getGroupId()

@@ -73,19 +73,6 @@ public class SelectRowsCommand extends BaseQueryCommand<SelectRowsResponse> impl
     }
 
     /**
-     * Constructs a new SelectRowsCommand that is a copy of the source command
-     * @param source The source command
-     */
-    public SelectRowsCommand(SelectRowsCommand source)
-    {
-        super(source);
-        _schemaName = source._schemaName;
-        _queryName = source._queryName;
-        _viewName = source._viewName;
-        _columns.addAll(source._columns);
-    }
-
-    /**
      * Set to true to request the extended response format, which includes URLs, Missing-Value indicators and
      * display values in addition to the raw values. Use the getRowset() method on the response to iterate over the returned
      * rows in a format-neutral manner.
@@ -194,7 +181,7 @@ public class SelectRowsCommand extends BaseQueryCommand<SelectRowsResponse> impl
     @Override
     protected SelectRowsResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new SelectRowsResponse(text, status, contentType, json, this.copy());
+        return new SelectRowsResponse(text, status, contentType, json, this);
     }
 
     @Override
@@ -243,9 +230,4 @@ public class SelectRowsCommand extends BaseQueryCommand<SelectRowsResponse> impl
         return params;
     }
 
-    @Override
-    public SelectRowsCommand copy()
-    {
-        return new SelectRowsCommand(this);
-    }
 }

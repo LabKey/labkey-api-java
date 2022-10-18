@@ -23,16 +23,10 @@ import org.json.JSONObject;
 public class RunTransformCommand extends BaseTransformCommand<RunTransformResponse>
 {
 
-    public RunTransformCommand(RunTransformCommand source)
-    {
-        super(source);
-    }
-
     /** @param transformId the name of the transform to run */
     public RunTransformCommand(String transformId)
     {
-        super("dataintegration", "runTransform");
-        setTransformId(transformId);
+        super("runTransform", transformId);
     }
 
     @Override

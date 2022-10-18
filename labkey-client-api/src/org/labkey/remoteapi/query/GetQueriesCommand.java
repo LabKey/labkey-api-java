@@ -40,14 +40,6 @@ public class GetQueriesCommand extends Command<GetQueriesResponse>
         _schemaName = schemaName;
     }
 
-    public GetQueriesCommand(GetQueriesCommand source)
-    {
-        super(source);
-        _schemaName = source._schemaName;
-        _includeUserQueries = source._includeUserQueries;
-        _includeColumns = source._includeColumns;
-    }
-
     public String getSchemaName()
     {
         return _schemaName;
@@ -107,12 +99,6 @@ public class GetQueriesCommand extends Command<GetQueriesResponse>
     @Override
     protected GetQueriesResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new GetQueriesResponse(text, status, contentType, json, this.copy());
-    }
-
-    @Override
-    public GetQueriesCommand copy()
-    {
-        return new GetQueriesCommand(this);
+        return new GetQueriesResponse(text, status, contentType, json, this);
     }
 }

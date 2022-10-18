@@ -44,18 +44,6 @@ public class AssayListCommand extends PostCommand<AssayListResponse>
     }
 
     /**
-     * Constructs a new AssayListCommand which is a copy of the source command
-     * @param source The source AssayListCommand
-     */
-    public AssayListCommand(AssayListCommand source)
-    {
-        super(source);
-        _name = source._name;
-        _type = source._type;
-        _id = source._id;
-    }
-
-    /**
      * Returns the assay name filter upon (if any)
      * @return The current assay name filter, or null if not filter has been set.
      */
@@ -115,7 +103,7 @@ public class AssayListCommand extends PostCommand<AssayListResponse>
     @Override
     protected AssayListResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new AssayListResponse(text, status, contentType, json, this.copy());
+        return new AssayListResponse(text, status, contentType, json, this);
     }
 
     @Override
@@ -144,9 +132,4 @@ public class AssayListCommand extends PostCommand<AssayListResponse>
         return params;
     }
 
-    @Override
-    public AssayListCommand copy()
-    {
-        return new AssayListCommand(this);
-    }
 }

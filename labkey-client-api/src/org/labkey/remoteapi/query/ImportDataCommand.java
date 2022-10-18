@@ -82,13 +82,6 @@ public class ImportDataCommand extends PostCommand<ImportDataResponse>
         _queryName = queryName;
     }
 
-    public ImportDataCommand(ImportDataCommand source)
-    {
-        super(source);
-        _schemaName = source._schemaName;
-        _queryName = source._queryName;
-    }
-
     /**
      * Returns the schema name.
      * @return The schema name.
@@ -276,12 +269,6 @@ public class ImportDataCommand extends PostCommand<ImportDataResponse>
     protected ImportDataResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
         return new ImportDataResponse(text, status, contentType, json, this);
-    }
-
-    @Override
-    public ImportDataCommand copy()
-    {
-        return new ImportDataCommand(this);
     }
 
 }

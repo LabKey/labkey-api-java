@@ -34,12 +34,6 @@ public class DeleteGroupCommand extends PostCommand<CommandResponse>
         _groupId = groupId;
     }
 
-    public DeleteGroupCommand(DeleteGroupCommand source)
-    {
-        super(source);
-        _groupId = source.getGroupId();
-    }
-
     public int getGroupId()
     {
         return _groupId;
@@ -48,12 +42,6 @@ public class DeleteGroupCommand extends PostCommand<CommandResponse>
     public void setGroupId(int groupId)
     {
         _groupId = groupId;
-    }
-
-    @Override
-    public DeleteGroupCommand copy()
-    {
-        return new DeleteGroupCommand(this);
     }
 
     @Override

@@ -36,14 +36,6 @@ public class GetUsersCommand extends Command<GetUsersResponse>
         super("user", "getUsers");
     }
 
-    public GetUsersCommand(GetUsersCommand source, String group, int groupId, String name)
-    {
-        super(source);
-        setGroup(group);
-        setGroupId(groupId);
-        setName(name);
-    }
-
     /** @return the id of a project group for which you want the members */
     public int getGroupId()
     {
@@ -102,12 +94,6 @@ public class GetUsersCommand extends Command<GetUsersResponse>
     public void setIncludeDeactivated(Boolean active)
     {
         _includeDeactivated = active;
-    }
-
-    @Override
-    public GetUsersCommand copy()
-    {
-        return new GetUsersCommand(this, getGroup(), getGroupId(), getName());
     }
 
     @Override

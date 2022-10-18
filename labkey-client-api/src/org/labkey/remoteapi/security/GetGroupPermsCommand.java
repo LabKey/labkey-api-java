@@ -30,12 +30,6 @@ public class GetGroupPermsCommand extends Command<GetGroupPermsResponse>
         super("security", "getGroupPerms");
     }
 
-    public GetGroupPermsCommand(GetGroupPermsCommand source)
-    {
-        super(source);
-        _includeSubfolders = source._includeSubfolders;
-    }
-
     /**
      * Returns whether the command will recurse down the subfolders
      * of the folder in which the command is executed.
@@ -59,7 +53,7 @@ public class GetGroupPermsCommand extends Command<GetGroupPermsResponse>
     @Override
     protected GetGroupPermsResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new GetGroupPermsResponse(text, status, contentType, json, this.copy());
+        return new GetGroupPermsResponse(text, status, contentType, json, this);
     }
 
     @Override
@@ -70,9 +64,4 @@ public class GetGroupPermsCommand extends Command<GetGroupPermsResponse>
         return params;
     }
 
-    @Override
-    public GetGroupPermsCommand copy()
-    {
-        return new GetGroupPermsCommand(this);
-    }
 }

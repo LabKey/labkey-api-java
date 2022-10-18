@@ -171,13 +171,5 @@ public class LineageCommand extends Command<LineageResponse>
         return params;
     }
 
-
-    @Override
-    public LineageCommand copy()
-    {
-        return new LineageCommand(_lsids, _parents, _children, _depth, _cpasType, _expType,
-                _includeProperties, _includeInputsAndOutputs, _includeRunSteps);
-    }
-
 }
 

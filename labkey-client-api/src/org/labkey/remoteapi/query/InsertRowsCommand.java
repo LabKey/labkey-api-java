@@ -37,14 +37,4 @@ public class InsertRowsCommand extends SaveRowsCommand
         super(schemaName, queryName, "insertRows");
     }
 
-    public InsertRowsCommand(InsertRowsCommand source)
-    {
-        super(source);
-    }
-
-    @Override
-    public InsertRowsCommand copy()
-    {
-        return new InsertRowsCommand(this);
-    }
 }

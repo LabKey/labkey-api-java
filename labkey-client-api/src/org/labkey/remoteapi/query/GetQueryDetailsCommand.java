@@ -54,14 +54,6 @@ public class GetQueryDetailsCommand extends Command<GetQueryDetailsResponse>
         this(schemaName, queryName, true);
     }
 
-    public GetQueryDetailsCommand(GetQueryDetailsCommand source)
-    {
-        super(source);
-        _schemaName = source._schemaName;
-        _queryName = source._queryName;
-        _includeSuggestedQueryColumns = source._includeSuggestedQueryColumns;
-    }
-
     public String getSchemaName()
     {
         return _schemaName;
@@ -99,12 +91,6 @@ public class GetQueryDetailsCommand extends Command<GetQueryDetailsResponse>
     @Override
     protected GetQueryDetailsResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new GetQueryDetailsResponse(text, status, contentType, json, this.copy());
-    }
-
-    @Override
-    public GetQueryDetailsCommand copy()
-    {
-        return new GetQueryDetailsCommand(this);
+        return new GetQueryDetailsResponse(text, status, contentType, json, this);
     }
 }

@@ -32,13 +32,6 @@ public class CreateUserCommand extends PostCommand<CreateUserResponse>
         _email = email;
     }
 
-    public CreateUserCommand(CreateUserCommand source)
-    {
-        super(source);
-        _email = source.getEmail();
-        _sendEmail = source.isSendEmail();
-    }
-
     public String getEmail()
     {
         return _email;
@@ -82,9 +75,4 @@ public class CreateUserCommand extends PostCommand<CreateUserResponse>
         return obj;
     }
 
-    @Override
-    public CreateUserCommand copy()
-    {
-        return new CreateUserCommand(this);
-    }
 }

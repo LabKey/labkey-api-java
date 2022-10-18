@@ -423,7 +423,7 @@ public class Command<ResponseType extends CommandResponse>
      */
     protected ResponseType createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return (ResponseType)new CommandResponse(text, status, contentType, json, this.copy());
+        return (ResponseType)new CommandResponse(text, status, contentType, json, this);
     }
 
     /**
@@ -574,13 +574,4 @@ public class Command<ResponseType extends CommandResponse>
         _requiredVersion = requiredVersion;
     }
 
-    /**
-     * Returns a copy of this object. Derived classes should override this
-     * to copy their own data members   
-     * @return A copy of this object
-     */
-    public Command<ResponseType> copy()
-    {
-        return new Command<>(this);
-    }
 }

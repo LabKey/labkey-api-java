@@ -173,7 +173,9 @@ public abstract class BaseQueryCommand<ResponseType extends CommandResponse> ext
      */
     public void addFilter(Filter filter)
     {
-        getFilters().add(filter);
+        if (_filters == null)
+            _filters = new ArrayList<>();
+        _filters.add(filter);
     }
 
     /**

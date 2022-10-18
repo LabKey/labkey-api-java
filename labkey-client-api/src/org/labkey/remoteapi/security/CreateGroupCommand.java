@@ -33,12 +33,6 @@ public class CreateGroupCommand extends PostCommand<CreateGroupResponse>
         _name = name;
     }
 
-    public CreateGroupCommand(CreateGroupCommand source)
-    {
-        super(source);
-        _name = source.getName();
-    }
-
     public String getName()
     {
         return _name;
@@ -53,12 +47,6 @@ public class CreateGroupCommand extends PostCommand<CreateGroupResponse>
     protected CreateGroupResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
         return new CreateGroupResponse(text, status, contentType, json, this);
-    }
-
-    @Override
-    public CreateGroupCommand copy()
-    {
-        return new CreateGroupCommand(this);
     }
 
     @Override

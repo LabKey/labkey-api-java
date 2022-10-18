@@ -117,25 +117,9 @@ public class ImportRunCommand extends PostCommand<ImportRunResponse>
     }
 
     @Override
-    public ImportRunCommand copy()
-    {
-        ImportRunCommand cmd = new ImportRunCommand(_assayId, _file);
-        cmd._useJson = _useJson;
-        cmd._name = _name;
-        cmd._comment = _comment;
-        cmd._properties = _properties;
-        cmd._batchId = _batchId;
-        cmd._batchProperties = _batchProperties;
-        cmd._runFilePath = _runFilePath;
-        cmd._plateMetadata = _plateMetadata;
-
-        return cmd;
-    }
-
-    @Override
     protected ImportRunResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new ImportRunResponse(text, status, contentType, json, this.copy());
+        return new ImportRunResponse(text, status, contentType, json, this);
     }
 
     @Override

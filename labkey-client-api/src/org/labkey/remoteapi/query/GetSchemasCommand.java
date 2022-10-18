@@ -28,20 +28,9 @@ public class GetSchemasCommand extends Command<GetSchemasResponse>
         super("query", "getSchemas");
     }
 
-    public GetSchemasCommand(GetSchemasCommand source)
-    {
-        super(source);
-    }
-
     @Override
     protected GetSchemasResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new GetSchemasResponse(text, status, contentType, json, this.copy());
-    }
-
-    @Override
-    public GetSchemasCommand copy()
-    {
-        return new GetSchemasCommand(this);
+        return new GetSchemasResponse(text, status, contentType, json, this);
     }
 }

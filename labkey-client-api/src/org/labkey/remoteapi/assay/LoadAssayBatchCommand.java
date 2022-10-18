@@ -30,14 +30,6 @@ public class LoadAssayBatchCommand extends PostCommand<LoadAssayBatchResponse>
         _batchId = batchId;
     }
 
-    public LoadAssayBatchCommand(LoadAssayBatchCommand source)
-    {
-        super(source);
-        _protocolName = source.getProtocolName();
-        _batchId = source.getBatchId();
-        _batch = new Batch(source._batch.toJSONObject());
-    }
-
     public String getProtocolName()
     {
         return _protocolName;
@@ -69,14 +61,8 @@ public class LoadAssayBatchCommand extends PostCommand<LoadAssayBatchResponse>
     }
 
     @Override
-    public LoadAssayBatchCommand copy()
-    {
-        return new LoadAssayBatchCommand(this);
-    }
-
-    @Override
     protected LoadAssayBatchResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new LoadAssayBatchResponse(text, status, contentType, json, this.copy());
+        return new LoadAssayBatchResponse(text, status, contentType, json, this);
     }
 }

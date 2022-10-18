@@ -325,7 +325,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
     {
         assert null != _schemaName : "You must set the schemaName before executing!";
         assert null != _sql : "You must set the Sql before executing!";
-        return new SelectRowsResponse(text, status, contentType, json, this.copy());
+        return new SelectRowsResponse(text, status, contentType, json, this);
     }
 
     @Override
@@ -344,12 +344,6 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
         json.put("includeDetailsColumn", isIncludeDetailsColumn());
         json.put("saveInSession", isSaveInSession());
         return json;
-    }
-
-    @Override
-    public ExecuteSqlCommand copy()
-    {
-        return new ExecuteSqlCommand(this);
     }
 
     @Override

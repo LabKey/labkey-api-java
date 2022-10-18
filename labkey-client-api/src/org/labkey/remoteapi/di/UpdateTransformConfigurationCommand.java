@@ -25,8 +25,7 @@ public class UpdateTransformConfigurationCommand extends BaseTransformCommand<Up
     /** @param transformId the name of the transform to update/read configuration */
     public UpdateTransformConfigurationCommand(String transformId)
     {
-        super("dataintegration", "UpdateTransformConfiguration");
-        setTransformId(transformId);
+        super("UpdateTransformConfiguration", transformId);
     }
 
     @Override

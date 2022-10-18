@@ -21,27 +21,17 @@ import org.labkey.remoteapi.PostCommand;
 
 public abstract class BaseTransformCommand<ResponseType extends CommandResponse> extends PostCommand<ResponseType>
 {
-    private String _transformId;
+    private final String _transformId;
 
-    public BaseTransformCommand(BaseTransformCommand<ResponseType> source)
+    protected BaseTransformCommand(String actionName, String transformId)
     {
-        super(source);
-        setTransformId(source.getTransformId());
-    }
-
-    public BaseTransformCommand(String controllerName, String actionName)
-    {
-        super(controllerName, actionName);
+        super("dataintegration", actionName);
+        _transformId = transformId;
     }
 
     public String getTransformId()
     {
         return _transformId;
-    }
-
-    public void setTransformId(String transformId)
-    {
-        _transformId = transformId;
     }
 
     @Override
@@ -57,17 +47,4 @@ public abstract class BaseTransformCommand<ResponseType extends CommandResponse>
         return result;
     }
 
-    @Override
-    public BaseTransformCommand<ResponseType> copy()
-    {
-        return new TransformCommandCopy<>(this);
-    }
-}
-
-class TransformCommandCopy<R extends CommandResponse> extends BaseTransformCommand<R>
-{
-    public TransformCommandCopy(BaseTransformCommand<R> source)
-    {
-        super(source);
-    }
 }

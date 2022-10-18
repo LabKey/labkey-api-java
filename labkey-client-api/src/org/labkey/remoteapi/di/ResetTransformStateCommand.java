@@ -29,8 +29,7 @@ public class ResetTransformStateCommand extends BaseTransformCommand<ResetTransf
      *  */
     public ResetTransformStateCommand(String transformId)
     {
-        super("dataintegration", "resetTransformState");
-        setTransformId(transformId);
+        super("resetTransformState", transformId);
     }
 
     @Override

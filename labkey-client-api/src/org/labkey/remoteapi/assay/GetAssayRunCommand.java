@@ -11,12 +11,6 @@ public class GetAssayRunCommand extends PostCommand<GetAssayRunResponse>
 {
     private String _lsid;
 
-    public GetAssayRunCommand(GetAssayRunCommand source)
-    {
-        super(source);
-        _lsid = source.getLsid();
-    }
-
     public GetAssayRunCommand(String lsid)
     {
         super("assay", "getAssayRun");
@@ -34,12 +28,6 @@ public class GetAssayRunCommand extends PostCommand<GetAssayRunResponse>
     }
 
     @Override
-    public GetAssayRunCommand copy()
-    {
-        return new GetAssayRunCommand(this);
-    }
-
-    @Override
     public JSONObject getJsonObject()
     {
         JSONObject result = new JSONObject();
@@ -51,6 +39,6 @@ public class GetAssayRunCommand extends PostCommand<GetAssayRunResponse>
     @Override
     protected GetAssayRunResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new GetAssayRunResponse(text, status, contentType, json, this.copy());
+        return new GetAssayRunResponse(text, status, contentType, json, this);
     }
 }

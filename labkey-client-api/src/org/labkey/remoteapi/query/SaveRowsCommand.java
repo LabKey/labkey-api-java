@@ -251,9 +251,7 @@ public abstract class SaveRowsCommand extends PostCommand<SaveRowsResponse>
     @Override
     protected SaveRowsResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new SaveRowsResponse(text, status, contentType, json, this.copy());
+        return new SaveRowsResponse(text, status, contentType, json, this);
     }
 
-    @Override
-    public abstract SaveRowsCommand copy();
 }

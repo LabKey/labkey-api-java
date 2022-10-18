@@ -56,7 +56,10 @@ public class PostCommand<ResponseType extends CommandResponse> extends Command<R
     {
         super(source);
         if (null != source.getJsonObject())
-            _jsonObject = source.getJsonObject();
+        {
+            // Convert to String and back is the easiest way to get a deep copy
+            _jsonObject = new JSONObject(source.getJsonObject().toString());
+        }
     }
 
     /**
@@ -107,9 +110,4 @@ public class PostCommand<ResponseType extends CommandResponse> extends Command<R
         return request;
     }
 
-    @Override
-    public PostCommand<ResponseType> copy()
-    {
-        return new PostCommand<>(this);
-    }
 }
