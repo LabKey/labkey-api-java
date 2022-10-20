@@ -1,9 +1,10 @@
 package org.labkey.remoteapi.domain;
 
 import org.json.JSONObject;
+import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.PostCommand;
 
-public class DropDomainCommand extends PostCommand
+public class DropDomainCommand extends PostCommand<CommandResponse>
 {
     private String _schemaName;
     private String _queryName;

@@ -30,12 +30,11 @@ public abstract class ExpObject extends ResponseObject
     private String _name;
     private Map<String, Object> _properties = new HashMap<>();
 
-    public ExpObject()
+    protected ExpObject()
     {
-        super(null);
     }
 
-    public ExpObject(JSONObject json)
+    protected ExpObject(JSONObject json)
     {
         super(json.toMap());
         _id = json.optNumber("id");

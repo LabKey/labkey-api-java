@@ -55,7 +55,7 @@ public class CommandResponse
         _statusCode = statusCode;
         _contentType = contentType;
         _data = null != json ? json.toMap() : null;
-        _requiredVersion = sourceCommand.getRequiredVersion();
+        _requiredVersion = sourceCommand != null ? sourceCommand.getRequiredVersion() : 0.0;
     }
 
     /**

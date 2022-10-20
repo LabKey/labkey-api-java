@@ -31,19 +31,16 @@ public class PropertyDescriptor extends ResponseObject
 
     public PropertyDescriptor()
     {
-        super(null);
     }
 
     public PropertyDescriptor(String name, String rangeURI)
     {
-        super(null);
         _name = name;
         _rangeURI = rangeURI;
     }
 
     public PropertyDescriptor(String name, String label, String rangeURI)
     {
-        super(null);
         _name = name;
         _label = label;
         _rangeURI = rangeURI;

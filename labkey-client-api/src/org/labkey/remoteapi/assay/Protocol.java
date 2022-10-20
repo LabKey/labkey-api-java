@@ -48,7 +48,6 @@ public class Protocol extends ResponseObject
 
     public Protocol()
     {
-        super(null);
     }
 
     public Protocol(JSONObject json)

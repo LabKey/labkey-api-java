@@ -72,6 +72,7 @@ import java.util.Map;
 public class NAbRunsResponse extends CommandResponse
 {
     private NAbRun[] _runs;
+
     /**
      * Constructs a new CommandResponse, initialized with the provided
      * response text and status code.

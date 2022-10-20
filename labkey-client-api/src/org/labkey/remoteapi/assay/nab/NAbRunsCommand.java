@@ -36,9 +36,6 @@ public class NAbRunsCommand extends BaseQueryCommand<NAbRunsResponse>
     private boolean _includeFitParameters = true;
     private boolean _calculateNeut = true;
 
-    /**
-     * Constructs a new AssayListCommand object.
-     */
     public NAbRunsCommand()
     {
         super("nabassay", "getNAbRuns");

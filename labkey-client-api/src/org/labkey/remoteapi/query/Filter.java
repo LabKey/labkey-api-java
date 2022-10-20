@@ -15,8 +15,9 @@
  */
 package org.labkey.remoteapi.query;
 
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Represents a filter definition for a query
@@ -92,21 +93,11 @@ public class Filter
         WHERE("Where", "where", "WHERE", true)
         ;
 
-        private static final Map<String, Operator> _programmaticNameToOperator = new HashMap<>(Operator.values().length);
+        private static final Map<String, Operator> _programmaticNameToOperator = Arrays.stream(Operator.values())
+                .collect(Collectors.toUnmodifiableMap(Operator::getProgrammaticName, op -> op));
 
-        static
-        {
-            for (Operator o : Operator.values())
-                _programmaticNameToOperator.put(o.getProgrammaticName(), o);
-        }
-
-        private static final Map<String, Operator> _urlKeyToOperator = new HashMap<>(Operator.values().length);
-
-        static
-        {
-            for (Operator o : Operator.values())
-                _urlKeyToOperator.put(o.getUrlKey(), o);
-        }
+        private static final Map<String, Operator> _urlKeyToOperator = Arrays.stream(Operator.values())
+                .collect(Collectors.toUnmodifiableMap(Operator::getUrlKey, op -> op));
 
         private final String _urlKey;
         private final String _displayValue;

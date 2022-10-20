@@ -17,12 +17,10 @@ public class Domain extends ResponseObject
 
     public Domain()
     {
-        super(null);
     }
 
     public Domain(String name)
     {
-        super(null);
         _name = name;
     }
 
@@ -42,9 +40,6 @@ public class Domain extends ResponseObject
                 _fields.add(new PropertyDescriptor((JSONObject)field));
             }
         }
-
-        _allProperties.remove("success");
-        _allProperties.remove("failure");
     }
 
     public JSONObject toJSONObject()
