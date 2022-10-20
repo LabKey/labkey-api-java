@@ -10,7 +10,8 @@ import java.util.List;
 
 public class ListDomainsResponse extends CommandResponse
 {
-    List<Domain> _domains = new ArrayList<>();
+    private final List<Domain> _domains = new ArrayList<>();
+
     /**
      * Constructs a new CommandResponse, initialized with the provided
      * response text and status code.
@@ -34,10 +35,5 @@ public class ListDomainsResponse extends CommandResponse
     public List<Domain> getDomains()
     {
         return _domains;
-    }
-
-    public void setDomains(List<Domain> domains)
-    {
-        _domains = domains;
     }
 }

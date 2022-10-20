@@ -6,27 +6,22 @@ import org.labkey.remoteapi.Command;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @deprecated The associated server action was deprecated in LabKey Server 20.3
- * @see GetDomainDetailsCommand
- */
-@Deprecated (since = "4.0.0")
-public class GetDomainCommand extends Command<DomainResponse>
+public class GetDomainDetailsCommand extends Command<DomainDetailsResponse>
 {
     private String _schemaName;
     private String _queryName;
     private Long _domainId;
 
-    public GetDomainCommand(String schemaName, String queryName)
+    public GetDomainDetailsCommand(String schemaName, String queryName)
     {
-        super("property", "getDomain");
+        super("property", "getDomainDetails");
         _schemaName = schemaName;
         _queryName = queryName;
     }
 
-    public GetDomainCommand(Long domainId)
+    public GetDomainDetailsCommand(Long domainId)
     {
-        super("property", "getDomain");
+        super("property", "getDomainDetails");
         _domainId = domainId;
     }
 
@@ -48,9 +43,9 @@ public class GetDomainCommand extends Command<DomainResponse>
     }
 
     @Override
-    protected DomainResponse createResponse(String text, int status, String contentType, JSONObject json)
+    protected DomainDetailsResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new DomainResponse(text, status, contentType, json, this);
+        return new DomainDetailsResponse(text, status, contentType, json, this);
     }
 
     public String getSchemaName()

@@ -11,9 +11,6 @@ public class DomainResponse extends CommandResponse
 {
     private final Domain _domain;
 
-    /**
-     * @exclude
-     */
     public DomainResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends DomainResponse> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);

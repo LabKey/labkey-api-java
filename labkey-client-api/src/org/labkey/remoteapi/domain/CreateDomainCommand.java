@@ -41,7 +41,6 @@ public class CreateDomainCommand extends AbstractDomainUpdateCommand
     }
 
     /**
-     * Get the defined domain kind.
      * @return the "kind" of domain to be created
      */
     public String getKind()
@@ -68,7 +67,7 @@ public class CreateDomainCommand extends AbstractDomainUpdateCommand
     }
 
     /**
-     * Set options for the domain to be created. Available options vary based on the domain kind specified.
+     * Set options for the domain to be created. Recognized options vary based on the domain kind specified.
      * @param options domain options
      */
     public void setOptions(Map<String, Object> options)

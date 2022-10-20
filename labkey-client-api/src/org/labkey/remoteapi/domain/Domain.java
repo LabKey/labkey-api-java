@@ -7,6 +7,9 @@ import org.labkey.remoteapi.ResponseObject;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Bean that defines a domain for creating, updating, or reading.
+ */
 public class Domain extends ResponseObject
 {
     private String _name;
@@ -15,6 +18,9 @@ public class Domain extends ResponseObject
     private String _domainURI;
     private List<PropertyDescriptor> _fields = new ArrayList<>();
 
+    /**
+     *
+     */
     public Domain()
     {
     }

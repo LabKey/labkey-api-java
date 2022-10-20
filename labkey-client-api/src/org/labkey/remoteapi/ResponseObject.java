@@ -28,7 +28,7 @@ public abstract class ResponseObject
 
     public ResponseObject(Map<String, Object> allProperties)
     {
-        _allProperties = allProperties == null ? null : ResponseUtils.deepUnmodifiableMap(allProperties);
+        _allProperties = ResponseUtils.deepUnmodifiableMap(allProperties);
     }
 
     protected ResponseObject()

@@ -10,7 +10,7 @@ abstract class AbstractDomainUpdateCommand extends PostCommand<DomainResponse>
 {
     private Domain _design = new Domain();
 
-    public AbstractDomainUpdateCommand(String controllerName, String actionName)
+    AbstractDomainUpdateCommand(String controllerName, String actionName)
     {
         super(controllerName, actionName);
     }
