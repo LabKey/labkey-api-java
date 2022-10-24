@@ -15,7 +15,6 @@
  */
 package org.labkey.remoteapi.experiment;
 
-
 import org.apache.commons.logging.LogFactory;
 import org.labkey.remoteapi.ResponseObject;
 import org.labkey.remoteapi.query.DateParser;
@@ -161,13 +160,10 @@ public class LineageNode extends ResponseObject
      * <dl>
      *     <dt>Sample</dt>
      *     <dd>The type for a Sample.
-     *
      *     <dt>GeneralAssayRun</dt>
      *     <dd>The type for a Standard (formerly called General) assay run</dd>
-     *
      *     <dt>AssayRunTSVData</dt>
      *     <dd>The type for the Data output file of an assay run</dd>
-     *
      *     <dt>GeneralAssayResultRow</dt>
      *     <dd>The type for an individual assay result row of a Standard assay. (requires provenance module)</dd>
      * </dl>
@@ -322,8 +318,7 @@ public class LineageNode extends ResponseObject
 
     StringBuilder indent(int indent, StringBuilder sb)
     {
-        for (int i = 0; i < indent; i++)
-            sb.append("  ");
+        sb.append("  ".repeat(Math.max(0, indent)));
         return sb;
     }
 

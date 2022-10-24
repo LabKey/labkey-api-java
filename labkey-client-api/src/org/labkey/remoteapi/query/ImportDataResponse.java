@@ -19,17 +19,13 @@ import org.json.JSONObject;
 import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 
-/**
- * User: kevink
- * Date: 2/3/17
- */
 public class ImportDataResponse extends CommandResponse
 {
-    private final Boolean _success;
+    private final boolean _success;
     private final int _rowCount;
     private final String _jobId;
 
-    public ImportDataResponse(String text, int statusCode, String contentType, JSONObject json, Command sourceCommand)
+    public ImportDataResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends ImportDataResponse> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
         _success = json.optBoolean("success");
@@ -37,7 +33,7 @@ public class ImportDataResponse extends CommandResponse
         _jobId = json.optString("jobId", null);
     }
 
-    public Boolean getSuccess()
+    public boolean getSuccess()
     {
         return _success;
     }

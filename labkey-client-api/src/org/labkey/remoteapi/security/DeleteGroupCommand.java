@@ -19,12 +19,6 @@ import org.json.JSONObject;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.PostCommand;
 
-/*
-* User: dave
-* Date: Sep 28, 2009
-* Time: 2:58:33 PM
-*/
-
 /**
  * Deletes the existing group corresponding to the group id.
  * Note that the response to the command contains nothing meaningful.
@@ -32,18 +26,12 @@ import org.labkey.remoteapi.PostCommand;
  */
 public class DeleteGroupCommand extends PostCommand<CommandResponse>
 {
-    private int _groupId = -1;
+    private int _groupId;
 
     public DeleteGroupCommand(int groupId)
     {
         super("security", "deleteGroup");
         _groupId = groupId;
-    }
-
-    public DeleteGroupCommand(DeleteGroupCommand source)
-    {
-        super(source);
-        _groupId = source.getGroupId();
     }
 
     public int getGroupId()
@@ -54,12 +42,6 @@ public class DeleteGroupCommand extends PostCommand<CommandResponse>
     public void setGroupId(int groupId)
     {
         _groupId = groupId;
-    }
-
-    @Override
-    public PostCommand copy()
-    {
-        return new DeleteGroupCommand(this);
     }
 
     @Override

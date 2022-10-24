@@ -21,12 +21,6 @@ import org.labkey.remoteapi.Command;
 import java.util.HashMap;
 import java.util.Map;
 
-/*
-* User: Dave
-* Date: Oct 21, 2008
-* Time: 3:05:51 PM
-*/
-
 /**
  *  Command for obtaining the list of queries available within a given schema.
  */
@@ -58,14 +52,6 @@ public class GetQueryDetailsCommand extends Command<GetQueryDetailsResponse>
     public GetQueryDetailsCommand(String schemaName, String queryName)
     {
         this(schemaName, queryName, true);
-    }
-
-    public GetQueryDetailsCommand(GetQueryDetailsCommand source)
-    {
-        super(source);
-        _schemaName = source._schemaName;
-        _queryName = source._queryName;
-        _includeSuggestedQueryColumns = source._includeSuggestedQueryColumns;
     }
 
     public String getSchemaName()
@@ -105,12 +91,6 @@ public class GetQueryDetailsCommand extends Command<GetQueryDetailsResponse>
     @Override
     protected GetQueryDetailsResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new GetQueryDetailsResponse(text, status, contentType, json, this.copy());
-    }
-
-    @Override
-    public GetQueryDetailsCommand copy()
-    {
-        return new GetQueryDetailsCommand(this);
+        return new GetQueryDetailsResponse(text, status, contentType, json, this);
     }
 }

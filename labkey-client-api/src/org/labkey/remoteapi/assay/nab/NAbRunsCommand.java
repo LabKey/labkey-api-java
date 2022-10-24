@@ -20,12 +20,6 @@ import org.labkey.remoteapi.query.BaseQueryCommand;
 
 import java.util.Map;
 
-/*
- * User: brittp
- * Date: May 15, 2009
- * Time: 11:22:43 AM
- */
-
 /**
  * Command for obtaining information about the current assay definitions
  * in a particular folder.
@@ -42,32 +36,15 @@ public class NAbRunsCommand extends BaseQueryCommand<NAbRunsResponse>
     private boolean _includeFitParameters = true;
     private boolean _calculateNeut = true;
 
-    /**
-     * Constructs a new AssayListCommand object.
-     */
     public NAbRunsCommand()
     {
         super("nabassay", "getNAbRuns");
     }
 
-    /**
-     * Constructs a new NAbRunsCommand which is a copy of the source command
-     * @param source The source NAbRunsCommand
-     */
-    public NAbRunsCommand(NAbRunsCommand source)
-    {
-        super(source);
-        _assayName = source._assayName;
-        _includeStats = source._includeStats;
-        _includeWells = source._includeWells;
-        _includeFitParameters = source._includeFitParameters;
-        _calculateNeut = source._calculateNeut;
-    }
-
     @Override
     protected NAbRunsResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new NAbRunsResponse(text, status, contentType, json, this.copy());
+        return new NAbRunsResponse(text, status, contentType, json, this);
     }
 
     @Override
@@ -82,12 +59,6 @@ public class NAbRunsCommand extends BaseQueryCommand<NAbRunsResponse>
         params.put("includeFitParameters", isIncludeFitParameters());
         params.put("calculateNeut", isCalculateNeut());
         return params;
-    }
-
-    @Override
-    public NAbRunsCommand copy()
-    {
-        return new NAbRunsCommand(this);
     }
 
     public String getAssayName()

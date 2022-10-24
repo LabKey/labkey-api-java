@@ -42,11 +42,6 @@ public class TruncateTableCommand extends PostCommand<TruncateTableResponse>
         _queryName = queryName;
     }
 
-    public TruncateTableCommand(TruncateTableCommand source)
-    {
-        super(source);
-    }
-
     /**
      * Returns the schema name.
      * @return The schema name.
@@ -84,15 +79,9 @@ public class TruncateTableCommand extends PostCommand<TruncateTableResponse>
     }
 
     @Override
-    public TruncateTableCommand copy()
-    {
-        return new TruncateTableCommand(this);
-    }
-
-    @Override
     protected TruncateTableResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new TruncateTableResponse(text, status, contentType, json, copy());
+        return new TruncateTableResponse(text, status, contentType, json, this);
     }
 
     @Override

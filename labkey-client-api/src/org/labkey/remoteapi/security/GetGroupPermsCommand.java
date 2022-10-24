@@ -21,11 +21,6 @@ import org.labkey.remoteapi.Command;
 import java.util.HashMap;
 import java.util.Map;
 
-/*
-* User: Dave
-* Date: Sep 9, 2008
-* Time: 2:12:46 PM
-*/
 public class GetGroupPermsCommand extends Command<GetGroupPermsResponse>
 {
     private boolean _includeSubfolders = false;
@@ -33,12 +28,6 @@ public class GetGroupPermsCommand extends Command<GetGroupPermsResponse>
     public GetGroupPermsCommand()
     {
         super("security", "getGroupPerms");
-    }
-
-    public GetGroupPermsCommand(GetGroupPermsCommand source)
-    {
-        super(source);
-        _includeSubfolders = source._includeSubfolders;
     }
 
     /**
@@ -64,7 +53,7 @@ public class GetGroupPermsCommand extends Command<GetGroupPermsResponse>
     @Override
     protected GetGroupPermsResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new GetGroupPermsResponse(text, status, contentType, json, this.copy());
+        return new GetGroupPermsResponse(text, status, contentType, json, this);
     }
 
     @Override
@@ -75,9 +64,4 @@ public class GetGroupPermsCommand extends Command<GetGroupPermsResponse>
         return params;
     }
 
-    @Override
-    public GetGroupPermsCommand copy()
-    {
-        return new GetGroupPermsCommand(this);
-    }
 }

@@ -22,12 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/*
-* User: Dave
-* Date: Jul 22, 2008
-* Time: 1:32:57 PM
-*/
-
 /**
  * Command for executing arbitrary LabKey SQL.
  * <p>
@@ -52,7 +46,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
     private List<Sort> _sorts;
     private boolean _saveInSession = false;
     private boolean _includeDetailsColumn = false;
-    private Map<String, String> _queryParameters = new HashMap<String, String>();
+    private Map<String, String> _queryParameters = new HashMap<>();
 
     /**
      * Constructs an ExecuteSqlCommand, initialized with a schema name.
@@ -79,7 +73,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
         _sorts = source._sorts;
         _saveInSession = source._saveInSession;
         _includeDetailsColumn = source._includeDetailsColumn;
-        _queryParameters = new HashMap<String, String>(source.getQueryParameters());
+        _queryParameters = new HashMap<>(source.getQueryParameters());
     }
 
     /**
@@ -154,6 +148,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
      * Returns the current row limit value. Defaults to -1, meaning return all rows.
      * @return The current row limit value.
      */
+    @Override
     public int getMaxRows()
     {
         return _maxRows;
@@ -164,6 +159,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
      * the first <code>maxRows</code> rows will be returned from the server.
      * @param maxRows The maximim number of rows to return, or -1 to get all rows (default).
      */
+    @Override
     public void setMaxRows(int maxRows)
     {
         _maxRows = maxRows;
@@ -173,6 +169,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
      * Returns the index of the first row in the resultset to return (defaults to 0).
      * @return The current offset index.
      */
+    @Override
     public int getOffset()
     {
         return _offset;
@@ -184,6 +181,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
      * rows at a time from the server.
      * @param offset The current offset index.
      */
+    @Override
     public void setOffset(int offset)
     {
         _offset = offset;
@@ -305,6 +303,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
      * Returns the container filter set for this command
      * @return the container filter (may be null)
      */
+    @Override
     public ContainerFilter getContainerFilter()
     {
         return _containerFilter;
@@ -315,6 +314,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
      * This will cause the query to be executed over more than one container.
      * @param containerFilter the filter to apply to the query (may be null)
      */
+    @Override
     public void setContainerFilter(ContainerFilter containerFilter)
     {
         _containerFilter = containerFilter;
@@ -325,11 +325,10 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
     {
         assert null != _schemaName : "You must set the schemaName before executing!";
         assert null != _sql : "You must set the Sql before executing!";
-        return new SelectRowsResponse(text, status, contentType, json, this.copy());
+        return new SelectRowsResponse(text, status, contentType, json, this);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public JSONObject getJsonObject()
     {
         JSONObject json = new JSONObject();
@@ -345,12 +344,6 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
         json.put("includeDetailsColumn", isIncludeDetailsColumn());
         json.put("saveInSession", isSaveInSession());
         return json;
-    }
-
-    @Override
-    public ExecuteSqlCommand copy()
-    {
-        return new ExecuteSqlCommand(this);
     }
 
     @Override

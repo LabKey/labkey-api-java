@@ -16,19 +16,15 @@
 package org.labkey.remoteapi.security;
 
 import org.json.JSONObject;
+import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 
 import java.util.List;
 import java.util.Map;
 
-/*
-* User: Dave
-* Date: Oct 27, 2008
-* Time: 1:27:31 PM
-*/
 public class GetContainersResponse extends CommandResponse
 {
-    public GetContainersResponse(String text, int statusCode, String contentType, JSONObject json, GetContainersCommand sourceCommand)
+    public GetContainersResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends GetContainersResponse> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
     }
@@ -61,7 +57,6 @@ public class GetContainersResponse extends CommandResponse
         return (null == userPerms) ? null : userPerms == (userPerms | perm);
     }
 
-    @SuppressWarnings("unchecked")
     protected Map<String, Object> findContainer(String containerPath, Map<String, Object> root)
     {
         if(null == containerPath)

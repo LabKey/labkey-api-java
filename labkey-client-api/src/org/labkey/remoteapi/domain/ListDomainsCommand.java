@@ -72,15 +72,9 @@ public class ListDomainsCommand extends PostCommand<ListDomainsResponse>
     public JSONObject getJsonObject()
     {
         JSONObject result = new JSONObject();
-        JSONArray domainKinds = new JSONArray();
-
-        for(String domainKind: getDomainKinds())
-        {
-            domainKinds.put(domainKind);
-        }
 
         result.put("containerPath", _containerPath);
-        result.put("domainKinds", domainKinds);
+        result.put("domainKinds", new JSONArray(getDomainKinds()));
         result.put("includeFields", _includeFields);
         result.put("includeProjectAndShared", _includeProjectAndShared);
 

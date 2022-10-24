@@ -1,6 +1,6 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## version 4.0.0
+## version 4.0.0-jsonUpgrade-SNAPSHOT
 *Released*: TBD
 * Replace the internal JSON library with [JSON-java](https://github.com/stleary/JSON-java). The previous library,
   [json-simple](https://github.com/fangyidong/json-simple) is no longer maintained (last released in early 2012) and

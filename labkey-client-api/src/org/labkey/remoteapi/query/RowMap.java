@@ -17,11 +17,6 @@ package org.labkey.remoteapi.query;
 
 import java.util.Map;
 
-/*
-* User: dave
-* Date: Oct 7, 2009
-* Time: 11:46:02 AM
-*/
 public class RowMap implements Row
 {
     private Map<String, Object> _row;
@@ -42,30 +37,35 @@ public class RowMap implements Row
         _extendedFormat = _row.size() > 0 && row.values().iterator().next() instanceof Map;
     }
 
+    @Override
     public Object getValue(String columnName)
     {
         Object col = _row.get(columnName);
         return null == col || !_extendedFormat ? col : ((Map<String, Object>)col).get("value");
     }
 
+    @Override
     public Object getDisplayValue(String columnName)
     {
         Object col = _row.get(columnName);
         return null == col || !_extendedFormat ? null : ((Map<String, Object>)col).get("displayValue");
     }
 
+    @Override
     public String getUrl(String columnName)
     {
         Object col = _row.get(columnName);
         return null == col || !_extendedFormat ? null : (String)((Map<String, Object>)col).get("url");
     }
 
+    @Override
     public String getMvValue(String columnName)
     {
         Object col = _row.get(columnName);
         return null == col || !_extendedFormat ? null : (String)((Map<String, Object>)col).get("mvValue");
     }
 
+    @Override
     public Object getMvRawValue(String columnName)
     {
         Object col = _row.get(columnName);

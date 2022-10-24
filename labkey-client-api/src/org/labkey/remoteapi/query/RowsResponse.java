@@ -27,11 +27,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-/*
-* User: Dave
-* Date: Jul 14, 2008
-* Time: 11:57:17 AM
-*/
 /**
  * Base class for command responses that contain an array of rows
  * and meta-data about those rows. Primarily, this class converts

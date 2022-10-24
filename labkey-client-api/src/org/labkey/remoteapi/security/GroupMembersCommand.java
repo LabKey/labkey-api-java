@@ -22,18 +22,12 @@ import org.labkey.remoteapi.PostCommand;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
-* User: dave
-* Date: Sep 28, 2009
-* Time: 3:14:05 PM
-*/
-
 /**
  * Base class for AddGroupMembersCommand and RemoveGroupMembersCommand
  */
 public abstract class GroupMembersCommand extends PostCommand<CommandResponse>
 {
-    private int _groupId = 0;
+    private int _groupId;
     private final List<Integer> _principals = new ArrayList<>();
 
     protected GroupMembersCommand(String actionName, int groupId)

@@ -17,7 +17,6 @@ package org.labkey.remoteapi.experiment;
 
 import org.json.JSONObject;
 import org.labkey.remoteapi.Command;
-import org.labkey.remoteapi.Connection;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -147,6 +146,7 @@ public class LineageCommand extends Command<LineageResponse>
         return new LineageResponse(text, statusCode, contentType, json, this);
     }
 
+    @Override
     public Map<String, Object> getParameters()
     {
         Map<String, Object> params = new HashMap<>();
@@ -171,33 +171,5 @@ public class LineageCommand extends Command<LineageResponse>
         return params;
     }
 
-
-    @Override
-    public LineageCommand copy()
-    {
-        return new LineageCommand(_lsids, _parents, _children, _depth, _cpasType, _expType,
-                _includeProperties, _includeInputsAndOutputs, _includeRunSteps);
-    }
-
-    public static void main(String[] args) throws Exception
-    {
-        String url = "http://localhost:8080/labkey";
-        String folderPath = "/AssayImportProvenance Test";
-        String user = "kevink@labkey.com";
-        String password = "xxxxxx";
-
-        String lsid = "urn:lsid:labkey.com:GeneralAssayRun.Folder-4780:40166791-3d3f-1039-a854-9b7575483a25";
-
-        LineageCommand cmd = new Builder(lsid)
-                .setParents(false)
-                .setChildren(true)
-                .setIncludeProperties(true)
-                .setIncludeInputsAndOutputs(true)
-                .setIncludeRunSteps(true)
-                .build();
-
-        Connection conn = new Connection(url, user, password);
-        LineageResponse resp = cmd.execute(conn, folderPath);
-        System.out.println(resp.dump());
-    }
 }
+

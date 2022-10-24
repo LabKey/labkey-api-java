@@ -19,14 +19,9 @@ import org.json.JSONObject;
 import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 
-/*
-* User: dave
-* Date: Sep 28, 2009
-* Time: 2:50:07 PM
-*/
 public class CreateUserResponse extends CommandResponse
 {
-    public CreateUserResponse(String text, int statusCode, String contentType, JSONObject json, Command sourceCommand)
+    public CreateUserResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends CreateUserResponse> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
     }

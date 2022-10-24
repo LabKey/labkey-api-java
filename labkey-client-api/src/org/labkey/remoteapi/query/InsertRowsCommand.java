@@ -15,12 +15,6 @@
  */
 package org.labkey.remoteapi.query;
 
-/*
-* User: Dave
-* Date: Jul 11, 2008
-* Time: 4:53:34 PM
-*/
-
 /**
  * Command for inserting rows into a table in a read-write schema.
  * The user associated with the connection used when executing this
@@ -43,14 +37,4 @@ public class InsertRowsCommand extends SaveRowsCommand
         super(schemaName, queryName, "insertRows");
     }
 
-    public InsertRowsCommand(InsertRowsCommand source)
-    {
-        super(source);
-    }
-
-    @Override
-    public InsertRowsCommand copy()
-    {
-        return new InsertRowsCommand(this);
-    }
 }

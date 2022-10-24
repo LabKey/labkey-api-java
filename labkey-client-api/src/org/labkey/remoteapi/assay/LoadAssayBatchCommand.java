@@ -3,7 +3,6 @@ package org.labkey.remoteapi.assay;
 import org.json.JSONObject;
 import org.labkey.remoteapi.PostCommand;
 
-
 /**
  * Command for obtaining information about the current batch in a particular folder.
  */
@@ -29,13 +28,6 @@ public class LoadAssayBatchCommand extends PostCommand<LoadAssayBatchResponse>
         super("assay", "getAssayBatch");
         _protocolName = protocolName;
         _batchId = batchId;
-    }
-
-    public LoadAssayBatchCommand(LoadAssayBatchCommand source)
-    {
-        super(source);
-        _protocolName = source.getProtocolName();
-        _batchId = source.getBatchId();
     }
 
     public String getProtocolName()
@@ -66,12 +58,6 @@ public class LoadAssayBatchCommand extends PostCommand<LoadAssayBatchResponse>
         result.put("batchId", getBatchId());
         result.put("batch", getBatch());
         return result;
-    }
-
-    @Override
-    public LoadAssayBatchCommand copy()
-    {
-        return new LoadAssayBatchCommand(this);
     }
 
     @Override

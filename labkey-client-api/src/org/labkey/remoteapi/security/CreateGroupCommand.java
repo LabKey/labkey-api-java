@@ -18,12 +18,6 @@ package org.labkey.remoteapi.security;
 import org.json.JSONObject;
 import org.labkey.remoteapi.PostCommand;
 
-/*
-* User: dave
-* Date: Sep 28, 2009
-* Time: 2:53:02 PM
-*/
-
 /**
  * Creates a new user group. When executed in a project or subfolder, it will create
  * the group at the project level. When executed at the root level, it will create
@@ -37,12 +31,6 @@ public class CreateGroupCommand extends PostCommand<CreateGroupResponse>
     {
         super("security", "createGroup");
         _name = name;
-    }
-
-    public CreateGroupCommand(CreateGroupCommand source)
-    {
-        super(source);
-        _name = source.getName();
     }
 
     public String getName()
@@ -59,12 +47,6 @@ public class CreateGroupCommand extends PostCommand<CreateGroupResponse>
     protected CreateGroupResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
         return new CreateGroupResponse(text, status, contentType, json, this);
-    }
-
-    @Override
-    public PostCommand copy()
-    {
-        return new CreateGroupCommand(this);
     }
 
     @Override

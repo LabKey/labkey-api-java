@@ -23,17 +23,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * User: brittp
- * Date: Jun 24, 2009
- * Time: 10:11:39 PM
- */
 public abstract class BaseQueryCommand<ResponseType extends CommandResponse> extends Command<ResponseType>
 {
     protected int _maxRows = -1;
     protected int _offset = 0;
-    protected List<Sort> _sorts = new ArrayList<>();
-    protected List<Filter> _filters = new ArrayList<>();
+    protected List<Sort> _sorts;
+    protected List<Filter> _filters;
     protected ContainerFilter _containerFilter;
     private Map<String, String> _queryParameters = new HashMap<>();
 
@@ -54,6 +49,8 @@ public abstract class BaseQueryCommand<ResponseType extends CommandResponse> ext
         {
             _filters.add(new Filter(filter));
         }
+
+        _queryParameters.putAll(source._queryParameters);
     }
 
     public BaseQueryCommand(String controllerName, String actionName)
@@ -132,7 +129,7 @@ public abstract class BaseQueryCommand<ResponseType extends CommandResponse> ext
     public void addSort(Sort sort)
     {
         if (_sorts == null)
-            _sorts = new ArrayList<Sort>();
+            _sorts = new ArrayList<>();
         _sorts.add(sort);
     }
 
@@ -176,7 +173,9 @@ public abstract class BaseQueryCommand<ResponseType extends CommandResponse> ext
      */
     public void addFilter(Filter filter)
     {
-        getFilters().add(filter);
+        if (_filters == null)
+            _filters = new ArrayList<>();
+        _filters.add(filter);
     }
 
     /**

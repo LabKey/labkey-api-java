@@ -16,6 +16,7 @@
 package org.labkey.remoteapi.security;
 
 import org.json.JSONObject;
+import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.ResponseObject;
 
@@ -25,12 +26,10 @@ import java.util.Map;
 
 /**
  * The result of a GetUsersCommand request.
- * User: jeckels
- * Date: Jan 26, 2010
  */
 public class GetUsersResponse extends CommandResponse
 {
-    public GetUsersResponse(String text, int statusCode, String contentType, JSONObject json, GetUsersCommand sourceCommand)
+    public GetUsersResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends GetUsersResponse> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
     }

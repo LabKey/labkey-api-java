@@ -26,18 +26,6 @@ public class SaveAssayRunsCommand extends PostCommand<SaveAssayRunsResponse>
         _protocolName = protocolName;
     }
 
-    public SaveAssayRunsCommand(SaveAssayRunsCommand source)
-    {
-        super(source);
-        _runs = source._runs;
-    }
-
-    @Override
-    public PostCommand copy()
-    {
-        return new SaveAssayRunsCommand(this);
-    }
-
     @Override
     public JSONObject getJsonObject()
     {

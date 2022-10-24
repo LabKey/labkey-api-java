@@ -18,12 +18,6 @@ package org.labkey.remoteapi.query;
 import org.json.JSONObject;
 import org.labkey.remoteapi.Command;
 
-/*
-* User: Dave
-* Date: Oct 21, 2008
-* Time: 2:57:10 PM
-*/
-
 /**
  * Command to obtain the list of schemas available in a given folder path.
  */
@@ -34,20 +28,9 @@ public class GetSchemasCommand extends Command<GetSchemasResponse>
         super("query", "getSchemas");
     }
 
-    public GetSchemasCommand(GetSchemasCommand source)
-    {
-        super(source);
-    }
-
     @Override
     protected GetSchemasResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new GetSchemasResponse(text, status, contentType, json, this.copy());
-    }
-
-    @Override
-    public GetSchemasCommand copy()
-    {
-        return new GetSchemasCommand(this);
+        return new GetSchemasResponse(text, status, contentType, json, this);
     }
 }

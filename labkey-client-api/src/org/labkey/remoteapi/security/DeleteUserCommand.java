@@ -33,12 +33,6 @@ public class DeleteUserCommand extends PostCommand<CommandResponse>
         _userId = userId;
     }
 
-    public DeleteUserCommand(DeleteUserCommand source)
-    {
-        super(source);
-        _userId = source.getUserId();
-    }
-
     public int getUserId()
     {
         return _userId;
@@ -47,12 +41,6 @@ public class DeleteUserCommand extends PostCommand<CommandResponse>
     public void setUserId(int userId)
     {
         _userId = userId;
-    }
-
-    @Override
-    public PostCommand copy()
-    {
-        return new DeleteUserCommand(this);
     }
 
     @Override

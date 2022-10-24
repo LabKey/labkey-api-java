@@ -15,22 +15,30 @@
  */
 package org.labkey.remoteapi;
 
+import org.labkey.remoteapi.internal.ResponseUtils;
+
 import java.util.Map;
 
 /**
- * User: jeckels
- * Date: Apr 3, 2010
+ * Base class for objects mapped from subsets of response JSON
  */
-public class ResponseObject
+public abstract class ResponseObject
 {
     protected final Map<String, Object> _allProperties;
 
     public ResponseObject(Map<String, Object> allProperties)
     {
-        _allProperties = allProperties;
+        _allProperties = ResponseUtils.deepUnmodifiableMap(allProperties);
     }
 
-    /** @return the full set of JSON properties returned by the server */
+    protected ResponseObject()
+    {
+        this(null);
+    }
+
+    /**
+     * @return the full set of JSON properties returned by the server (unmodifiable)
+     */
     public Map<String, Object> getAllProperties()
     {
         return _allProperties;

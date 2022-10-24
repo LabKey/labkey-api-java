@@ -22,22 +22,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
-* Base class for experiment objects, including Run, Data, Batch, etc
-* User: jeckels
-* Date: Apr 28, 2010
-*/
+ * Base class for experiment objects, including Run, Data, Batch, etc
+ */
 public abstract class ExpObject extends ResponseObject
 {
     private Number _id;
     private String _name;
     private Map<String, Object> _properties = new HashMap<>();
 
-    public ExpObject()
+    protected ExpObject()
     {
-        super(null);
     }
 
-    public ExpObject(JSONObject json)
+    protected ExpObject(JSONObject json)
     {
         super(json.toMap());
         _id = json.optNumber("id");

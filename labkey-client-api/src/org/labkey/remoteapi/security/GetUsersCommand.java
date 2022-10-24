@@ -23,8 +23,6 @@ import java.util.Map;
 
 /**
  * Returns a list of users given selection criteria. This may be called by any logged-in user.
- * User: jeckels
- * Date: Jan 26, 2010
  */
 public class GetUsersCommand extends Command<GetUsersResponse>
 {
@@ -36,14 +34,6 @@ public class GetUsersCommand extends Command<GetUsersResponse>
     public GetUsersCommand()
     {
         super("user", "getUsers");
-    }
-
-    public GetUsersCommand(GetUsersCommand source, String group, int groupId, String name)
-    {
-        super(source);
-        setGroup(group);
-        setGroupId(groupId);
-        setName(name);
     }
 
     /** @return the id of a project group for which you want the members */
@@ -104,12 +94,6 @@ public class GetUsersCommand extends Command<GetUsersResponse>
     public void setIncludeDeactivated(Boolean active)
     {
         _includeDeactivated = active;
-    }
-
-    @Override
-    public Command copy()
-    {
-        return new GetUsersCommand(this, getGroup(), getGroupId(), getName());
     }
 
     @Override

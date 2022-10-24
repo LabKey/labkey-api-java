@@ -21,8 +21,6 @@ import org.labkey.remoteapi.PostCommand;
 
 /**
  * Create a container (project/folder/workbook) on the server
- * User: jeckels
- * Date: Jul 20, 2012
  */
 public class CreateContainerCommand extends PostCommand<CreateContainerResponse>
 {
@@ -32,17 +30,6 @@ public class CreateContainerCommand extends PostCommand<CreateContainerResponse>
     private String _type;
     private boolean _workbook = false;
     private String _folderType;
-
-    public CreateContainerCommand(CreateContainerCommand source)
-    {
-        super(source);
-        _name = source.getName();
-        _title = source.getTitle();
-        _description = source.getDescription();
-        _workbook = source.isWorkbook();
-        _folderType = source.getFolderType();
-        _type = source.getType();
-    }
 
     /** @param name the name of the container to create */  
     public CreateContainerCommand(String name)
@@ -135,9 +122,4 @@ public class CreateContainerCommand extends PostCommand<CreateContainerResponse>
         return new CreateContainerResponse(text, status, contentType, json, this);
     }
 
-    @Override
-    public CreateContainerCommand copy()
-    {
-        return new CreateContainerCommand(this);
-    }
 }
