@@ -15,7 +15,7 @@
  */
 package org.labkey.remoteapi.query;
 
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 import org.labkey.remoteapi.Command;
 
 import java.util.List;
@@ -72,7 +72,7 @@ public class SelectRowsResponse extends RowsResponse
      * @param json The parsed JSONObject (or null if no JSON was returned
      * @param sourceCommand A copy of the command that created this response
      */
-    public SelectRowsResponse(String text, int statusCode, String contentType, JSONObject json, Command sourceCommand)
+    public SelectRowsResponse(String text, int statusCode, String contentType, JSONObject json, Command<SelectRowsResponse> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
     }

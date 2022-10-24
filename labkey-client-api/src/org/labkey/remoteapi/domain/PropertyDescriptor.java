@@ -1,7 +1,7 @@
 package org.labkey.remoteapi.domain;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.labkey.remoteapi.ResponseObject;
 
 import java.util.ArrayList;
@@ -51,45 +51,33 @@ public class PropertyDescriptor extends ResponseObject
 
     public PropertyDescriptor(JSONObject json)
     {
-        super(json);
+        super(json.toMap());
 
-        _name = (String)json.get("name");
-        _label = (String)json.get("label");
-        _description = (String)json.get("description");
+        _name = json.getString("name");
+        _label = json.optString("label", null);
+        _description = json.optString("description", null);
+        _hidden = json.optBoolean("hidden");
+        _required = json.optBoolean("required");
+        _PHI = json.optString("PHI", null);
+        _propertyId = json.getLong("propertyId");
+        _format = json.optString("format", null);
+        _measure = json.optBoolean("measure");
+        _dimension = json.optBoolean("dimension");
 
-        if (json.get("hidden") != null)
-            _hidden = (Boolean)json.get("hidden");
-        if (json.get("required") != null)
-            _required = (Boolean)json.get("required");
+        _propertyURI = json.optString("propertyURI", null);
+        _rangeURI = json.optString("rangeURI", null);
 
-        _PHI = (String)json.get("PHI");
-        _propertyId = (Long)json.get("propertyId");
-        _format = (String)json.get("format");
-
-        if (json.get("measure") != null)
-            _measure = (Boolean)json.get("measure");
-        if (json.get("dimension") != null)
-            _dimension = (Boolean)json.get("dimension");
-
-        _propertyURI = (String)json.get("propertyURI");
-        _rangeURI = (String)json.get("rangeURI");
-
-        JSONArray cfs = (JSONArray) json.get("conditionalFormats");
+        JSONArray cfs = json.getJSONArray("conditionalFormats");
         cfs.forEach(cf -> {
             JSONObject cfObj = (JSONObject) cf;
             _conditionalFormats.add(ConditionalFormat.fromJSON(cfObj));
         });
 
-        if (json.get("lookupSchema") != null)
-            _lookupSchema = (String)json.get("lookupSchema");
-        if (json.get("lookupQuery") != null)
-            _lookupQuery = (String)json.get("lookupQuery");
-        if (json.get("lookupContainer") != null)
-            _lookupContainer = (String)json.get("lookupContainer");
-        if (json.get("derivationDataScope") != null)
-            _derivationDataScope = (String)json.get("derivationDataScope");
-        if (json.get("mvEnabled") != null)
-            _mvEnabled = (Boolean)json.get("mvEnabled");
+        _lookupSchema = json.optString("lookupSchema", null);
+        _lookupQuery = json.optString("lookupQuery", null);
+        _lookupContainer = json.optString("lookupContainer", null);
+        _derivationDataScope = json.optString("derivationDataScope", null);
+        _mvEnabled = json.optBoolean("mvEnabled");
     }
 
     public JSONObject toJSONObject()
@@ -102,7 +90,7 @@ public class PropertyDescriptor extends ResponseObject
         JSONObject result = new JSONObject();
 
         if (getAllProperties() != null)
-            result.putAll(getAllProperties());
+            getAllProperties().forEach(result::put);
 
         result.put("name", _name);
         result.put("label", _label);
@@ -133,9 +121,9 @@ public class PropertyDescriptor extends ResponseObject
 
         if (forProtocol)
         {
-            result.put("url", result.get("URL"));
+            result.put("url", result.optString("URL", null));
             result.remove("URL");
-            result.put("phi", result.get("PHI"));
+            result.put("phi", result.optString("PHI", null));
             result.remove("PHI");
         }
 
@@ -148,7 +136,7 @@ public class PropertyDescriptor extends ResponseObject
         for (ConditionalFormat conditionalFormat : _conditionalFormats)
         {
             JSONObject cf = conditionalFormat.toJSON();
-            cfs.add(cf);
+            cfs.put(cf);
         }
         return cfs;
     }

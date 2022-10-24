@@ -15,9 +15,9 @@
  */
 package org.labkey.remoteapi.security;
 
-import org.labkey.remoteapi.CommandResponse;
+import org.json.JSONObject;
 import org.labkey.remoteapi.Command;
-import org.json.simple.JSONObject;
+import org.labkey.remoteapi.CommandResponse;
 
 /*
 * User: dave

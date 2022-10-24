@@ -15,7 +15,7 @@
  */
 package org.labkey.remoteapi.query;
 
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 import org.labkey.remoteapi.CommandResponse;
 
 /*
@@ -49,7 +49,7 @@ public class TruncateTableResponse extends CommandResponse
      * @return The number of rows deleted by the command, or null if this property
      * was not present in the response.
      */
-    public Number getDeletedRowCount()
+    public Integer getDeletedRowCount()
     {
         return getProperty("deletedRows");
     }

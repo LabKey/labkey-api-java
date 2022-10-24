@@ -1,7 +1,7 @@
 package org.labkey.remoteapi.assay;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.labkey.remoteapi.ResponseObject;
 import org.labkey.remoteapi.domain.Domain;
 
@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class Protocol extends ResponseObject
 {
-    private Long _protocolId;
+    private Integer _protocolId;
     private String _name;
     private String _description;
     private String _providerName;
@@ -53,59 +53,69 @@ public class Protocol extends ResponseObject
 
     public Protocol(JSONObject json)
     {
-        super(json);
+        super(json.toMap());
 
-        _protocolId = (Long)json.get("protocolId");
-        _name = (String)json.get("name");
-        _description = (String)json.get("description");
-        _providerName = (String)json.get("providerName");
+        _protocolId = (Integer)json.optNumber("protocolId", null);
+        _name = json.getString("name");
+        _description = json.optString("description", null);
+        _providerName = json.getString("providerName");
 
         if (json.get("domains") instanceof JSONArray)
         {
-            for (Object domain : ((JSONArray)json.get("domains")))
+            for (Object domain : json.getJSONArray("domains"))
                 _domains.add(new Domain((JSONObject)domain));
         }
 
-        if (json.containsKey("allowBackgroundUpload"))
+        if (json.has("allowBackgroundUpload"))
             _allowBackgroundUpload = (Boolean)json.get("allowBackgroundUpload");
-        if (json.containsKey("backgroundUpload"))
+        if (json.has("backgroundUpload"))
             _backgroundUpload = (Boolean)json.get("backgroundUpload");
-        if (json.containsKey("allowEditableResults"))
+        if (json.has("allowEditableResults"))
             _allowEditableResults = (Boolean)json.get("allowEditableResults");
-        if (json.containsKey("editableResults"))
+        if (json.has("editableResults"))
             _editableResults = (Boolean)json.get("editableResults");
-        if (json.containsKey("editableRuns"))
+        if (json.has("editableRuns"))
             _editableRuns = (Boolean)json.get("editableRuns");
-        if (json.containsKey("saveScriptFiles"))
+        if (json.has("saveScriptFiles"))
             _saveScriptFiles = (Boolean)json.get("saveScriptFiles");
-        if (json.containsKey("qcEnabled"))
+        if (json.has("qcEnabled"))
             _qcEnabled = (Boolean)json.get("qcEnabled");
-        if (json.containsKey("allowQCStates"))
+        if (json.has("allowQCStates"))
             _allowQCStates = (Boolean)json.get("allowQCStates");
-        if (json.containsKey("allowSpacesInPath"))
+        if (json.has("allowSpacesInPath"))
             _allowSpacesInPath = (Boolean)json.get("allowSpacesInPath");
-        if (json.containsKey("allowTransformationScript"))
+        if (json.has("allowTransformationScript"))
             _allowTransformationScript = (Boolean)json.get("allowTransformationScript");
-        if (json.containsKey("autoCopyTargetContainerId"))
-            _autoCopyTargetContainerId = (String)json.get("autoCopyTargetContainerId");
+        _autoCopyTargetContainerId = json.optString("autoCopyTargetContainerId", null);
 
         if (json.get("availableDetectionMethods") instanceof JSONArray)
-            _availableDetectionMethods = new ArrayList<>((JSONArray)json.get("availableDetectionMethods"));
-        if (json.containsKey("selectedDetectionMethod"))
-            _selectedDetectionMethod = (String)json.get("selectedDetectionMethod");
+            _availableDetectionMethods = convert(json.getJSONArray("availableDetectionMethods"));
+        _selectedDetectionMethod = json.optString("selectedDetectionMethod", null);
         if (json.get("availableMetadataInputFormats") instanceof JSONObject)
-            _availableMetadataInputFormats = new HashMap<>((JSONObject)json.get("availableMetadataInputFormats"));
-        if (json.containsKey("selectedMetadataInputFormat"))
-            _selectedMetadataInputFormat = (String)json.get("selectedMetadataInputFormat");
+            _availableMetadataInputFormats = convert(json.getJSONObject("availableMetadataInputFormats"));
+        _selectedMetadataInputFormat = json.optString("selectedMetadataInputFormat", null);
         if (json.get("availablePlateTemplates") instanceof JSONArray)
-            _availablePlateTemplates = new ArrayList<>((JSONArray)json.get("availablePlateTemplates"));
-        if (json.containsKey("selectedPlateTemplate"))
-            _selectedPlateTemplate = (String)json.get("selectedPlateTemplate");
+            _availablePlateTemplates = convert(json.getJSONArray("availablePlateTemplates"));
+        _selectedPlateTemplate = json.optString("selectedPlateTemplate", null);
 
-        if (json.containsKey("protocolTransformScripts"))
-            _protocolTransformScripts = new ArrayList<>((JSONArray)json.get("protocolTransformScripts"));
-        if (json.containsKey("protocolParameters"))
-            _protocolParameters = new HashMap<>((JSONObject) json.get("protocolParameters"));
+        if (json.has("protocolTransformScripts"))
+            _protocolTransformScripts = convert(json.getJSONArray("protocolTransformScripts"));
+        if (json.has("protocolParameters"))
+            _protocolParameters = convert(json.getJSONObject("protocolParameters"));
+    }
+
+    List<String> convert(JSONArray array)
+    {
+        return array.toList().stream().map(Object::toString).toList();
+    }
+
+    Map<String, String> convert(JSONObject json)
+    {
+        Map<String, Object> map = json.toMap();
+        Map<String, String> ret = new HashMap<>((int) (map.size()*1.5));
+        map.forEach((k, v)->ret.put(k, v.toString()));
+
+        return ret;
     }
 
     public JSONObject toJSONObject()
@@ -118,7 +128,7 @@ public class Protocol extends ResponseObject
         JSONArray domains = new JSONArray();
         result.put("domains", domains);
         for (Domain domain : _domains)
-            domains.add(domain.toJSONObject(true));
+            domains.put(domain.toJSONObject(true));
 
         if (_backgroundUpload != null)
             result.put("backgroundUpload", _backgroundUpload);
@@ -153,7 +163,7 @@ public class Protocol extends ResponseObject
         return result;
     }
 
-    public Long getProtocolId()
+    public Integer getProtocolId()
     {
         return _protocolId;
     }

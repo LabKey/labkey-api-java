@@ -1,11 +1,11 @@
 package org.labkey.remoteapi.assay;
 
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 import org.labkey.remoteapi.CommandResponse;
 
 public class ProtocolResponse extends CommandResponse
 {
-    private Protocol _protocol;
+    private final Protocol _protocol;
 
     public ProtocolResponse(String text, int statusCode, String contentType, JSONObject json, GetProtocolCommand sourceCommand)
     {

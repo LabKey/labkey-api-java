@@ -1,7 +1,7 @@
 package org.labkey.remoteapi.assay;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 
@@ -25,7 +25,7 @@ public class SaveAssayRunsResponse extends CommandResponse
     public SaveAssayRunsResponse(String text, int statusCode, String contentType, JSONObject json, Command sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
-        JSONArray array = (JSONArray)json.get("runs");
+        JSONArray array = json.getJSONArray("runs");
         for (Object o : array)
         {
             JSONObject run = (JSONObject) o;

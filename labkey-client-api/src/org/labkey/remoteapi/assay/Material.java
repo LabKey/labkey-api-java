@@ -15,12 +15,12 @@
  */
 package org.labkey.remoteapi.assay;
 
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 
 public class Material extends ExpObject
 {
     private String _sampleSetName;
-    private Long _sampleSetId;
+    private Number _sampleSetId;
 
     public Material()
     {
@@ -31,12 +31,12 @@ public class Material extends ExpObject
     {
         super(json);
 
-        if (json.containsKey("sampleSet"))
+        if (json.has("sampleSet"))
         {
-            JSONObject sampleSet = (JSONObject)json.get("sampleSet");
+            JSONObject sampleSet = json.getJSONObject("sampleSet");
 
-            _sampleSetName = (String) sampleSet.get("name");
-            _sampleSetId = (Long) sampleSet.get("id");
+            _sampleSetName = sampleSet.getString("name");
+            _sampleSetId = sampleSet.optNumber("id");
         }
     }
 
@@ -71,7 +71,7 @@ public class Material extends ExpObject
 
     public Long getSampleSetId()
     {
-        return _sampleSetId;
+        return _sampleSetId == null ? null : _sampleSetId.longValue();
     }
 
     public void setSampleSetId(Long sampleSetId)

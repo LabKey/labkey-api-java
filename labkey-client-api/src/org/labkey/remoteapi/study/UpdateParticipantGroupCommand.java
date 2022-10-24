@@ -15,8 +15,8 @@
  */
 package org.labkey.remoteapi.study;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.labkey.remoteapi.PostCommand;
 
 import java.util.Set;
@@ -71,13 +71,13 @@ public class UpdateParticipantGroupCommand extends PostCommand<UpdateParticipant
             if (_ensureParticipantIds != null)
             {
                 JSONArray value = new JSONArray();
-                value.addAll(_ensureParticipantIds);
+                value.putAll(_ensureParticipantIds);
                 result.put("ensureParticipantIds", value);
             }
             if (_deleteParticipantIds != null)
             {
                 JSONArray value = new JSONArray();
-                value.addAll(_deleteParticipantIds);
+                value.putAll(_deleteParticipantIds);
                 result.put("deleteParticipantIds", value);
             }
 

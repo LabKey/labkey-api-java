@@ -15,7 +15,7 @@
  */
 package org.labkey.remoteapi.assay.nab;
 
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 import org.labkey.remoteapi.query.BaseQueryCommand;
 
 import java.util.Map;

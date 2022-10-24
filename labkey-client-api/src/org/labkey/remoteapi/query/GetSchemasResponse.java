@@ -15,8 +15,8 @@
  */
 package org.labkey.remoteapi.query;
 
+import org.json.JSONObject;
 import org.labkey.remoteapi.CommandResponse;
-import org.json.simple.JSONObject;
 
 import java.util.List;
 

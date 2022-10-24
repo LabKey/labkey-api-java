@@ -1,6 +1,6 @@
 package org.labkey.remoteapi.domain;
 
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 import org.labkey.remoteapi.query.Filter;
 
 import java.util.ArrayList;
@@ -20,9 +20,9 @@ public class ConditionalFormat
         _queryFilter = filters;
         _textColor = (null == textColor) ? "" : textColor;
         _backgroundColor = (null == backgroundColor) ? "" : backgroundColor;
-        _bold = (null == bold) ? false : bold;
-        _italic = (null == italic) ? false : italic;
-        _strikethrough = (null == strikethrough) ? false : strikethrough;
+        _bold = null != bold && bold;
+        _italic = null != italic && italic;
+        _strikethrough = null != strikethrough && strikethrough;
     }
 
     public ConditionalFormat(List<ConditionalFormatFilter> filters, String textColor, String backgroundColor)
@@ -83,12 +83,12 @@ public class ConditionalFormat
     {
         String filterStr = (String) json.get("filter");
         return new ConditionalFormat(
-                queryFilterFromJSONString(filterStr),
-                (String) json.get("textColor"),
-                (String) json.get("backgroundColor"),
-                (Boolean) json.get("bold"),
-                (Boolean) json.get("italic"),
-                (Boolean) json.get("strikethrough")
+            queryFilterFromJSONString(filterStr),
+            json.optString("textColor", null),
+            json.optString("backgroundColor", null),
+            json.optBoolean("bold"),
+            json.optBoolean("italic"),
+            json.optBoolean("strikethrough")
         );
     }
 

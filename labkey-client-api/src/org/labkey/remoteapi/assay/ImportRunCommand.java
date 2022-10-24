@@ -19,8 +19,8 @@ import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
 import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder;
 import org.apache.hc.core5.http.ContentType;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.labkey.remoteapi.PostCommand;
 
 import java.io.File;
@@ -177,7 +177,7 @@ public class ImportRunCommand extends PostCommand<ImportRunResponse>
             if (_plateMetadata != null)
                 json.put("plateMetadata", _plateMetadata);
 
-            builder.addTextBody("json", json.toJSONString(), ContentType.APPLICATION_JSON);
+            builder.addTextBody("json", json.toString(), ContentType.APPLICATION_JSON);
         }
         else
         {
@@ -203,11 +203,11 @@ public class ImportRunCommand extends PostCommand<ImportRunResponse>
                 }
             }
             if (_dataRows != null)
-                builder.addTextBody("dataRows", JSONArray.toJSONString(_dataRows), ContentType.APPLICATION_JSON);
+                builder.addTextBody("dataRows", new JSONArray(_dataRows).toString(), ContentType.APPLICATION_JSON);
             if (_runFilePath != null)
                 builder.addTextBody("runFilePath", _runFilePath);
             if (_plateMetadata != null)
-                builder.addTextBody("plateMetadata", _plateMetadata.toJSONString());
+                builder.addTextBody("plateMetadata", _plateMetadata.toString());
         }
 
         // UNDONE: set content type based on extension

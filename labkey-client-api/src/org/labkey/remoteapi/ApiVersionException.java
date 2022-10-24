@@ -15,7 +15,7 @@
  */
 package org.labkey.remoteapi;
 
-import java.util.Map;
+import org.json.JSONObject;
 
 /**
  * User: adam
@@ -24,8 +24,8 @@ import java.util.Map;
  */
 public class ApiVersionException extends CommandException
 {
-    ApiVersionException(String message, int statusCode, Map<String, Object> properties, String responseText, String contentType)
+    ApiVersionException(String message, int statusCode, JSONObject jsonProperties, String responseText, String contentType)
     {
-        super(message, statusCode, properties, responseText, contentType);
+        super(message, statusCode, jsonProperties, responseText, contentType);
     }
 }

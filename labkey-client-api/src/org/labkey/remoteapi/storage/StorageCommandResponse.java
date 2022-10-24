@@ -1,6 +1,6 @@
 package org.labkey.remoteapi.storage;
 
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 
@@ -31,7 +31,7 @@ public class StorageCommandResponse extends CommandResponse
     {
         super(text, statusCode, contentType, json, sourceCommand);
         _message = json.get("message").toString();
-        _data = new HashMap<>((JSONObject)json.get("data"));
+        _data = new HashMap<>(json.getJSONObject("data").toMap());
     }
 
     /**

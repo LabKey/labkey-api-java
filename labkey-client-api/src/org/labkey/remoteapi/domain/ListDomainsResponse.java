@@ -1,7 +1,7 @@
 package org.labkey.remoteapi.domain;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 
@@ -24,7 +24,7 @@ public class ListDomainsResponse extends CommandResponse
     public ListDomainsResponse(String text, int statusCode, String contentType, JSONObject json, Command sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
-        JSONArray domains = (JSONArray) json.get("data");
+        JSONArray domains = json.getJSONArray("data");
         for(Object domainJSON: domains)
         {
             _domains.add(new Domain((JSONObject) domainJSON));

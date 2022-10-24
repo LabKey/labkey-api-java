@@ -15,9 +15,9 @@
  */
 package org.labkey.remoteapi.security;
 
-import org.labkey.remoteapi.CommandResponse;
+import org.json.JSONObject;
 import org.labkey.remoteapi.Command;
-import org.json.simple.JSONObject;
+import org.labkey.remoteapi.CommandResponse;
 
 /*
 * User: dave
@@ -31,7 +31,7 @@ public class CreateUserResponse extends CommandResponse
         super(text, statusCode, contentType, json, sourceCommand);
     }
 
-    public Number getUserId()
+    public Integer getUserId()
     {
         return getProperty("userId");
     }

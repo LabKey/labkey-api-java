@@ -15,7 +15,6 @@
  */
 package org.labkey.remoteapi.security;
 
-import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.PostCommand;
 

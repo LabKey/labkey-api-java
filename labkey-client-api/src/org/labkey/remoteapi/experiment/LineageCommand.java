@@ -15,7 +15,7 @@
  */
 package org.labkey.remoteapi.experiment;
 
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.Connection;
 

@@ -15,8 +15,8 @@
  */
 package org.labkey.remoteapi.query;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.ResponseObject;
 
@@ -84,19 +84,19 @@ public class GetQueryDetailsResponse extends CommandResponse
     public List<Column> getColumns()
     {
         List<Column> result = new ArrayList<>();
-        JSONArray columns = getProperty("columns");
-        for (Object column : columns)
+        List<Map<String, Object>> columns = getProperty("columns");
+        for (Map<String, Object> column : columns)
         {
-            result.add(new Column((Map<String, Object>) column));
+            result.add(new Column(column));
         }
         return result;
     }
 
     public static class Column extends ResponseObject
     {
-        private Column(Map<String, Object> json)
+        private Column(Map<String, Object> map)
         {
-            super(json);
+            super(map);
         }
 
         /** @return The name of the column */
@@ -201,9 +201,9 @@ public class GetQueryDetailsResponse extends CommandResponse
 
     public static class Lookup extends ResponseObject
     {
-        public Lookup(Map<String, Object> json)
+        public Lookup(Map<String, Object> map)
         {
-            super(json);
+            super(map);
         }
 
         /** @return The schema in which the lookup query exists */

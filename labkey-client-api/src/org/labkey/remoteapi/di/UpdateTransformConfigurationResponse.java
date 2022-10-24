@@ -15,10 +15,11 @@
  */
 package org.labkey.remoteapi.di;
 
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 import org.labkey.remoteapi.Command;
 
 import java.util.Date;
+import java.util.Map;
 
 /**
  * User: tgaluhn
@@ -41,7 +42,7 @@ public class UpdateTransformConfigurationResponse extends BaseTransformResponse
         super(text, statusCode, contentType, json, sourceCommand);
     }
 
-    public JSONObject getResult()
+    public Map<String, Object> getResult()
     {
         return getProperty("result");
     }
@@ -66,10 +67,10 @@ public class UpdateTransformConfigurationResponse extends BaseTransformResponse
 
     /**
      *
-     * @return JSON map of the state saved after the last transform run. Includes row count info,
+     * @return Map of the state saved after the last transform run. Includes row count info,
      * filter values (runId or modifiedSince) for next run, and persisted parameter values for stored procedure transforms.
      */
-    public JSONObject getState()
+    public Map<String, Object> getState()
     {
         return getProperty("result.state");
     }
