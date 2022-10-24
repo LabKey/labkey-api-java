@@ -1,5 +1,4 @@
 import org.labkey.gradle.plugin.LabKey
-import org.labkey.gradle.util.BuildUtils
 import org.labkey.gradle.util.GroupNames
 import org.labkey.gradle.util.PomFileHelper
 
@@ -49,7 +48,7 @@ repositories {
 
 group "org.labkey.api"
 
-version "4.0.0-jsonUpgrade-SNAPSHOT"
+version "4.0.0-codeCleanup-SNAPSHOT"
 
 dependencies {
     api "org.json:json:${jsonObjectVersion}"
