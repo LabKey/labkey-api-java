@@ -58,7 +58,12 @@ public class Domain extends ResponseObject
         JSONObject result = new JSONObject();
 
         if (getAllProperties() != null)
+        {
             getAllProperties().forEach(result::put);
+            // Remove response properties that should not be re-POSTed
+            result.remove("success");
+            result.remove("failure");
+        }
 
         result.put("name", _name);
         result.put("description", _description);
