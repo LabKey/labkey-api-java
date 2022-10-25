@@ -2,7 +2,7 @@
 
 ## version 4.0.0
 *Released*: TBD
-* Migrade to a new JSON library: [JSON-java](https://github.com/stleary/JSON-java). The previous library,
+* Migrate to a new JSON library: [JSON-java](https://github.com/stleary/JSON-java). The previous library,
   [json-simple](https://github.com/fangyidong/json-simple) is no longer maintained (last released in early 2012) and
   lacks support for basic features like generics. This is an incompatible API change for developers who *write* their own
   Command classes; they will need to update their Command classes if/when they upgrade to v4.0.0. Developers who simply
