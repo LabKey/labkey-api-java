@@ -21,11 +21,6 @@ import org.labkey.remoteapi.PostCommand;
 import java.util.HashMap;
 import java.util.Map;
 
-/*
-* User: Dave
-* Date: Jul 14, 2008
-* Time: 1:59:11 PM
-*/
 /**
  * Command for obtaining information about the current assay definitions
  * in a particular folder.
@@ -46,18 +41,6 @@ public class AssayListCommand extends PostCommand<AssayListResponse>
     public AssayListCommand()
     {
         super("assay", "assayList");
-    }
-
-    /**
-     * Constructs a new AssayListCommand which is a copy of the source command
-     * @param source The source AssayListCommand
-     */
-    public AssayListCommand(AssayListCommand source)
-    {
-        super(source);
-        _name = source._name;
-        _type = source._type;
-        _id = source._id;
     }
 
     /**
@@ -120,7 +103,7 @@ public class AssayListCommand extends PostCommand<AssayListResponse>
     @Override
     protected AssayListResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new AssayListResponse(text, status, contentType, json, this.copy());
+        return new AssayListResponse(text, status, contentType, json, this);
     }
 
     @Override
@@ -149,9 +132,4 @@ public class AssayListCommand extends PostCommand<AssayListResponse>
         return params;
     }
 
-    @Override
-    public AssayListCommand copy()
-    {
-        return new AssayListCommand(this);
-    }
 }

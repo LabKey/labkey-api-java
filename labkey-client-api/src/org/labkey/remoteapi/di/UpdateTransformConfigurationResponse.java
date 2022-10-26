@@ -21,10 +21,6 @@ import org.labkey.remoteapi.Command;
 import java.util.Date;
 import java.util.Map;
 
-/**
- * User: tgaluhn
- * Date: 10/29/13
- */
 public class UpdateTransformConfigurationResponse extends BaseTransformResponse
 {
     /**
@@ -37,7 +33,7 @@ public class UpdateTransformConfigurationResponse extends BaseTransformResponse
      * @param json          The parsed JSONObject (or null if JSON was not returned).
      * @param sourceCommand A copy of the command that created this response
      */
-    public UpdateTransformConfigurationResponse(String text, int statusCode, String contentType, JSONObject json, Command sourceCommand)
+    public UpdateTransformConfigurationResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends UpdateTransformConfigurationResponse> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
     }

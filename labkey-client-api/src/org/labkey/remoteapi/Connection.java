@@ -94,9 +94,6 @@ import java.util.concurrent.TimeUnit;
  * Note that this class is not thread-safe. Do not share instances of Connection
  * between threads.
  * </p>
- * 
- * @author Dave Stearns, LabKey Corporation
- * @version 1.0
  */
 public class Connection
 {
@@ -318,35 +315,29 @@ public class Connection
 
     /**
      * Ensures that the credentials have been used to authenticate the users and returns a client that can be used for other requests
-     * @return an HTTP client
-     * @throws IOException if there is an IO problem executing the command to ensure login
+     *
+     * @throws IOException      if there is an IO problem executing the command to ensure login
      * @throws CommandException if the server returned a non-success status code.
      */
-    // TODO: For next major release, stop returning CloseableHttpClient?
-    public CloseableHttpClient ensureAuthenticated() throws IOException, CommandException
+    public void ensureAuthenticated() throws IOException, CommandException
     {
-        EnsureLoginCommand command = new EnsureLoginCommand();
-        CommandResponse response = command.execute(this, "/home");
-        return getHttpClient();
+        new EnsureLoginCommand().execute(this, "/home");
     }
 
     /**
      * Invalidates the current HTTP session on the server, if any
-     * @return an HTTP client
+     *
      * @throws IOException if there is an IO problem executing the command to ensure logout
      * @throws CommandException if the server returned a non-success status code.
      */
-    // TODO: For next major release, stop returning CloseableHttpClient?
-    public CloseableHttpClient logout() throws IOException, CommandException
+    public void logout() throws IOException, CommandException
     {
-        LogoutCommand command = new LogoutCommand();
-        CommandResponse response = command.execute(this, "/home");
-        return getHttpClient();
+        new LogoutCommand().execute(this, "/home");
     }
 
     /**
      * For site-admins only, start impersonating a user.
-     *
+     * <p>
      * Admins may impersonate other users to perform actions on their behalf.
      * Site admins may impersonate any user in any project. Project admins must
      * provide a <code>projectPath</code> and may only impersonate within the
@@ -365,7 +356,7 @@ public class Connection
 
     /**
      * For site-admins or project-admins only, start impersonating a user.
-     *
+     * <p>
      * Admins may impersonate other users to perform actions on their behalf.
      * Site admins may impersonate any user in any project. Project admins must
      * provide a <code>projectPath</code> and may only impersonate within the
@@ -420,7 +411,7 @@ public class Connection
         return stopImpersonating();
     }
 
-    CloseableHttpResponse executeRequest(HttpUriRequest request, Integer timeout) throws IOException, URISyntaxException, AuthenticationException
+    CloseableHttpResponse executeRequest(HttpUriRequest request, Integer timeout) throws IOException, AuthenticationException
     {
         // Delegate authentication setup to CredentialsProvider
         _credentialsProvider.configureRequest(getBaseURI(), request, _httpClientContext);
@@ -468,8 +459,8 @@ public class Connection
     }
 
     /**
-     * Sets the proxy host and port for this Connection.
-     * NOTE: Changing this setting will force the underlying http client to be recreated.
+     * Sets the proxy host and port for this Connection.<br>
+     * <i>NOTE: Changing this setting will force the underlying http client to be recreated.</i>
      * @param host the proxy host
      * @param port the proxy port
      * @return this connection
@@ -496,8 +487,8 @@ public class Connection
     /**
      * Sets the accept-self-signed certificates option. Set to false
      * to disable automatic acceptance of self-signed SSL certificates
-     * when using HTTPS.
-     * NOTE: Changing this setting will force the underlying http client to be recreated.
+     * when using HTTPS.<br>
+     * <i>NOTE: Changing this setting will force the underlying http client to be recreated.</i>
      *
      * @param acceptSelfSignedCerts set to false to not accept self-signed certificates
      * @return this connection

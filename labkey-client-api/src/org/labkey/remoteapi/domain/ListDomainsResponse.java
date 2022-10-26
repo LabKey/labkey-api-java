@@ -10,7 +10,8 @@ import java.util.List;
 
 public class ListDomainsResponse extends CommandResponse
 {
-    List<Domain> _domains = new ArrayList<>();
+    private final List<Domain> _domains = new ArrayList<>();
+
     /**
      * Constructs a new CommandResponse, initialized with the provided
      * response text and status code.
@@ -21,7 +22,7 @@ public class ListDomainsResponse extends CommandResponse
      * @param json          The parsed JSONObject (or null if JSON was not returned).
      * @param sourceCommand A copy of the command that created this response
      */
-    public ListDomainsResponse(String text, int statusCode, String contentType, JSONObject json, Command sourceCommand)
+    public ListDomainsResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends ListDomainsResponse> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
         JSONArray domains = json.getJSONArray("data");
@@ -34,10 +35,5 @@ public class ListDomainsResponse extends CommandResponse
     public List<Domain> getDomains()
     {
         return _domains;
-    }
-
-    public void setDomains(List<Domain> domains)
-    {
-        _domains = domains;
     }
 }

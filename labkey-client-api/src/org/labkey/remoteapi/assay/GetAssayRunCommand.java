@@ -11,12 +11,6 @@ public class GetAssayRunCommand extends PostCommand<GetAssayRunResponse>
 {
     private String _lsid;
 
-    public GetAssayRunCommand(GetAssayRunCommand source)
-    {
-        super(source);
-        _lsid = source.getLsid();
-    }
-
     public GetAssayRunCommand(String lsid)
     {
         super("assay", "getAssayRun");
@@ -31,12 +25,6 @@ public class GetAssayRunCommand extends PostCommand<GetAssayRunResponse>
     public void setLsid(String lsid)
     {
         _lsid = lsid;
-    }
-
-    @Override
-    public GetAssayRunCommand copy()
-    {
-        return new GetAssayRunCommand(this);
     }
 
     @Override

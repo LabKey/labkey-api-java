@@ -27,8 +27,6 @@ import java.util.Map;
 
 /**
  * Initiates an MS2 search.
- * User: jeckels
- * Date: Feb 11, 2011
  */
 public class StartSearchCommand extends Command<StartSearchResponse>
 {

@@ -21,15 +21,13 @@ import org.labkey.remoteapi.PostCommand;
 /**
  * Saves an assay batch on the server. If no batch or run ids are specified, new ones will be inserted. If they are
  * specified, existing ones will be updated.
- * User: jeckels
- * Date: Apr 28, 2010
  */
 public class SaveAssayBatchCommand extends PostCommand<SaveAssayBatchResponse>
 {
     public static final String SAMPLE_DERIVATION_PROTOCOL = "Sample Derivation Protocol";       // protocol name that can be used to create non-assay backed runs
 
     private Batch _batch = new Batch();
-    private int _assayId;
+    private final int _assayId;
     private String _protocolName;
 
     /** @param assayId the id of the assay definition on the web server */
@@ -58,21 +56,6 @@ public class SaveAssayBatchCommand extends PostCommand<SaveAssayBatchResponse>
         this(-1);
         _protocolName = protocolName;
         _batch = batch;
-    }
-
-    public SaveAssayBatchCommand(SaveAssayBatchCommand source)
-    {
-        super(source);
-
-        _assayId = source._assayId;
-        _protocolName = source._protocolName;
-        _batch = source._batch;
-    }
-
-    @Override
-    public SaveAssayBatchCommand copy()
-    {
-        return new SaveAssayBatchCommand(this);
     }
 
     @Override

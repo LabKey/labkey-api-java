@@ -19,15 +19,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * User: matthewb
- * Date: 2012-03-12
- * Time: 10:55 AM
- *
- * not static because SimpleDatFormat is not thread-safe
- */
 public class DateParser
 {
+    // Not static because SimpleDatFormat is not thread-safe
     SimpleDateFormat[] formats = new SimpleDateFormat[]
     {
         new SimpleDateFormat("yyyy/MM/d HH:mm:ss"),

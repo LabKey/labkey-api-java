@@ -16,17 +16,23 @@
 package org.labkey.remoteapi.experiment;
 
 import org.json.JSONObject;
+import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class LineageResponse extends CommandResponse
 {
     List<LineageNode> _seeds;
     Map<String, LineageNode> _nodes;
 
-    public LineageResponse(String text, int statusCode, String contentType, JSONObject json, LineageCommand sourceCommand)
+    public LineageResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends LineageResponse> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
 

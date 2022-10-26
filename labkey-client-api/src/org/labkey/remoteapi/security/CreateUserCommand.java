@@ -18,12 +18,6 @@ package org.labkey.remoteapi.security;
 import org.json.JSONObject;
 import org.labkey.remoteapi.PostCommand;
 
-/*
-* User: dave
-* Date: Sep 28, 2009
-* Time: 2:40:43 PM
-*/
-
 /**
  * Create a new user account on the server.
  */
@@ -36,13 +30,6 @@ public class CreateUserCommand extends PostCommand<CreateUserResponse>
     {
         super("security", "createNewUser");
         _email = email;
-    }
-
-    public CreateUserCommand(CreateUserCommand source)
-    {
-        super(source);
-        _email = source.getEmail();
-        _sendEmail = source.isSendEmail();
     }
 
     public String getEmail()
@@ -88,9 +75,4 @@ public class CreateUserCommand extends PostCommand<CreateUserResponse>
         return obj;
     }
 
-    @Override
-    public PostCommand copy()
-    {
-        return new CreateUserCommand(this);
-    }
 }

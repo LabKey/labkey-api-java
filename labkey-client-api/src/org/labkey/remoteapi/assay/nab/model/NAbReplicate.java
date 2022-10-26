@@ -17,18 +17,11 @@ package org.labkey.remoteapi.assay.nab.model;
 
 import java.util.Map;
 
-
-/*
- * User: brittp
- * Date: May 15, 2009
- * Time: 1:25:51 PM
- */
-
 public class NAbReplicate extends NAbWellGroup
 {
-    private double _dilution;
-    private Double _neutPercent;
-    private Double _neutPlusMinus;
+    final private double _dilution;
+    final private Double _neutPercent;
+    final private Double _neutPlusMinus;
 
     public NAbReplicate(Map<String, Object> properties)
     {
@@ -36,8 +29,12 @@ public class NAbReplicate extends NAbWellGroup
         _dilution = ((Number) properties.get("dilution")).doubleValue();
         if (properties.get("neutPercent") != null)
             _neutPercent = ((Number) properties.get("neutPercent")).doubleValue();
+        else
+            _neutPercent = null;
         if (properties.get("neutPlusMinus") != null)
             _neutPlusMinus = ((Number) properties.get("neutPlusMinus")).doubleValue();
+        else
+            _neutPlusMinus = null;
     }
 
     public double getDilution()

@@ -15,12 +15,6 @@
  */
 package org.labkey.remoteapi.query;
 
-/*
-* User: Dave
-* Date: Jul 10, 2008
-* Time: 4:00:03 PM
-*/
-
 import java.util.List;
 
 /**

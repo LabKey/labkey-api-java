@@ -18,7 +18,7 @@ public class LoadAssayBatchResponse extends CommandResponse
      * @param json          The parsed JSONObject (or null if JSON was not returned).
      * @param sourceCommand A copy of the command that created this response
      */
-    public LoadAssayBatchResponse(String text, int statusCode, String contentType, JSONObject json, Command sourceCommand)
+    public LoadAssayBatchResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends LoadAssayBatchResponse> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
         _batch = new Batch((JSONObject) json.get("batch"));

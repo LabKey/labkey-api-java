@@ -23,10 +23,6 @@ import org.labkey.remoteapi.assay.ImportRunResponse;
 import java.io.File;
 import java.util.Collections;
 
-/**
- * User: kevink
- * Date: 9/12/12
- */
 public class ImportRunDemo
 {
     public static void main(String... args) throws Exception

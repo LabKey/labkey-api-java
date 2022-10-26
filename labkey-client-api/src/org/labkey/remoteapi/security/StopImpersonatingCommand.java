@@ -9,7 +9,7 @@ import org.labkey.remoteapi.PostCommand;
 import java.net.URI;
 
 /**
- * Stop impersonating a user.
+ * Stop impersonating a user, group, or role(s).
  */
 public class StopImpersonatingCommand extends PostCommand<CommandResponse>
 {

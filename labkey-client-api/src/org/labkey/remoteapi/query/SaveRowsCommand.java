@@ -26,12 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/*
-* User: Dave
-* Date: Jul 11, 2008
-* Time: 5:21:23 PM
-*/
-
 /**
  * Base class for commands that make changes to rows exposed from a given
  * query in a given schema. Clients should use {@link UpdateRowsCommand},
@@ -212,7 +206,6 @@ public abstract class SaveRowsCommand extends PostCommand<SaveRowsResponse>
      * @return The JSON object to send.
      */
     @Override
-    @SuppressWarnings("unchecked")
     public JSONObject getJsonObject()
     {
         JSONObject json = new JSONObject();
@@ -258,9 +251,7 @@ public abstract class SaveRowsCommand extends PostCommand<SaveRowsResponse>
     @Override
     protected SaveRowsResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new SaveRowsResponse(text, status, contentType, json, this.copy());
+        return new SaveRowsResponse(text, status, contentType, json, this);
     }
 
-    @Override
-    public abstract SaveRowsCommand copy();
 }

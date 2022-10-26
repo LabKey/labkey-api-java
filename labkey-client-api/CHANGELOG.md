@@ -1,12 +1,16 @@
 # The LabKey Remote API Library for Java - Change Log
 
 ## version 4.0.0
-*Released*: TBD
-* Replace the internal JSON library with [JSON-java](https://github.com/stleary/JSON-java). The previous library,
+*Released*: 26 October 2022
+* Migrate to a new JSON library: [JSON-java](https://github.com/stleary/JSON-java). The previous library,
   [json-simple](https://github.com/fangyidong/json-simple) is no longer maintained (last released in early 2012) and
   lacks support for basic features like generics. This is an incompatible API change for developers who *write* their own
   Command classes; they will need to update their Command classes if/when they upgrade to v4.0.0. Developers who simply
   *use* Command classes should be able to upgrade without changes.
+* API changes:
+  * Remove `copy` method from Commands. _It was inconsistently implemented and served little purpose._
+  * Remove `CommandResponse.getSourceCommand`. _Functionality would vary wildly because of inconsistent `Command.copy` implementations._
+  * Make the properties stashed by `ResponseObject` immutable.
 * Issue 46321: Remove `lib` directory from `fatJar` in favor of pulling dependencies via the published pom files when needed
 * Remove artifactory plugin since we use the maven `publish` command now
 

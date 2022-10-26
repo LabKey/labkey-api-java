@@ -22,12 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/*
-* User: Dave
-* Date: Jul 10, 2008
-* Time: 10:54:45 AM
-*/
-
 /**
  * Command for selecting data from any LabKey schema/query exposed on the
  * server identified by the Connection object supplied to the
@@ -76,19 +70,6 @@ public class SelectRowsCommand extends BaseQueryCommand<SelectRowsResponse> impl
         assert null != queryName;
         _schemaName = schemaName;
         _queryName = queryName;
-    }
-
-    /**
-     * Constructs a new SelectRowsCommand that is a copy of the source command
-     * @param source The source command
-     */
-    public SelectRowsCommand(SelectRowsCommand source)
-    {
-        super(source);
-        _schemaName = source._schemaName;
-        _queryName = source._queryName;
-        _viewName = source._viewName;
-        _columns.addAll(source._columns);
     }
 
     /**
@@ -200,7 +181,7 @@ public class SelectRowsCommand extends BaseQueryCommand<SelectRowsResponse> impl
     @Override
     protected SelectRowsResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new SelectRowsResponse(text, status, contentType, json, this.copy());
+        return new SelectRowsResponse(text, status, contentType, json, this);
     }
 
     @Override
@@ -249,9 +230,4 @@ public class SelectRowsCommand extends BaseQueryCommand<SelectRowsResponse> impl
         return params;
     }
 
-    @Override
-    public SelectRowsCommand copy()
-    {
-        return new SelectRowsCommand(this);
-    }
 }

@@ -15,12 +15,6 @@
  */
 package org.labkey.remoteapi.query;
 
-/*
-* User: Dave
-* Date: Jul 11, 2008
-* Time: 5:24:45 PM
-*/
-
 /**
  * Command for updating rows into a table in a read-write schema.
  * The user associated with the connection used when executing this
@@ -43,14 +37,4 @@ public class UpdateRowsCommand extends SaveRowsCommand
         super(schemaName, queryName, "updateRows");
     }
 
-    public UpdateRowsCommand(UpdateRowsCommand source)
-    {
-        super(source);
-    }
-
-    @Override
-    public UpdateRowsCommand copy()
-    {
-        return new UpdateRowsCommand(this);
-    }
 }

@@ -17,19 +17,13 @@ package org.labkey.remoteapi.assay.nab.model;
 
 import java.util.Map;
 
-/*
- * User: brittp
- * Date: May 15, 2009
- * Time: 1:25:01 PM
- */
-
 public class NAbCurveParameters
 {
-    private double _asymmetry;
-    private double _inflection;
-    private double _slope;
-    private double _max;
-    private double _min;
+    private final double _asymmetry;
+    private final double _inflection;
+    private final double _slope;
+    private final double _max;
+    private final double _min;
 
     public NAbCurveParameters(Map<String, Object> properties)
     {

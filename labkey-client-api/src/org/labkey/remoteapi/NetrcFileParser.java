@@ -19,14 +19,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * User: adam
- * Date: Jan 10, 2009
- * Time: 6:30:14 PM
- */
 public class NetrcFileParser
 {
     public NetrcEntry getEntry(String host) throws IOException
@@ -39,7 +35,7 @@ public class NetrcFileParser
         return getEntry("_netrc", host);
     }
 
-    private static Pattern netrcPattern = Pattern.compile("machine\\s+(.+?)\\s+login\\s+(.+?)\\s+password\\s+(.+?)\\s+", Pattern.MULTILINE);
+    private static final Pattern netrcPattern = Pattern.compile("machine\\s+(.+?)\\s+login\\s+(.+?)\\s+password\\s+(.+?)\\s+", Pattern.MULTILINE);
 
     private NetrcEntry getEntry(String netrcName, String host) throws IOException
     {
@@ -57,7 +53,7 @@ public class NetrcFileParser
         try
         {
             StringBuilder sb = new StringBuilder();
-            input = new BufferedReader(new FileReader(netrcFile));
+            input = new BufferedReader(new FileReader(netrcFile, StandardCharsets.UTF_8));
             String line;
 
             while ((line = input.readLine()) != null)
@@ -97,9 +93,9 @@ public class NetrcFileParser
 
     public class NetrcEntry
     {
-        private String _machine;
-        private String _login;
-        private String _password;
+        private final String _machine;
+        private final String _login;
+        private final String _password;
 
         private NetrcEntry(String machine, String login, String password)
         {

@@ -1,11 +1,12 @@
 package org.labkey.remoteapi.security;
 
 import org.json.JSONObject;
+import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 
 public class WhoAmIResponse extends CommandResponse
 {
-    public WhoAmIResponse(String text, int statusCode, String contentType, JSONObject json, WhoAmICommand cmd)
+    public WhoAmIResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends WhoAmIResponse> cmd)
     {
         super(text, statusCode, contentType, json, cmd);
     }
@@ -27,7 +28,7 @@ public class WhoAmIResponse extends CommandResponse
 
     public boolean isImpersonated()
     {
-        return (Boolean)getProperty("impersonated");
+        return getProperty("impersonated");
     }
 
     public String getCSRF()

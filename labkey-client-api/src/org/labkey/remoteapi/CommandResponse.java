@@ -22,12 +22,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/*
-* User: Dave
-* Date: Jul 10, 2008
-* Time: 1:21:24 PM
-*/
-
 /**
  * Represents the details of a response returned from the LabKey Server.
  * <p>
@@ -36,16 +30,13 @@ import java.util.regex.Pattern;
  * SelectRowsResponse). However, if you are using the Command class directly to
  * call an HTTP API that does not yet have a specialized command class,
  * you would use this object to obtain the response details.
- *
- * @author Dave Stearns, LabKey Corporation
- * @version 1.0
  */
 public class CommandResponse
 {
     private final String _text;
     private final int _statusCode;
     private final String _contentType;
-    private final Command _sourceCommand;
+    private final double _requiredVersion;
 
     private Map<String, Object> _data;
 
@@ -58,13 +49,13 @@ public class CommandResponse
      * @param json The parsed JSONObject (or null if JSON was not returned).
      * @param sourceCommand A copy of the command that created this response
      */
-    public CommandResponse(String text, int statusCode, String contentType, JSONObject json, Command sourceCommand)
+    public CommandResponse(String text, int statusCode, String contentType, JSONObject json, Command<?> sourceCommand)
     {
         _text = text;
         _statusCode = statusCode;
         _contentType = contentType;
         _data = null != json ? json.toMap() : null;
-        _sourceCommand = sourceCommand;
+        _requiredVersion = sourceCommand != null ? sourceCommand.getRequiredVersion() : 0.0;
     }
 
     /**
@@ -110,16 +101,7 @@ public class CommandResponse
      */
     public double getRequiredVersion()
     {
-        return _sourceCommand.getRequiredVersion();
-    }
-
-    /**
-     * Returns a reference to a copy of the command that created this response
-     * @return The command that created this response
-     */
-    public Command getSourceCommand()
-    {
-        return _sourceCommand;
+        return _requiredVersion;
     }
 
     /**
@@ -131,7 +113,6 @@ public class CommandResponse
      * Lists, or Maps.
      * @return The parsed data as a property map.
      */
-    @SuppressWarnings("unchecked")
     public Map<String, Object> getParsedData()
     {
         if (null == _data && null != getText()
@@ -153,7 +134,6 @@ public class CommandResponse
      * @param <T> the type of the property.
      * @return The property value, or null if the property was not found.
      */
-    @SuppressWarnings("unchecked")
     public <T> T getProperty(String path)
     {
         assert null != path;
@@ -192,8 +172,8 @@ public class CommandResponse
         Object prop = parent.get(key);
         if (arrayIndex != null)
         {
-            if (prop instanceof List && ((List) prop).size() > arrayIndex)
-                prop = ((List)prop).get(arrayIndex);
+            if (prop instanceof List<?> list && list.size() > arrayIndex)
+                prop = list.get(arrayIndex);
             else
                 return null;
         }

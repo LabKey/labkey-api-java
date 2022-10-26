@@ -18,10 +18,6 @@ package org.labkey.remoteapi.di;
 import org.json.JSONObject;
 import org.labkey.remoteapi.Command;
 
-/**
- * User: tgaluhn
- * Date: 10/29/13
- */
 public class RunTransformResponse extends BaseTransformResponse
 {
     /**
@@ -34,7 +30,7 @@ public class RunTransformResponse extends BaseTransformResponse
      * @param json          The parsed JSONObject (or null if JSON was not returned).
      * @param sourceCommand A copy of the command that created this response
      */
-    public RunTransformResponse(String text, int statusCode, String contentType, JSONObject json, Command sourceCommand)
+    public RunTransformResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends RunTransformResponse> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
     }

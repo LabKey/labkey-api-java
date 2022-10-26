@@ -32,8 +32,6 @@ import java.util.List;
  * 3. GPAT protocol's assayid/rowid
  * 4. Server base URL (http://www.myserver.com/labkey)
  * 5. Path to target folder on server
- * User: jeckels
- * Date: Apr 28, 2010
  */
 public class SaveAssayBatchDemo
 {

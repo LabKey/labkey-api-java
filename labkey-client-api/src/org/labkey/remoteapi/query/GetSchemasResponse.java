@@ -16,21 +16,17 @@
 package org.labkey.remoteapi.query;
 
 import org.json.JSONObject;
+import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 
 import java.util.List;
 
-/*
-* User: Dave
-* Date: Oct 21, 2008
-* Time: 2:58:17 PM
-*/
 /**
  * Represents the response of a GetSchemasCommand.
  */
 public class GetSchemasResponse extends CommandResponse
 {
-    public GetSchemasResponse(String text, int statusCode, String contentType, JSONObject json, GetSchemasCommand sourceCommand)
+    public GetSchemasResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends GetSchemasResponse> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
     }

@@ -16,6 +16,7 @@
 package org.labkey.remoteapi.query;
 
 import org.json.JSONObject;
+import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 
 import java.util.ArrayList;
@@ -23,18 +24,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-/*
-* User: Dave
-* Date: Oct 21, 2008
-* Time: 3:06:00 PM
-*/
-
 /**
  * Represents the response from a GetQueriesCommand.
  */
 public class GetQueriesResponse extends CommandResponse
 {
-    public GetQueriesResponse(String text, int statusCode, String contentType, JSONObject json, GetQueriesCommand sourceCommand)
+    public GetQueriesResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends GetQueriesResponse> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
     }

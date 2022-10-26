@@ -15,27 +15,21 @@
  */
 package org.labkey.remoteapi.query;
 
-/*
-* User: dave
-* Date: Oct 7, 2009
-* Time: 11:41:11 AM
-*/
-
 /**
  * Provides an iterable interface over the response rows that hides
  * the differences between the simple and extended response formats.
  * You may obtain one of these objects from SelectRowsResponse.getRowset()
  * and may use it in a standard for-each loop, like so:
- * <code>
+ * <pre><code>
  * SelectRowsResponse resp = myCommand.execute(...);
  * for (Row row : resp.getRowset())
  * {
  *      Object value = row.getValue("MyColumn");
  * }
- * </code>
+ * </code></pre>
  */
 public interface Rowset extends Iterable<Row>
 {
-    public int getSize();
-    
+    int getSize();
+
 }

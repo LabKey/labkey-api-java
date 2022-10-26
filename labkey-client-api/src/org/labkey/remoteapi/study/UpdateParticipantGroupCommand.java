@@ -23,13 +23,11 @@ import java.util.Set;
 
 /**
  * Request to be sent to the server to update an existing participant group
- * User: jeckels
- * Date: 12/11/13
  */
 public class UpdateParticipantGroupCommand extends PostCommand<UpdateParticipantGroupResponse>
 {
     /** Group to be updated, including modifications */
-    private ParticipantGroup _group;
+    private final ParticipantGroup _group;
 
     /**
      * Special subclass that allows specifying just participants that should be added

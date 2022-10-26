@@ -19,22 +19,14 @@ import org.json.JSONObject;
 
 /**
  * Queues an ETL to run on the server.
- * User: tgaluhn
- * Date: 10/29/13
  */
 public class RunTransformCommand extends BaseTransformCommand<RunTransformResponse>
 {
 
-    public RunTransformCommand(RunTransformCommand source)
-    {
-        super(source);
-    }
-
     /** @param transformId the name of the transform to run */
     public RunTransformCommand(String transformId)
     {
-        super("dataintegration", "runTransform");
-        _transformId = transformId;
+        super("runTransform", transformId);
     }
 
     @Override

@@ -22,10 +22,7 @@ import org.apache.hc.client5.http.protocol.HttpClientContext;
 import java.io.IOException;
 import java.net.URI;
 
-
 /**
- * Created by adam on 4/15/2016.
- *
  * Attempts to find a .netrc or _netrc file and entry for the given host. If found, it will attempt basic auth using
  * the email and password in the entry. If file or entry are not found, it connects as guest.
  */

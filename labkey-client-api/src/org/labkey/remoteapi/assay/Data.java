@@ -18,12 +18,10 @@ package org.labkey.remoteapi.assay;
 import org.json.JSONObject;
 
 /**
-* Represents a data file that may be used in a run. In order to successfully look up a data file when saving a run,
-* the server checks for the id, pipelinePath, dataFileURL, and pipelinePath properties (in that order) to try to resolve
-* the file reference. At least one must be specified.  
-* User: jeckels
-* Date: Apr 28, 2010
-*/
+ * Represents a data file that may be used in a run. In order to successfully look up a data file when saving a run,
+ * the server checks for the id, pipelinePath, dataFileURL, and pipelinePath properties (in that order) to try to resolve
+ * the file reference. At least one must be specified.
+ */
 public class Data extends ExpObject
 {
     private String _dataFileURL;

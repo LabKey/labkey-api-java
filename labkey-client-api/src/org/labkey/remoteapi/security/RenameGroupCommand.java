@@ -18,18 +18,12 @@ package org.labkey.remoteapi.security;
 import org.json.JSONObject;
 import org.labkey.remoteapi.PostCommand;
 
-/*
-* User: dave
-* Date: Sep 28, 2009
-* Time: 3:08:15 PM
-*/
-
 /**
  * Renames an existing group.
  */
 public class RenameGroupCommand extends PostCommand<RenameGroupResponse>
 {
-    private int _groupId = -1;
+    private int _groupId;
     private String _newName;
 
     public RenameGroupCommand(int groupId, String newName)
@@ -37,17 +31,6 @@ public class RenameGroupCommand extends PostCommand<RenameGroupResponse>
         super("security", "renameGroup");
         _groupId = groupId;
         _newName = newName;
-    }
-
-    public RenameGroupCommand(RenameGroupCommand source)
-    {
-        super(source);
-    }
-
-    @Override
-    public PostCommand copy()
-    {
-        return new RenameGroupCommand(this);
     }
 
     public int getGroupId()

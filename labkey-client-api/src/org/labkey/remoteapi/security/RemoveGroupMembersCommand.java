@@ -15,12 +15,6 @@
  */
 package org.labkey.remoteapi.security;
 
-/*
-* User: dave
-* Date: Sep 28, 2009
-* Time: 3:21:11 PM
-*/
-
 /**
  * Removes a set of principals from a security group.
  * This command has no meaningful response--if it executed without exception, the changes were applied.

@@ -6,36 +6,66 @@ import org.labkey.remoteapi.query.Filter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Bean class for defining a conditional format for a field.<br>
+ * Grids will conditionally apply the specified styling to the associated field.
+ *
+ * @see PropertyDescriptor
+ */
 public class ConditionalFormat
 {
     private List<ConditionalFormatFilter> _queryFilter;
     private String _textColor;
     private String _backgroundColor;
-    private Boolean _bold;
-    private Boolean _italic;
-    private Boolean _strikethrough;
+    private boolean _bold;
+    private boolean _italic;
+    private boolean _strikethrough;
 
+    /**
+     * Construct a conditional format with the specified styling. <code>null</code> values for all styles will leave
+     * default styling.
+     *
+     * @param filters define when the format should be applied
+     * @param textColor RGB hex value for conditional text color (e.g. "ffffff" for black)
+     * @param backgroundColor RGB hex value for conditional background color (e.g. "ffffff" for black)
+     * @param bold <code>true</code> to conditionally bold text
+     * @param italic <code>true</code> to conditionally italicize text
+     * @param strikethrough <code>true</code> to conditionally strike through text
+     */
     public ConditionalFormat(List<ConditionalFormatFilter> filters, String textColor, String backgroundColor, Boolean bold, Boolean italic, Boolean strikethrough)
     {
         _queryFilter = filters;
-        _textColor = (null == textColor) ? "" : textColor;
-        _backgroundColor = (null == backgroundColor) ? "" : backgroundColor;
+        _textColor = textColor;
+        _backgroundColor = backgroundColor;
         _bold = null != bold && bold;
         _italic = null != italic && italic;
         _strikethrough = null != strikethrough && strikethrough;
     }
 
+    /**
+     * Construct a conditional format with color styling
+     * @param filters define when the format should be applied
+     * @param textColor RGB hex value for conditional text color (e.g. "ffffff" for black)
+     * @param backgroundColor RGB hex value for conditional background color (e.g. "ffffff" for black)
+     */
     public ConditionalFormat(List<ConditionalFormatFilter> filters, String textColor, String backgroundColor)
     {
         this(filters, textColor, backgroundColor, null, null, null);
     }
 
+    /**
+     * Construct a conditional format with font styling
+     * @param filters define when the format should be applied
+     * @param bold <code>true</code> to conditionally bold text
+     * @param italic <code>true</code> to conditionally italicize text
+     * @param strikethrough <code>true</code> to conditionally strike through text
+     */
     public ConditionalFormat(List<ConditionalFormatFilter> filters, Boolean bold, Boolean italic, Boolean strikethrough)
     {
         this(filters, null, null, bold, italic, strikethrough);
     }
 
-    public String queryFilterToJSONString()
+    protected String queryFilterToJSONString()
     {
         String delim = "";
         StringBuilder sb = new StringBuilder();
@@ -50,6 +80,10 @@ public class ConditionalFormat
         return sb.toString();
     }
 
+    /**
+     * Convert bean to JSON for serialization
+     * @return JSONObject representation of this conditional format.
+     */
     public JSONObject toJSON()
     {
         JSONObject conditionalFormat = new JSONObject();
@@ -62,7 +96,7 @@ public class ConditionalFormat
         return conditionalFormat;
     }
 
-    static public List<ConditionalFormatFilter> queryFilterFromJSONString(String filterStr)
+    protected static List<ConditionalFormatFilter> queryFilterFromJSONString(String filterStr)
     {
         List<ConditionalFormatFilter> queryFilter = new ArrayList<>();
 
@@ -79,7 +113,12 @@ public class ConditionalFormat
         return queryFilter;
     }
 
-    static public ConditionalFormat fromJSON(JSONObject json)
+    /**
+     * Populate new ConditionalFormat bean with deserialized JSON
+     * @param json deserialized JSON representing a conditional format
+     * @return new ConditionalFormat bean
+     */
+    public static ConditionalFormat fromJSON(JSONObject json)
     {
         String filterStr = (String) json.get("filter");
         return new ConditionalFormat(
@@ -92,62 +131,109 @@ public class ConditionalFormat
         );
     }
 
+    /**
+     * Get conditional format conditions
+     * @return list of filters
+     */
     public List<ConditionalFormatFilter> getQueryFilter()
     {
         return _queryFilter;
     }
 
+    /**
+     * Set conditional format conditions
+     * @param filters list of filters
+     */
     public void setQueryFilter(List<ConditionalFormatFilter> filters)
     {
         _queryFilter = filters;
     }
 
+    /**
+     * Get conditional text color. Blank or <code>null</code> for no conditional color.
+     * @return RGB hex value for text color (e.g. "ffffff" for black)
+     */
     public String getTextColor()
     {
         return _textColor;
     }
 
+    /**
+     * Set the conditional text color. Blank or <code>null</code> for no conditional color.
+     * @param textColor RGB hex value for text color (e.g. "ffffff" for black)
+     */
     public void setTextColor(String textColor)
     {
         _textColor = textColor;
     }
 
+    /**
+     * Get conditional background color. Blank or <code>null</code> for no conditional color.
+     * @return RGB hex value for background color (e.g. "ffffff" for black)
+     */
     public String getBackgroundColor()
     {
         return _backgroundColor;
     }
 
+    /**
+     * Set the conditional background color. Blank or <code>null</code> for no conditional color.
+     * @param backgroundColor RGB hex value for background color (e.g. "ffffff" for black)
+     */
     public void setBackgroundColor(String backgroundColor)
     {
         _backgroundColor = backgroundColor;
     }
 
-    public Boolean getBold()
+    /**
+     * Get boldness flag for conditional format
+     * @return flag
+     */
+    public boolean getBold()
     {
         return _bold;
     }
 
-    public void setBold(Boolean bold)
+    /**
+     * Set boldness flag for conditional format
+     * @param bold <code>true</code> to conditionally bold field in grids
+     */
+    public void setBold(boolean bold)
     {
         _bold = bold;
     }
 
-    public Boolean getItalic()
+    /**
+     * Get italic flag for conditional format
+     * @return flag
+     */
+    public boolean getItalic()
     {
         return _italic;
     }
 
-    public void setItalic(Boolean italic)
+    /**
+     * Set italic flag for conditional format
+     * @param italic <code>true</code> to conditionally italicize field in grids
+     */
+    public void setItalic(boolean italic)
     {
         _italic = italic;
     }
 
-    public Boolean getStrikethrough()
+    /**
+     * @return strikethrough flag for conditional format
+     */
+    public boolean getStrikethrough()
     {
         return _strikethrough;
     }
 
-    public void setStrikethrough(Boolean strikethrough)
+    /**
+     * Set strikethrough flag for conditional format
+     * @param strikethrough <code>true</code> to conditionally strikethrough field in grids
+     */
+    public void setStrikethrough(boolean strikethrough)
     {
         _strikethrough = strikethrough;
     }
