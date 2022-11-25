@@ -1,5 +1,10 @@
 # The LabKey Remote API Library for Java - Change Log
 
+## version 4.1.0-SNAPSHOT
+*Released*: TBD
+* Migrate internal HTTP handling to use Apache HttpClient 5.2
+* Generate and execute path-first URLs
+
 ## version 4.0.0
 *Released*: 26 October 2022
 * Migrate to a new JSON library: [JSON-java](https://github.com/stleary/JSON-java). The previous library,
