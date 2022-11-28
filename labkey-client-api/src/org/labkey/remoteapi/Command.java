@@ -476,12 +476,6 @@ public class Command<ResponseType extends CommandResponse>
 
         StringBuilder path = new StringBuilder(uri.getPath() == null || "".equals(uri.getPath()) ? "/" : uri.getPath());
 
-        //add the controller name
-        String controller = getControllerName();
-        if (controller.charAt(0) != '/' && path.charAt(path.length() - 1) != '/')
-            path.append('/');
-        path.append(controller);
-
         //add the folderPath (if any)
         if (null != folderPath && folderPath.length() > 0)
         {
@@ -491,11 +485,25 @@ public class Command<ResponseType extends CommandResponse>
             path.append(folderPathNormalized);
         }
 
+        if (path.charAt(path.length() - 1) != '/')
+            path.append('/');
+
+        //add the controller name
+        String controller = getControllerName();
+        //for now, strip leading /. TODO: For next major release, throw
+        if (controller.charAt(0) == '/')
+            controller = controller.substring(1);
+        //for now, strip trailing /. TODO: For next major release, throw
+        if (controller.charAt(controller.length() - 1) == '/')
+            controller = controller.substring(0, controller.length() - 1);
+        path.append(controller);
+
         //add the action name + ".api"
         String actionName = getActionName();
-        if (actionName.charAt(0) != '/' && path.charAt(path.length() - 1) != '/')
-            path.append('/');
-        path.append(actionName);
+        //for now, strip leading /. TODO: For next major release, throw
+        if (actionName.charAt(0) == '/')
+            actionName = actionName.substring(1);
+        path.append("-").append(actionName);
         if (!actionName.endsWith(".api"))
             path.append(".api");
 
@@ -573,5 +581,4 @@ public class Command<ResponseType extends CommandResponse>
     {
         _requiredVersion = requiredVersion;
     }
-
 }
