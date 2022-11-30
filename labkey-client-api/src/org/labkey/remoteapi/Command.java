@@ -480,7 +480,9 @@ public class Command<ResponseType extends CommandResponse>
         if (null != folderPath && folderPath.length() > 0)
         {
             String folderPathNormalized = folderPath.replace('\\', '/');
-            if (folderPathNormalized.charAt(0) != '/' && path.charAt(path.length() - 1) != '/')
+            if (folderPathNormalized.charAt(0) == '/') // strip leading slash
+                folderPathNormalized = folderPathNormalized.substring(1);
+            if (path.charAt(path.length() - 1) != '/')
                 path.append('/');
             path.append(folderPathNormalized);
         }
