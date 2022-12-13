@@ -4,6 +4,7 @@
 *Released*: TBD
 * Migrate internal HTTP handling to use Apache HttpClient 5.2
 * Generate and execute path-first URLs
+* Add PrimaryStorage a new StorageItemTypes for non-freezer storage
 
 ## version 4.0.0
 *Released*: 26 October 2022

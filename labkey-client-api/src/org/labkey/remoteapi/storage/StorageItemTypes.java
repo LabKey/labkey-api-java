@@ -19,6 +19,7 @@ public enum StorageItemTypes
 {
     PhysicalLocation("Physical Location"),
     Freezer("Freezer"),
+    PrimaryStorage("Primary Storage"),
     Shelf("Shelf"),
     Rack("Rack"),
     Canister("Canister"),

@@ -1,18 +1,19 @@
 package org.labkey.remoteapi.storage;
 
 /**
- * Create a new LabKey Freezer Manager storage item that can be used in the creation of a freezer hierarchy.
- * Freezer hierarchies consist of a top level Freezer, which can have any combination of child non-terminal storage
- * locations (i.e. those that do not directly contain samples but can contain other units) and terminal storage
- * locations (i.e. units in the freezer that directly contain samples and cannot contain other units).
+ * Create a new LabKey Freezer Manager storage item that can be used in the creation of a storage hierarchy.
+ * Storage hierarchies consist of a top level Freezer or Primary Storage, which can have any combination of
+ * child non-terminal storage locations (i.e. those that do not directly contain samples but can contain other
+ * units) and terminal storage locations (i.e. units in the freezer that directly contain samples and cannot contain
+ * other units).
  * See the <a href="https://www.labkey.org/SampleManagerHelp/wiki-page.view?name=createFreezer">LabKey Documentation</a>
  * for further details.
  * <p>
- * A freezer may also have a parent hierarchy, which defines the physical location of the freezer.
+ * A storage location may also have a parent hierarchy, which defines the physical location of the freezer.
  * See the <a href="https://www.labkey.org/SampleManagerHelp/wiki-page.view?name=freezerLocation">LabKey Documentation</a>
  * for further details.
  * <p>
- * Storage items can be of the following types: Physical Location, Freezer, Shelf, Rack, Canister,
+ * Storage items can be of the following types: Physical Location, Freezer, Primary Storage, Shelf, Rack, Canister,
  * Storage Unit Type, or Terminal Storage Location. One of these values must be set as the "type" for
  * the {@link StorageRow} provided to the CreateCommand constructor.
  * <p>
@@ -21,6 +22,7 @@ package org.labkey.remoteapi.storage;
  * <ul>
  *     <li>Physical Location: name, description, locationId (rowId of the parent Physical Location)</li>
  *     <li>Freezer: name, description, locationId (rowId of the parent Physical Location), manufacturer, freezerModel, temperature, temperatureUnits, serialNumber, sensorName, lossRate, status</li>
+ *     <li>Primary Storage: name, description, locationId (rowId of the parent Physical Location)</li>
  *     <li>Shelf/Rack/Canister: name, description, locationId (rowId of the parent freezer or Shelf/Rack/Canister)</li>
  *     <li>Storage Unit Type: name, description, unitType (one of the following: "Box", "Plate", "Bag", "Cane", "Tube Rack"), rows, cols (required if positionFormat is not "Num"), positionFormat (one of the following: "Num", "AlphaNum", "AlphaAlpha", "NumAlpha", "NumNum"), positionOrder (one of the following: "RowColumn", "ColumnRow")</li>
  *     <li>Terminal Storage Location: name, description, typeId (rowId of the Storage Unit Type), locationId (rowId of the parent freezer or Shelf/Rack/Canister)</li>
