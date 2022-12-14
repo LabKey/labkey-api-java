@@ -20,8 +20,8 @@ package org.labkey.remoteapi.storage;
  * The additional properties for the storage item being created can be provided as the "props" for the
  * {@link StorageRow}. The specific set of props will differ for each storage item type:
  * <ul>
- *     <li>Physical Location: name, description, locationId (rowId of the parent Physical Location)</li>
- *     <li>Freezer: name, description, locationId (rowId of the parent Physical Location), manufacturer, freezerModel, temperature, temperatureUnits, serialNumber, sensorName, lossRate, status</li>
+ *     <li>Physical Location: name, description, locationId (rowId of the parent Physical Location), temperatureControlled (boolean)</li>
+ *     <li>Freezer: name, description, locationId (rowId of the parent Physical Location), manufacturer, freezerModel, temperature, temperatureUnits, serialNumber, sensorName, lossRate, status, temperatureControlled (boolean)</li>
  *     <li>Primary Storage: name, description, locationId (rowId of the parent Physical Location)</li>
  *     <li>Shelf/Rack/Canister: name, description, locationId (rowId of the parent freezer or Shelf/Rack/Canister)</li>
  *     <li>Storage Unit Type: name, description, unitType (one of the following: "Box", "Plate", "Bag", "Cane", "Tube Rack"), rows, cols (required if positionFormat is not "Num"), positionFormat (one of the following: "Num", "AlphaNum", "AlphaAlpha", "NumAlpha", "NumNum"), positionOrder (one of the following: "RowColumn", "ColumnRow")</li>
