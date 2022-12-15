@@ -1,7 +1,7 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## version 4.1.0-SNAPSHOT
-*Released*: TBD
+## version 4.1.0
+*Released*: 15 December 2022
 * Migrate internal HTTP handling to use Apache HttpClient 5.2
 * Generate and execute path-first URLs
 * Add PrimaryStorage a new StorageItemTypes for non-freezer storage
