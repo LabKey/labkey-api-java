@@ -1,9 +1,4 @@
-labkey-client-api/.gradle/
-labkey-client-api/build
-labkey-client-api/dist
-labkey-client-api/out
-labkey-api-sas/authTest.sas
-labkey-api-sas/dist
-labkey-api-sas/.gradle/
-labkey-api-sas/build/
-labkey-api-sas/dist/
+.gradle/
+build
+dist
+out
