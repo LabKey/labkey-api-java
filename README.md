@@ -20,7 +20,7 @@ compatibility with LabKey Server versions.
 ### Dependency Declaration
 To declare a dependency on this jar file, you can use the following in Gradle
 
-```compile(group: 'org.labkey.api', name: 'labkey-client-api', version: '3.1.0')```
+```compile(group: 'org.labkey.api', name: 'labkey-client-api', version: '4.2.0')```
 
 If using the LabKey Gradle plugins and building a LabKey module, it is best to 
 use this utility method instead to facilitate testing of any local changes to
@@ -34,12 +34,12 @@ BuildUtils.addLabKeyDependency(project: project, config: "remoteApi", depProject
 Though this repository contains its own Gradle version and settings file and can be built
 independently of the rest of LabKey server, you can also include it in the larger LabKey 
 Server Gradle project if you need to make changes to the code and test them locally without
-having to publish.  
+having to publish.
 
 - Clone this repository (`labkey-api-java`) into the `$LABKEY_ROOT/remoteapi` directory
 - Create a feature branch of this repository (`fb_myNewFeature`)
 - Update the version in the appropriate `build.gradle` file to a unique SNAPSHOT version. Make sure 
-it is a version number not in use by another branch, including `develop`.  A good practice to 
+it is a version number not in use by another branch, including `develop`. A good practice to 
 follow is to use your feature branch in the naming of that version (e.g., `X.Y.Z-myNewFeature-SNAPSHOT`). 
 TeamCity will automatically publish new SNAPSHOT versions from feature branches.
 - Update your `$LABKEY_ROOT/settings.gradle` file to include this project (`include ':remoteapi:labkey-api-java'`)
@@ -57,12 +57,11 @@ in the `$LABKEY_ROOT/gradle.properties` file).
 When your feature development is done, you should:
 
 - Update the version number in the `build.gradle` file to the next logical SNAPSHOT version corresponding to your changes
-following the [SemVer](https://semver.org/) guidelines.  Make sure this is a SNAPSHOT version (e.g., `1.2.3-SNAPSHOT`).
+following the [SemVer](https://semver.org/) guidelines. Make sure this is a SNAPSHOT version (e.g., `1.2.3-SNAPSHOT`).
 - Update the [change log](CHANGELOG.md) to document what has changed. You can leave the release date and version alone at this 
 point; they will get updated when the next release is published.
 - **TBD** Run tests using your SNAPSHOT version of the tests
 - Merge your branch into develop if appropriate tests are passing.
-
 
 ### Publishing
 

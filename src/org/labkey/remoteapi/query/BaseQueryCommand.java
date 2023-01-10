@@ -135,7 +135,7 @@ public abstract class BaseQueryCommand<ResponseType extends CommandResponse> ext
 
     /**
      * Constructs and adds a new sort definition to the current list.
-     * This is equivallent to calling <code>addSort(new Sort(columnName, direction))</code>
+     * This is equivalent to calling <code>addSort(new Sort(columnName, direction))</code>
      *
      * @param columnName The column name.
      * @param direction  The sort direction.
@@ -179,7 +179,7 @@ public abstract class BaseQueryCommand<ResponseType extends CommandResponse> ext
     }
 
     /**
-     * Constructs and adds a new filter to the list. This is equivallent to
+     * Constructs and adds a new filter to the list. This is equivalent to
      * <code>addFilter(new Filter(columnName, value, operator))</code>
      *
      * @param columnName The column name.
