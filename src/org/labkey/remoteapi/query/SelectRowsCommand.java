@@ -18,7 +18,6 @@ package org.labkey.remoteapi.query;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -187,12 +186,15 @@ public class SelectRowsCommand extends BaseQueryCommand<SelectRowsResponse> impl
     @Override
     public Map<String, Object> getParameters()
     {
-        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> params = super.getParameters();
+
         params.put("schemaName", getSchemaName());
         params.put("query.queryName", getQueryName());
-        if(null != getViewName())
+
+        if (null != getViewName())
             params.put("query.viewName", getViewName());
-        if(null != getColumns() && getColumns().size() > 0)
+
+        if (null != getColumns() && getColumns().size() > 0)
         {
             StringBuilder collist = new StringBuilder();
             String sep = "";
@@ -204,30 +206,7 @@ public class SelectRowsCommand extends BaseQueryCommand<SelectRowsResponse> impl
             }
             params.put("query.columns", collist);
         }
-        if(getMaxRows() >= 0)
-            params.put("query.maxRows", getMaxRows());
-        else
-            params.put("query.showRows", "all");
-        if(getOffset() > 0)
-            params.put("query.offset", getOffset());
-        if(null != getSorts() && getSorts().size() > 0)
-            params.put("query.sort", Sort.getSortQueryStringParam(getSorts()));
-
-        if(null != getFilters())
-        {
-            for(Filter filter : getFilters())
-                params.put("query." + filter.getQueryStringParamName(), filter.getQueryStringParamValue());
-        }
-
-        if (getContainerFilter() != null)
-            params.put("containerFilter", getContainerFilter().name());
-
-        for (Map.Entry<String, String> entry : getQueryParameters().entrySet())
-        {
-            params.put("query.param." + entry.getKey(), entry.getValue());
-        }
 
         return params;
     }
-
 }

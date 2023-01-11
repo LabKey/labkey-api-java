@@ -15,15 +15,15 @@
  */
 package org.labkey.remoteapi.query;
 
-import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
+import org.labkey.remoteapi.PostCommand;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class BaseQueryCommand<ResponseType extends CommandResponse> extends Command<ResponseType>
+public abstract class BaseQueryCommand<ResponseType extends CommandResponse> extends PostCommand<ResponseType>
 {
     protected int _maxRows = -1;
     protected int _offset = 0;
@@ -238,19 +238,23 @@ public abstract class BaseQueryCommand<ResponseType extends CommandResponse> ext
         Map<String, Object> params = super.getParameters();
 
         if (getOffset() > 0)
-            params.put("offset", getOffset());
+            params.put("query.offset", getOffset());
+
         if (getMaxRows() >= 0)
-            params.put("maxRows", getMaxRows());
-        if(null != getSorts() && getSorts().size() > 0)
+            params.put("query.maxRows", getMaxRows());
+        else
+            params.put("query.showRows", "all");
+
+        if (null != getSorts() && getSorts().size() > 0)
             params.put("query.sort", Sort.getSortQueryStringParam(getSorts()));
 
-        if(null != getFilters())
+        if (null != getFilters())
         {
             for(Filter filter : getFilters())
                 params.put("query." + filter.getQueryStringParamName(), filter.getQueryStringParamValue());
         }
 
-        if(getContainerFilter() != null)
+        if (getContainerFilter() != null)
             params.put("containerFilter", getContainerFilter().name());
 
         for (Map.Entry<String, String> entry : getQueryParameters().entrySet())
