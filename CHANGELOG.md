@@ -1,7 +1,13 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## version 4.3.0-SNAPSHOT
+## version 4.4.0-SNAPSHOT
 *Released*: TBD
+
+## version 4.3.0
+*Released*: 11 January 2023
+* [Issue 47030](https://www.labkey.org/home/Developer/issues/issues-details.view?issueId=47030): Switch `SelectRowsCommand` and `NAbRunsCommand` to always use POST
+* Add support for `includeTotalCount`, `includeMetadata`, and `ignoreFilter` flags to `BaseQueryCommand` and reconcile duplicate parameter handling code vs. SelectRowsCommand
+* Add support for `includeTitle` and `includeViewDataUrl` flags to `GetQueriesCommand`
 
 ## version 4.2.0
 *Released*: 10 January 2023
