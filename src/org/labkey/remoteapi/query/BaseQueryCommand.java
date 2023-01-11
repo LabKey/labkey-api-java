@@ -31,6 +31,9 @@ public abstract class BaseQueryCommand<ResponseType extends CommandResponse> ext
     protected List<Filter> _filters;
     protected ContainerFilter _containerFilter;
     private Map<String, String> _queryParameters = new HashMap<>();
+    private boolean _ignoreFilter = false;
+    private boolean _includeMetadata = true;
+    private boolean _includeTotalCount = true;
 
     public BaseQueryCommand(BaseQueryCommand<ResponseType> source)
     {
@@ -213,6 +216,48 @@ public abstract class BaseQueryCommand<ResponseType extends CommandResponse> ext
         _containerFilter = containerFilter;
     }
 
+    public boolean isIgnoreFilter()
+    {
+        return _ignoreFilter;
+    }
+
+    /**
+     * Pass true to ignore any filter that may be part of the chosen view. Defaults to false.
+     * @param ignoreFilter Set to 'true' to ignore the view filter.
+     */
+    public void setIgnoreFilter(boolean ignoreFilter)
+    {
+        _ignoreFilter = ignoreFilter;
+    }
+
+    public boolean isIncludeMetadata()
+    {
+        return _includeMetadata;
+    }
+
+    /**
+     * Pass false to omit metadata for the selected columns. Defaults to true.
+     * @param includeMetadata Set to 'false' to omit column metadata.
+     */
+    public void setIncludeMetadata(boolean includeMetadata)
+    {
+        _includeMetadata = includeMetadata;
+    }
+
+    public boolean isIncludeTotalCount()
+    {
+        return _includeTotalCount;
+    }
+
+    /**
+     * Pass false to omit total count from the response. Default is true.
+     * @param includeTotalCount Set to 'false' to omit total count.
+     */
+    public void setIncludeTotalCount(boolean includeTotalCount)
+    {
+        _includeTotalCount = includeTotalCount;
+    }
+
     /**
      @return Map of name (string)/value pairs for the values of parameters if the SQL references underlying queries
      that are parameterized.
@@ -261,6 +306,15 @@ public abstract class BaseQueryCommand<ResponseType extends CommandResponse> ext
         {
             params.put("query.param." + entry.getKey(), entry.getValue());
         }
+
+        if (!isIncludeTotalCount())
+            params.put("includeTotalCount", isIncludeTotalCount());
+
+        if (!isIncludeMetadata())
+            params.put("includeMetadata", isIncludeMetadata());
+
+        if (isIgnoreFilter())
+            params.put("query.ignoreFilter", isIgnoreFilter());
 
         return params;
     }
