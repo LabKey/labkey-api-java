@@ -1,5 +1,13 @@
 # The LabKey Remote API Library for Java - Change Log
 
+## version 4.3.0-SNAPSHOT
+*Released*: TBD
+
+## version 4.2.0
+*Released*: 10 January 2023
+* Refactor repository layout, removing unnecessary `labkey-client-api` folder
+* Upgrade to most recent Gradle, Gradle Plugins, and HttpClient versions
+
 ## version 4.1.0
 *Released*: 15 December 2022
 * Migrate internal HTTP handling to use Apache HttpClient 5.2
