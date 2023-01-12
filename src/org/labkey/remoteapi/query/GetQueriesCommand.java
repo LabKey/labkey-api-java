@@ -27,8 +27,10 @@ import java.util.Map;
 public class GetQueriesCommand extends Command<GetQueriesResponse>
 {
     private String _schemaName;
-    private boolean _includeUserQueries = true;
     private boolean _includeColumns = true;
+    private boolean _includeTitle = true;
+    private boolean _includeUserQueries = true;
+    private boolean _includeViewDataUrl = true;
 
     /**
      * Constructs the command given a particular schema name.
@@ -50,21 +52,6 @@ public class GetQueriesCommand extends Command<GetQueriesResponse>
         _schemaName = schemaName;
     }
 
-    public boolean isIncludeUserQueries()
-    {
-        return _includeUserQueries;
-    }
-
-    /**
-     * Pass false to this method to omit user-defined queries from the results. By default,
-     * user-defined queries are included.
-     * @param includeUserQueries Set to false to omit user-defined queries.
-     */
-    public void setIncludeUserQueries(boolean includeUserQueries)
-    {
-        _includeUserQueries = includeUserQueries;
-    }
-
     public boolean isIncludeColumns()
     {
         return _includeColumns;
@@ -80,6 +67,50 @@ public class GetQueriesCommand extends Command<GetQueriesResponse>
         _includeColumns = includeColumns;
     }
 
+    public boolean isIncludeTitle()
+    {
+        return _includeTitle;
+    }
+
+    /**
+     * Pass false to omit custom query titles. Titles will be returned, but their values will be identical to names.
+     * Default is true.
+     * @param includeTitle 'false' to omit custom query titles.
+     */
+    public void setIncludeTitle(boolean includeTitle)
+    {
+        _includeTitle = includeTitle;
+    }
+
+    public boolean isIncludeUserQueries()
+    {
+        return _includeUserQueries;
+    }
+
+    /**
+     * Pass false to this method to omit user-defined queries from the results. By default,
+     * user-defined queries are included.
+     * @param includeUserQueries Set to 'false' to omit user-defined queries.
+     */
+    public void setIncludeUserQueries(boolean includeUserQueries)
+    {
+        _includeUserQueries = includeUserQueries;
+    }
+
+    public boolean isIncludeViewDataUrl()
+    {
+        return _includeViewDataUrl;
+    }
+
+    /**
+     * Pass false to omit view data URLs from the results. Default is true.
+     * @param includeViewDataUrl Set to 'false' to omit view data URLs.
+     */
+    public void setIncludeViewDataUrl(boolean includeViewDataUrl)
+    {
+        _includeViewDataUrl = includeViewDataUrl;
+    }
+
     @Override
     public Map<String, Object> getParameters()
     {
@@ -88,11 +119,15 @@ public class GetQueriesCommand extends Command<GetQueriesResponse>
         Map<String, Object> params = new HashMap<>();
         params.put("schemaName", getSchemaName());
 
-        if(!isIncludeColumns())
+        if (!isIncludeColumns())
             params.put("includeColumns", isIncludeColumns());
-        if(!isIncludeUserQueries())
+        if (!isIncludeTitle())
+            params.put("includeTitle", isIncludeTitle());
+        if (!isIncludeUserQueries())
             params.put("includeUserQueries", isIncludeUserQueries());
-        
+        if (!isIncludeViewDataUrl())
+            params.put("includeViewDataUrl", isIncludeViewDataUrl());
+
         return params;
     }
 

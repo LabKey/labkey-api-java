@@ -15,15 +15,15 @@
  */
 package org.labkey.remoteapi.query;
 
-import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
+import org.labkey.remoteapi.PostCommand;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class BaseQueryCommand<ResponseType extends CommandResponse> extends Command<ResponseType>
+public abstract class BaseQueryCommand<ResponseType extends CommandResponse> extends PostCommand<ResponseType>
 {
     protected int _maxRows = -1;
     protected int _offset = 0;
@@ -31,6 +31,9 @@ public abstract class BaseQueryCommand<ResponseType extends CommandResponse> ext
     protected List<Filter> _filters;
     protected ContainerFilter _containerFilter;
     private Map<String, String> _queryParameters = new HashMap<>();
+    private boolean _ignoreFilter = false;
+    private boolean _includeMetadata = true;
+    private boolean _includeTotalCount = true;
 
     public BaseQueryCommand(BaseQueryCommand<ResponseType> source)
     {
@@ -213,6 +216,48 @@ public abstract class BaseQueryCommand<ResponseType extends CommandResponse> ext
         _containerFilter = containerFilter;
     }
 
+    public boolean isIgnoreFilter()
+    {
+        return _ignoreFilter;
+    }
+
+    /**
+     * Pass true to ignore any filter that may be part of the chosen view. Defaults to false.
+     * @param ignoreFilter Set to 'true' to ignore the view filter.
+     */
+    public void setIgnoreFilter(boolean ignoreFilter)
+    {
+        _ignoreFilter = ignoreFilter;
+    }
+
+    public boolean isIncludeMetadata()
+    {
+        return _includeMetadata;
+    }
+
+    /**
+     * Pass false to omit metadata for the selected columns. Defaults to true.
+     * @param includeMetadata Set to 'false' to omit column metadata.
+     */
+    public void setIncludeMetadata(boolean includeMetadata)
+    {
+        _includeMetadata = includeMetadata;
+    }
+
+    public boolean isIncludeTotalCount()
+    {
+        return _includeTotalCount;
+    }
+
+    /**
+     * Pass false to omit total count from the response. Default is true.
+     * @param includeTotalCount Set to 'false' to omit total count.
+     */
+    public void setIncludeTotalCount(boolean includeTotalCount)
+    {
+        _includeTotalCount = includeTotalCount;
+    }
+
     /**
      @return Map of name (string)/value pairs for the values of parameters if the SQL references underlying queries
      that are parameterized.
@@ -238,25 +283,38 @@ public abstract class BaseQueryCommand<ResponseType extends CommandResponse> ext
         Map<String, Object> params = super.getParameters();
 
         if (getOffset() > 0)
-            params.put("offset", getOffset());
+            params.put("query.offset", getOffset());
+
         if (getMaxRows() >= 0)
-            params.put("maxRows", getMaxRows());
-        if(null != getSorts() && getSorts().size() > 0)
+            params.put("query.maxRows", getMaxRows());
+        else
+            params.put("query.showRows", "all");
+
+        if (null != getSorts() && getSorts().size() > 0)
             params.put("query.sort", Sort.getSortQueryStringParam(getSorts()));
 
-        if(null != getFilters())
+        if (null != getFilters())
         {
             for(Filter filter : getFilters())
                 params.put("query." + filter.getQueryStringParamName(), filter.getQueryStringParamValue());
         }
 
-        if(getContainerFilter() != null)
+        if (getContainerFilter() != null)
             params.put("containerFilter", getContainerFilter().name());
 
         for (Map.Entry<String, String> entry : getQueryParameters().entrySet())
         {
             params.put("query.param." + entry.getKey(), entry.getValue());
         }
+
+        if (!isIncludeTotalCount())
+            params.put("includeTotalCount", isIncludeTotalCount());
+
+        if (!isIncludeMetadata())
+            params.put("includeMetadata", isIncludeMetadata());
+
+        if (isIgnoreFilter())
+            params.put("query.ignoreFilter", isIgnoreFilter());
 
         return params;
     }

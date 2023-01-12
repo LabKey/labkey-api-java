@@ -15,7 +15,6 @@
  */
 package org.labkey.remoteapi.test;
 
-import org.json.JSONObject;
 import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.assay.AssayListCommand;
@@ -59,7 +58,7 @@ public class Test
 
         try
         {
-            // Import /remoteapi/sas/People.xls as list "People" into project "Api Test"
+            // Import /remoteapi/labkey-api-java/People.xls as list "People" into project "Api Test"
             selectTest(cn, "Api Test");
             crudTest(cn, "Api Test");
             execSqlTest(cn, "Api Test");
@@ -83,7 +82,7 @@ public class Test
         }
     }
 
-    // Assumes that /remoteapi/sas/People.xls has been imported as a list into folder
+    // Assumes that /remoteapi/labkey-api-java/People.xls has been imported as a list into folder
     public static void selectTest(Connection cn, String folder) throws Exception
     {
         SelectRowsCommand cmd = new SelectRowsCommand("lists", "People");
@@ -103,7 +102,7 @@ public class Test
         }
     }
 
-    // Assumes that /remoteapi/sas/People.xls has been imported as a list into folder
+    // Assumes that /remoteapi/labkey-api-java/People.xls has been imported as a list into folder
     public static void crudTest(Connection cn, String folder) throws Exception
     {
         int rowCount = 0;
@@ -148,16 +147,16 @@ public class Test
         assert srresp.getRowCount().intValue() == rowCount;
     }
 
-    // Assumes that /remoteapi/sas/People.xls has been imported as a list into folder
+    // Assumes that /remoteapi/labkey-api-java/People.xls has been imported as a list into folder
     public static void truncateTableSuccessTest(Connection cn, String folder) throws Exception
     {
         TruncateTableCommand trunc = new TruncateTableCommand("lists", "People");
         TruncateTableResponse resp = trunc.execute(cn, folder);
 
-        assert resp.getDeletedRowCount().intValue() == 9;
+        assert resp.getDeletedRowCount() == 9;
     }
 
-    // Assumes that /remoteapi/sas/People.xls has been imported as a list into folder
+    // Assumes that /remoteapi/labkey-api-java/People.xls has been imported as a list into folder
     public static void execSqlTest(Connection cn, String folder) throws Exception
     {
         ExecuteSqlCommand cmd = new ExecuteSqlCommand("lists");
@@ -166,7 +165,7 @@ public class Test
         System.out.println(resp.getRows());
     }
 
-    // Assumes that /remoteapi/sas/People.xls has been imported as a list into folder
+    // Assumes that /remoteapi/labkey-api-java/People.xls has been imported as a list into folder
     private static void schemasTest(Connection cn, String folder) throws Exception
     {
         GetSchemasCommand cmd = new GetSchemasCommand();
@@ -188,7 +187,7 @@ public class Test
         }
     }
 
-    // Assumes that /remoteapi/sas/People.xls has been imported as a list into folder
+    // Assumes that /remoteapi/labkey-api-java/People.xls has been imported as a list into folder
     private static void extendedFormatTest(Connection cn, String folder) throws Exception
     {
         SelectRowsCommand cmd = new SelectRowsCommand("lists", "People");
@@ -199,7 +198,7 @@ public class Test
         {
             for (Map.Entry<String, Object> entry : row.entrySet())
             {
-                Object value = ((JSONObject)entry.getValue()).get("value");
+                Object value = ((Map<String, Object>)entry.getValue()).get("value");
                 System.out.println(entry.getKey() + " = " + value + " (type: " + (null == value ? "null" : value.getClass().getName()) + ")");
             }
         }
@@ -306,7 +305,8 @@ public class Test
     public static void truncateAssayFailsTest(Connection cn, String folder) throws Exception
     {
         TruncateTableCommand trunc = new TruncateTableCommand("assay.NAb.TestAssayNab", "WellData");
-        try{
+        try
+        {
             TruncateTableResponse resp = trunc.execute(cn, folder);
             throw new RuntimeException("Truncate table command should not succeed for tables other than lists," +
                     "datasets, sample sets, data classes, and issues");
