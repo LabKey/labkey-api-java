@@ -280,7 +280,7 @@ public abstract class BaseQueryCommand<ResponseType extends CommandResponse> ext
     @Override
     public Map<String, Object> getParameters()
     {
-        Map<String, Object> params = super.getParameters();
+        Map<String, Object> params = new HashMap<>();
 
         if (getOffset() > 0)
             params.put("query.offset", getOffset());
