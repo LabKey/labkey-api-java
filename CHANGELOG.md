@@ -3,9 +3,9 @@
 ## version 4.4.0-SNAPSHOT
 *Released*: TBD
 
-## version 4.3.1-selectrows_fix-SNAPSHOT
-*Released*: TBD
-* Fix regression introduced in 4.3.0: `SelectRowsCommand` should create a fresh parameter map for every invocation of `execute()`
+## version 4.3.1
+*Released*: 15 January 2023
+* Fix regression introduced in 4.3.0: `SelectRowsCommand` should create a fresh parameter map for every invocation of `getParameters()`
 
 ## version 4.3.0
 *Released*: 11 January 2023
