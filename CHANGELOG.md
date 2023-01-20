@@ -1,7 +1,17 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## version 4.4.0-SNAPSHOT
+## version 5.1.0-SNAPSHOT
 *Released*: TBD
+
+## version 5.0.0-refactor-SNAPSHOT
+*Released*: TBD
+* Refactor `getParameters()` and `setParameters()` for consistency. Commands no longer stash and reuse the parameter map. 
+  In all cases, `getParameters()` creates a new map, initialized with whatever parameters were previously passed to `setParameters()`, if any.
+* Remove all `Command` copy constructors. Same rationale as the earlier removal of `copy` methods.
+* Switch `SelectRowsCommand` and `NAbRunsCommand` to post their parameters as JSON
+* Fix NAbReplicate to handle "NaN" values
+* `getHttpRequest()` no longer throws `CommandException`
+* Adjust the `Demo.java` and `Test.java` tests to match current sample data
 
 ## version 4.3.1
 *Released*: 15 January 2023
