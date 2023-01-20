@@ -19,7 +19,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Command for selecting data from any LabKey schema/query exposed on the
@@ -184,29 +183,29 @@ public class SelectRowsCommand extends BaseQueryCommand<SelectRowsResponse> impl
     }
 
     @Override
-    public Map<String, Object> getParameters()
+    public JSONObject getJsonObject()
     {
-        Map<String, Object> params = super.getParameters();
+        JSONObject json = super.getJsonObject();
 
-        params.put("schemaName", getSchemaName());
-        params.put("query.queryName", getQueryName());
+        json.put("schemaName", getSchemaName());
+        json.put("query.queryName", getQueryName());
 
         if (null != getViewName())
-            params.put("query.viewName", getViewName());
+            json.put("query.viewName", getViewName());
 
         if (null != getColumns() && getColumns().size() > 0)
         {
             StringBuilder collist = new StringBuilder();
             String sep = "";
-            for(String col : getColumns())
+            for (String col : getColumns())
             {
                 collist.append(sep);
                 collist.append(col);
                 sep = ",";
             }
-            params.put("query.columns", collist);
+            json.put("query.columns", collist);
         }
 
-        return params;
+        return json;
     }
 }

@@ -16,7 +16,7 @@ public class StopImpersonatingCommand extends PostCommand<CommandResponse>
     public StopImpersonatingCommand()
     {
         // TODO: At some point (when we're okay with breaking compatibility with pre-22.10 servers) switch this to
-        // stopImpersonatingApi.api, a true API action added 9/22
+        // stopImpersonatingApi.api, a true API action added 9/22 and then remove the redirect machinations below.
         super("login", "stopImpersonating.api");
     }
 

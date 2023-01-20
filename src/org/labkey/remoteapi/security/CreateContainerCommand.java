@@ -52,7 +52,7 @@ public class CreateContainerCommand extends PostCommand<CreateContainerResponse>
         result.put("type", _type);
         result.put("isWorkbook", _workbook);
         result.put("folderType", _folderType);
-        setJsonObject(result);
+
         return result;
     }
 

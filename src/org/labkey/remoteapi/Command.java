@@ -40,6 +40,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.function.Supplier;
 
 /**
  * Base class for all API commands. Typically, a developer will not
@@ -49,12 +50,12 @@ import java.util.Scanner;
  * which provides helpful methods for setting options and obtaining
  * specific result types.
  * <p>
- * However, if future versions of the LabKey Server expose new HTTP APIs
- * that are not yet supported with a specialized class in this library,
- * the developer may still invoke these APIs by creating an instance of the
- * {@link Command} class directly, providing the controller and action name for
- * the new API. Parameters may then be specified by calling the {@link #setParameters(Map)}
- * method, passing a populated parameter <code>Map&lt;String, Object&gt;</code>
+ * However, if a developer wishes to invoke actions that are not yet supported
+ * with a specialized class in this library, the developer may invoke these APIs
+ * by creating an instance of the {@link Command} class directly, providing the
+ * controller and action name for the API. Parameters may then be specified by
+ * calling the {@link #setParameters(Map)} method, passing a populated parameter
+ * <code>Map&lt;String, Object&gt;</code>
  * <p>
  * Note that this class is not thread-safe. Do not share instances of this class
  * or its descendants between threads, unless the descendant declares explicitly that
@@ -77,7 +78,7 @@ public class Command<ResponseType extends CommandResponse>
 
     private final String _controllerName;
     private final String _actionName;
-    private Map<String, Object> _parameters = null;
+    private Supplier<Map<String, Object>> _parameterMapFactory = HashMap::new;
     private Integer _timeout = null;
     private double _requiredVersion = 8.3;
 
@@ -94,20 +95,6 @@ public class Command<ResponseType extends CommandResponse>
 
         _controllerName = controllerName;
         _actionName = actionName;
-    }
-
-    /**
-     * Constructs a new Command from an existing command
-     * @param source A source Command
-     */
-    public Command(Command<ResponseType> source)
-    {
-        _actionName = source.getActionName();
-        _controllerName = source.getControllerName();
-        if (null != source.getParameters())
-            _parameters = new HashMap<>(source.getParameters());
-        _timeout = source._timeout;
-        _requiredVersion = source.getRequiredVersion();
     }
 
     /**
@@ -129,26 +116,33 @@ public class Command<ResponseType extends CommandResponse>
     }
 
     /**
-     * Returns the current parameter map, or null if a map has not yet been set.
-     * Derived classes will typically override this method to provide a parameter
-     * map based on data members set by specialized setter methods.
-     * @return The current parameter map.
+     * Returns a new, mutable parameter map initialized with the values from the map passed to
+     * {@link #setParameters(Map)} method, if any. Derived classes will typically override this
+     * method to put values passed to specialized setter methods into the map. Note: callers
+     * should not mutate this map; instead, use setParameters() to provide initial parameters.
+     * @return The parameter map to use when building the URL.
      */
     public Map<String, Object> getParameters()
     {
-        if (null == _parameters)
-            _parameters = new HashMap<>();
-
-        return _parameters;
+        return _parameterMapFactory.get();
     }
 
     /**
-     * Sets the current parameter map.
-     * @param parameters The parameter map to use
+     * Sets the initial parameter map.
+     * @param parameters The values to use when initializing the parameter map
      */
     public void setParameters(Map<String, Object> parameters)
     {
-        _parameters = parameters;
+        _parameterMapFactory = new Supplier<>()
+        {
+            private final Map<String, Object> _parameters = new HashMap<>(parameters);
+
+            @Override
+            public Map<String, Object> get()
+            {
+                return new HashMap<>(_parameters);
+            }
+        };
     }
 
     /**
@@ -438,12 +432,10 @@ public class Command<ResponseType extends CommandResponse>
      * This and the base URL from the connection will be used to construct the
      * first part of the URL.
      * @return The constructed HttpUriRequest instance.
-     * @throws CommandException Thrown if there is a problem encoding or parsing the URL
      * @throws URISyntaxException Thrown if there is a problem parsing the base URL in the connection.
      */
 
-    // TODO: For next major release, remove CommandException from throws list
-    protected HttpUriRequest getHttpRequest(Connection connection, String folderPath) throws CommandException, URISyntaxException
+    protected HttpUriRequest getHttpRequest(Connection connection, String folderPath) throws URISyntaxException
     {
         //construct a URI from connection base URI, folder path, and current parameters
         URI uri = createURI(connection, folderPath);

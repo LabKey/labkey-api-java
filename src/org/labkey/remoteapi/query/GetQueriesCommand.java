@@ -116,7 +116,7 @@ public class GetQueriesCommand extends Command<GetQueriesResponse>
     {
         assert null != getSchemaName() : "You must set the schema name before executing the GetQueriesCommand!";
 
-        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> params = super.getParameters();
         params.put("schemaName", getSchemaName());
 
         if (!isIncludeColumns())

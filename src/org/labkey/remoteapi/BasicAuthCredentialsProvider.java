@@ -39,7 +39,7 @@ public class BasicAuthCredentialsProvider implements CredentialsProvider
     public void configureRequest(URI baseURI, HttpUriRequest request, HttpClientContext httpClientContext)
     {
         BasicCredentialsProvider provider = new BasicCredentialsProvider();
-        AuthScope scope = new AuthScope(baseURI.getHost(), -1);
+        AuthScope scope = new AuthScope(baseURI.getHost(), baseURI.getPort());
         Credentials credentials = new UsernamePasswordCredentials(_email, _password.toCharArray());
         provider.setCredentials(scope, credentials);
         httpClientContext.setCredentialsProvider(provider);

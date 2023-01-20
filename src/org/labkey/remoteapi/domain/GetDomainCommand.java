@@ -33,7 +33,7 @@ public class GetDomainCommand extends Command<DomainResponse>
     @Override
     public Map<String, Object> getParameters()
     {
-        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> params = super.getParameters();
 
         if (_schemaName != null && _queryName != null)
         {
@@ -44,6 +44,7 @@ public class GetDomainCommand extends Command<DomainResponse>
         {
             params.put("domainId", _domainId);
         }
+
         return params;
     }
 

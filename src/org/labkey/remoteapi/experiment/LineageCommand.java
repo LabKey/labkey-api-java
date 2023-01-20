@@ -149,7 +149,7 @@ public class LineageCommand extends Command<LineageResponse>
     @Override
     public Map<String, Object> getParameters()
     {
-        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> params = super.getParameters();
         params.put("lsids", _lsids);
         if (null != _parents)
             params.put("parents", _parents);

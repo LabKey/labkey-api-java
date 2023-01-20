@@ -123,10 +123,10 @@ public class MS2SearchClient
         int assayId = getAssayId(config);
 
         // Map from target folder path to assay batch
-        Map<String, Batch> batches = new HashMap<String, Batch>();
+        Map<String, Batch> batches = new HashMap<>();
 
         // Map from MS2 search info to the list of file names to be searched
-        Map<SearchInfo, List<String>> searches = new HashMap<SearchInfo, List<String>>();
+        Map<SearchInfo, List<String>> searches = new HashMap<>();
 
         parseCSVs(args, batches, searches);
 
@@ -280,7 +280,7 @@ public class MS2SearchClient
 
                     // Create a map of all the properties. If the assay design has run properties with names that
                     // match, the values will be stored with the run.
-                    Map<String, String> runProperties = new HashMap<String, String>();
+                    Map<String, String> runProperties = new HashMap<>();
                     for (int columnIndex = 0; columnIndex < line.length; columnIndex++)
                     {
                         runProperties.put(headers[columnIndex], line[columnIndex]);

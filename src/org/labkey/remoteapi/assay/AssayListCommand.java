@@ -121,15 +121,15 @@ public class AssayListCommand extends PostCommand<AssayListResponse>
     @Override
     public Map<String, Object> getParameters()
     {
-        Map<String, Object> params = new HashMap<>();
-        if(null != getName())
+        Map<String, Object> params = super.getParameters();
+
+        if (null != getName())
             params.put("name", getName());
-        if(null != getType())
+        if (null != getType())
             params.put("type", getType());
-        if(null != getId())
+        if (null != getId())
             params.put("id", getId());
 
         return params;
     }
-
 }

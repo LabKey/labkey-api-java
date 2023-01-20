@@ -60,17 +60,6 @@ public class SqlExecuteCommand extends PostCommand<CommandResponse>
         this(schemaName, null);
     }
 
-    public SqlExecuteCommand(SqlExecuteCommand source)
-    {
-        super(source);
-        _schemaName = source._schemaName;
-        _sql = source._sql;
-        _queryParameters.putAll(source._queryParameters);
-        _sep = source._sep;
-        _eol= source._eol;
-        _compact = source._compact;
-    }
-
     /**
      * Constructs an ExecuteSqlCommand, initialized with a schema name and SQL query.
      * @param schemaName The schema name ot query.

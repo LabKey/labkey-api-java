@@ -43,8 +43,7 @@ public abstract class BaseTransformCommand<ResponseType extends CommandResponse>
             result = new JSONObject();
         }
         result.put("transformId", _transformId);
-        setJsonObject(result);
+
         return result;
     }
-
 }

@@ -104,20 +104,6 @@ public abstract class SaveRowsCommand extends PostCommand<SaveRowsResponse>
         _queryName = queryName;
     }
 
-    protected SaveRowsCommand(SaveRowsCommand source)
-    {
-        super(source);
-        _queryName = source._queryName;
-        _schemaName = source._schemaName;
-        _extraContext = source._extraContext;
-        //deep copy rows
-        _rows = new ArrayList<>();
-        for(Map<String, Object> row : source._rows)
-        {
-            _rows.add(new HashMap<>(row));
-        }
-    }
-
     /**
      * Returns the schema name.
      * @return The schema name.

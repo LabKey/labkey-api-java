@@ -80,7 +80,7 @@ public class GetQueryDetailsCommand extends Command<GetQueryDetailsResponse>
         assert null != getSchemaName() : "You must set the schema name before executing the GetQueryDetailsCommand!";
         assert null != getQueryName() : "You must set the query name before executing the GetQueryDetailsCommand!";
 
-        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> params = super.getParameters();
         params.put("schemaName", getSchemaName());
         params.put("queryName", getQueryName());
         params.put("includeSuggestedQueryColumns", _includeSuggestedQueryColumns);

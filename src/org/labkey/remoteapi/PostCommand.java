@@ -40,8 +40,6 @@ import java.net.URI;
  */
 public class PostCommand<ResponseType extends CommandResponse> extends Command<ResponseType>
 {
-    private JSONObject _jsonObject = null;
-
     /**
      * Constructs a new PostCommand given a controller and action name.
      * @param controllerName The controller name.
@@ -52,34 +50,13 @@ public class PostCommand<ResponseType extends CommandResponse> extends Command<R
         super(controllerName, actionName);
     }
 
-    public PostCommand(PostCommand<ResponseType> source)
-    {
-        super(source);
-        if (null != source.getJsonObject())
-        {
-            // Convert to String and back is the easiest way to get a deep copy
-            _jsonObject = new JSONObject(source.getJsonObject().toString());
-        }
-    }
-
     /**
-     * Returns the JSON object to post, or null if the JSON object
-     * has not yet been set. Override this method to provide the
-     * JSON object dynamically.
+     * Returns the JSON object to post or null for no JSON. Override this method to provide parameters as JSON.
      * @return The JSON object to post.
      */
     public JSONObject getJsonObject()
     {
-        return _jsonObject;
-    }
-
-    /**
-     * Sets the JSON object to post.
-     * @param jsonObject The JSON object to post
-     */
-    public void setJsonObject(JSONObject jsonObject)
-    {
-        _jsonObject = jsonObject;
+        return null;
     }
 
     /**
@@ -109,5 +86,4 @@ public class PostCommand<ResponseType extends CommandResponse> extends Command<R
 
         return request;
     }
-
 }

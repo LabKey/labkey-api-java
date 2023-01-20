@@ -30,12 +30,6 @@ public class GetContainersCommand extends Command<GetContainersResponse>
         super("project", "getContainers");
     }
 
-    public GetContainersCommand(GetContainersCommand source)
-    {
-        super(source);
-        _includeSubfolders = source._includeSubfolders;
-    }
-
     public boolean isIncludeSubfolders()
     {
         return _includeSubfolders;
@@ -55,9 +49,9 @@ public class GetContainersCommand extends Command<GetContainersResponse>
     @Override
     public Map<String, Object> getParameters()
     {
-        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> params = super.getParameters();
         params.put("includeSubfolders", _includeSubfolders);
+
         return params;
     }
-
 }

@@ -59,9 +59,9 @@ public class GetGroupPermsCommand extends Command<GetGroupPermsResponse>
     @Override
     public Map<String, Object> getParameters()
     {
-        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> params = super.getParameters();
         params.put("includeSubfolders", isIncludeSubfolders());
+
         return params;
     }
-
 }

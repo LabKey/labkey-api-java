@@ -15,6 +15,7 @@
  */
 package org.labkey.remoteapi.query;
 
+import org.json.JSONObject;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.PostCommand;
 
@@ -34,27 +35,6 @@ public abstract class BaseQueryCommand<ResponseType extends CommandResponse> ext
     private boolean _ignoreFilter = false;
     private boolean _includeMetadata = true;
     private boolean _includeTotalCount = true;
-
-    public BaseQueryCommand(BaseQueryCommand<ResponseType> source)
-    {
-        super(source);
-        _containerFilter = source._containerFilter;
-        _offset = source._offset;
-        _maxRows = source._maxRows;
-
-        //deep copy sorts and filters lists
-        for (Sort sort : source._sorts)
-        {
-            _sorts.add(new Sort(sort));
-        }
-
-        for (Filter filter : source._filters)
-        {
-            _filters.add(new Filter(filter));
-        }
-
-        _queryParameters.putAll(source._queryParameters);
-    }
 
     public BaseQueryCommand(String controllerName, String actionName)
     {
@@ -278,44 +258,44 @@ public abstract class BaseQueryCommand<ResponseType extends CommandResponse> ext
     }
 
     @Override
-    public Map<String, Object> getParameters()
+    public JSONObject getJsonObject()
     {
-        Map<String, Object> params = new HashMap<>();
+        JSONObject json = new JSONObject();
 
         if (getOffset() > 0)
-            params.put("query.offset", getOffset());
+            json.put("query.offset", getOffset());
 
         if (getMaxRows() >= 0)
-            params.put("query.maxRows", getMaxRows());
+            json.put("query.maxRows", getMaxRows());
         else
-            params.put("query.showRows", "all");
+            json.put("query.showRows", "all");
 
         if (null != getSorts() && getSorts().size() > 0)
-            params.put("query.sort", Sort.getSortQueryStringParam(getSorts()));
+            json.put("query.sort", Sort.getSortQueryStringParam(getSorts()));
 
         if (null != getFilters())
         {
             for(Filter filter : getFilters())
-                params.put("query." + filter.getQueryStringParamName(), filter.getQueryStringParamValue());
+                json.put("query." + filter.getQueryStringParamName(), filter.getQueryStringParamValue());
         }
 
         if (getContainerFilter() != null)
-            params.put("containerFilter", getContainerFilter().name());
+            json.put("containerFilter", getContainerFilter().name());
 
         for (Map.Entry<String, String> entry : getQueryParameters().entrySet())
         {
-            params.put("query.param." + entry.getKey(), entry.getValue());
+            json.put("query.param." + entry.getKey(), entry.getValue());
         }
 
         if (!isIncludeTotalCount())
-            params.put("includeTotalCount", isIncludeTotalCount());
+            json.put("includeTotalCount", isIncludeTotalCount());
 
         if (!isIncludeMetadata())
-            params.put("includeMetadata", isIncludeMetadata());
+            json.put("includeMetadata", isIncludeMetadata());
 
         if (isIgnoreFilter())
-            params.put("query.ignoreFilter", isIgnoreFilter());
+            json.put("query.ignoreFilter", isIgnoreFilter());
 
-        return params;
+        return json;
     }
 }

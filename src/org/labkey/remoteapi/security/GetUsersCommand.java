@@ -99,7 +99,7 @@ public class GetUsersCommand extends Command<GetUsersResponse>
     @Override
     public Map<String, Object> getParameters()
     {
-        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> params = super.getParameters();
         if (_group != null)
         {
             params.put("group", _group);

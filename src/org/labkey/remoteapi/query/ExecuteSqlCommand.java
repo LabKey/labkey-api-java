@@ -61,21 +61,6 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
         _schemaName = schemaName;
     }
 
-    public ExecuteSqlCommand(ExecuteSqlCommand source)
-    {
-        super(source);
-        _schemaName = source._schemaName;
-        _sql = source._sql;
-        _maxRows = source._maxRows;
-        _offset = source._offset;
-        _containerFilter = source._containerFilter;
-        _includeTotalCount = source._includeTotalCount;
-        _sorts = source._sorts;
-        _saveInSession = source._saveInSession;
-        _includeDetailsColumn = source._includeDetailsColumn;
-        _queryParameters = new HashMap<>(source.getQueryParameters());
-    }
-
     /**
      * Constructs an ExecuteSqlCommand, initialized with a schema name and SQL query.
      * @param schemaName The schema name ot query.
@@ -334,24 +319,27 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
         JSONObject json = new JSONObject();
         json.put("schemaName", getSchemaName());
         json.put("sql", getSql());
-        if(getMaxRows() >= 0)
+        if (getMaxRows() >= 0)
             json.put("maxRows", getMaxRows());
-        if(getOffset() > 0)
+        if (getOffset() > 0)
             json.put("offset", getOffset());
-        if(getContainerFilter() != null)
+        if (getContainerFilter() != null)
             json.put("containerFilter", getContainerFilter().name());
         json.put("includeTotalCount", isIncludeTotalCount());
         json.put("includeDetailsColumn", isIncludeDetailsColumn());
         json.put("saveInSession", isSaveInSession());
+
         return json;
     }
 
     @Override
     public Map<String, Object> getParameters()
     {
-        Map<String, Object> params = new HashMap<>();
-        if(null != getSorts() && getSorts().size() > 0)
+        Map<String, Object> params = super.getParameters();
+
+        if (null != getSorts() && getSorts().size() > 0)
             params.put("query.sort", Sort.getSortQueryStringParam(getSorts()));
+
         for (Map.Entry<String, String> entry : getQueryParameters().entrySet())
         {
             params.put("query.param." + entry.getKey(), entry.getValue());
