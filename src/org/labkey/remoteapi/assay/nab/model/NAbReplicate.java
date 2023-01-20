@@ -27,14 +27,17 @@ public class NAbReplicate extends NAbWellGroup
     {
         super(properties);
         _dilution = ((Number) properties.get("dilution")).doubleValue();
-        if (properties.get("neutPercent") != null)
-            _neutPercent = ((Number) properties.get("neutPercent")).doubleValue();
+        _neutPercent = getDouble(properties.get("neutPercent"));
+        _neutPlusMinus = getDouble(properties.get("neutPlusMinus"));
+    }
+
+    // Handles "NaN" in addition to numbers
+    private Double getDouble(Object value)
+    {
+        if (value != null)
+            return value instanceof String neutString ? Double.parseDouble(neutString) : ((Number) value).doubleValue();
         else
-            _neutPercent = null;
-        if (properties.get("neutPlusMinus") != null)
-            _neutPlusMinus = ((Number) properties.get("neutPlusMinus")).doubleValue();
-        else
-            _neutPlusMinus = null;
+            return null;
     }
 
     public double getDilution()
