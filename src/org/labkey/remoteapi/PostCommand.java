@@ -40,6 +40,8 @@ import java.net.URI;
  */
 public class PostCommand<ResponseType extends CommandResponse> extends Command<ResponseType>
 {
+    private JSONObject _jsonObject = null;
+
     /**
      * Constructs a new PostCommand given a controller and action name.
      * @param controllerName The controller name.
@@ -56,7 +58,16 @@ public class PostCommand<ResponseType extends CommandResponse> extends Command<R
      */
     public JSONObject getJsonObject()
     {
-        return null;
+        return _jsonObject;
+    }
+
+    /**
+     * Sets the JSON object to post.
+     * @param jsonObject The JSON object to post
+     */
+    public void setJsonObject(JSONObject jsonObject)
+    {
+        _jsonObject = jsonObject;
     }
 
     /**
