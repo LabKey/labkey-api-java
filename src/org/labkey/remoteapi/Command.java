@@ -484,19 +484,14 @@ public class Command<ResponseType extends CommandResponse>
 
         //add the controller name
         String controller = getControllerName();
-        //for now, strip leading /. TODO: For next major release, throw
-        if (controller.charAt(0) == '/')
-            controller = controller.substring(1);
-        //for now, strip trailing /. TODO: For next major release, throw
-        if (controller.charAt(controller.length() - 1) == '/')
-            controller = controller.substring(0, controller.length() - 1);
+        if (controller.contains("/"))
+            throw new IllegalArgumentException("Controller name should not contain a slash (/)");
         path.append(controller);
 
         //add the action name + ".api"
         String actionName = getActionName();
-        //for now, strip leading /. TODO: For next major release, throw
-        if (actionName.charAt(0) == '/')
-            actionName = actionName.substring(1);
+        if (actionName.contains("/"))
+            throw new IllegalArgumentException("Action name should not contain a slash (/)");
         path.append("-").append(actionName);
         if (!actionName.endsWith(".api"))
             path.append(".api");
