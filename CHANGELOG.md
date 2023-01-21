@@ -4,14 +4,22 @@
 *Released*: TBD
 
 ## version 5.0.0-refactor-SNAPSHOT
-*Released*: TBD
-* Refactor `getParameters()` and `setParameters()` for consistency. Commands no longer stash and reuse the parameter map. 
-  In all cases, `getParameters()` creates a new map, initialized with whatever parameters were previously passed to `setParameters()`, if any.
+*Released*: XX January 2023
+* Refactor the `Command` class hierarchy:
+  * Add `GetCommand`, new abstract base class for all commands that use get
+  * Make `Command` and `PostCommand` abstract
+  * Add `SimpleGetCommand`, new concrete class used (instead of `Command`) to invoke GET API actions without creating a subclass
+  * Add `SimplePostCommand`, new concrete class used (instead of `PostCommand`) to invoke POST API actions without creating a subclass
+* Refactor parameter handling for consistency:
+  * Commands no longer stash and reuse the parameter map; `getParameters()` always creates a new map.
+  * `setParameters()` is now available only on `SimpleGetCommand` and `SimplePostCommand`. Custom `GetCommand` and `PostCommand` subclasses that need to specify parameters are expected to override `getParameters()`.
+  * `setJsonObject()` is now available only on `SimplePostCommand`. Custom `PostCommand` subclasses that need to post JSON are expected to override `getJsonObject()`.
+* Introduce `HasRequiredVersion` interface and use it when constructing `CommandResponse`s to simplify their constructor signatures
 * Remove all `Command` copy constructors. Same rationale as the earlier removal of `copy` methods.
 * Switch `SelectRowsCommand` and `NAbRunsCommand` to post their parameters as JSON
-* Fix NAbReplicate to handle "NaN" values
-* `getHttpRequest()` no longer throws `CommandException`
-* Adjust the `Demo.java` and `Test.java` tests to match current sample data
+* Fix NAbReplicate to handle `"NaN"` values
+* Remove `CommandException` from `getHttpRequest()` throws list
+* Adjust the `Demo.java` and `Test.java` tests to match current sample data and `Command` hierarchy changes
 
 ## version 4.3.1
 *Released*: 15 January 2023
