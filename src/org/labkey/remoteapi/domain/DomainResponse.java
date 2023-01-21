@@ -1,8 +1,8 @@
 package org.labkey.remoteapi.domain;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
+import org.labkey.remoteapi.HasRequiredVersion;
 
 /**
  * Response object for commands that expect the server to return a serialized domain.
@@ -11,9 +11,9 @@ public class DomainResponse extends CommandResponse
 {
     private final Domain _domain;
 
-    public DomainResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends DomainResponse> sourceCommand)
+    public DomainResponse(String text, int statusCode, String contentType, JSONObject json, HasRequiredVersion hasRequiredVersion)
     {
-        super(text, statusCode, contentType, json, sourceCommand);
+        super(text, statusCode, contentType, json, hasRequiredVersion);
         _domain = new Domain(json);
     }
 

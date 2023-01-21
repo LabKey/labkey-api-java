@@ -1,12 +1,11 @@
 package org.labkey.remoteapi.assay;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
+import org.labkey.remoteapi.GetCommand;
 
-import java.util.HashMap;
 import java.util.Map;
 
-public class GetProtocolCommand extends Command<ProtocolResponse>
+public class GetProtocolCommand extends GetCommand<ProtocolResponse>
 {
     private String _providerName;
     private Long _protocolId;

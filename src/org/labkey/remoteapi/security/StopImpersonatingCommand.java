@@ -1,7 +1,6 @@
 package org.labkey.remoteapi.security;
 
 import org.apache.hc.client5.http.classic.methods.HttpPost;
-import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.PostCommand;
@@ -21,10 +20,10 @@ public class StopImpersonatingCommand extends PostCommand<CommandResponse>
     }
 
     @Override
-    protected HttpUriRequest createRequest(URI uri)
+    protected HttpPost createRequest(URI uri)
     {
         // Disable redirects just for this request
-        HttpPost request = (HttpPost)super.createRequest(uri); // CONSIDER: generify Command with request type?
+        HttpPost request = super.createRequest(uri);
         RequestConfig oldConfig = request.getConfig();
         RequestConfig.Builder builder = oldConfig != null ? RequestConfig.copy(oldConfig) : RequestConfig.custom();
         builder.setRedirectsEnabled(false);

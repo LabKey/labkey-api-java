@@ -16,7 +16,6 @@
 package org.labkey.remoteapi;
 
 import org.apache.hc.client5.http.classic.methods.HttpPost;
-import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.json.JSONObject;
@@ -24,30 +23,24 @@ import org.json.JSONObject;
 import java.net.URI;
 
 /**
- * Base class for all commands that needs to post data to the server,
- * rather than providing parameters in the query string.
+ * Base class for all commands that need to post data to the server, rather than providing parameters
+ * in the query string.
  * <p>
- * Client code will not typically use this class directly, but will
- * instead use one of the classes that extend this class (e.g.,
- * {@link org.labkey.remoteapi.query.UpdateRowsCommand}). 
+ * Client code will not use this class directly, but will instead use one of the classes that extend
+ * this class (e.g., {@link org.labkey.remoteapi.query.UpdateRowsCommand}).
  * <p>
- * However, if future versions of the LabKey Server expose new HTTP APIs requiring a POST
- * that are not yet supported with a specialized class in this library,
- * the developer may still invoke these APIs by creating an instance of the
- * PostCommand object directly, providing the controller and action name for
- * the new API. The post body may then be supplied by overriding the
- * {@link #getJsonObject()} method, returning the JSON object to post.
+ * If a developer wishes to invoke actions that require POST and are not yet supported with a
+ * specialized class in this library, the developer may invoke these APIs by creating an instance of
+ * the {@link SimplePostCommand} class and setting the JSON object to post.
  */
-public class PostCommand<ResponseType extends CommandResponse> extends Command<ResponseType>
+public abstract class PostCommand<ResponseType extends CommandResponse> extends Command<ResponseType, HttpPost>
 {
-    private JSONObject _jsonObject = null;
-
     /**
      * Constructs a new PostCommand given a controller and action name.
      * @param controllerName The controller name.
      * @param actionName The action name.
      */
-    public PostCommand(String controllerName, String actionName)
+    protected PostCommand(String controllerName, String actionName)
     {
         super(controllerName, actionName);
     }
@@ -58,29 +51,17 @@ public class PostCommand<ResponseType extends CommandResponse> extends Command<R
      */
     public JSONObject getJsonObject()
     {
-        return _jsonObject;
+        return null;
     }
 
     /**
-     * Sets the JSON object to post.
-     * @param jsonObject The JSON object to post
-     */
-    public void setJsonObject(JSONObject jsonObject)
-    {
-        _jsonObject = jsonObject;
-    }
-
-    /**
-     * Overrides {@link Command#createRequest(URI)} to create an
-     * {@link HttpPost} object.
-     * <p>
-     * Override this method if your post command sends something other
-     * than JSON in the post body. In your override, create the PostMethod
-     * and set the RequestEntity appropriately.
+     * Creates the {@link HttpPost} instance used for the request. Override to modify the HttpPost object before use
+     * or to send something other than JSON in the post body. In your override, create the HttpPost and set the
+     * request entity appropriately.
      * @return The PostMethod object.
      */
     @Override
-    protected HttpUriRequest createRequest(URI uri)
+    protected HttpPost createRequest(URI uri)
     {
         HttpPost request = new HttpPost(uri);
 

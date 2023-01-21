@@ -238,5 +238,4 @@ public abstract class SaveRowsCommand extends PostCommand<SaveRowsResponse>
     {
         return new SaveRowsResponse(text, status, contentType, json, this);
     }
-
 }

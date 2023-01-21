@@ -16,8 +16,8 @@
 package org.labkey.remoteapi.experiment;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
+import org.labkey.remoteapi.HasRequiredVersion;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,9 +32,9 @@ public class LineageResponse extends CommandResponse
     List<LineageNode> _seeds;
     Map<String, LineageNode> _nodes;
 
-    public LineageResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends LineageResponse> sourceCommand)
+    public LineageResponse(String text, int statusCode, String contentType, JSONObject json, HasRequiredVersion hasRequiredVersion)
     {
-        super(text, statusCode, contentType, json, sourceCommand);
+        super(text, statusCode, contentType, json, hasRequiredVersion);
 
         List<String> seedLsids = getProperty("seeds");
         List<LineageNode> seeds = new ArrayList<>(seedLsids.size());

@@ -16,15 +16,14 @@
 package org.labkey.remoteapi.query;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
+import org.labkey.remoteapi.GetCommand;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
  *  Command for obtaining the list of queries available within a given schema.
  */
-public class GetQueriesCommand extends Command<GetQueriesResponse>
+public class GetQueriesCommand extends GetCommand<GetQueriesResponse>
 {
     private String _schemaName;
     private boolean _includeColumns = true;

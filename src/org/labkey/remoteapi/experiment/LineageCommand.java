@@ -16,15 +16,14 @@
 package org.labkey.remoteapi.experiment;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
+import org.labkey.remoteapi.GetCommand;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 
-public class LineageCommand extends Command<LineageResponse>
+public class LineageCommand extends GetCommand<LineageResponse>
 {
     // One or more LSIDs are required
     private final List<String> _lsids;

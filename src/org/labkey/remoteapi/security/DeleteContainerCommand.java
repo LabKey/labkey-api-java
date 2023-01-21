@@ -34,5 +34,4 @@ public class DeleteContainerCommand extends PostCommand<DeleteContainerResponse>
     {
         return new DeleteContainerResponse(text, status, contentType, json, this);
     }
-
 }

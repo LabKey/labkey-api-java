@@ -15,13 +15,13 @@
  */
 package org.labkey.remoteapi.security;
 
-import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
+import org.labkey.remoteapi.GetCommand;
 
 /**
  * Simply ensures that the connection is associated with an authenticated user.
  */
-public class EnsureLoginCommand extends Command<CommandResponse>
+public class EnsureLoginCommand extends GetCommand<CommandResponse>
 {
     public EnsureLoginCommand()
     {

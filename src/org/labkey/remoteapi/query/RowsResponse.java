@@ -17,8 +17,8 @@ package org.labkey.remoteapi.query;
 
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
+import org.labkey.remoteapi.HasRequiredVersion;
 import org.labkey.remoteapi.collections.CaseInsensitiveHashMap;
 
 import java.text.ParseException;
@@ -42,9 +42,9 @@ abstract class RowsResponse extends CommandResponse
      * @param json The parsed JSONObject (or null if JSON was not returned.
      * @param sourceCommand The source command object
      */
-    RowsResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends RowsResponse> sourceCommand)
+    RowsResponse(String text, int statusCode, String contentType, JSONObject json, HasRequiredVersion hasRequiredVersion)
     {
-        super(text, statusCode, contentType, json, sourceCommand);
+        super(text, statusCode, contentType, json, hasRequiredVersion);
         fixupParsedData();
         caseInsensitizeRowMaps();
     }

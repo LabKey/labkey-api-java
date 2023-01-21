@@ -17,7 +17,6 @@ package org.labkey.remoteapi;
 
 import org.apache.commons.logging.LogFactory;
 import org.apache.hc.client5.http.auth.AuthenticationException;
-import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.core5.http.Header;
@@ -40,28 +39,22 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.function.Supplier;
 
 /**
- * Base class for all API commands. Typically, a developer will not
- * use this class directly, but will instead create one of the
- * classes that extend this class. For example, to select data,
- * create an instance of {@link org.labkey.remoteapi.query.SelectRowsCommand},
- * which provides helpful methods for setting options and obtaining
- * specific result types.
+ * Abstract base class for all API commands. Developers interact with concrete classes that
+ * extend this class. For example, to select data, create an instance of
+ * {@link org.labkey.remoteapi.query.SelectRowsCommand}, which provides helpful methods for
+ * setting options and obtaining specific result types.
  * <p>
- * However, if a developer wishes to invoke actions that are not yet supported
- * with a specialized class in this library, the developer may invoke these APIs
- * by creating an instance of the {@link Command} class directly, providing the
- * controller and action name for the API. Parameters may then be specified by
- * calling the {@link #setParameters(Map)} method, passing a populated parameter
- * <code>Map&lt;String, Object&gt;</code>
+ * If a developer wishes to invoke actions that are not yet supported with a specialized class
+ * in this library, the developer may invoke these APIs by creating an instance of the
+ * {@link SimpleGetCommand} or {@link SimplePostCommand} classes, providing the controller and
+ * action name for the API, and setting parameters or JSON to send.
  * <p>
- * Note that this class is not thread-safe. Do not share instances of this class
- * or its descendants between threads, unless the descendant declares explicitly that
- * it is thread-safe.
+ * Note that this class is not thread-safe. Do not share instances of this class or its
+ * descendants between threads, unless the descendant declares explicitly that it is thread-safe.
  */
-public class Command<ResponseType extends CommandResponse>
+public abstract class Command<ResponseType extends CommandResponse, RequestType extends HttpUriRequest> implements HasRequiredVersion
 {
     /**
      * A constant for the official JSON content type ("application/json")
@@ -78,7 +71,6 @@ public class Command<ResponseType extends CommandResponse>
 
     private final String _controllerName;
     private final String _actionName;
-    private Supplier<Map<String, Object>> _parameterMapFactory = HashMap::new;
     private Integer _timeout = null;
     private double _requiredVersion = 8.3;
 
@@ -116,33 +108,13 @@ public class Command<ResponseType extends CommandResponse>
     }
 
     /**
-     * Returns a new, mutable parameter map initialized with the values from the map passed to
-     * {@link #setParameters(Map)} method, if any. Derived classes will typically override this
-     * method to put values passed to specialized setter methods into the map. Note: callers
-     * should not mutate this map; instead, use setParameters() to provide initial parameters.
+     * Returns a new, mutable parameter map. Derived classes will typically override this
+     * method to put values passed to specialized setter methods into the map.
      * @return The parameter map to use when building the URL.
      */
     public Map<String, Object> getParameters()
     {
-        return _parameterMapFactory.get();
-    }
-
-    /**
-     * Sets the initial parameter map.
-     * @param parameters The values to use when initializing the parameter map
-     */
-    public void setParameters(Map<String, Object> parameters)
-    {
-        _parameterMapFactory = new Supplier<>()
-        {
-            private final Map<String, Object> _parameters = new HashMap<>(parameters);
-
-            @Override
-            public Map<String, Object> get()
-            {
-                return new HashMap<>(_parameters);
-            }
-        };
+        return new HashMap<>();
     }
 
     /**
@@ -435,7 +407,7 @@ public class Command<ResponseType extends CommandResponse>
      * @throws URISyntaxException Thrown if there is a problem parsing the base URL in the connection.
      */
 
-    protected HttpUriRequest getHttpRequest(Connection connection, String folderPath) throws URISyntaxException
+    protected RequestType getHttpRequest(Connection connection, String folderPath) throws URISyntaxException
     {
         //construct a URI from connection base URI, folder path, and current parameters
         URI uri = createURI(connection, folderPath);
@@ -444,15 +416,11 @@ public class Command<ResponseType extends CommandResponse>
     }
 
     /**
-     * Creates the appropriate HttpUriRequest instance. Override to create something
-     * other than <code>HttpGet</code>.
+     * Creates the appropriate HttpUriRequest instance. Override to create <code>HttpGet</code>, <code>HttpPost</code>, etc.
      * @param uri the uri to convert
      * @return The HttpUriRequest instance.
      */
-    protected HttpUriRequest createRequest(URI uri)
-    {
-        return new HttpGet(uri);
-    }
+    protected abstract RequestType createRequest(URI uri);
 
     /**
      * Returns a full URI for this Command, including base URI, folder path, and query string.

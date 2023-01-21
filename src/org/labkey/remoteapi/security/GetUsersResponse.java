@@ -16,8 +16,8 @@
 package org.labkey.remoteapi.security;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
+import org.labkey.remoteapi.HasRequiredVersion;
 import org.labkey.remoteapi.ResponseObject;
 
 import java.util.ArrayList;
@@ -29,9 +29,9 @@ import java.util.Map;
  */
 public class GetUsersResponse extends CommandResponse
 {
-    public GetUsersResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends GetUsersResponse> sourceCommand)
+    public GetUsersResponse(String text, int statusCode, String contentType, JSONObject json, HasRequiredVersion hasRequiredVersion)
     {
-        super(text, statusCode, contentType, json, sourceCommand);
+        super(text, statusCode, contentType, json, hasRequiredVersion);
     }
 
     /** Information about a single user that matched the request */

@@ -46,16 +46,16 @@ public class CommandResponse
      * @param text The response text
      * @param statusCode The HTTP status code
      * @param contentType The response content type
-     * @param json The parsed JSONObject (or null if JSON was not returned).
-     * @param sourceCommand A copy of the command that created this response
+     * @param json The parsed JSONObject (or null if JSON was not returned)
+     * @param hasRequiredVersion An object that implements HasRequiredVersion, such as the command that created this response
      */
-    public CommandResponse(String text, int statusCode, String contentType, JSONObject json, Command<?> sourceCommand)
+    public CommandResponse(String text, int statusCode, String contentType, JSONObject json, HasRequiredVersion hasRequiredVersion)
     {
         _text = text;
         _statusCode = statusCode;
         _contentType = contentType;
         _data = null != json ? json.toMap() : null;
-        _requiredVersion = sourceCommand != null ? sourceCommand.getRequiredVersion() : 0.0;
+        _requiredVersion = hasRequiredVersion != null ? hasRequiredVersion.getRequiredVersion() : 0.0;
     }
 
     /**

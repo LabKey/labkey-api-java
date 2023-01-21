@@ -1,12 +1,11 @@
 package org.labkey.remoteapi.domain;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
+import org.labkey.remoteapi.GetCommand;
 
-import java.util.HashMap;
 import java.util.Map;
 
-public class GetDomainDetailsCommand extends Command<DomainDetailsResponse>
+public class GetDomainDetailsCommand extends GetCommand<DomainDetailsResponse>
 {
     private String _schemaName;
     private String _queryName;

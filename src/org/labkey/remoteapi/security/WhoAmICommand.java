@@ -1,9 +1,9 @@
 package org.labkey.remoteapi.security;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
+import org.labkey.remoteapi.GetCommand;
 
-public class WhoAmICommand extends Command<WhoAmIResponse>
+public class WhoAmICommand extends GetCommand<WhoAmIResponse>
 {
     public WhoAmICommand()
     {

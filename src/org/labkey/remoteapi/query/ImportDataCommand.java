@@ -16,7 +16,6 @@
 package org.labkey.remoteapi.query;
 
 import org.apache.hc.client5.http.classic.methods.HttpPost;
-import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
 import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder;
 import org.apache.hc.core5.http.ContentType;
 import org.json.JSONObject;
@@ -223,7 +222,7 @@ public class ImportDataCommand extends PostCommand<ImportDataResponse>
     }
 
     @Override
-    protected HttpUriRequestBase createRequest(URI uri)
+    protected HttpPost createRequest(URI uri)
     {
         Objects.requireNonNull(_schemaName, "schemaName required");
         Objects.requireNonNull(_queryName, "queryName required");
@@ -270,5 +269,4 @@ public class ImportDataCommand extends PostCommand<ImportDataResponse>
     {
         return new ImportDataResponse(text, status, contentType, json, this);
     }
-
 }

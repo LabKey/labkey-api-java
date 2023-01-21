@@ -16,8 +16,8 @@
 package org.labkey.remoteapi.query;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
+import org.labkey.remoteapi.HasRequiredVersion;
 
 /**
  * Response object used for commands that derive from TruncateTableCommand.
@@ -31,12 +31,12 @@ public class TruncateTableResponse extends CommandResponse
      * @param text The response text.
      * @param statusCode The HTTP status code.
      * @param contentType The Content-Type header value.
-     * @param json The parsed JSONObject (or null if JSON was not returned).
-     * @param sourceCommand A copy of the command that created this response
+     * @param json The parsed JSONObject (or null if JSON was not returned)
+     * @param hasRequiredVersion An object that implements HasRequiredVersion
      */
-    public TruncateTableResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends TruncateTableResponse> sourceCommand)
+    public TruncateTableResponse(String text, int statusCode, String contentType, JSONObject json, HasRequiredVersion hasRequiredVersion)
     {
-        super(text, statusCode, contentType, json, sourceCommand);
+        super(text, statusCode, contentType, json, hasRequiredVersion);
     }
 
     /**

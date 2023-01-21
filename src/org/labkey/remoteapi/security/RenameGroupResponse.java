@@ -16,14 +16,14 @@
 package org.labkey.remoteapi.security;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
+import org.labkey.remoteapi.HasRequiredVersion;
 
 public class RenameGroupResponse extends CommandResponse
 {
-    public RenameGroupResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends RenameGroupResponse> sourceCommand)
+    public RenameGroupResponse(String text, int statusCode, String contentType, JSONObject json, HasRequiredVersion hasRequiredVersion)
     {
-        super(text, statusCode, contentType, json, sourceCommand);
+        super(text, statusCode, contentType, json, hasRequiredVersion);
     }
 
     public String getOldName()

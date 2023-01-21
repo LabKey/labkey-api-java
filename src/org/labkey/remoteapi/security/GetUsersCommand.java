@@ -16,15 +16,14 @@
 package org.labkey.remoteapi.security;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
+import org.labkey.remoteapi.GetCommand;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Returns a list of users given selection criteria. This may be called by any logged-in user.
  */
-public class GetUsersCommand extends Command<GetUsersResponse>
+public class GetUsersCommand extends GetCommand<GetUsersResponse>
 {
     private int _groupId = -1;
     private String _name;

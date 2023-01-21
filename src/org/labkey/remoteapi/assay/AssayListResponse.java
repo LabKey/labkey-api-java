@@ -16,8 +16,8 @@
 package org.labkey.remoteapi.assay;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
+import org.labkey.remoteapi.HasRequiredVersion;
 
 import java.util.List;
 import java.util.Map;
@@ -35,11 +35,11 @@ public class AssayListResponse extends CommandResponse
      * @param statusCode The HTTP status code.
      * @param contentType The HTTP response content type
      * @param json The parsed JSONObject (or null if JSON was not returned)
-     * @param sourceCommand A copy of the command that created this response
+     * @param hasRequiredVersion An object that implements HasRequiredVersion
      */
-    public AssayListResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends AssayListResponse> sourceCommand)
+    public AssayListResponse(String text, int statusCode, String contentType, JSONObject json, HasRequiredVersion hasRequiredVersion)
     {
-        super(text, statusCode, contentType, json, sourceCommand);
+        super(text, statusCode, contentType, json, hasRequiredVersion);
     }
 
     /**

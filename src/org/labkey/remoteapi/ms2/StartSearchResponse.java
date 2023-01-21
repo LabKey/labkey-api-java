@@ -16,13 +16,13 @@
 package org.labkey.remoteapi.ms2;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
+import org.labkey.remoteapi.HasRequiredVersion;
 
 public class StartSearchResponse extends CommandResponse
 {
-    public StartSearchResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends StartSearchResponse> sourceCommand)
+    public StartSearchResponse(String text, int statusCode, String contentType, JSONObject json, HasRequiredVersion hasRequiredVersion)
     {
-        super(text, statusCode, contentType, json, sourceCommand);
+        super(text, statusCode, contentType, json, hasRequiredVersion);
     }
 }

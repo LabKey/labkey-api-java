@@ -16,12 +16,11 @@
 package org.labkey.remoteapi.security;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
+import org.labkey.remoteapi.GetCommand;
 
-import java.util.HashMap;
 import java.util.Map;
 
-public class GetContainersCommand extends Command<GetContainersResponse>
+public class GetContainersCommand extends GetCommand<GetContainersResponse>
 {
     private boolean _includeSubfolders = false;
 

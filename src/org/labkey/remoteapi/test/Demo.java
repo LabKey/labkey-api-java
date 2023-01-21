@@ -15,10 +15,14 @@
  */
 package org.labkey.remoteapi.test;
 
-import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.Connection;
-import org.labkey.remoteapi.query.*;
+import org.labkey.remoteapi.SimpleGetCommand;
+import org.labkey.remoteapi.query.ExecuteSqlCommand;
+import org.labkey.remoteapi.query.Filter;
+import org.labkey.remoteapi.query.SelectRowsCommand;
+import org.labkey.remoteapi.query.SelectRowsResponse;
+import org.labkey.remoteapi.query.Sort;
 
 import java.util.Map;
 
@@ -110,7 +114,7 @@ public class Demo
         System.out.println("-----------------------------------------------");
 
         Connection cn = getConnection();
-        Command<CommandResponse> cmd = new Command<>("project", "getWebPart");
+        SimpleGetCommand cmd = new SimpleGetCommand("project", "getWebPart");
         cmd.setParameters(Map.of("webpart.name", "Wiki", "name", "home"));
 
         CommandResponse resp = cmd.execute(cn, "Api Test");

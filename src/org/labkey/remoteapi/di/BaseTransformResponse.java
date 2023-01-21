@@ -16,8 +16,8 @@
 package org.labkey.remoteapi.di;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
+import org.labkey.remoteapi.HasRequiredVersion;
 
 public class BaseTransformResponse extends CommandResponse
 {
@@ -25,15 +25,15 @@ public class BaseTransformResponse extends CommandResponse
      * Constructs a new CommandResponse, initialized with the provided
      * response text and status code.
      *
-     * @param text          The response text
-     * @param statusCode    The HTTP status code
-     * @param contentType   The response content type
-     * @param json          The parsed JSONObject (or null if JSON was not returned).
-     * @param sourceCommand A copy of the command that created this response
+     * @param text               The response text
+     * @param statusCode         The HTTP status code
+     * @param contentType        The response content type
+     * @param json               The parsed JSONObject (or null if JSON was not returned)
+     * @param hasRequiredVersion An object that implements HasRequiredVersion
      */
-    public BaseTransformResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends BaseTransformResponse> sourceCommand)
+    public BaseTransformResponse(String text, int statusCode, String contentType, JSONObject json, HasRequiredVersion hasRequiredVersion)
     {
-        super(text, statusCode, contentType, json, sourceCommand);
+        super(text, statusCode, contentType, json, hasRequiredVersion);
     }
 
     public boolean getSuccess()

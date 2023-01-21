@@ -172,9 +172,9 @@ public class SelectRowsCommand extends BaseQueryCommand<SelectRowsResponse> impl
      * Overridden to create a SelectRowsResponse object.
      * @param text The response text
      * @param status The HTTP status code
-     * @param contentType The Content-Type header value.
-     * @param json The parsed JSONObject (or null if JSON was not returned).
-     * @return A SelectRowsResponse object.
+     * @param contentType The Content-Type header value
+     * @param json The parsed JSONObject (or null if JSON was not returned)
+     * @return A SelectRowsResponse object
      */
     @Override
     protected SelectRowsResponse createResponse(String text, int status, String contentType, JSONObject json)

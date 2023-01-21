@@ -19,15 +19,23 @@ import java.util.Map;
  */
 public class ImpersonateUserCommand extends PostCommand<CommandResponse>
 {
+    private final Map<String, Object> _parameters;
+
     public ImpersonateUserCommand(int userId)
     {
         super("user", "impersonateUser.api");
-        setParameters(Map.of("userId", userId));
+        _parameters = Map.of("userId", userId);
     }
 
     public ImpersonateUserCommand(String email)
     {
         super("user", "impersonateUser.api");
-        setParameters(Map.of("email", email));
+        _parameters = Map.of("email", email);
+    }
+
+    @Override
+    public Map<String, Object> getParameters()
+    {
+        return _parameters;
     }
 }

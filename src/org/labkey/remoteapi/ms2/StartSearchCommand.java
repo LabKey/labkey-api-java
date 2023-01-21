@@ -15,20 +15,16 @@
  */
 package org.labkey.remoteapi.ms2;
 
-import org.apache.hc.client5.http.classic.methods.HttpPost;
-import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
+import org.labkey.remoteapi.PostCommand;
 
-import java.net.URI;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Initiates an MS2 search.
  */
-public class StartSearchCommand extends Command<StartSearchResponse>
+public class StartSearchCommand extends PostCommand<StartSearchResponse>
 {
     private String _protocol;
     private String _path;
@@ -87,12 +83,6 @@ public class StartSearchCommand extends Command<StartSearchResponse>
     public void setFiles(List<String> files)
     {
         _files = files;
-    }
-
-    @Override
-    protected HttpUriRequest createRequest(URI uri)
-    {
-        return new HttpPost(uri);
     }
 
     @Override
