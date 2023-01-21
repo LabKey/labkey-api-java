@@ -72,7 +72,7 @@ public class CreateUserCommand extends PostCommand<CreateUserResponse>
         JSONObject obj = new JSONObject();
         obj.put("email", getEmail());
         obj.put("sendEmail", isSendEmail());
+
         return obj;
     }
-
 }

@@ -41,11 +41,7 @@ public class CreateContainerCommand extends PostCommand<CreateContainerResponse>
     @Override
     public JSONObject getJsonObject()
     {
-        JSONObject result = super.getJsonObject();
-        if (result == null)
-        {
-            result = new JSONObject();
-        }
+        JSONObject result = new JSONObject();
         result.put("name", _name);
         result.put("title", _title);
         result.put("description", _description);

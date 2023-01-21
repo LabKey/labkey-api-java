@@ -25,7 +25,6 @@ abstract class AbstractDomainUpdateCommand extends PostCommand<DomainResponse>
     public JSONObject getJsonObject()
     {
         JSONObject result = new JSONObject();
-
         result.put("domainDesign", _design.toJSONObject());
 
         return result;
