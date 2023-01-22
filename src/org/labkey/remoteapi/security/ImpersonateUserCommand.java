@@ -3,6 +3,7 @@ package org.labkey.remoteapi.security;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.PostCommand;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -36,6 +37,6 @@ public class ImpersonateUserCommand extends PostCommand<CommandResponse>
     @Override
     public Map<String, Object> getParameters()
     {
-        return _parameters;
+        return new HashMap<>(_parameters); // Return a mutable copy
     }
 }
