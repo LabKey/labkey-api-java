@@ -12,8 +12,10 @@
   * Add `SimplePostCommand`, new concrete class used (instead of `PostCommand`) to invoke POST API actions without creating a subclass
 * Refactor parameter handling for consistency:
   * Commands no longer stash and reuse the parameter map; `getParameters()` always creates a new map.
-  * `setParameters()` is now available only on `SimpleGetCommand` and `SimplePostCommand`. Custom `GetCommand` and `PostCommand` subclasses that need to specify parameters are expected to override `getParameters()`.
-  * `setJsonObject()` is now available only on `SimplePostCommand`. Custom `PostCommand` subclasses that need to post JSON are expected to override `getJsonObject()`.
+  * `setParameters()` is now available only on `SimpleGetCommand` and `SimplePostCommand`. Custom `GetCommand` and `PostCommand`
+    subclasses that need to specify parameters are expected to override `getParameters()`.
+  * `setJsonObject()` is now available only on `SimplePostCommand`. Custom `PostCommand` subclasses that need to post JSON are
+    expected to override `getJsonObject()`.
 * Introduce `HasRequiredVersion` interface and use it when constructing `CommandResponse`s to simplify their constructor signatures
 * Remove all `Command` copy constructors. Same rationale as the earlier removal of `copy` methods.
 * Switch `SelectRowsCommand` and `NAbRunsCommand` to post their parameters as JSON
@@ -27,8 +29,10 @@
 
 ## version 4.3.0
 *Released*: 11 January 2023
-* [Issue 47030](https://www.labkey.org/home/Developer/issues/issues-details.view?issueId=47030): Switch `SelectRowsCommand` and `NAbRunsCommand` to always use POST
-* Add support for `includeTotalCount`, `includeMetadata`, and `ignoreFilter` flags to `BaseQueryCommand` and reconcile duplicate parameter handling code vs. SelectRowsCommand
+* [Issue 47030](https://www.labkey.org/home/Developer/issues/issues-details.view?issueId=47030): Switch `SelectRowsCommand`
+  and `NAbRunsCommand` to always use POST
+* Add support for `includeTotalCount`, `includeMetadata`, and `ignoreFilter` flags to `BaseQueryCommand` and reconcile 
+  duplicate parameter handling code vs. SelectRowsCommand
 * Add support for `includeTitle` and `includeViewDataUrl` flags to `GetQueriesCommand`
 
 ## version 4.2.0
