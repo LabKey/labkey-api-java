@@ -113,7 +113,7 @@ public abstract class Command<ResponseType extends CommandResponse, RequestType 
      * logging and testing.
      * @return An immutable map of parameters used when building the URL.
      */
-    public Map<String, Object> getParameters()
+    public final Map<String, Object> getParameters()
     {
         return Collections.unmodifiableMap(createParameterMap());
     }
