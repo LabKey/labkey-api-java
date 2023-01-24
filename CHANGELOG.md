@@ -3,20 +3,24 @@
 ## version 5.1.0-SNAPSHOT
 *Released*: TBD
 
-## version 5.0.0-refactor-SNAPSHOT
-*Released*: XX January 2023
+## version 5.0.0
+*Released*: 24 January 2023
 * Refactor the `Command` class hierarchy:
   * Add `GetCommand`, new abstract base class for all commands that use get
   * Make `Command` and `PostCommand` abstract
   * Add `SimpleGetCommand`, new concrete class used (instead of `Command`) to invoke GET API actions without creating a subclass
   * Add `SimplePostCommand`, new concrete class used (instead of `PostCommand`) to invoke POST API actions without creating a subclass
 * Refactor parameter handling for consistency:
-  * Commands no longer stash and reuse the parameter map; `getParameters()` always creates a new map.
+  * `createParameterMap()` is now used by subclasses to create and populate a mutable map of URL parameters
+  * `getParameters()` now returns an immutable copy of the current URL parameter map for external use, typically logging or testing
+  * Commands no longer stash and reuse the parameter map; `createParameterMap()` always creates a new map.
   * `setParameters()` is now available only on `SimpleGetCommand` and `SimplePostCommand`. Custom `GetCommand` and `PostCommand`
-    subclasses that need to specify parameters are expected to override `getParameters()`.
+    subclasses that need to specify parameters are expected to override `createParameterMap()`.
   * `setJsonObject()` is now available only on `SimplePostCommand`. Custom `PostCommand` subclasses that need to post JSON are
     expected to override `getJsonObject()`.
-* Introduce `HasRequiredVersion` interface and use it when constructing `CommandResponse`s to simplify their constructor signatures
+* Stop passing command subclasses when constructing every `CommandResponse`. The two response classes that need this now implement
+  it without burdening all other commands. 
+* Introduce `HasRequiredVersion` interface and use it when instantiating `CommandResponse` subclasses that need required version
 * Remove all `Command` copy constructors. Same rationale as the earlier removal of `copy` methods.
 * Switch `SelectRowsCommand` and `NAbRunsCommand` to post their parameters as JSON
 * Fix NAbReplicate to handle `"NaN"` values
