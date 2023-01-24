@@ -31,6 +31,6 @@ public class GetSchemasCommand extends GetCommand<GetSchemasResponse>
     @Override
     protected GetSchemasResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new GetSchemasResponse(text, status, contentType, json, this);
+        return new GetSchemasResponse(text, status, contentType, json);
     }
 }

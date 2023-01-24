@@ -333,9 +333,9 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
     }
 
     @Override
-    public Map<String, Object> getParameters()
+    protected Map<String, Object> createParameterMap()
     {
-        Map<String, Object> params = super.getParameters();
+        Map<String, Object> params = super.createParameterMap();
 
         if (null != getSorts() && getSorts().size() > 0)
             params.put("query.sort", Sort.getSortQueryStringParam(getSorts()));

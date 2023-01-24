@@ -2,13 +2,12 @@ package org.labkey.remoteapi.security;
 
 import org.json.JSONObject;
 import org.labkey.remoteapi.CommandResponse;
-import org.labkey.remoteapi.HasRequiredVersion;
 
 public class WhoAmIResponse extends CommandResponse
 {
-    public WhoAmIResponse(String text, int statusCode, String contentType, JSONObject json, HasRequiredVersion hasRequiredVersion)
+    public WhoAmIResponse(String text, int statusCode, String contentType, JSONObject json)
     {
-        super(text, statusCode, contentType, json, hasRequiredVersion);
+        super(text, statusCode, contentType, json);
     }
 
     public Number getUserId()

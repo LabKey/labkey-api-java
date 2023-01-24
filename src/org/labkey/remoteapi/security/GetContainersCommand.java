@@ -42,13 +42,13 @@ public class GetContainersCommand extends GetCommand<GetContainersResponse>
     @Override
     protected GetContainersResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new GetContainersResponse(text, status, contentType, json, this);
+        return new GetContainersResponse(text, status, contentType, json);
     }
 
     @Override
-    public Map<String, Object> getParameters()
+    protected Map<String, Object> createParameterMap()
     {
-        Map<String, Object> params = super.getParameters();
+        Map<String, Object> params = super.createParameterMap();
         params.put("includeSubfolders", _includeSubfolders);
 
         return params;

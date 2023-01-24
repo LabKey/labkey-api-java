@@ -35,6 +35,6 @@ public class ResetTransformStateCommand extends BaseTransformCommand<ResetTransf
     @Override
     protected ResetTransformStateResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new ResetTransformStateResponse(text, status, contentType, json, this);
+        return new ResetTransformStateResponse(text, status, contentType, json);
     }
 }

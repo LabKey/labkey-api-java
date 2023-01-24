@@ -36,6 +36,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -108,11 +109,21 @@ public abstract class Command<ResponseType extends CommandResponse, RequestType 
     }
 
     /**
+     * Makes an immutable copy of the parameter map used for building the URL available to callers. Typically used for
+     * logging and testing.
+     * @return An immutable map of parameters used when building the URL.
+     */
+    public Map<String, Object> getParameters()
+    {
+        return Collections.unmodifiableMap(createParameterMap());
+    }
+
+    /**
      * Returns a new, mutable parameter map. Derived classes will typically override this
      * method to put values passed to specialized setter methods into the map.
      * @return The parameter map to use when building the URL.
      */
-    public Map<String, Object> getParameters()
+    protected Map<String, Object> createParameterMap()
     {
         return new HashMap<>();
     }
@@ -374,7 +385,6 @@ public abstract class Command<ResponseType extends CommandResponse, RequestType 
         r._responseText = responseText;
     }
 
-
     /**
      * Creates an instance of the response class, initialized with
      * the response text, the HTTP status code, and parsed JSONObject.
@@ -389,7 +399,7 @@ public abstract class Command<ResponseType extends CommandResponse, RequestType 
      */
     protected ResponseType createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return (ResponseType)new CommandResponse(text, status, contentType, json, this);
+        return (ResponseType)new CommandResponse(text, status, contentType, json);
     }
 
     /**
@@ -466,7 +476,7 @@ public abstract class Command<ResponseType extends CommandResponse, RequestType 
 
         URIBuilder builder = new URIBuilder(uri).setPath(path.toString());
 
-        Map<String, Object> params = getParameters();
+        Map<String, Object> params = createParameterMap();
 
         //add the required version if it's > 0
         if (getRequiredVersion() > 0)
@@ -521,6 +531,7 @@ public abstract class Command<ResponseType extends CommandResponse, RequestType 
      * Returns the required version number of this API call.
      * @return The required version number
      */
+    @Override
     public double getRequiredVersion()
     {
         return _requiredVersion;

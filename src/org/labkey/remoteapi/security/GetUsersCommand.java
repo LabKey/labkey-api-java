@@ -96,9 +96,9 @@ public class GetUsersCommand extends GetCommand<GetUsersResponse>
     }
 
     @Override
-    public Map<String, Object> getParameters()
+    protected Map<String, Object> createParameterMap()
     {
-        Map<String, Object> params = super.getParameters();
+        Map<String, Object> params = super.createParameterMap();
         if (_group != null)
         {
             params.put("group", _group);
@@ -121,6 +121,6 @@ public class GetUsersCommand extends GetCommand<GetUsersResponse>
     @Override
     protected GetUsersResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new GetUsersResponse(text, status, contentType, json, this);
+        return new GetUsersResponse(text, status, contentType, json);
     }
 }

@@ -17,15 +17,14 @@ package org.labkey.remoteapi.security;
 
 import org.json.JSONObject;
 import org.labkey.remoteapi.CommandResponse;
-import org.labkey.remoteapi.HasRequiredVersion;
 
 /**
  * Response from a DeleteContainerResponse. Contains no real response data, just indicates if the deletion was successful or not.
  */
 public class DeleteContainerResponse extends CommandResponse
 {
-    public DeleteContainerResponse(String text, int statusCode, String contentType, JSONObject json, HasRequiredVersion hasRequiredVersion)
+    public DeleteContainerResponse(String text, int statusCode, String contentType, JSONObject json)
     {
-        super(text, statusCode, contentType, json, hasRequiredVersion);
+        super(text, statusCode, contentType, json);
     }
 }

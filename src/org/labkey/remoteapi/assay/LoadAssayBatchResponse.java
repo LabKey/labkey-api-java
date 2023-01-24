@@ -2,7 +2,6 @@ package org.labkey.remoteapi.assay;
 
 import org.json.JSONObject;
 import org.labkey.remoteapi.CommandResponse;
-import org.labkey.remoteapi.HasRequiredVersion;
 
 public class LoadAssayBatchResponse extends CommandResponse
 {
@@ -16,11 +15,10 @@ public class LoadAssayBatchResponse extends CommandResponse
      * @param statusCode         The HTTP status code
      * @param contentType        The response content type
      * @param json               The parsed JSONObject (or null if JSON was not returned)
-     * @param hasRequiredVersion An object that implements HasRequiredVersion
      */
-    public LoadAssayBatchResponse(String text, int statusCode, String contentType, JSONObject json, HasRequiredVersion hasRequiredVersion)
+    public LoadAssayBatchResponse(String text, int statusCode, String contentType, JSONObject json)
     {
-        super(text, statusCode, contentType, json, hasRequiredVersion);
+        super(text, statusCode, contentType, json);
         _batch = new Batch((JSONObject) json.get("batch"));
     }
 

@@ -19,7 +19,7 @@ public class SimpleGetCommand extends GetCommand<CommandResponse>
      * @return The parameter map to use when building the URL.
      */
     @Override
-    public Map<String, Object> getParameters()
+    protected Map<String, Object> createParameterMap()
     {
         return _parameterMapFactory.get();
     }

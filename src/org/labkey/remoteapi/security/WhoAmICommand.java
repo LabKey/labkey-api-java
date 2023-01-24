@@ -13,6 +13,6 @@ public class WhoAmICommand extends GetCommand<WhoAmIResponse>
     @Override
     protected WhoAmIResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new WhoAmIResponse(text, status, contentType, json, this);
+        return new WhoAmIResponse(text, status, contentType, json);
     }
 }

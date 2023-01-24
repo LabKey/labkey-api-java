@@ -74,12 +74,12 @@ public class GetQueryDetailsCommand extends GetCommand<GetQueryDetailsResponse>
     }
 
     @Override
-    public Map<String, Object> getParameters()
+    protected Map<String, Object> createParameterMap()
     {
         assert null != getSchemaName() : "You must set the schema name before executing the GetQueryDetailsCommand!";
         assert null != getQueryName() : "You must set the query name before executing the GetQueryDetailsCommand!";
 
-        Map<String, Object> params = super.getParameters();
+        Map<String, Object> params = super.createParameterMap();
         params.put("schemaName", getSchemaName());
         params.put("queryName", getQueryName());
         params.put("includeSuggestedQueryColumns", _includeSuggestedQueryColumns);
@@ -90,6 +90,6 @@ public class GetQueryDetailsCommand extends GetCommand<GetQueryDetailsResponse>
     @Override
     protected GetQueryDetailsResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new GetQueryDetailsResponse(text, status, contentType, json, this);
+        return new GetQueryDetailsResponse(text, status, contentType, json);
     }
 }

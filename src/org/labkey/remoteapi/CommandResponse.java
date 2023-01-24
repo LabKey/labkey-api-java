@@ -36,26 +36,24 @@ public class CommandResponse
     private final String _text;
     private final int _statusCode;
     private final String _contentType;
-    private final double _requiredVersion;
 
     private Map<String, Object> _data;
 
     /**
      * Constructs a new CommandResponse, initialized with the provided
      * response text and status code.
-     * @param text The response text
-     * @param statusCode The HTTP status code
+     *
+     * @param text        The response text
+     * @param statusCode  The HTTP status code
      * @param contentType The response content type
-     * @param json The parsed JSONObject (or null if JSON was not returned)
-     * @param hasRequiredVersion An object that implements HasRequiredVersion, such as the command that created this response
+     * @param json        The parsed JSONObject (or null if JSON was not returned)
      */
-    public CommandResponse(String text, int statusCode, String contentType, JSONObject json, HasRequiredVersion hasRequiredVersion)
+    public CommandResponse(String text, int statusCode, String contentType, JSONObject json)
     {
         _text = text;
         _statusCode = statusCode;
         _contentType = contentType;
         _data = null != json ? json.toMap() : null;
-        _requiredVersion = hasRequiredVersion != null ? hasRequiredVersion.getRequiredVersion() : 0.0;
     }
 
     /**
@@ -92,16 +90,6 @@ public class CommandResponse
     public String getContentType()
     {
         return _contentType;
-    }
-
-    /**
-     * Returns the API version number required by the source command.
-     * Some APIs may return data in a different format depending on the required version
-     * @return the required API version number
-     */
-    public double getRequiredVersion()
-    {
-        return _requiredVersion;
     }
 
     /**

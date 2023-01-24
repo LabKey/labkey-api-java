@@ -111,11 +111,11 @@ public class GetQueriesCommand extends GetCommand<GetQueriesResponse>
     }
 
     @Override
-    public Map<String, Object> getParameters()
+    protected Map<String, Object> createParameterMap()
     {
         assert null != getSchemaName() : "You must set the schema name before executing the GetQueriesCommand!";
 
-        Map<String, Object> params = super.getParameters();
+        Map<String, Object> params = super.createParameterMap();
         params.put("schemaName", getSchemaName());
 
         if (!isIncludeColumns())
@@ -133,6 +133,6 @@ public class GetQueriesCommand extends GetCommand<GetQueriesResponse>
     @Override
     protected GetQueriesResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new GetQueriesResponse(text, status, contentType, json, this);
+        return new GetQueriesResponse(text, status, contentType, json);
     }
 }

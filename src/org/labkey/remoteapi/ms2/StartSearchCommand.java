@@ -86,9 +86,9 @@ public class StartSearchCommand extends PostCommand<StartSearchResponse>
     }
 
     @Override
-    public Map<String, Object> getParameters()
+    protected Map<String, Object> createParameterMap()
     {
-        Map<String, Object> result = super.getParameters();
+        Map<String, Object> result = super.createParameterMap();
         result.put("path", _path);
         result.put("file", _files);
         result.put("protocol", _protocol);
@@ -104,6 +104,6 @@ public class StartSearchCommand extends PostCommand<StartSearchResponse>
         {
             throw new IllegalArgumentException(text.substring("ERROR=".length()));
         }
-        return new StartSearchResponse(text, status, contentType, json, this);
+        return new StartSearchResponse(text, status, contentType, json);
     }
 }

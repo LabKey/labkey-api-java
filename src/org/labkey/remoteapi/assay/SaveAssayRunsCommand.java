@@ -43,7 +43,7 @@ public class SaveAssayRunsCommand extends PostCommand<SaveAssayRunsResponse>
     @Override
     protected SaveAssayRunsResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new SaveAssayRunsResponse(text, status, contentType, json, this);
+        return new SaveAssayRunsResponse(text, status, contentType, json);
     }
 
     public List<Run> getRuns()

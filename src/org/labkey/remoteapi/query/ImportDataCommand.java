@@ -267,6 +267,6 @@ public class ImportDataCommand extends PostCommand<ImportDataResponse>
     @Override
     protected ImportDataResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new ImportDataResponse(text, status, contentType, json, this);
+        return new ImportDataResponse(text, status, contentType, json);
     }
 }

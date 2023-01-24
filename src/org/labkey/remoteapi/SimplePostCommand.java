@@ -15,11 +15,11 @@ public class SimplePostCommand extends PostCommand<CommandResponse>
     {
         super(controllerName, actionName);
     }
+
     /**
      * Returns the JSON object to post or null for no JSON.
      * @return The JSON object to post.
      */
-
     @Override
     public JSONObject getJsonObject()
     {
@@ -41,7 +41,7 @@ public class SimplePostCommand extends PostCommand<CommandResponse>
      * @return The parameter map to use when building the URL.
      */
     @Override
-    public Map<String, Object> getParameters()
+    protected Map<String, Object> createParameterMap()
     {
         return _parameterMapFactory.get();
     }

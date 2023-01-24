@@ -32,6 +32,6 @@ public class DeleteContainerCommand extends PostCommand<DeleteContainerResponse>
     @Override
     protected DeleteContainerResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new DeleteContainerResponse(text, status, contentType, json, this);
+        return new DeleteContainerResponse(text, status, contentType, json);
     }
 }

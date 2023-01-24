@@ -75,6 +75,6 @@ public class SaveAssayBatchCommand extends PostCommand<SaveAssayBatchResponse>
     @Override
     protected SaveAssayBatchResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new SaveAssayBatchResponse(text, status, contentType, json, this);
+        return new SaveAssayBatchResponse(text, status, contentType, json);
     }
 }

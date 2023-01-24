@@ -35,7 +35,7 @@ public class ImpersonateUserCommand extends PostCommand<CommandResponse>
     }
 
     @Override
-    public Map<String, Object> getParameters()
+    protected Map<String, Object> createParameterMap()
     {
         return new HashMap<>(_parameters); // Return a copy
     }

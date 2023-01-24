@@ -17,16 +17,15 @@ package org.labkey.remoteapi.assay;
 
 import org.json.JSONObject;
 import org.labkey.remoteapi.CommandResponse;
-import org.labkey.remoteapi.HasRequiredVersion;
 
 public class SaveAssayBatchResponse extends CommandResponse
 {
     private final Batch _batch;
     private final int _assayId;
 
-    public SaveAssayBatchResponse(String text, int statusCode, String contentType, JSONObject json, HasRequiredVersion hasRequiredVersion)
+    public SaveAssayBatchResponse(String text, int statusCode, String contentType, JSONObject json)
     {
-        super(text, statusCode, contentType, json, hasRequiredVersion);
+        super(text, statusCode, contentType, json);
         _batch = new Batch((JSONObject)json.get("batch"));
         _assayId = ((Number)json.get("assayId")).intValue();
     }

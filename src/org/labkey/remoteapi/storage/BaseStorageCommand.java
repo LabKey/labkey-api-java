@@ -22,7 +22,7 @@ public abstract class BaseStorageCommand extends PostCommand<StorageCommandRespo
     @Override
     protected StorageCommandResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new StorageCommandResponse(text, status, contentType, json, this);
+        return new StorageCommandResponse(text, status, contentType, json);
     }
 
     /**

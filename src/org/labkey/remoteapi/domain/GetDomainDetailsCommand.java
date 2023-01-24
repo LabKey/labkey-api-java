@@ -25,9 +25,9 @@ public class GetDomainDetailsCommand extends GetCommand<DomainDetailsResponse>
     }
 
     @Override
-    public Map<String, Object> getParameters()
+    protected Map<String, Object> createParameterMap()
     {
-        Map<String, Object> params = super.getParameters();
+        Map<String, Object> params = super.createParameterMap();
 
         if (_schemaName != null && _queryName != null)
         {
@@ -44,7 +44,7 @@ public class GetDomainDetailsCommand extends GetCommand<DomainDetailsResponse>
     @Override
     protected DomainDetailsResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new DomainDetailsResponse(text, status, contentType, json, this);
+        return new DomainDetailsResponse(text, status, contentType, json);
     }
 
     public String getSchemaName()

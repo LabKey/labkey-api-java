@@ -65,7 +65,7 @@ public class ListDomainsCommand extends PostCommand<ListDomainsResponse>
     @Override
     protected ListDomainsResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new ListDomainsResponse(text, status, contentType, json, this);
+        return new ListDomainsResponse(text, status, contentType, json);
     }
 
     @Override

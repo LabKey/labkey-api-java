@@ -17,16 +17,15 @@ package org.labkey.remoteapi.security;
 
 import org.json.JSONObject;
 import org.labkey.remoteapi.CommandResponse;
-import org.labkey.remoteapi.HasRequiredVersion;
 
 import java.util.List;
 import java.util.Map;
 
 public class GetContainersResponse extends CommandResponse
 {
-    public GetContainersResponse(String text, int statusCode, String contentType, JSONObject json, HasRequiredVersion hasRequiredVersion)
+    public GetContainersResponse(String text, int statusCode, String contentType, JSONObject json)
     {
-        super(text, statusCode, contentType, json, hasRequiredVersion);
+        super(text, statusCode, contentType, json);
     }
 
     public String getContainerId()

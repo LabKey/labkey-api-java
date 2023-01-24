@@ -31,9 +31,9 @@ public class GetProtocolCommand extends GetCommand<ProtocolResponse>
     }
 
     @Override
-    public Map<String, Object> getParameters()
+    protected Map<String, Object> createParameterMap()
     {
-        Map<String, Object> params = super.getParameters();
+        Map<String, Object> params = super.createParameterMap();
         if (_protocolId != null)
         {
             params.put("protocolId", _protocolId);
@@ -49,7 +49,7 @@ public class GetProtocolCommand extends GetCommand<ProtocolResponse>
     @Override
     protected ProtocolResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new ProtocolResponse(text, status, contentType, json, this);
+        return new ProtocolResponse(text, status, contentType, json);
     }
 
     public String getProviderName()

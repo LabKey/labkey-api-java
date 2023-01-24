@@ -81,7 +81,7 @@ public class TruncateTableCommand extends PostCommand<TruncateTableResponse>
     @Override
     protected TruncateTableResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new TruncateTableResponse(text, status, contentType, json, this);
+        return new TruncateTableResponse(text, status, contentType, json);
     }
 
     @Override

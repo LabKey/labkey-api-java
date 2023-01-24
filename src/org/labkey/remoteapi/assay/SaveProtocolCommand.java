@@ -16,7 +16,7 @@ public class SaveProtocolCommand extends PostCommand<ProtocolResponse>
     @Override
     protected ProtocolResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new ProtocolResponse(text, status, contentType, json, null);
+        return new ProtocolResponse(text, status, contentType, json);
     }
 
     @Override

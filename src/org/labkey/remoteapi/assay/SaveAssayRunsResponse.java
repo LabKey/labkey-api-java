@@ -3,7 +3,6 @@ package org.labkey.remoteapi.assay;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.labkey.remoteapi.CommandResponse;
-import org.labkey.remoteapi.HasRequiredVersion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,11 +19,10 @@ public class SaveAssayRunsResponse extends CommandResponse
      * @param statusCode         The HTTP status code
      * @param contentType        The response content type
      * @param json               The parsed JSONObject (or null if JSON was not returned)
-     * @param hasRequiredVersion An object that implements HasRequiredVersion
      */
-    public SaveAssayRunsResponse(String text, int statusCode, String contentType, JSONObject json, HasRequiredVersion hasRequiredVersion)
+    public SaveAssayRunsResponse(String text, int statusCode, String contentType, JSONObject json)
     {
-        super(text, statusCode, contentType, json, hasRequiredVersion);
+        super(text, statusCode, contentType, json);
         JSONArray array = json.getJSONArray("runs");
         for (Object o : array)
         {

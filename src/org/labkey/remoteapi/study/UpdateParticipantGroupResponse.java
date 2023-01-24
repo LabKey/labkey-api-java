@@ -17,7 +17,6 @@ package org.labkey.remoteapi.study;
 
 import org.json.JSONObject;
 import org.labkey.remoteapi.CommandResponse;
-import org.labkey.remoteapi.HasRequiredVersion;
 
 import java.util.Map;
 
@@ -26,9 +25,9 @@ import java.util.Map;
  */
 public class UpdateParticipantGroupResponse extends CommandResponse
 {
-    public UpdateParticipantGroupResponse(String text, int statusCode, String contentType, JSONObject json, HasRequiredVersion hasRequiredVersion)
+    public UpdateParticipantGroupResponse(String text, int statusCode, String contentType, JSONObject json)
     {
-        super(text, statusCode, contentType, json, hasRequiredVersion);
+        super(text, statusCode, contentType, json);
     }
 
     public ParticipantGroup getParticipantGroup()

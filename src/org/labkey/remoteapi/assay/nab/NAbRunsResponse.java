@@ -17,7 +17,6 @@ package org.labkey.remoteapi.assay.nab;
 
 import org.json.JSONObject;
 import org.labkey.remoteapi.CommandResponse;
-import org.labkey.remoteapi.HasRequiredVersion;
 import org.labkey.remoteapi.assay.nab.model.NAbRun;
 
 import java.util.List;
@@ -81,11 +80,10 @@ public class NAbRunsResponse extends CommandResponse
      * @param statusCode         The HTTP status code
      * @param contentType        The response content type
      * @param json               The parsed JSONObject (or null if JSON was not returned)
-     * @param hasRequiredVersion An object that implements HasRequiredVersion
      */
-    public NAbRunsResponse(String text, int statusCode, String contentType, JSONObject json, HasRequiredVersion hasRequiredVersion)
+    public NAbRunsResponse(String text, int statusCode, String contentType, JSONObject json)
     {
-        super(text, statusCode, contentType, json, hasRequiredVersion);
+        super(text, statusCode, contentType, json);
     }
 
     public NAbRun[] getRuns()

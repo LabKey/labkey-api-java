@@ -34,19 +34,32 @@ import java.util.Map;
  */
 abstract class RowsResponse extends CommandResponse
 {
+    private final double _requiredVersion;
+
     /**
      * Constructs a new RowsResponse given the specified text and status code.
      * @param text The response text.
      * @param statusCode The HTTP status code.
      * @param contentType the Content-Type header value.
      * @param json The parsed JSONObject (or null if JSON was not returned.
-     * @param sourceCommand The source command object
+     * @param hasRequiredVersion An object that implements HasRequiredVersion, such as the command that created this response
      */
     RowsResponse(String text, int statusCode, String contentType, JSONObject json, HasRequiredVersion hasRequiredVersion)
     {
-        super(text, statusCode, contentType, json, hasRequiredVersion);
+        super(text, statusCode, contentType, json);
         fixupParsedData();
         caseInsensitizeRowMaps();
+        _requiredVersion = hasRequiredVersion.getRequiredVersion();
+    }
+
+    /**
+     * Returns the API version number required by the source command. This response returns data in a different format
+     * depending on the required version
+     * @return the requested API version number
+     */
+    public double getRequiredVersion()
+    {
+        return _requiredVersion;
     }
 
     /**

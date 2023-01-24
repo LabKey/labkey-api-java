@@ -65,6 +65,6 @@ public class RenameGroupCommand extends PostCommand<RenameGroupResponse>
     @Override
     protected RenameGroupResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new RenameGroupResponse(text, status, contentType, json, this);
+        return new RenameGroupResponse(text, status, contentType, json);
     }
 }

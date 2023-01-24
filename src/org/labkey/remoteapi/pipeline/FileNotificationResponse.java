@@ -17,15 +17,14 @@ package org.labkey.remoteapi.pipeline;
 
 import org.json.JSONObject;
 import org.labkey.remoteapi.CommandResponse;
-import org.labkey.remoteapi.HasRequiredVersion;
 
 /**
  * Server response from FileNotificationCommand. Contains no return values.
  */
 public class FileNotificationResponse  extends CommandResponse
 {
-    public FileNotificationResponse(String text, int statusCode, String contentType, JSONObject json, HasRequiredVersion hasRequiredVersion)
+    public FileNotificationResponse(String text, int statusCode, String contentType, JSONObject json)
     {
-        super(text, statusCode, contentType, json, hasRequiredVersion);
+        super(text, statusCode, contentType, json);
     }
 }
