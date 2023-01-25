@@ -66,7 +66,7 @@ public class SelectRowsResponse extends RowsResponse
      * @param json The parsed JSONObject (or null if no JSON was returned
      * @param sourceCommand A copy of the command that created this response
      */
-    public SelectRowsResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends SelectRowsResponse> sourceCommand)
+    public SelectRowsResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends SelectRowsResponse, ?> sourceCommand)
     {
         super(text, statusCode, contentType, json, sourceCommand);
     }

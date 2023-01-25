@@ -1,9 +1,8 @@
 package org.labkey.remoteapi.domain;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
+import org.labkey.remoteapi.GetCommand;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -11,7 +10,7 @@ import java.util.Map;
  * @see GetDomainDetailsCommand
  */
 @Deprecated (since = "4.0.0")
-public class GetDomainCommand extends Command<DomainResponse>
+public class GetDomainCommand extends GetCommand<DomainResponse>
 {
     private String _schemaName;
     private String _queryName;
@@ -31,9 +30,9 @@ public class GetDomainCommand extends Command<DomainResponse>
     }
 
     @Override
-    public Map<String, Object> getParameters()
+    protected Map<String, Object> createParameterMap()
     {
-        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> params = super.createParameterMap();
 
         if (_schemaName != null && _queryName != null)
         {
@@ -44,13 +43,14 @@ public class GetDomainCommand extends Command<DomainResponse>
         {
             params.put("domainId", _domainId);
         }
+
         return params;
     }
 
     @Override
     protected DomainResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new DomainResponse(text, status, contentType, json, this);
+        return new DomainResponse(text, status, contentType, json);
     }
 
     public String getSchemaName()

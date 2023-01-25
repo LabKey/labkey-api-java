@@ -1,12 +1,11 @@
 package org.labkey.remoteapi.assay;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
+import org.labkey.remoteapi.GetCommand;
 
-import java.util.HashMap;
 import java.util.Map;
 
-public class GetProtocolCommand extends Command<ProtocolResponse>
+public class GetProtocolCommand extends GetCommand<ProtocolResponse>
 {
     private String _providerName;
     private Long _protocolId;
@@ -32,9 +31,9 @@ public class GetProtocolCommand extends Command<ProtocolResponse>
     }
 
     @Override
-    public Map<String, Object> getParameters()
+    protected Map<String, Object> createParameterMap()
     {
-        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> params = super.createParameterMap();
         if (_protocolId != null)
         {
             params.put("protocolId", _protocolId);
@@ -50,7 +49,7 @@ public class GetProtocolCommand extends Command<ProtocolResponse>
     @Override
     protected ProtocolResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new ProtocolResponse(text, status, contentType, json, this);
+        return new ProtocolResponse(text, status, contentType, json);
     }
 
     public String getProviderName()

@@ -22,7 +22,6 @@ import org.labkey.remoteapi.PostCommand;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +30,7 @@ import java.util.Map;
  * query in a given schema. Clients should use {@link UpdateRowsCommand},
  * {@link InsertRowsCommand} or {@link DeleteRowsCommand} and not this class directly.
  * <p>
- * All three of these sub-classes post similar JSON to the server, so this class
+ * All three of these subclasses post similar JSON to the server, so this class
  * does all the common work. The client must supply three things: the schemaName,
  * the queryName and an array of 'rows' (i.e. Maps). The rows are added via
  * the {@link #addRow(Map)} or {@link #setRows(List)} methods.
@@ -102,20 +101,6 @@ public abstract class SaveRowsCommand extends PostCommand<SaveRowsResponse>
         assert null != queryName;
         _schemaName = schemaName;
         _queryName = queryName;
-    }
-
-    protected SaveRowsCommand(SaveRowsCommand source)
-    {
-        super(source);
-        _queryName = source._queryName;
-        _schemaName = source._schemaName;
-        _extraContext = source._extraContext;
-        //deep copy rows
-        _rows = new ArrayList<>();
-        for(Map<String, Object> row : source._rows)
-        {
-            _rows.add(new HashMap<>(row));
-        }
     }
 
     /**
@@ -253,5 +238,4 @@ public abstract class SaveRowsCommand extends PostCommand<SaveRowsResponse>
     {
         return new SaveRowsResponse(text, status, contentType, json, this);
     }
-
 }

@@ -16,12 +16,12 @@
 package org.labkey.remoteapi.query;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
+import org.labkey.remoteapi.GetCommand;
 
 /**
  * Command to obtain the list of schemas available in a given folder path.
  */
-public class GetSchemasCommand extends Command<GetSchemasResponse>
+public class GetSchemasCommand extends GetCommand<GetSchemasResponse>
 {
     public GetSchemasCommand()
     {
@@ -31,6 +31,6 @@ public class GetSchemasCommand extends Command<GetSchemasResponse>
     @Override
     protected GetSchemasResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new GetSchemasResponse(text, status, contentType, json, this);
+        return new GetSchemasResponse(text, status, contentType, json);
     }
 }

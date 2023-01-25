@@ -1,7 +1,6 @@
 package org.labkey.remoteapi.domain;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 
 /**
@@ -11,9 +10,9 @@ public class DomainResponse extends CommandResponse
 {
     private final Domain _domain;
 
-    public DomainResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends DomainResponse> sourceCommand)
+    public DomainResponse(String text, int statusCode, String contentType, JSONObject json)
     {
-        super(text, statusCode, contentType, json, sourceCommand);
+        super(text, statusCode, contentType, json);
         _domain = new Domain(json);
     }
 

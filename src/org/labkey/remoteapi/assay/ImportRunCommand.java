@@ -16,7 +16,6 @@
 package org.labkey.remoteapi.assay;
 
 import org.apache.hc.client5.http.classic.methods.HttpPost;
-import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
 import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder;
 import org.apache.hc.core5.http.ContentType;
 import org.json.JSONArray;
@@ -33,9 +32,10 @@ import java.util.Map;
  */
 public class ImportRunCommand extends PostCommand<ImportRunResponse>
 {
+    private final int _assayId;
+
     private boolean _useJson = false;
     private int _batchId;
-    private int _assayId;
     private String _name;
     private String _comment;
     private Map<String, Object> _properties;
@@ -119,11 +119,11 @@ public class ImportRunCommand extends PostCommand<ImportRunResponse>
     @Override
     protected ImportRunResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new ImportRunResponse(text, status, contentType, json, this);
+        return new ImportRunResponse(text, status, contentType, json);
     }
 
     @Override
-    protected HttpUriRequest createRequest(URI uri)
+    protected HttpPost createRequest(URI uri)
     {
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 

@@ -41,18 +41,14 @@ public class CreateContainerCommand extends PostCommand<CreateContainerResponse>
     @Override
     public JSONObject getJsonObject()
     {
-        JSONObject result = super.getJsonObject();
-        if (result == null)
-        {
-            result = new JSONObject();
-        }
+        JSONObject result = new JSONObject();
         result.put("name", _name);
         result.put("title", _title);
         result.put("description", _description);
         result.put("type", _type);
         result.put("isWorkbook", _workbook);
         result.put("folderType", _folderType);
-        setJsonObject(result);
+
         return result;
     }
 
@@ -119,7 +115,6 @@ public class CreateContainerCommand extends PostCommand<CreateContainerResponse>
     @Override
     protected CreateContainerResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new CreateContainerResponse(text, status, contentType, json, this);
+        return new CreateContainerResponse(text, status, contentType, json);
     }
-
 }

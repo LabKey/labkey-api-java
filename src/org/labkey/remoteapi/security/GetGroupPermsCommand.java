@@ -16,12 +16,11 @@
 package org.labkey.remoteapi.security;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
+import org.labkey.remoteapi.GetCommand;
 
-import java.util.HashMap;
 import java.util.Map;
 
-public class GetGroupPermsCommand extends Command<GetGroupPermsResponse>
+public class GetGroupPermsCommand extends GetCommand<GetGroupPermsResponse>
 {
     private boolean _includeSubfolders = false;
 
@@ -53,15 +52,15 @@ public class GetGroupPermsCommand extends Command<GetGroupPermsResponse>
     @Override
     protected GetGroupPermsResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new GetGroupPermsResponse(text, status, contentType, json, this);
+        return new GetGroupPermsResponse(text, status, contentType, json);
     }
 
     @Override
-    public Map<String, Object> getParameters()
+    protected Map<String, Object> createParameterMap()
     {
-        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> params = super.createParameterMap();
         params.put("includeSubfolders", isIncludeSubfolders());
+
         return params;
     }
-
 }

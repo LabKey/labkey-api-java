@@ -46,7 +46,7 @@ public class CreateGroupCommand extends PostCommand<CreateGroupResponse>
     @Override
     protected CreateGroupResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new CreateGroupResponse(text, status, contentType, json, this);
+        return new CreateGroupResponse(text, status, contentType, json);
     }
 
     @Override

@@ -16,7 +16,6 @@
 package org.labkey.remoteapi.assay.nab;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.assay.nab.model.NAbRun;
 
@@ -77,15 +76,14 @@ public class NAbRunsResponse extends CommandResponse
      * Constructs a new CommandResponse, initialized with the provided
      * response text and status code.
      *
-     * @param text          The response text
-     * @param statusCode    The HTTP status code
-     * @param contentType   The response content type
-     * @param json          The parsed JSONObject (or null if JSON was not returned).
-     * @param sourceCommand A copy of the command that created this response
+     * @param text               The response text
+     * @param statusCode         The HTTP status code
+     * @param contentType        The response content type
+     * @param json               The parsed JSONObject (or null if JSON was not returned)
      */
-    public NAbRunsResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends NAbRunsResponse> sourceCommand)
+    public NAbRunsResponse(String text, int statusCode, String contentType, JSONObject json)
     {
-        super(text, statusCode, contentType, json, sourceCommand);
+        super(text, statusCode, contentType, json);
     }
 
     public NAbRun[] getRuns()

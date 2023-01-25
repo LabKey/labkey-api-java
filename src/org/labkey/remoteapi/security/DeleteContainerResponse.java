@@ -16,7 +16,6 @@
 package org.labkey.remoteapi.security;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 
 /**
@@ -24,8 +23,8 @@ import org.labkey.remoteapi.CommandResponse;
  */
 public class DeleteContainerResponse extends CommandResponse
 {
-    public DeleteContainerResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends DeleteContainerResponse> sourceCommand)
+    public DeleteContainerResponse(String text, int statusCode, String contentType, JSONObject json)
     {
-        super(text, statusCode, contentType, json, sourceCommand);
+        super(text, statusCode, contentType, json);
     }
 }

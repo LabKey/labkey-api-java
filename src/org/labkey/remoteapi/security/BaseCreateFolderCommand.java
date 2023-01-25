@@ -1,7 +1,6 @@
 package org.labkey.remoteapi.security;
 
 import org.apache.hc.client5.http.classic.methods.HttpPost;
-import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
 import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.labkey.remoteapi.CommandResponse;
@@ -73,7 +72,7 @@ public abstract class BaseCreateFolderCommand<COMMAND extends BaseCreateFolderCo
     }
 
     @Override
-    protected HttpUriRequest createRequest(URI uri)
+    protected HttpPost createRequest(URI uri)
     {
         // CreateFolderAction and CreateProjectAction are not real API actions, so we POST form data instead of JSON
         HttpPost request = new HttpPost(uri);

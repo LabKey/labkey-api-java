@@ -16,15 +16,14 @@
 package org.labkey.remoteapi.experiment;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
+import org.labkey.remoteapi.GetCommand;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 
-public class LineageCommand extends Command<LineageResponse>
+public class LineageCommand extends GetCommand<LineageResponse>
 {
     // One or more LSIDs are required
     private final List<String> _lsids;
@@ -143,13 +142,13 @@ public class LineageCommand extends Command<LineageResponse>
     @Override
     protected LineageResponse createResponse(String text, int statusCode, String contentType, JSONObject json)
     {
-        return new LineageResponse(text, statusCode, contentType, json, this);
+        return new LineageResponse(text, statusCode, contentType, json);
     }
 
     @Override
-    public Map<String, Object> getParameters()
+    protected Map<String, Object> createParameterMap()
     {
-        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> params = super.createParameterMap();
         params.put("lsids", _lsids);
         if (null != _parents)
             params.put("parents", _parents);
@@ -170,6 +169,5 @@ public class LineageCommand extends Command<LineageResponse>
 
         return params;
     }
-
 }
 

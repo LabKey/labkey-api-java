@@ -16,7 +16,6 @@
 package org.labkey.remoteapi.assay;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 
 public class ImportRunResponse extends CommandResponse
@@ -26,9 +25,9 @@ public class ImportRunResponse extends CommandResponse
     private final int _batchId;
     private final int _runId;
 
-    public ImportRunResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends ImportRunResponse> sourceCommand)
+    public ImportRunResponse(String text, int statusCode, String contentType, JSONObject json)
     {
-        super(text, statusCode, contentType, json, sourceCommand);
+        super(text, statusCode, contentType, json);
         _successURL = (String)json.get("successurl");
         _assayId = ((Number)json.get("assayId")).intValue();
         _batchId = ((Number)json.get("batchId")).intValue();

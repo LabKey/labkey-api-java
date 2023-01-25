@@ -36,13 +36,6 @@ public abstract class GroupMembersCommand extends PostCommand<CommandResponse>
         _groupId = groupId;
     }
 
-    protected GroupMembersCommand(GroupMembersCommand source)
-    {
-        super(source);
-        _groupId = source.getGroupId();
-        _principals.addAll(source.getPrincipals());
-    }
-
     public List<Integer> getPrincipals()
     {
         return _principals;
@@ -52,16 +45,13 @@ public abstract class GroupMembersCommand extends PostCommand<CommandResponse>
     {
         for (int id : ids)
         {
-            _principals.add(Integer.valueOf(id));
+            _principals.add(id);
         }
     }
 
     public void addPrincipalId(List<Integer> ids)
     {
-        for (int id : ids)
-        {
-            _principals.add(Integer.valueOf(id));
-        }
+        _principals.addAll(ids);
     }
 
     public void clearPrincipalIds()

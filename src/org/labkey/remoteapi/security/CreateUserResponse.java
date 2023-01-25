@@ -16,14 +16,13 @@
 package org.labkey.remoteapi.security;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 
 public class CreateUserResponse extends CommandResponse
 {
-    public CreateUserResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends CreateUserResponse> sourceCommand)
+    public CreateUserResponse(String text, int statusCode, String contentType, JSONObject json)
     {
-        super(text, statusCode, contentType, json, sourceCommand);
+        super(text, statusCode, contentType, json);
     }
 
     public Integer getUserId()

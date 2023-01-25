@@ -234,9 +234,7 @@ public class Connection
 
         HttpClientBuilder builder = HttpClientBuilder.create()
             .setConnectionManager(connectionManager)
-            .setDefaultRequestConfig(RequestConfig.custom().setResponseTimeout(getTimeout(), TimeUnit.MILLISECONDS).build())
-            .setDefaultCookieStore(_httpClientContext.getCookieStore())
-            .setDefaultCredentialsProvider(_httpClientContext.getCredentialsProvider());
+            .setDefaultRequestConfig(RequestConfig.custom().setResponseTimeout(getTimeout(), TimeUnit.MILLISECONDS).build());
 
         if (_proxyHost != null && _proxyPort != null)
             builder.setProxy(new HttpHost(_proxyHost, _proxyPort));

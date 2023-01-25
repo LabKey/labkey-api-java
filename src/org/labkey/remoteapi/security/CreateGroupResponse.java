@@ -16,14 +16,13 @@
 package org.labkey.remoteapi.security;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 
 public class CreateGroupResponse extends CommandResponse
 {
-    public CreateGroupResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends CreateGroupResponse> sourceCommand)
+    public CreateGroupResponse(String text, int statusCode, String contentType, JSONObject json)
     {
-        super(text, statusCode, contentType, json, sourceCommand);
+        super(text, statusCode, contentType, json);
     }
 
     public Number getGroupId()

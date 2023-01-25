@@ -16,7 +16,6 @@
 package org.labkey.remoteapi.di;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
 
 public class RunTransformResponse extends BaseTransformResponse
 {
@@ -24,15 +23,14 @@ public class RunTransformResponse extends BaseTransformResponse
      * Constructs a new CommandResponse, initialized with the provided
      * response text and status code.
      *
-     * @param text          The response text
-     * @param statusCode    The HTTP status code
-     * @param contentType   The response content type
-     * @param json          The parsed JSONObject (or null if JSON was not returned).
-     * @param sourceCommand A copy of the command that created this response
+     * @param text               The response text
+     * @param statusCode         The HTTP status code
+     * @param contentType        The response content type
+     * @param json               The parsed JSONObject (or null if JSON was not returned)
      */
-    public RunTransformResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends RunTransformResponse> sourceCommand)
+    public RunTransformResponse(String text, int statusCode, String contentType, JSONObject json)
     {
-        super(text, statusCode, contentType, json, sourceCommand);
+        super(text, statusCode, contentType, json);
     }
 
     /**

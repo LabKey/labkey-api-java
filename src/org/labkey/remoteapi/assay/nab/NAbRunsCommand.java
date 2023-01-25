@@ -18,8 +18,6 @@ package org.labkey.remoteapi.assay.nab;
 import org.json.JSONObject;
 import org.labkey.remoteapi.query.BaseQueryCommand;
 
-import java.util.Map;
-
 /**
  * Command for obtaining information about the current assay definitions
  * in a particular folder.
@@ -44,21 +42,22 @@ public class NAbRunsCommand extends BaseQueryCommand<NAbRunsResponse>
     @Override
     protected NAbRunsResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new NAbRunsResponse(text, status, contentType, json, this);
+        return new NAbRunsResponse(text, status, contentType, json);
     }
 
     @Override
-    public Map<String, Object> getParameters()
+    public JSONObject getJsonObject()
     {
-        Map<String, Object> params = super.getParameters();
+        JSONObject json = super.getJsonObject();
 
         if (null != getAssayName())
-            params.put("assayName", getAssayName());
-        params.put("includeStats", isIncludeStats());
-        params.put("includeWells", isIncludeWells());
-        params.put("includeFitParameters", isIncludeFitParameters());
-        params.put("calculateNeut", isCalculateNeut());
-        return params;
+            json.put("assayName", getAssayName());
+        json.put("includeStats", isIncludeStats());
+        json.put("includeWells", isIncludeWells());
+        json.put("includeFitParameters", isIncludeFitParameters());
+        json.put("calculateNeut", isCalculateNeut());
+
+        return json;
     }
 
     public String getAssayName()

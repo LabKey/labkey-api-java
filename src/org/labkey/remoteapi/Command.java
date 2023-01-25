@@ -17,7 +17,6 @@ package org.labkey.remoteapi;
 
 import org.apache.commons.logging.LogFactory;
 import org.apache.hc.client5.http.auth.AuthenticationException;
-import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.core5.http.Header;
@@ -37,30 +36,26 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
 /**
- * Base class for all API commands. Typically, a developer will not
- * use this class directly, but will instead create one of the
- * classes that extend this class. For example, to select data,
- * create an instance of {@link org.labkey.remoteapi.query.SelectRowsCommand},
- * which provides helpful methods for setting options and obtaining
- * specific result types.
+ * Abstract base class for all API commands. Developers interact with concrete classes that
+ * extend this class. For example, to select data, create an instance of
+ * {@link org.labkey.remoteapi.query.SelectRowsCommand}, which provides helpful methods for
+ * setting options and obtaining specific result types.
  * <p>
- * However, if future versions of the LabKey Server expose new HTTP APIs
- * that are not yet supported with a specialized class in this library,
- * the developer may still invoke these APIs by creating an instance of the
- * {@link Command} class directly, providing the controller and action name for
- * the new API. Parameters may then be specified by calling the {@link #setParameters(Map)}
- * method, passing a populated parameter <code>Map&lt;String, Object&gt;</code>
+ * If a developer wishes to invoke actions that are not yet supported with a specialized class
+ * in this library, the developer may invoke these APIs by creating an instance of the
+ * {@link SimpleGetCommand} or {@link SimplePostCommand} classes, providing the controller and
+ * action name for the API, and setting parameters or JSON to send.
  * <p>
- * Note that this class is not thread-safe. Do not share instances of this class
- * or its descendants between threads, unless the descendant declares explicitly that
- * it is thread-safe.
+ * Note that this class is not thread-safe. Do not share instances of this class or its
+ * descendants between threads, unless the descendant declares explicitly that it is thread-safe.
  */
-public class Command<ResponseType extends CommandResponse>
+public abstract class Command<ResponseType extends CommandResponse, RequestType extends HttpUriRequest> implements HasRequiredVersion
 {
     /**
      * A constant for the official JSON content type ("application/json")
@@ -77,7 +72,6 @@ public class Command<ResponseType extends CommandResponse>
 
     private final String _controllerName;
     private final String _actionName;
-    private Map<String, Object> _parameters = null;
     private Integer _timeout = null;
     private double _requiredVersion = 8.3;
 
@@ -94,20 +88,6 @@ public class Command<ResponseType extends CommandResponse>
 
         _controllerName = controllerName;
         _actionName = actionName;
-    }
-
-    /**
-     * Constructs a new Command from an existing command
-     * @param source A source Command
-     */
-    public Command(Command<ResponseType> source)
-    {
-        _actionName = source.getActionName();
-        _controllerName = source.getControllerName();
-        if (null != source.getParameters())
-            _parameters = new HashMap<>(source.getParameters());
-        _timeout = source._timeout;
-        _requiredVersion = source.getRequiredVersion();
     }
 
     /**
@@ -129,26 +109,23 @@ public class Command<ResponseType extends CommandResponse>
     }
 
     /**
-     * Returns the current parameter map, or null if a map has not yet been set.
-     * Derived classes will typically override this method to provide a parameter
-     * map based on data members set by specialized setter methods.
-     * @return The current parameter map.
+     * Makes an immutable copy of the parameter map used for building the URL available to callers. Typically used for
+     * logging and testing.
+     * @return An immutable map of parameters used when building the URL.
      */
-    public Map<String, Object> getParameters()
+    public final Map<String, Object> getParameters()
     {
-        if (null == _parameters)
-            _parameters = new HashMap<>();
-
-        return _parameters;
+        return Collections.unmodifiableMap(createParameterMap());
     }
 
     /**
-     * Sets the current parameter map.
-     * @param parameters The parameter map to use
+     * Returns a new, mutable parameter map. Derived classes will typically override this
+     * method to put values passed to specialized setter methods into the map.
+     * @return The parameter map to use when building the URL.
      */
-    public void setParameters(Map<String, Object> parameters)
+    protected Map<String, Object> createParameterMap()
     {
-        _parameters = parameters;
+        return new HashMap<>();
     }
 
     /**
@@ -408,7 +385,6 @@ public class Command<ResponseType extends CommandResponse>
         r._responseText = responseText;
     }
 
-
     /**
      * Creates an instance of the response class, initialized with
      * the response text, the HTTP status code, and parsed JSONObject.
@@ -423,7 +399,7 @@ public class Command<ResponseType extends CommandResponse>
      */
     protected ResponseType createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return (ResponseType)new CommandResponse(text, status, contentType, json, this);
+        return (ResponseType)new CommandResponse(text, status, contentType, json);
     }
 
     /**
@@ -438,12 +414,10 @@ public class Command<ResponseType extends CommandResponse>
      * This and the base URL from the connection will be used to construct the
      * first part of the URL.
      * @return The constructed HttpUriRequest instance.
-     * @throws CommandException Thrown if there is a problem encoding or parsing the URL
      * @throws URISyntaxException Thrown if there is a problem parsing the base URL in the connection.
      */
 
-    // TODO: For next major release, remove CommandException from throws list
-    protected HttpUriRequest getHttpRequest(Connection connection, String folderPath) throws CommandException, URISyntaxException
+    protected RequestType getHttpRequest(Connection connection, String folderPath) throws URISyntaxException
     {
         //construct a URI from connection base URI, folder path, and current parameters
         URI uri = createURI(connection, folderPath);
@@ -452,15 +426,11 @@ public class Command<ResponseType extends CommandResponse>
     }
 
     /**
-     * Creates the appropriate HttpUriRequest instance. Override to create something
-     * other than <code>HttpGet</code>.
+     * Creates the appropriate HttpUriRequest instance. Override to create <code>HttpGet</code>, <code>HttpPost</code>, etc.
      * @param uri the uri to convert
      * @return The HttpUriRequest instance.
      */
-    protected HttpUriRequest createRequest(URI uri)
-    {
-        return new HttpGet(uri);
-    }
+    protected abstract RequestType createRequest(URI uri);
 
     /**
      * Returns a full URI for this Command, including base URI, folder path, and query string.
@@ -492,26 +462,21 @@ public class Command<ResponseType extends CommandResponse>
 
         //add the controller name
         String controller = getControllerName();
-        //for now, strip leading /. TODO: For next major release, throw
-        if (controller.charAt(0) == '/')
-            controller = controller.substring(1);
-        //for now, strip trailing /. TODO: For next major release, throw
-        if (controller.charAt(controller.length() - 1) == '/')
-            controller = controller.substring(0, controller.length() - 1);
+        if (controller.contains("/"))
+            throw new IllegalArgumentException("Controller name should not contain a slash (/)");
         path.append(controller);
 
         //add the action name + ".api"
         String actionName = getActionName();
-        //for now, strip leading /. TODO: For next major release, throw
-        if (actionName.charAt(0) == '/')
-            actionName = actionName.substring(1);
+        if (actionName.contains("/"))
+            throw new IllegalArgumentException("Action name should not contain a slash (/)");
         path.append("-").append(actionName);
         if (!actionName.endsWith(".api"))
             path.append(".api");
 
         URIBuilder builder = new URIBuilder(uri).setPath(path.toString());
 
-        Map<String, Object> params = getParameters();
+        Map<String, Object> params = createParameterMap();
 
         //add the required version if it's > 0
         if (getRequiredVersion() > 0)
@@ -566,6 +531,7 @@ public class Command<ResponseType extends CommandResponse>
      * Returns the required version number of this API call.
      * @return The required version number
      */
+    @Override
     public double getRequiredVersion()
     {
         return _requiredVersion;

@@ -3,6 +3,9 @@ package org.labkey.remoteapi.security;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.PostCommand;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * For site-admins or project-admins only, start impersonating a user.
  * <p>
@@ -17,15 +20,23 @@ import org.labkey.remoteapi.PostCommand;
  */
 public class ImpersonateUserCommand extends PostCommand<CommandResponse>
 {
+    private final Map<String, Object> _parameters = new HashMap<>();
+
     public ImpersonateUserCommand(int userId)
     {
         super("user", "impersonateUser.api");
-        getParameters().put("userId", userId);
+        _parameters.put("userId", userId);
     }
 
     public ImpersonateUserCommand(String email)
     {
         super("user", "impersonateUser.api");
-        getParameters().put("email", email);
+        _parameters.put("email", email);
+    }
+
+    @Override
+    protected Map<String, Object> createParameterMap()
+    {
+        return new HashMap<>(_parameters); // Return a copy
     }
 }

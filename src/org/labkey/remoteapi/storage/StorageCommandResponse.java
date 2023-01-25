@@ -1,7 +1,6 @@
 package org.labkey.remoteapi.storage;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 
 import java.util.Collections;
@@ -21,15 +20,14 @@ public class StorageCommandResponse extends CommandResponse
      * Constructs a new StorageCommandResponse, initialized with the provided
      * response text and status code.
      *
-     * @param text          The response text
-     * @param statusCode    The HTTP status code
-     * @param contentType   The response content type
-     * @param json          The parsed JSONObject (or null if JSON was not returned).
-     * @param sourceCommand A copy of the command that created this response
+     * @param text               The response text
+     * @param statusCode         The HTTP status code
+     * @param contentType        The response content type
+     * @param json               The parsed JSONObject (or null if JSON was not returned)
      */
-    public StorageCommandResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends StorageCommandResponse> sourceCommand)
+    public StorageCommandResponse(String text, int statusCode, String contentType, JSONObject json)
     {
-        super(text, statusCode, contentType, json, sourceCommand);
+        super(text, statusCode, contentType, json);
         _message = json.get("message").toString();
         _data = Collections.unmodifiableMap(json.getJSONObject("data").toMap());
     }

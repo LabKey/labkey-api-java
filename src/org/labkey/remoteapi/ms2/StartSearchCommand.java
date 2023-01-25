@@ -15,20 +15,16 @@
  */
 package org.labkey.remoteapi.ms2;
 
-import org.apache.hc.client5.http.classic.methods.HttpPost;
-import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
+import org.labkey.remoteapi.PostCommand;
 
-import java.net.URI;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Initiates an MS2 search.
  */
-public class StartSearchCommand extends Command<StartSearchResponse>
+public class StartSearchCommand extends PostCommand<StartSearchResponse>
 {
     private String _protocol;
     private String _path;
@@ -90,19 +86,14 @@ public class StartSearchCommand extends Command<StartSearchResponse>
     }
 
     @Override
-    protected HttpUriRequest createRequest(URI uri)
+    protected Map<String, Object> createParameterMap()
     {
-        return new HttpPost(uri);
-    }
-
-    @Override
-    public Map<String, Object> getParameters()
-    {
-        Map<String, Object> result = new HashMap<>();
+        Map<String, Object> result = super.createParameterMap();
         result.put("path", _path);
         result.put("file", _files);
         result.put("protocol", _protocol);
         result.put("runSearch", true);
+
         return result;
     }
 
@@ -113,6 +104,6 @@ public class StartSearchCommand extends Command<StartSearchResponse>
         {
             throw new IllegalArgumentException(text.substring("ERROR=".length()));
         }
-        return new StartSearchResponse(text, status, contentType, json, this);
+        return new StartSearchResponse(text, status, contentType, json);
     }
 }

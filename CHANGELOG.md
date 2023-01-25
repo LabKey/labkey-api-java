@@ -1,7 +1,31 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## version 4.4.0-SNAPSHOT
+## version 5.1.0-SNAPSHOT
 *Released*: TBD
+
+## version 5.0.0
+*Released*: 24 January 2023
+* Refactor the `Command` class hierarchy:
+  * Add `GetCommand`, new abstract base class for all commands that use get
+  * Make `Command` and `PostCommand` abstract
+  * Add `SimpleGetCommand`, new concrete class used (instead of `Command`) to invoke GET API actions without creating a subclass
+  * Add `SimplePostCommand`, new concrete class used (instead of `PostCommand`) to invoke POST API actions without creating a subclass
+* Refactor parameter handling for consistency:
+  * `createParameterMap()` is now used by subclasses to create and populate a mutable map of URL parameters
+  * `getParameters()` now returns an immutable copy of the current URL parameter map for external use, typically logging or testing
+  * Commands no longer stash and reuse the parameter map; `createParameterMap()` always creates a new map.
+  * `setParameters()` is now available only on `SimpleGetCommand` and `SimplePostCommand`. Custom `GetCommand` and `PostCommand`
+    subclasses that need to specify parameters are expected to override `createParameterMap()`.
+  * `setJsonObject()` is now available only on `SimplePostCommand`. Custom `PostCommand` subclasses that need to post JSON are
+    expected to override `getJsonObject()`.
+* Stop passing command subclasses when constructing every `CommandResponse`. The two response classes that need this now implement
+  it without burdening all other commands. 
+* Introduce `HasRequiredVersion` interface and use it when instantiating `CommandResponse` subclasses that need required version
+* Remove all `Command` copy constructors. Same rationale as the earlier removal of `copy` methods.
+* Switch `SelectRowsCommand` and `NAbRunsCommand` to post their parameters as JSON
+* Fix NAbReplicate to handle `"NaN"` values
+* Remove `CommandException` from `getHttpRequest()` throws list
+* Adjust the `Demo.java` and `Test.java` tests to match current sample data and `Command` hierarchy changes
 
 ## version 4.3.1
 *Released*: 15 January 2023
@@ -9,8 +33,10 @@
 
 ## version 4.3.0
 *Released*: 11 January 2023
-* [Issue 47030](https://www.labkey.org/home/Developer/issues/issues-details.view?issueId=47030): Switch `SelectRowsCommand` and `NAbRunsCommand` to always use POST
-* Add support for `includeTotalCount`, `includeMetadata`, and `ignoreFilter` flags to `BaseQueryCommand` and reconcile duplicate parameter handling code vs. SelectRowsCommand
+* [Issue 47030](https://www.labkey.org/home/Developer/issues/issues-details.view?issueId=47030): Switch `SelectRowsCommand`
+  and `NAbRunsCommand` to always use POST
+* Add support for `includeTotalCount`, `includeMetadata`, and `ignoreFilter` flags to `BaseQueryCommand` and reconcile 
+  duplicate parameter handling code vs. SelectRowsCommand
 * Add support for `includeTitle` and `includeViewDataUrl` flags to `GetQueriesCommand`
 
 ## version 4.2.0

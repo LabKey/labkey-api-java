@@ -32,6 +32,6 @@ public class RunTransformCommand extends BaseTransformCommand<RunTransformRespon
     @Override
     protected RunTransformResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new RunTransformResponse(text, status, contentType, json, this);
+        return new RunTransformResponse(text, status, contentType, json);
     }
 }

@@ -49,6 +49,10 @@ import java.util.Map;
 
 public class Test
 {
+    private static final String LIST_FOLDER = "Api Test";
+    private static final String STUDY_FOLDER = "StudyVerifyProject/My Study";
+    private static final String NAB_FOLDER = "/Nab Test Verify Project/nabassay";
+
     public static void main(String[] args) throws Exception
     {
         String baseUrl = "http://localhost:8080/labkey";
@@ -59,21 +63,21 @@ public class Test
         try
         {
             // Import /remoteapi/labkey-api-java/People.xls as list "People" into project "Api Test"
-            selectTest(cn, "Api Test");
-            crudTest(cn, "Api Test");
-            execSqlTest(cn, "Api Test");
-            schemasTest(cn, "Api Test");
-            extendedFormatTest(cn, "Api Test");
+            selectTest(cn, LIST_FOLDER);
+            crudTest(cn, LIST_FOLDER);
+            execSqlTest(cn, LIST_FOLDER);
+            schemasTest(cn, LIST_FOLDER);
+            extendedFormatTest(cn, LIST_FOLDER);
 
             // Run ShortStudyTest with -Dclean=false
-            datasetTest(cn, "StudyVerifyProject/My Study");
+            datasetTest(cn, STUDY_FOLDER);
 
             // Run NabAssayTest with -Dclean=false and rename subfolder "Rename############" to "nabassay"
-            nabTest(cn, "/Nab Test Verify Project/nabassay");
-            assayTest(cn, "/Nab Test Verify Project/nabassay");
-            truncateAssayFailsTest(cn, "/Nab Test Verify Project/nabassay");
+            nabTest(cn, NAB_FOLDER);
+            assayTest(cn, NAB_FOLDER);
+            truncateAssayFailsTest(cn, NAB_FOLDER);
 
-            truncateTableSuccessTest(cn, "Api Test");
+            truncateTableSuccessTest(cn, LIST_FOLDER);
             System.out.println("*** All tests completed successfully ***");
         }
         catch(CommandException e)

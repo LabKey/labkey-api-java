@@ -37,14 +37,9 @@ public abstract class BaseTransformCommand<ResponseType extends CommandResponse>
     @Override
     public JSONObject getJsonObject()
     {
-        JSONObject result = super.getJsonObject();
-        if (result == null)
-        {
-            result = new JSONObject();
-        }
+        JSONObject result = new JSONObject();
         result.put("transformId", _transformId);
-        setJsonObject(result);
+
         return result;
     }
-
 }

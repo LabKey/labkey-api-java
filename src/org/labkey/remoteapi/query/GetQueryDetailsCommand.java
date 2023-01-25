@@ -16,19 +16,18 @@
 package org.labkey.remoteapi.query;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
+import org.labkey.remoteapi.GetCommand;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
  *  Command for obtaining the list of queries available within a given schema.
  */
-public class GetQueryDetailsCommand extends Command<GetQueryDetailsResponse>
+public class GetQueryDetailsCommand extends GetCommand<GetQueryDetailsResponse>
 {
     private String _schemaName;
     private String _queryName;
-    private boolean _includeSuggestedQueryColumns;
+    private final boolean _includeSuggestedQueryColumns;
 
     /**
      * Constructs the command given a particular schema name.
@@ -75,12 +74,12 @@ public class GetQueryDetailsCommand extends Command<GetQueryDetailsResponse>
     }
 
     @Override
-    public Map<String, Object> getParameters()
+    protected Map<String, Object> createParameterMap()
     {
         assert null != getSchemaName() : "You must set the schema name before executing the GetQueryDetailsCommand!";
         assert null != getQueryName() : "You must set the query name before executing the GetQueryDetailsCommand!";
 
-        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> params = super.createParameterMap();
         params.put("schemaName", getSchemaName());
         params.put("queryName", getQueryName());
         params.put("includeSuggestedQueryColumns", _includeSuggestedQueryColumns);
@@ -91,6 +90,6 @@ public class GetQueryDetailsCommand extends Command<GetQueryDetailsResponse>
     @Override
     protected GetQueryDetailsResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new GetQueryDetailsResponse(text, status, contentType, json, this);
+        return new GetQueryDetailsResponse(text, status, contentType, json);
     }
 }

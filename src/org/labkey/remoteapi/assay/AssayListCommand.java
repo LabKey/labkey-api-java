@@ -18,7 +18,6 @@ package org.labkey.remoteapi.assay;
 import org.json.JSONObject;
 import org.labkey.remoteapi.PostCommand;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -103,7 +102,7 @@ public class AssayListCommand extends PostCommand<AssayListResponse>
     @Override
     protected AssayListResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new AssayListResponse(text, status, contentType, json, this);
+        return new AssayListResponse(text, status, contentType, json);
     }
 
     @Override
@@ -119,17 +118,17 @@ public class AssayListCommand extends PostCommand<AssayListResponse>
     }
 
     @Override
-    public Map<String, Object> getParameters()
+    protected Map<String, Object> createParameterMap()
     {
-        Map<String, Object> params = new HashMap<>();
-        if(null != getName())
+        Map<String, Object> params = super.createParameterMap();
+
+        if (null != getName())
             params.put("name", getName());
-        if(null != getType())
+        if (null != getType())
             params.put("type", getType());
-        if(null != getId())
+        if (null != getId())
             params.put("id", getId());
 
         return params;
     }
-
 }

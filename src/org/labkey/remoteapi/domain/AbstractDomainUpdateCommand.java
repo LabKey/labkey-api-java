@@ -18,14 +18,13 @@ abstract class AbstractDomainUpdateCommand extends PostCommand<DomainResponse>
     @Override
     protected DomainResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new DomainResponse(text, status, contentType, json, this);
+        return new DomainResponse(text, status, contentType, json);
     }
 
     @Override
     public JSONObject getJsonObject()
     {
         JSONObject result = new JSONObject();
-
         result.put("domainDesign", _design.toJSONObject());
 
         return result;

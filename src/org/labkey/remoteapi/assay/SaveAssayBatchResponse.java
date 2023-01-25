@@ -16,7 +16,6 @@
 package org.labkey.remoteapi.assay;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 
 public class SaveAssayBatchResponse extends CommandResponse
@@ -24,9 +23,9 @@ public class SaveAssayBatchResponse extends CommandResponse
     private final Batch _batch;
     private final int _assayId;
 
-    public SaveAssayBatchResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends SaveAssayBatchResponse> sourceCommand)
+    public SaveAssayBatchResponse(String text, int statusCode, String contentType, JSONObject json)
     {
-        super(text, statusCode, contentType, json, sourceCommand);
+        super(text, statusCode, contentType, json);
         _batch = new Batch((JSONObject)json.get("batch"));
         _assayId = ((Number)json.get("assayId")).intValue();
     }

@@ -63,7 +63,7 @@ public class CreateUserCommand extends PostCommand<CreateUserResponse>
     @Override
     protected CreateUserResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new CreateUserResponse(text, status, contentType, json, this);
+        return new CreateUserResponse(text, status, contentType, json);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class CreateUserCommand extends PostCommand<CreateUserResponse>
         JSONObject obj = new JSONObject();
         obj.put("email", getEmail());
         obj.put("sendEmail", isSendEmail());
+
         return obj;
     }
-
 }

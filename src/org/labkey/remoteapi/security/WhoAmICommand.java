@@ -1,9 +1,9 @@
 package org.labkey.remoteapi.security;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
+import org.labkey.remoteapi.GetCommand;
 
-public class WhoAmICommand extends Command<WhoAmIResponse>
+public class WhoAmICommand extends GetCommand<WhoAmIResponse>
 {
     public WhoAmICommand()
     {
@@ -13,6 +13,6 @@ public class WhoAmICommand extends Command<WhoAmIResponse>
     @Override
     protected WhoAmIResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new WhoAmIResponse(text, status, contentType, json, this);
+        return new WhoAmIResponse(text, status, contentType, json);
     }
 }

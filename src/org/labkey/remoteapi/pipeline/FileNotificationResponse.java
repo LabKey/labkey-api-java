@@ -16,7 +16,6 @@
 package org.labkey.remoteapi.pipeline;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 
 /**
@@ -24,8 +23,8 @@ import org.labkey.remoteapi.CommandResponse;
  */
 public class FileNotificationResponse  extends CommandResponse
 {
-    public FileNotificationResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends FileNotificationResponse> sourceCommand)
+    public FileNotificationResponse(String text, int statusCode, String contentType, JSONObject json)
     {
-        super(text, statusCode, contentType, json, sourceCommand);
+        super(text, statusCode, contentType, json);
     }
 }

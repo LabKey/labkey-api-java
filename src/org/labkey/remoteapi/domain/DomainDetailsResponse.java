@@ -1,7 +1,6 @@
 package org.labkey.remoteapi.domain;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.internal.ResponseUtils;
 
@@ -13,9 +12,9 @@ public class DomainDetailsResponse extends CommandResponse
     private final String _kind;
     private final Map<String, Object> _options;
 
-    public DomainDetailsResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends DomainDetailsResponse> sourceCommand)
+    public DomainDetailsResponse(String text, int statusCode, String contentType, JSONObject json)
     {
-        super(text, statusCode, contentType, json, sourceCommand);
+        super(text, statusCode, contentType, json);
         _domain = new Domain(json.getJSONObject("domainDesign"));
         _kind = json.optString("domainKindName", null);
         _options = ResponseUtils.deepUnmodifiableMap(json.optJSONObject("options"));

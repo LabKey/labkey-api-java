@@ -16,7 +16,6 @@
 package org.labkey.remoteapi.security;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 
 import java.util.List;
@@ -24,9 +23,9 @@ import java.util.Map;
 
 public class GetContainersResponse extends CommandResponse
 {
-    public GetContainersResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends GetContainersResponse> sourceCommand)
+    public GetContainersResponse(String text, int statusCode, String contentType, JSONObject json)
     {
-        super(text, statusCode, contentType, json, sourceCommand);
+        super(text, statusCode, contentType, json);
     }
 
     public String getContainerId()

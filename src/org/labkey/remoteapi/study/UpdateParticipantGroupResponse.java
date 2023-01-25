@@ -16,7 +16,6 @@
 package org.labkey.remoteapi.study;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 
 import java.util.Map;
@@ -26,9 +25,9 @@ import java.util.Map;
  */
 public class UpdateParticipantGroupResponse extends CommandResponse
 {
-    public UpdateParticipantGroupResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends UpdateParticipantGroupResponse> sourceCommand)
+    public UpdateParticipantGroupResponse(String text, int statusCode, String contentType, JSONObject json)
     {
-        super(text, statusCode, contentType, json, sourceCommand);
+        super(text, statusCode, contentType, json);
     }
 
     public ParticipantGroup getParticipantGroup()

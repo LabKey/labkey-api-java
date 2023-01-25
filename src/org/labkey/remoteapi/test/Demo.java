@@ -15,13 +15,22 @@
  */
 package org.labkey.remoteapi.test;
 
-import org.labkey.remoteapi.query.*;
-import org.labkey.remoteapi.Connection;
-import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
+import org.labkey.remoteapi.Connection;
+import org.labkey.remoteapi.SimpleGetCommand;
+import org.labkey.remoteapi.query.ExecuteSqlCommand;
+import org.labkey.remoteapi.query.Filter;
+import org.labkey.remoteapi.query.SelectRowsCommand;
+import org.labkey.remoteapi.query.SelectRowsResponse;
+import org.labkey.remoteapi.query.Sort;
 
 import java.util.Map;
 
+/**
+ * Assumes a running LabKey Server with an "API Test" project containing:
+ * - The People list imported from People.xls in this repository
+ * - A wiki page named "home".
+ */
 public class Demo
 {
     public void doDemo() throws Exception
@@ -38,23 +47,21 @@ public class Demo
         System.out.println("Simple Select Demo");
         System.out.println("-----------------------------------------------");
 
-        //create a new connection, specifying base URL,
-        //user email, and password
+        //create a new connection, specifying base URL, user email, and password
         Connection cn = new Connection("http://localhost:8080/labkey", _email, _password);
 
         //create a SelectRowsCommand to call the selectRows.api
         SelectRowsCommand cmd = new SelectRowsCommand("lists", "People");
 
-        //execute the command against the connection
-        //within the Api Test project folder
+        //execute the command against the connection within the Api Test project folder
         SelectRowsResponse resp = cmd.execute(cn, "Api Test");
 
         System.out.println(resp.getRowCount() + " rows were returned.");
 
         //loop over the returned rows
-        for(Map<String,Object> row : resp.getRows())
+        for (Map<String,Object> row : resp.getRows())
         {
-            System.out.println(row.get("FirstName") + " is " + row.get("Age"));
+            System.out.println(row.get("First") + " is " + row.get("Age"));
         }
     }
 
@@ -77,9 +84,9 @@ public class Demo
         
         SelectRowsResponse resp = cmd.execute(cn, "Api Test");
 
-        for(Map<String,Object> row : resp.getRows())
+        for (Map<String,Object> row : resp.getRows())
         {
-            System.out.println(row.get("FirstName") + " is " + row.get("Age"));
+            System.out.println(row.get("First") + " is " + row.get("Age"));
         }
     }
 
@@ -107,20 +114,13 @@ public class Demo
         System.out.println("-----------------------------------------------");
 
         Connection cn = getConnection();
-        Command cmd = new Command("project", "getWebPart");
-        cmd.getParameters().put("webpart.name", "Wiki");
-        cmd.getParameters().put("name", "home");
+        SimpleGetCommand cmd = new SimpleGetCommand("project", "getWebPart");
+        cmd.setParameters(Map.of("webpart.name", "Wiki", "name", "home"));
 
         CommandResponse resp = cmd.execute(cn, "Api Test");
-        System.out.println(resp.getText());
+        System.out.println("First 100 characters of HTML: " + ((String)resp.getProperty("html")).substring(0, 100));
     }
 
-
-
-
-
-
-    
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public static void main(String[] args) throws Exception
@@ -132,13 +132,13 @@ public class Demo
     public Demo(String[] args) throws Exception
     {
         processArgs(args);
-        if(null == _email || null == _password)
+        if (null == _email || null == _password)
             throw new Exception("Usage: java demo.class <user> <password>");
     }
 
     private void processArgs(String[] args)
     {
-        if(args.length >= 2)
+        if (args.length >= 2)
         {
             _email = args[0];
             _password = args[1];
@@ -147,7 +147,7 @@ public class Demo
 
     private Connection getConnection()
     {
-        if(null == _connection)
+        if (null == _connection)
             _connection = new Connection("http://localhost:8080/labkey", _email, _password);
         return _connection;
     }

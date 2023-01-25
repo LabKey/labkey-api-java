@@ -16,7 +16,6 @@
 package org.labkey.remoteapi.query;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandResponse;
 
 public class ImportDataResponse extends CommandResponse
@@ -25,9 +24,9 @@ public class ImportDataResponse extends CommandResponse
     private final int _rowCount;
     private final String _jobId;
 
-    public ImportDataResponse(String text, int statusCode, String contentType, JSONObject json, Command<? extends ImportDataResponse> sourceCommand)
+    public ImportDataResponse(String text, int statusCode, String contentType, JSONObject json)
     {
-        super(text, statusCode, contentType, json, sourceCommand);
+        super(text, statusCode, contentType, json);
         _success = json.optBoolean("success");
         _rowCount = json.optInt("rowCount");
         _jobId = json.optString("jobId", null);
