@@ -47,9 +47,9 @@ abstract class RowsResponse extends CommandResponse
     RowsResponse(String text, int statusCode, String contentType, JSONObject json, HasRequiredVersion hasRequiredVersion)
     {
         super(text, statusCode, contentType, json);
+        _requiredVersion = hasRequiredVersion.getRequiredVersion();
         fixupParsedData();
         caseInsensitizeRowMaps();
-        _requiredVersion = hasRequiredVersion.getRequiredVersion();
     }
 
     /**
