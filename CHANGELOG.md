@@ -3,8 +3,8 @@
 ## version 5.1.0-SNAPSHOT
 *Released*: TBD
 
-## version 5.0.1-fix_fixup-SNAPSHOT
-*Released*: ?? January 2023
+## version 5.0.1
+*Released*: 30 January 2023
 * Fix regression introduced in 5.0.0: `RowsResponse.fixupParsedData()` was called before `_requiredVersion` was set. This caused
   the fixup method to skip `BigDecimal` to `Double` conversions in the returned data maps.
 
