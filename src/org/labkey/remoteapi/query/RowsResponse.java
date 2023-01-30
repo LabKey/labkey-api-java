@@ -48,7 +48,7 @@ abstract class RowsResponse extends CommandResponse
     {
         super(text, statusCode, contentType, json);
         _requiredVersion = hasRequiredVersion.getRequiredVersion();
-        fixupParsedData();
+        fixupParsedData(_requiredVersion);
         caseInsensitizeRowMaps();
     }
 
@@ -57,6 +57,7 @@ abstract class RowsResponse extends CommandResponse
      * depending on the required version
      * @return the requested API version number
      */
+    @Deprecated // Just needed for fixup -- exposing this outside the class seems unnecessary. TODO: Remove this in v6.0.0
     public double getRequiredVersion()
     {
         return _requiredVersion;
@@ -83,7 +84,7 @@ abstract class RowsResponse extends CommandResponse
     /**
      * Fixes up the parsed data. Currently, this converts string-based date literals into real Java Date objects.
      */
-    private void fixupParsedData()
+    private void fixupParsedData(double requiredVersion)
     {
         if (null == getParsedData())
             return;
@@ -124,7 +125,7 @@ abstract class RowsResponse extends CommandResponse
         // date classes. If this format ever changes, we'll need to change the format string used here.
         // CONSIDER: use a library like ConvertUtils to avoid this dependency?
         DateParser dateFormat = new DateParser();
-        boolean expandedFormat = getRequiredVersion() == 9.1;
+        boolean expandedFormat = requiredVersion == 9.1;
 
         for (Map<String, Object> row : rows)
         {
