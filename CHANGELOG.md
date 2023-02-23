@@ -2,6 +2,7 @@
 
 ## version 5.1.0-SNAPSHOT
 *Released*: TBD
+* Switch first request to `login-whoAmI.api` so `Connection`s using `GuestCredentialsProvider` can retrieve CSRF tokens.
 
 ## version 5.0.1
 *Released*: 30 January 2023
