@@ -18,11 +18,7 @@ package org.labkey.remoteapi.test;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.SimpleGetCommand;
-import org.labkey.remoteapi.query.ExecuteSqlCommand;
-import org.labkey.remoteapi.query.Filter;
-import org.labkey.remoteapi.query.SelectRowsCommand;
-import org.labkey.remoteapi.query.SelectRowsResponse;
-import org.labkey.remoteapi.query.Sort;
+import org.labkey.remoteapi.query.*;
 
 import java.util.Map;
 
@@ -41,6 +37,13 @@ public class Demo
         getWebPartDemo();
     }
 
+    private Connection getConnection()
+    {
+        if (null == _connection)
+            _connection = new Connection("http://localhost:8080/labkey", _email, _password);
+        return _connection;
+    }
+
     public void simpleSelectDemo() throws Exception
     {
         System.out.println("-----------------------------------------------");
@@ -48,7 +51,7 @@ public class Demo
         System.out.println("-----------------------------------------------");
 
         //create a new connection, specifying base URL, user email, and password
-        Connection cn = new Connection("http://localhost:8080/labkey", _email, _password);
+        Connection cn = getConnection();
 
         //create a SelectRowsCommand to call the selectRows.api
         SelectRowsCommand cmd = new SelectRowsCommand("lists", "People");
@@ -143,13 +146,6 @@ public class Demo
             _email = args[0];
             _password = args[1];
         }
-    }
-
-    private Connection getConnection()
-    {
-        if (null == _connection)
-            _connection = new Connection("http://localhost:8080/labkey", _email, _password);
-        return _connection;
     }
 
     private String _email = null;
