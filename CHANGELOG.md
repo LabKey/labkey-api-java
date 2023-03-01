@@ -2,6 +2,7 @@
 
 ## version 5.1.0-SNAPSHOT
 *Released*: TBD
+* Optional parameters to `GetContainersCommand` to reduce the size of the response payload
 
 ## version 5.0.1
 *Released*: 30 January 2023
