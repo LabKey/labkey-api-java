@@ -43,17 +43,14 @@ public class NetrcFileParser
         return getEntry(netrcFile, host);
     }
 
-    public  NetrcEntry getEntry(File netrcFile, String host) throws IOException
+    private NetrcEntry getEntry(File netrcFile, String host) throws IOException
     {
         if (!netrcFile.exists())
             return null;
 
-        BufferedReader input = null;
-
-        try
+        try (BufferedReader input = new BufferedReader(new FileReader(netrcFile, StandardCharsets.UTF_8)))
         {
             StringBuilder sb = new StringBuilder();
-            input = new BufferedReader(new FileReader(netrcFile, StandardCharsets.UTF_8));
             String line;
 
             while ((line = input.readLine()) != null)
@@ -65,7 +62,7 @@ public class NetrcFileParser
 
             int index = 0;
 
-            while(m.find(index))
+            while (m.find(index))
             {
                 if (3 == m.groupCount() && m.group(1).equals(host))
                     return new NetrcEntry(m.group(1), m.group(2), m.group(3));
@@ -73,25 +70,11 @@ public class NetrcFileParser
                 index = m.end();
             }
         }
-        finally
-        {
-            try
-            {
-                if (input != null)
-                {
-                    input.close();
-                }
-            }
-            catch (IOException ioe)
-            {
-                // ignore
-            }
-        }
 
         return null;
     }
 
-    public class NetrcEntry
+    public static class NetrcEntry
     {
         private final String _machine;
         private final String _login;

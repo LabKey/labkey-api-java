@@ -21,7 +21,9 @@ import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
 import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
 import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
 import org.apache.hc.client5.http.protocol.HttpClientContext;
+import org.labkey.remoteapi.security.EnsureLoginCommand;
 
+import java.io.IOException;
 import java.net.URI;
 
 public class BasicAuthCredentialsProvider implements CredentialsProvider
@@ -43,5 +45,11 @@ public class BasicAuthCredentialsProvider implements CredentialsProvider
         Credentials credentials = new UsernamePasswordCredentials(_email, _password.toCharArray());
         provider.setCredentials(scope, credentials);
         httpClientContext.setCredentialsProvider(provider);
+    }
+
+    @Override
+    public void ensureAuthenticated(Connection connection) throws IOException, CommandException
+    {
+        new EnsureLoginCommand().execute(connection, "/home");
     }
 }

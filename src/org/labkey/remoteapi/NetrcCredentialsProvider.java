@@ -63,4 +63,10 @@ public class NetrcCredentialsProvider implements CredentialsProvider
     {
         _wrappedCredentialsProvider.configureRequest(baseURI, request, httpClientContext);
     }
+
+    @Override
+    public void ensureAuthenticated(Connection connection) throws IOException, CommandException
+    {
+        _wrappedCredentialsProvider.ensureAuthenticated(connection);
+    }
 }

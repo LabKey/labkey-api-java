@@ -19,9 +19,11 @@ import org.apache.hc.client5.http.auth.AuthenticationException;
 import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
 import org.apache.hc.client5.http.protocol.HttpClientContext;
 
+import java.io.IOException;
 import java.net.URI;
 
 public interface CredentialsProvider
 {
     void configureRequest(URI baseURI, HttpUriRequest request, HttpClientContext httpClientContext) throws AuthenticationException;
+    void ensureAuthenticated(Connection connection) throws IOException, CommandException;
 }

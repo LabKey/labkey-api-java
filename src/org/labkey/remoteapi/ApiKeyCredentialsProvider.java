@@ -15,23 +15,10 @@
  */
 package org.labkey.remoteapi;
 
-import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
-import org.apache.hc.client5.http.protocol.HttpClientContext;
-
-import java.net.URI;
-
-public class ApiKeyCredentialsProvider implements CredentialsProvider
+public class ApiKeyCredentialsProvider extends BasicAuthCredentialsProvider
 {
-    private final String _apiKey;
-
     public ApiKeyCredentialsProvider(String apiKey)
     {
-        _apiKey = apiKey;
-    }
-
-    @Override
-    public void configureRequest(URI baseURI, HttpUriRequest request, HttpClientContext httpClientContext)
-    {
-        request.setHeader("apikey", _apiKey);
+        super("apikey", apiKey);
     }
 }
