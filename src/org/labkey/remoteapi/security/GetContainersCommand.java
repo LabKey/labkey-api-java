@@ -23,6 +23,9 @@ import java.util.Map;
 public class GetContainersCommand extends GetCommand<GetContainersResponse>
 {
     private boolean _includeSubfolders = false;
+    private Boolean _includeChildWorkbooks;
+    private Boolean _includeStandardProperties;
+    private Boolean _includeEffectivePermissions;
 
     public GetContainersCommand()
     {
@@ -39,6 +42,36 @@ public class GetContainersCommand extends GetCommand<GetContainersResponse>
         _includeSubfolders = includeSubfolders;
     }
 
+    public Boolean getIncludeChildWorkbooks()
+    {
+        return _includeChildWorkbooks;
+    }
+
+    public void setIncludeChildWorkbooks(Boolean includeChildWorkbooks)
+    {
+        _includeChildWorkbooks = includeChildWorkbooks;
+    }
+
+    public Boolean getIncludeStandardProperties()
+    {
+        return _includeStandardProperties;
+    }
+
+    public void setIncludeStandardProperties(Boolean includeStandardProperties)
+    {
+        _includeStandardProperties = includeStandardProperties;
+    }
+
+    public Boolean getIncludeEffectivePermissions()
+    {
+        return _includeEffectivePermissions;
+    }
+
+    public void setIncludeEffectivePermissions(Boolean includeEffectivePermissions)
+    {
+        _includeEffectivePermissions = includeEffectivePermissions;
+    }
+
     @Override
     protected GetContainersResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
@@ -50,6 +83,18 @@ public class GetContainersCommand extends GetCommand<GetContainersResponse>
     {
         Map<String, Object> params = super.createParameterMap();
         params.put("includeSubfolders", _includeSubfolders);
+        if (_includeChildWorkbooks != null)
+        {
+            params.put("includeChildWorkbooks", _includeChildWorkbooks);
+        }
+        if (_includeStandardProperties != null)
+        {
+            params.put("includeStandardProperties", _includeStandardProperties);
+        }
+        if (_includeEffectivePermissions != null)
+        {
+            params.put("includeEffectivePermissions", _includeEffectivePermissions);
+        }
 
         return params;
     }
