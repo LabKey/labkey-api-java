@@ -312,7 +312,7 @@ public class Connection
 
     /**
      * Delegate to CredentialsProvider to authenticate the user (if credentials have been provided) and then retrieve
-     * a CSRF token & session ID for use in subsequent requests using this connection.
+     * a CSRF token and session ID to use with subsequent requests on this connection.
      *
      * @throws IOException      if there is an IO problem executing the command to retrieve session and CSRF token
      * @throws CommandException if the server returned a non-success status code
