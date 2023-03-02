@@ -43,7 +43,8 @@ public class NetrcFileParser
         return getEntry(netrcFile, host);
     }
 
-    private NetrcEntry getEntry(File netrcFile, String host) throws IOException
+    // Note: Also called by test PasswordUtil
+    public NetrcEntry getEntry(File netrcFile, String host) throws IOException
     {
         if (!netrcFile.exists())
             return null;
