@@ -15,6 +15,9 @@
  */
 package org.labkey.remoteapi;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -25,6 +28,8 @@ import java.util.regex.Pattern;
 
 public class NetrcFileParser
 {
+    private final static Log LOG = LogFactory.getLog(NetrcFileParser.class);
+
     public NetrcEntry getEntry(String host) throws IOException
     {
         NetrcEntry entry = getEntry(".netrc", host);
@@ -46,33 +51,49 @@ public class NetrcFileParser
     // Note: Also called by test PasswordUtil
     public NetrcEntry getEntry(File netrcFile, String host) throws IOException
     {
-        if (!netrcFile.exists())
-            return null;
+        NetrcEntry entry = null;
+        LOG.info("Attempting to access " + netrcFile);
 
-        try (BufferedReader input = new BufferedReader(new FileReader(netrcFile, StandardCharsets.UTF_8)))
+        if (netrcFile.exists())
         {
-            StringBuilder sb = new StringBuilder();
-            String line;
+            LOG.info(netrcFile + " was found");
+            LOG.info("Attempting to find an entry in " + netrcFile + " for host \"" + host + "\"");
 
-            while ((line = input.readLine()) != null)
+            try (BufferedReader input = new BufferedReader(new FileReader(netrcFile, StandardCharsets.UTF_8)))
             {
-                sb.append(line).append('\n');
+                StringBuilder sb = new StringBuilder();
+                String line;
+
+                while ((line = input.readLine()) != null)
+                {
+                    sb.append(line).append('\n');
+                }
+
+                Matcher m = netrcPattern.matcher(sb);
+
+                int index = 0;
+
+                while (m.find(index))
+                {
+                    if (3 == m.groupCount() && m.group(1).equals(host))
+                    {
+                        entry = new NetrcEntry(m.group(1), m.group(2), m.group(3));
+                        break;
+                    }
+
+                    index = m.end();
+                }
             }
 
-            Matcher m = netrcPattern.matcher(sb);
-
-            int index = 0;
-
-            while (m.find(index))
-            {
-                if (3 == m.groupCount() && m.group(1).equals(host))
-                    return new NetrcEntry(m.group(1), m.group(2), m.group(3));
-
-                index = m.end();
-            }
+            LOG.info("Entry corresponding to host \"" + host + "\" was " +  (null == entry ? "not " : "") + "found in " +
+                netrcFile + (null == entry ? "" : "; the login and password fields of this entry will be used to attempt authentication."));
+        }
+        else
+        {
+            LOG.info(netrcFile + " was not found");
         }
 
-        return null;
+        return entry;
     }
 
     public static class NetrcEntry

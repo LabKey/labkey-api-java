@@ -4,9 +4,9 @@
 *Released*: xx March 2023
 * Delegate first request behavior to the configured `CredentialsProvider`. `GuestCredentialsProvider` invokes 
   `login-whoAmI.api` to retrieve CSRF and session tokens while other providers invoke `login-ensureLogin.api`.
-* Convey API keys via Basic authentication for consistency
+* Add logging to `NetrcFileParser` to help with debugging authentication problems
 * Optional parameters to `GetContainersCommand` to reduce the size of the response payload
-* Upgrade to most recent JSON-java and Gradle Plugins versions
+* Upgrade to most recent JSON-java, Gradle, and Gradle Plugins versions
 
 ## version 5.0.1
 *Released*: 30 January 2023
