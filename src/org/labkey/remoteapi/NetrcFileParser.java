@@ -54,7 +54,11 @@ public class NetrcFileParser
         NetrcEntry entry = null;
         LOG.info("Attempting to access " + netrcFile);
 
-        if (netrcFile.exists())
+        if (!netrcFile.exists())
+        {
+            LOG.info(netrcFile + " was not found");
+        }
+        else
         {
             LOG.info(netrcFile + " was found");
             LOG.info("Attempting to find an entry in " + netrcFile + " for host \"" + host + "\"");
@@ -87,10 +91,6 @@ public class NetrcFileParser
 
             LOG.info("Entry corresponding to host \"" + host + "\" was " +  (null == entry ? "not " : "") + "found in " +
                 netrcFile + (null == entry ? "" : "; the login and password fields of this entry will be used to attempt authentication."));
-        }
-        else
-        {
-            LOG.info(netrcFile + " was not found");
         }
 
         return entry;
