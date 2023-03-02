@@ -1,8 +1,11 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## version 5.1.0-SNAPSHOT
+## version 5.1.0-whoAmI
 *Released*: TBD
-* Switch first request to `login-whoAmI.api` so `Connection`s using `GuestCredentialsProvider` can retrieve CSRF tokens.
+* Delegate first request behavior to the configured `CredentialsProvider`. This allows `GuestCredentialsProvider` to invoke 
+  `login-whoAmI.api` to retrieve CSRF and session tokens. Other providers invoke `login-ensureLogin.api`.
+* Convey API keys via Basic authentication
+* Upgrade to most recent JSON-java and Gradle Plugins versions.
 
 ## version 5.0.1
 *Released*: 30 January 2023
