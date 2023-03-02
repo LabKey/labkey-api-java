@@ -17,6 +17,7 @@ package org.labkey.remoteapi;
 
 import org.apache.hc.client5.http.auth.AuthenticationException;
 import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.apache.hc.client5.http.protocol.HttpClientContext;
 
 import java.io.IOException;
@@ -56,6 +57,12 @@ public class NetrcCredentialsProvider implements CredentialsProvider
             _wrappedCredentialsProvider = new BasicAuthCredentialsProvider(entry.getLogin(), entry.getPassword());
         else
             _wrappedCredentialsProvider = new GuestCredentialsProvider();
+    }
+
+    @Override
+    public void configureClientBuilder(URI baseURI, HttpClientBuilder builder)
+    {
+        _wrappedCredentialsProvider.configureClientBuilder(baseURI, builder);
     }
 
     @Override

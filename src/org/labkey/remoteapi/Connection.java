@@ -224,7 +224,7 @@ public class Connection
     }
 
     /**
-     * Create the HttpClientBuilder based on this Connection's configuration options.
+     * Create the HttpClientBuilder based on this Connection's configuration options and the CredentialsProvider's wishes.
      * @return The builder for an HttpClient
      */
     private HttpClientBuilder clientBuilder()
@@ -240,6 +240,8 @@ public class Connection
 
         if (null != _userAgent)
             builder.setUserAgent(_userAgent);
+
+        _credentialsProvider.configureClientBuilder(getBaseURI(), builder);
 
         return builder;
     }
