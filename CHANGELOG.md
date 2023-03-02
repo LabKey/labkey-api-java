@@ -1,10 +1,10 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## version 5.1.0-whoAmI
+## version 5.1.0-whoAmI-SNAPSHOT
 *Released*: xx March 2023
-* Delegate first request behavior to the configured `CredentialsProvider`. This allows `GuestCredentialsProvider` to invoke 
-  `login-whoAmI.api` to retrieve CSRF and session tokens. Other providers invoke `login-ensureLogin.api`.
-* Convey API keys via Basic authentication
+* Delegate first request behavior to the configured `CredentialsProvider`. `GuestCredentialsProvider` invokes 
+  `login-whoAmI.api` to retrieve CSRF and session tokens while other providers invoke `login-ensureLogin.api`.
+* Convey API keys via Basic authentication for consistency
 * Optional parameters to `GetContainersCommand` to reduce the size of the response payload
 * Upgrade to most recent JSON-java and Gradle Plugins versions
 

@@ -296,7 +296,6 @@ public class Connection
             request.setHeader(JSESSIONID, _sessionId);
     }
 
-
     protected void afterExecute()
     {
         // Always update our CSRF token as the session may be new since our last request
