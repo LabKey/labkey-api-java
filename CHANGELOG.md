@@ -6,6 +6,7 @@
   `login-whoAmI.api` to retrieve CSRF and session tokens. Other providers invoke `login-ensureLogin.api`.
 * Convey API keys via Basic authentication
 * Upgrade to most recent JSON-java and Gradle Plugins versions.
+* Optional parameters to `GetContainersCommand` to reduce the size of the response payload
 
 ## version 5.0.1
 *Released*: 30 January 2023
