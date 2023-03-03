@@ -43,7 +43,7 @@ public class GuestCredentialsProvider implements CredentialsProvider
     }
 
     @Override
-    public void ensureAuthenticated(Connection connection) throws IOException, CommandException
+    public void initializeConnection(Connection connection) throws IOException, CommandException
     {
         new WhoAmICommand().execute(connection, "/home");
     }

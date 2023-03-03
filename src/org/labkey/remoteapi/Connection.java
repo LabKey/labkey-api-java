@@ -281,12 +281,11 @@ public class Connection
     {
         if (_firstRequest)
         {
-            // Make an initial request to ensure login (especially important when invoking @RequiresNoPermission actions),
-            // get a JSESSIONID, and get a CSRF token
             try
             {
                 _firstRequest = false;
-                ensureAuthenticated();
+                // First request on this connection: delegate to CredentialsProvider for initialization appropriate to the provider
+                _credentialsProvider.initializeConnection(this);
             }
             catch (Exception ignored)
             {
@@ -311,16 +310,9 @@ public class Connection
         }
     }
 
-    /**
-     * Delegate to CredentialsProvider to authenticate the user (if credentials have been provided) and then retrieve
-     * a CSRF token and session ID to use with subsequent requests on this connection.
-     *
-     * @throws IOException      if there is an IO problem executing the command to retrieve session and CSRF token
-     * @throws CommandException if the server returned a non-success status code
-     */
+    @Deprecated // Not used. Left for backwards compatibility with AccountsManager.updateSiteExpirationBanner(). TODO: Delete!
     public void ensureAuthenticated() throws IOException, CommandException
     {
-        _credentialsProvider.ensureAuthenticated(this);
     }
 
     /**

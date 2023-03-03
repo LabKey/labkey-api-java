@@ -44,7 +44,7 @@ public class ApiKeyCredentialsProvider implements CredentialsProvider
     }
 
     @Override
-    public void ensureAuthenticated(Connection connection) throws IOException, CommandException
+    public void initializeConnection(Connection connection) throws IOException, CommandException
     {
         // No point in calling ensureLogin.api since the server doesn't "log in" the session when using an API key
         new WhoAmICommand().execute(connection, "/home");

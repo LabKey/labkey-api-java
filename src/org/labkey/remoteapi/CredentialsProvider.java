@@ -27,5 +27,10 @@ public interface CredentialsProvider
 {
     void configureClientBuilder(URI baseURI, HttpClientBuilder builder);
     void configureRequest(URI baseURI, HttpUriRequest request, HttpClientContext httpClientContext) throws AuthenticationException;
-    void ensureAuthenticated(Connection connection) throws IOException, CommandException;
+
+    /**
+     * Initialize the connection before its first request. If connection-based, authenticate the user. In all cases,
+     * retrieve the CSRF token and session ID to use with subsequent requests on this connection.
+     */
+    void initializeConnection(Connection connection) throws IOException, CommandException;
 }

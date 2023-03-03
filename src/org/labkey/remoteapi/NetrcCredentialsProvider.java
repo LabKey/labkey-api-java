@@ -72,8 +72,8 @@ public class NetrcCredentialsProvider implements CredentialsProvider
     }
 
     @Override
-    public void ensureAuthenticated(Connection connection) throws IOException, CommandException
+    public void initializeConnection(Connection connection) throws IOException, CommandException
     {
-        _wrappedCredentialsProvider.ensureAuthenticated(connection);
+        _wrappedCredentialsProvider.initializeConnection(connection);
     }
 }

@@ -67,7 +67,7 @@ public class BasicAuthCredentialsProvider implements CredentialsProvider
     }
 
     @Override
-    public void ensureAuthenticated(Connection connection) throws IOException, CommandException
+    public void initializeConnection(Connection connection) throws IOException, CommandException
     {
         new EnsureLoginCommand().execute(connection, "/home");
     }
