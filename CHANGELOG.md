@@ -1,7 +1,10 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## version 5.1.0-whoAmI-SNAPSHOT
-*Released*: xx March 2023
+## version 5.2.0-SNAPSHOT
+*Released*: TBD
+
+## version 5.1.0
+*Released*: 3 March 2023
 * Delegate first request behavior to the configured `CredentialsProvider`. Connection-based providers invoke
   `login-ensureLogin.api` and connection-less providers invoke `login-whoAmI.api`.
 * Restore connection-based authentication for `BasicCredentialsProvider`
