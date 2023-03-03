@@ -34,10 +34,13 @@ public class NetrcFileParser
     {
         NetrcEntry entry = getEntry(".netrc", host);
 
-        if (null != entry)
-            return entry;
+        if (null == entry)
+            entry = getEntry("_netrc", host);
 
-        return getEntry("_netrc", host);
+        if (null == entry)
+            LOG.info("Failed to find a netrc file with an entry for host \"" + host + "\". This connection will therefore use guest credentials.");
+
+        return entry;
     }
 
     private static final Pattern netrcPattern = Pattern.compile("machine\\s+(.+?)\\s+login\\s+(.+?)\\s+password\\s+(.+?)\\s+", Pattern.MULTILINE);
