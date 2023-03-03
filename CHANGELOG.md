@@ -1,8 +1,16 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## version 5.1.0-SNAPSHOT
+## version 5.2.0-SNAPSHOT
 *Released*: TBD
+
+## version 5.1.0
+*Released*: 3 March 2023
+* Delegate first request behavior to the configured `CredentialsProvider`. Connection-based providers invoke
+  `login-ensureLogin.api` and connection-less providers invoke `login-whoAmI.api`.
+* Restore connection-based authentication for `BasicCredentialsProvider`
+* Add logging to `NetrcFileParser` to help with debugging authentication problems
 * Optional parameters to `GetContainersCommand` to reduce the size of the response payload
+* Upgrade to most recent JSON-java, Gradle, and Gradle Plugins versions
 
 ## version 5.0.1
 *Released*: 30 January 2023

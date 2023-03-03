@@ -34,7 +34,6 @@ import org.apache.hc.client5.http.ssl.TrustSelfSignedStrategy;
 import org.apache.hc.core5.http.HttpHost;
 import org.apache.hc.core5.http.HttpRequest;
 import org.apache.hc.core5.ssl.SSLContextBuilder;
-import org.labkey.remoteapi.security.EnsureLoginCommand;
 import org.labkey.remoteapi.security.ImpersonateUserCommand;
 import org.labkey.remoteapi.security.LogoutCommand;
 import org.labkey.remoteapi.security.StopImpersonatingCommand;
@@ -225,7 +224,7 @@ public class Connection
     }
 
     /**
-     * Create the HttpClientBuilder based on this Connection's configuration options.
+     * Create the HttpClientBuilder based on this Connection's configuration options and the CredentialsProvider's wishes.
      * @return The builder for an HttpClient
      */
     private HttpClientBuilder clientBuilder()
@@ -241,6 +240,8 @@ public class Connection
 
         if (null != _userAgent)
             builder.setUserAgent(_userAgent);
+
+        _credentialsProvider.configureClientBuilder(getBaseURI(), builder);
 
         return builder;
     }
@@ -280,12 +281,11 @@ public class Connection
     {
         if (_firstRequest)
         {
-            // Make an initial request to ensure login (especially important when invoking @RequiresNoPermission actions),
-            // get a JSESSIONID, and get a CSRF token
             try
             {
                 _firstRequest = false;
-                ensureAuthenticated();
+                // First request on this connection: delegate to CredentialsProvider for initialization appropriate to the provider
+                _credentialsProvider.initializeConnection(this);
             }
             catch (Exception ignored)
             {
@@ -296,7 +296,6 @@ public class Connection
         if (null != _sessionId)
             request.setHeader(JSESSIONID, _sessionId);
     }
-
 
     protected void afterExecute()
     {
@@ -311,15 +310,9 @@ public class Connection
         }
     }
 
-    /**
-     * Ensures that the credentials have been used to authenticate the users and returns a client that can be used for other requests
-     *
-     * @throws IOException      if there is an IO problem executing the command to ensure login
-     * @throws CommandException if the server returned a non-success status code.
-     */
+    @Deprecated // Not used. Left for backwards compatibility with AccountsManager.updateSiteExpirationBanner(). TODO: Delete!
     public void ensureAuthenticated() throws IOException, CommandException
     {
-        new EnsureLoginCommand().execute(this, "/home");
     }
 
     /**

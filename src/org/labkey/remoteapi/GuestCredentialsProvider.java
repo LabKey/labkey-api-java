@@ -16,8 +16,11 @@
 package org.labkey.remoteapi;
 
 import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.apache.hc.client5.http.protocol.HttpClientContext;
+import org.labkey.remoteapi.security.WhoAmICommand;
 
+import java.io.IOException;
 import java.net.URI;
 
 /**
@@ -27,9 +30,21 @@ import java.net.URI;
 public class GuestCredentialsProvider implements CredentialsProvider
 {
     @Override
+    public void configureClientBuilder(URI baseURI, HttpClientBuilder builder)
+    {
+    }
+
+    @Override
     public void configureRequest(URI baseURI, HttpUriRequest request, HttpClientContext httpClientContext)
     {
         httpClientContext.setCredentialsProvider(null);
         request.removeHeaders("Authenticate");
+        request.removeHeaders("Authorization");
+    }
+
+    @Override
+    public void initializeConnection(Connection connection) throws IOException, CommandException
+    {
+        new WhoAmICommand().execute(connection, "/home");
     }
 }
