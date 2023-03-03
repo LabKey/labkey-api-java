@@ -15,10 +15,38 @@
  */
 package org.labkey.remoteapi;
 
-public class ApiKeyCredentialsProvider extends BasicAuthCredentialsProvider
+import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.protocol.HttpClientContext;
+import org.labkey.remoteapi.security.WhoAmICommand;
+
+import java.io.IOException;
+import java.net.URI;
+
+public class ApiKeyCredentialsProvider implements CredentialsProvider
 {
+    private final String _apiKey;
+
     public ApiKeyCredentialsProvider(String apiKey)
     {
-        super("apikey", apiKey);
+        _apiKey = apiKey;
+    }
+
+    @Override
+    public void configureClientBuilder(URI baseURI, HttpClientBuilder builder)
+    {
+    }
+
+    @Override
+    public void configureRequest(URI baseURI, HttpUriRequest request, HttpClientContext httpClientContext)
+    {
+        request.setHeader("apikey", _apiKey);
+    }
+
+    @Override
+    public void ensureAuthenticated(Connection connection) throws IOException, CommandException
+    {
+        // No point in calling ensureLogin.api since the server doesn't "log in" the session when using an API key
+        new WhoAmICommand().execute(connection, "/home");
     }
 }

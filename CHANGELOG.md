@@ -2,8 +2,9 @@
 
 ## version 5.1.0-whoAmI-SNAPSHOT
 *Released*: xx March 2023
-* Delegate first request behavior to the configured `CredentialsProvider`. `GuestCredentialsProvider` invokes 
-  `login-whoAmI.api` to retrieve CSRF and session tokens while other providers invoke `login-ensureLogin.api`.
+* Delegate first request behavior to the configured `CredentialsProvider`. Connection-based providers invoke
+  `login-ensureLogin.api` and connection-less providers invoke `login-whoAmI.api`.
+* Restore connection-based authentication for `BasicCredentialsProvider`
 * Add logging to `NetrcFileParser` to help with debugging authentication problems
 * Optional parameters to `GetContainersCommand` to reduce the size of the response payload
 * Upgrade to most recent JSON-java, Gradle, and Gradle Plugins versions
