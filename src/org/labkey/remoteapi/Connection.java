@@ -310,11 +310,6 @@ public class Connection
         }
     }
 
-    @Deprecated // Not used. Left for backwards compatibility with AccountsManager.updateSiteExpirationBanner(). TODO: Delete!
-    public void ensureAuthenticated() throws IOException, CommandException
-    {
-    }
-
     /**
      * Invalidates the current HTTP session on the server, if any
      *
