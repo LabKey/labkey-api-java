@@ -2,6 +2,7 @@
 
 ## version 5.2.0-SNAPSHOT
 *Released*: TBD
+* Add `RenameContainerCommand` and `RenameContainerResponse`
 
 ## version 5.1.0
 *Released*: 3 March 2023
