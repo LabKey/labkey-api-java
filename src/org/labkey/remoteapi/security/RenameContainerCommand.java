@@ -18,7 +18,7 @@ package org.labkey.remoteapi.security;
 
 import org.labkey.remoteapi.PostCommand;
 
-import java.util.Objects;
+import org.json.JSONObject;
 
 /**
  * Rename a container on the server
