@@ -48,28 +48,34 @@ public class RenameContainerCommand extends PostCommand<RenameContainerResponse>
         return result;
     }
 
-    public String get_name() {
+    public String getName()
+    {
         return _name;
     }
 
-    public void set_name(String _name) {
-        this._name = _name;
+    public void setName(String name)
+    {
+        _name = name;
     }
 
-    public String get_title() {
+    public String getTitle()
+    {
         return _title;
     }
 
-    public void set_title(String _title) {
-        this._title = _title;
+    public void setTitle(String title)
+    {
+        _title = title;
     }
 
-    public boolean is_addAlias() {
+    public boolean isAddAlias()
+    {
         return _addAlias;
     }
 
-    public void set_addAlias(boolean _addAlias) {
-        this._addAlias = _addAlias;
+    public void setAddAlias(boolean addAlias)
+    {
+        _addAlias = addAlias;
     }
 
     @Override
