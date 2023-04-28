@@ -31,7 +31,7 @@ public class RenameContainerCommand extends PostCommand<RenameContainerResponse>
 
     public RenameContainerCommand(String name, String title, boolean addAlias)
     {
-        super("core", "RenameContainer");
+        super("admin", "RenameContainer");
         _name = name;
         _title = title;
         _addAlias = addAlias;
