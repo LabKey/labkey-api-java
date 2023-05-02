@@ -44,12 +44,6 @@ follow is to use your feature branch in the naming of that version (e.g., `X.Y.Z
 TeamCity will automatically publish new SNAPSHOT versions from feature branches.
 - Update your `$LABKEY_ROOT/settings.gradle` file to include this project (`include ':remoteapi:labkey-api-java'`)
 
-After making these changes, in all places where a dependency on the Java API has been declared like so: 
-
-```gradle
-BuildUtils.addLabKeyDependency(project: project, config: "remoteApi", depProjectPath: BuildUtils.getRemoteApiProjectPath(gradle), depVersion: project.labkeyClientApiVersion)
-```
-
 Gradle will now pull in the locally built version instead. To start using a published
 version instead, revert the change to the `settings.gradle` file (and, if necessary, update the `labkeyClientApiVersion`
 in the `$LABKEY_ROOT/gradle.properties` file).
