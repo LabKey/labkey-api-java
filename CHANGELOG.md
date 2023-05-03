@@ -1,8 +1,5 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## version 5.3.0-SNAPSHOT
-*Released*: TBD
-
 ## version 5.2.0
 *Released*: 3 May 2023
 * Add `RenameContainerCommand` and `RenameContainerResponse`
