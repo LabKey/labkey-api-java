@@ -86,7 +86,7 @@ jar {
     libsDirName = "jar"
 }
 
-project.tasks.withType(JavaCompile) {
+project.tasks.withType(JavaCompile).configureEach {
     sourceCompatibility = project.ext.sourceCompatibility
     targetCompatibility = project.ext.targetCompatibility
 }
@@ -95,45 +95,46 @@ project.tasks.withType(JavaCompile) {
 // artifacts.  Its extension is .module, which might get confused with our own .module files.
 // We could publish these files for everything but .module files, but for now we disable always
 // https://docs.gradle.org/current/userguide/publishing_gradle_module_metadata.html
-project.tasks.withType(GenerateModuleMetadata) {
+project.tasks.withType(GenerateModuleMetadata).configureEach {
     enabled = false
 }
 
-project.task("fatJar",
-        description: "Generate single jar file containing the api and all its dependent classes",
-        group: GroupNames.BUILD,
-        type: Jar,
-        {
-            Jar jar ->
-                jar.from sourceSets.main.output
-                jar.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-                jar.from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }}
-                jar.setArchiveVersion(project.version)
-                jar.archiveClassifier.set(LabKey.FAT_JAR_CLASSIFIER)
-                jar.dependsOn project.tasks.jar
-        }
-)
+project.tasks.register("fatJar", Jar) {
+    Jar jar ->
+        jar.description = "Generate single jar file containing the api and all its dependent classes"
+        jar.group = GroupNames.BUILD
+        jar.from sourceSets.main.output
+        jar.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        jar.from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+        jar.setArchiveVersion(project.version)
+        jar.archiveClassifier.set(LabKey.FAT_JAR_CLASSIFIER)
+        jar.dependsOn project.tasks.jar
+}
 
 if (project.hasProperty('javaClientDir'))
 {
-    project.task('deployFatJar', description: "Generate java client 'all' jar file and deploy to a given directory. For example, a host app other than LabKey Server",
-            type: Copy) {
+    project.tasks.register('deployFatJar', Copy) {
+        description = "Generate java client 'all' jar file and deploy to a given directory. For example, a host app other than LabKey Server"
         from fatJar
         into project.javaClientDir
     }
 }
 
-project.task('javadocJar', description: "Generate jar file of javadoc files", type: Jar) {Jar jar ->
-            jar.from project.tasks.javadoc.destinationDir
-            jar.group GroupNames.DISTRIBUTION
-            jar.archiveClassifier.set(LabKey.JAVADOC_CLASSIFIER)
-            jar.dependsOn project.tasks.javadoc
-        }
+project.tasks.register('javadocJar', Jar) {
+    Jar jar ->
+        jar.description = "Generate jar file of javadoc files"
+        jar.from project.tasks.javadoc.destinationDir
+        jar.group GroupNames.DISTRIBUTION
+        jar.archiveClassifier.set(LabKey.JAVADOC_CLASSIFIER)
+        jar.dependsOn project.tasks.javadoc
+}
 
-project.task('sourcesJar', description: "Generate jar file of source files", type: Jar) {Jar jar ->
-            jar.from project.sourceSets.main.allJava
-            jar.group GroupNames.DISTRIBUTION
-            jar.archiveClassifier.set(LabKey.SOURCES_CLASSIFIER)
+project.tasks.register('sourcesJar', Jar) {
+    Jar jar ->
+        jar.description = "Generate jar file of source files"
+        jar.from project.sourceSets.main.allJava
+        jar.group GroupNames.DISTRIBUTION
+        jar.archiveClassifier.set(LabKey.SOURCES_CLASSIFIER)
 }
 
 project.artifacts {
