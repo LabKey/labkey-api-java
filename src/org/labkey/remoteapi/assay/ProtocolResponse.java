@@ -10,7 +10,7 @@ public class ProtocolResponse extends CommandResponse
     public ProtocolResponse(String text, int statusCode, String contentType, JSONObject json)
     {
         super(text, statusCode, contentType, json);
-        _protocol = new Protocol((JSONObject) json.get("data"));
+        _protocol = new Protocol(json.getJSONObject("data"));
     }
 
     public Protocol getProtocol()
