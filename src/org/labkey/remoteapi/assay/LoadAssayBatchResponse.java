@@ -19,7 +19,7 @@ public class LoadAssayBatchResponse extends CommandResponse
     public LoadAssayBatchResponse(String text, int statusCode, String contentType, JSONObject json)
     {
         super(text, statusCode, contentType, json);
-        _batch = new Batch((JSONObject) json.get("batch"));
+        _batch = new Batch(json.getJSONObject("batch"));
     }
 
     public Batch getBatch()

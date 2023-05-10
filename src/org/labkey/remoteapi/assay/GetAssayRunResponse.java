@@ -29,7 +29,7 @@ public class GetAssayRunResponse extends CommandResponse
     public GetAssayRunResponse(String text, int statusCode, String contentType, JSONObject json)
     {
         super(text, statusCode, contentType, json);
-        JSONObject runJson = (JSONObject) json.get("run");
+        JSONObject runJson = json.getJSONObject("run");
         _run = new Run(runJson);
     }
 }

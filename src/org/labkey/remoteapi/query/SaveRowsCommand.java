@@ -209,8 +209,10 @@ public abstract class SaveRowsCommand extends PostCommand<SaveRowsResponse>
             for(Map<String, Object> row : getRows())
             {
                 JSONObject jsonRow;
-                if(row instanceof JSONObject) //optimization
-                    jsonRow = (JSONObject)row;
+                if (row instanceof JSONObject jo) //optimization
+                {
+                    jsonRow = jo;
+                }
                 else
                 {
                     jsonRow = new JSONObject();
