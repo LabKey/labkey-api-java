@@ -229,6 +229,12 @@ project.publishing {
                     basic(BasicAuthentication)
                     // enable preemptive authentication to get around https://www.jfrog.com/jira/browse/RTFACT-4434
                 }
+                content {
+                    includeGroup "org.labkey"
+                    includeGroup "org.labkey.api"
+                    includeGroup "org.labkey.module"
+                    includeGroup "org.maccosslab"
+                }
             }
         }
     }
