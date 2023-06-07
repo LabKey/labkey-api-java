@@ -233,7 +233,6 @@ project.publishing {
                     includeGroup "org.labkey"
                     includeGroup "org.labkey.api"
                     includeGroup "org.labkey.module"
-                    includeGroup "org.maccosslab"
                 }
             }
         }
