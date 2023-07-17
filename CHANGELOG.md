@@ -2,6 +2,7 @@
 
 ## version 5.3.0-SNAPSHOT
 *Released*: TBD
+* Update to Gradle 8.2.1 and adjust away from deprecated syntax
 
 ## version 5.2.0
 *Released*: 3 May 2023
