@@ -106,7 +106,9 @@ jar {
                 }
             }
 
-    libsDirName = "jar"
+}
+base {
+    libsDirectory = layout.buildDirectory.dir('jar')
 }
 
 project.tasks.withType(JavaCompile).configureEach {
