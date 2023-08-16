@@ -30,9 +30,10 @@ public class Filter
         // WARNING: Keep in sync and in order with all other client apis and docs:
         // - server: CompareType.java
         // - java: Filter.java
-        // - js: Filter.js
+        // - js: Types.ts
         // - R: makeFilter.R, makeFilter.Rd
-        // - Python & Perl don't have a filter operator enum
+        // - Python: query.py
+        // - Perl doesn't have a filter operator enum
 
         //
         // These operators require a data value
@@ -90,7 +91,22 @@ public class Filter
         //
 
         Q("Search", "q", "Q", true),
-        WHERE("Where", "where", "WHERE", true)
+        WHERE("Where", "where", "WHERE", true),
+
+        //
+        // Ontology operators
+        //
+
+        ONTOLOGY_IN_SUBTREE("Is In Subtree", "concept:insubtree", "ONTOLOGY_IN_SUBTREE", true),
+        ONTOLOGY_NOT_IN_SUBTREE("Is Not In Subtree", "concept:notinsubtree", "ONTOLOGY_NOT_IN_SUBTREE", true),
+
+        //
+        // Lineage operators
+        //
+
+        EXP_CHILD_OF("Is Child Of", "exp:childof", "EXP_CHILD_OF", true),
+        EXP_PARENT_OF("Is Parent Of", "exp:parentof", "EXP_PARENT_OF", true),
+        EXP_LINEAGE_OF("In The Lineage Of", "exp:lineageof", "EXP_LINEAGE_OF", true)
         ;
 
         private static final Map<String, Operator> _programmaticNameToOperator = Arrays.stream(Operator.values())

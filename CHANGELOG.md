@@ -3,6 +3,7 @@
 ## version 5.3.0-SNAPSHOT
 *Released*: TBD
 * Update to Gradle 8.2.1 and adjust away from deprecated syntax
+* Add Ontology and Lineage filter type operators
 
 ## version 5.2.0
 *Released*: 3 May 2023
@@ -10,7 +11,7 @@
 
 ## version 5.1.0
 *Released*: 3 March 2023
-* Delegate first request behavior to the configured `CredentialsProvider`. Connection-based providers invoke
+* Delegate first request behavior to ``the configured `CredentialsProvider`. Connection-based providers invoke
   `login-ensureLogin.api` and connection-less providers invoke `login-whoAmI.api`.
 * Restore connection-based authentication for `BasicCredentialsProvider`
 * Add logging to `NetrcFileParser` to help with debugging authentication problems
@@ -19,9 +20,9 @@
 
 ## version 5.0.1
 *Released*: 30 January 2023
-* Fix regression introduced in 5.0.0: `RowsResponse.fixupParsedData()` was called before `_requiredVersion` was set. This caused
+* Fix regression introduced in 5.0.0: ```RowsResponse.fixupParsedData()` was called before `_requiredVersion` was set. This caused
   the fixup method to skip `BigDecimal` to `Double` conversions in the returned data maps.
-
+``
 ## version 5.0.0
 *Released*: 24 January 2023
 * Refactor the `Command` class hierarchy:
@@ -42,7 +43,7 @@
 * Introduce `HasRequiredVersion` interface and use it when instantiating `CommandResponse` subclasses that need required version
 * Remove all `Command` copy constructors. Same rationale as the earlier removal of `copy` methods.
 * Switch `SelectRowsCommand` and `NAbRunsCommand` to post their parameters as JSON
-* Fix `NAbReplicate` to handle `"NaN"` values
+* Fix `NAbReplicate` to handle `"NaN"` values``
 * Remove `CommandException` from `getHttpRequest()` throws list
 * Adjust the `Demo.java` and `Test.java` tests to match current sample data and `Command` hierarchy changes
 
