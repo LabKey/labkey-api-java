@@ -2,10 +2,10 @@
 
 ## version 5.3.0-SNAPSHOT
 *Released*: TBD
-* Update to Gradle 8.2.1 and adjust away from deprecated syntax
+* Update to Gradle 8.3 and adjust away from deprecated syntax
 * Add Ontology and Lineage filter type operators
 * Add `TotpManager`, a simple helper that generates TOTP one-time passwords
-* Upgrade Commons Codec, HttpCore, and Gradle Plugins versions
+* Update Commons Codec, HttpCore, and Gradle Plugins versions
 
 ## version 5.2.0
 *Released*: 3 May 2023
