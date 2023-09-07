@@ -1,8 +1,5 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## version 5.4.0-SNAPSHOT
-*Released*: TBD
-
 ## version 5.3.0
 *Released*: 7 September 2023
 * Update to Gradle 8.3 and adjust away from deprecated syntax
