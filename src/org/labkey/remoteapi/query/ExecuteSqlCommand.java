@@ -48,6 +48,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
     private boolean _saveInSession = false;
     private boolean _includeDetailsColumn = false;
     private Map<String, String> _queryParameters = new HashMap<>();
+    private boolean _wafEncoding = true;
 
     /**
      * Constructs an ExecuteSqlCommand, initialized with a schema name.
@@ -306,6 +307,20 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
         _containerFilter = containerFilter;
     }
 
+    public boolean getWafEncoding()
+    {
+        return _wafEncoding;
+    }
+
+    /**
+     * By default, this command encodes the SQL parameter to allow it to pass through web application firewalls. This
+     * is compatible with LabKey Server v23.9.0 and above. If targeting an earlier server, pass false to this method.
+     */
+    public void setWafEncoding(boolean wafEncoding)
+    {
+        _wafEncoding = wafEncoding;
+    }
+
     @Override
     protected SelectRowsResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
@@ -319,7 +334,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
     {
         JSONObject json = new JSONObject();
         json.put("schemaName", getSchemaName());
-        json.put("sql", EncodeUtils.wafEncode(getSql()));
+        json.put("sql", getWafEncoding() ? EncodeUtils.wafEncode(getSql()) : getSql());
         if (getMaxRows() >= 0)
             json.put("maxRows", getMaxRows());
         if (getOffset() > 0)
