@@ -2,6 +2,8 @@
 
 ## version 5.4.0-SNAPSHOT
 *Released*: TBD
+* Obfuscate SQL parameters passed by `ExecuteSqlCommand` and `SqlExecuteCommand` to avoid rejection by WAFs (earliest compatible LabKey Server version: 23.9.0)
+* Update HttpCore version
 
 ## version 5.3.0
 *Released*: 7 September 2023

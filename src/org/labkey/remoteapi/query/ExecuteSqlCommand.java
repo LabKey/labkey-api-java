@@ -17,6 +17,7 @@ package org.labkey.remoteapi.query;
 
 import org.json.JSONObject;
 import org.labkey.remoteapi.PostCommand;
+import org.labkey.remoteapi.internal.EncodeUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -198,7 +199,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
      The value of this property should be a comma-delimited list of column names you want to sort by.
      Use a - prefix to sort a column in descending order
      (e.g., 'LastName,-Age' to sort first by LastName, then by Age descending).
-     @return the set of sorts to apply
+     @return the list of sorts to apply
      */
     public List<Sort> getSorts()
     {
@@ -219,7 +220,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
     }
 
     /**
-     * Whether or not the definition of this query should be stored for reuse during the current session.
+     * Whether the definition of this query should be stored for reuse during the current session.
      * If true, all information required to recreate the query will be stored on the server and a unique query name
      * will be passed to the success callback. This temporary query name can be used by all other API methods,
      * including Query Web Part creation, for as long as the current user's session remains active.
@@ -231,7 +232,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
     }
 
     /**
-     * Whether or not the definition of this query should be stored for reuse during the current session.
+     * Whether the definition of this query should be stored for reuse during the current session.
      * If true, all information required to recreate the query will be stored on the server and a unique query name
      * will be passed to the success callback. This temporary query name can be used by all other API methods,
      * including Query Web Part creation, for as long as the current user's session remains active.
@@ -267,7 +268,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
     /**
      Map of name (string)/value pairs for the values of parameters if the SQL references underlying queries
      that are parameterized.
-     @return the set of query parameters for the SQL references
+     @return map of query parameters for the SQL references
      */
     public Map<String, String> getQueryParameters()
     {
@@ -318,7 +319,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
     {
         JSONObject json = new JSONObject();
         json.put("schemaName", getSchemaName());
-        json.put("sql", getSql());
+        json.put("sql", EncodeUtils.wafEncode(getSql()));
         if (getMaxRows() >= 0)
             json.put("maxRows", getMaxRows());
         if (getOffset() > 0)
@@ -337,7 +338,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
     {
         Map<String, Object> params = super.createParameterMap();
 
-        if (null != getSorts() && getSorts().size() > 0)
+        if (null != getSorts() && !getSorts().isEmpty())
             params.put("query.sort", Sort.getSortQueryStringParam(getSorts()));
 
         for (Map.Entry<String, String> entry : getQueryParameters().entrySet())
