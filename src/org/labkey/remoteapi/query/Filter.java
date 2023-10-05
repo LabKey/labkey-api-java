@@ -237,8 +237,8 @@ public class Filter
     public String getQueryStringParamName()
     {
         return (null == getColumnName() || null == getOperator())
-                ? ""
-                : getColumnName() + "~" + getOperator().getUrlKey();
+            ? ""
+            : getColumnName() + "~" + getOperator().getUrlKey();
     }
 
     /**

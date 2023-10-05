@@ -18,6 +18,7 @@ package org.labkey.remoteapi.query;
 import org.json.JSONObject;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.PostCommand;
+import org.labkey.remoteapi.internal.EncodeUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,10 +44,10 @@ public class SqlExecuteCommand extends PostCommand<CommandResponse>
 
     private String _schemaName;
     private String _sql;
-    private Map<String, Object> _queryParameters = new HashMap<>();
-    private String _sep = us_char + "\t";
-    private String _eol = us_char + "\n";
-    private boolean _compact = true;
+    private final Map<String, Object> _queryParameters = new HashMap<>();
+    private final String _sep = us_char + "\t";
+    private final String _eol = us_char + "\n";
+    private final boolean _compact = true;
 
     /**
      * Constructs an ExecuteSqlCommand, initialized with a schema name.
@@ -107,7 +108,7 @@ public class SqlExecuteCommand extends PostCommand<CommandResponse>
     /**
      Map of name (string)/value pairs for the values of parameters if the SQL references underlying queries
      that are parameterized.
-     @return the set of query parameters for the SQL references
+     @return map of query parameters for the SQL references
      */
     public Map<String, Object> getQueryParameters()
     {
@@ -129,6 +130,7 @@ public class SqlExecuteCommand extends PostCommand<CommandResponse>
     {
         return _eol;
     }
+
     public String getFieldSeparator()
     {
         return _sep;
@@ -139,7 +141,7 @@ public class SqlExecuteCommand extends PostCommand<CommandResponse>
     {
         JSONObject json = new JSONObject();
         json.put("schema", getSchemaName());
-        json.put("sql", getSql());
+        json.put("sql", EncodeUtils.wafEncode(getSql()));
         json.put("parameters", getQueryParameters());
         json.put("eol", _eol);
         json.put("sep", _sep);
