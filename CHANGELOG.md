@@ -1,12 +1,12 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## version 5.4.0-SNAPSHOT
+## version 6.0.0-SNAPSHOT
 *Released*: TBD
 * Obfuscate SQL parameters passed by `ExecuteSqlCommand` and `SqlExecuteCommand` to avoid rejection by web application firewalls
   * Earliest compatible LabKey Server version: 23.9.0
   * These commands are no longer compatible with earlier versions of LabKey Server (23.8.x and before) by default, however,
     if targeting an older server, calling `ExecuteSqlCommand.setWafEncoding(false)` will restore the previous behavior.
-* Update HttpCore version
+* Update HttpCore, JSON-java, Gradle Plugins, and Gradle versions
 
 ## version 5.3.0
 *Released*: 7 September 2023
