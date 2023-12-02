@@ -1,7 +1,5 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## version 6.1.0-SNAPSHOT
-
 ## version 6.0.0
 *Released*: 1 December 2023
 * Encode SQL parameters passed by `ExecuteSqlCommand` and `SqlExecuteCommand` to avoid rejection by web application firewalls
