@@ -276,7 +276,7 @@ public abstract class Command<ResponseType extends CommandResponse, RequestType 
             if (_responseText != null)
                 return _responseText;
 
-            try (Scanner s = new Scanner(_httpResponse.getEntity().getContent()).useDelimiter("\\A"))
+            try (Scanner s = new Scanner(_httpResponse.getEntity().getContent(), StandardCharsets.UTF_8).useDelimiter("\\A"))
             {
                 // Simple InputStream -> String conversion
                 return s.hasNext() ? s.next() : "";
@@ -362,7 +362,7 @@ public abstract class Command<ResponseType extends CommandResponse, RequestType 
         if (null != contentType && contentType.contains(CONTENT_TYPE_JSON))
         {
             // Parse JSON
-            if (responseText != null && responseText.length() > 0)
+            if (responseText != null && !responseText.isEmpty())
             {
                 json = new JSONObject(responseText);
                 if (json.has("exception"))
@@ -447,7 +447,7 @@ public abstract class Command<ResponseType extends CommandResponse, RequestType 
         StringBuilder path = new StringBuilder(uri.getPath() == null || "".equals(uri.getPath()) ? "/" : uri.getPath());
 
         //add the folderPath (if any)
-        if (null != folderPath && folderPath.length() > 0)
+        if (null != folderPath && !folderPath.isEmpty())
         {
             String folderPathNormalized = folderPath.replace('\\', '/');
             if (folderPathNormalized.charAt(0) == '/') // strip leading slash

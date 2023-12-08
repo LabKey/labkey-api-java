@@ -1,12 +1,14 @@
 # The LabKey Remote API Library for Java - Change Log
 
 ## version 6.1.0-SNAPSHOT
+*Released*: TBD
+* [Issue 49238](https://www.labkey.org/home/Developer/issues/issues-details.view?issueId=49238): Fix so all command responses correctly decode as UTF-8.
 
 ## version 6.0.0
 *Released*: 1 December 2023
 * Encode SQL parameters passed by `ExecuteSqlCommand` and `SqlExecuteCommand` to avoid rejection by web application firewalls
   * Earliest compatible LabKey Server version: 23.9.0
-  * These commands are no longer compatible with earlier versions of LabKey Server (23.8.x and before) by default, however,
+  * These commands are no longer compatible with earlier versions of LabKey Server (23.8.x and before) by default. However,
     if targeting an older server, calling `ExecuteSqlCommand.setWafEncoding(false)` will restore the previous behavior.
 * Update HttpCore, JSON-java, Gradle Plugins, and Gradle versions
 
@@ -51,7 +53,7 @@
   * `setJsonObject()` is now available only on `SimplePostCommand`. Custom `PostCommand` subclasses that need to post JSON are
     expected to override `getJsonObject()`.
 * Stop passing command subclasses when constructing every `CommandResponse`. The two response classes that need this now implement
-  it without burdening all other commands. 
+  it without burdening all other commands.
 * Introduce `HasRequiredVersion` interface and use it when instantiating `CommandResponse` subclasses that need required version
 * Remove all `Command` copy constructors. Same rationale as the earlier removal of `copy` methods.
 * Switch `SelectRowsCommand` and `NAbRunsCommand` to post their parameters as JSON
@@ -65,8 +67,7 @@
 
 ## version 4.3.0
 *Released*: 11 January 2023
-* [Issue 47030](https://www.labkey.org/home/Developer/issues/issues-details.view?issueId=47030): Switch `SelectRowsCommand`
-  and `NAbRunsCommand` to always use POST
+* [Issue 47030](https://www.labkey.org/home/Developer/issues/issues-details.view?issueId=47030): Switch `SelectRowsCommand` and `NAbRunsCommand` to always use POST
 * Add support for `includeTotalCount`, `includeMetadata`, and `ignoreFilter` flags to `BaseQueryCommand` and reconcile 
   duplicate parameter handling code vs. SelectRowsCommand
 * Add support for `includeTitle` and `includeViewDataUrl` flags to `GetQueriesCommand`
