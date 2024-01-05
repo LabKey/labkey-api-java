@@ -83,10 +83,19 @@ import java.util.Map;
  */
 public abstract class SaveRowsCommand extends PostCommand<SaveRowsResponse>
 {
+    public enum AuditBehavior
+    {
+        NONE,
+        SUMMARY,
+        DETAILED
+    }
+
     private String _schemaName;
     private String _queryName;
     private Map<String, Object> _extraContext;
     private List<Map<String, Object>> _rows = new ArrayList<>();
+    private AuditBehavior _auditBehavior;
+    private String _auditUserComment;
 
     /**
      * Constructs a new SaveRowsCommand for a given schema, query and action name.
@@ -185,6 +194,36 @@ public abstract class SaveRowsCommand extends PostCommand<SaveRowsResponse>
         _rows.add(row);
     }
 
+    public AuditBehavior getAuditBehavior()
+    {
+        return _auditBehavior;
+    }
+
+    /**
+     * Used to override the audit behavior for the schema/query.
+     * Note that any audit behavior type that is configured via an XML file for the given schema/query
+     * will take precedence over this value. See TableInfo.getAuditBehavior() for more details.
+     * @param auditBehavior Valid values include "NONE", "SUMMARY", and "DETAILED"
+     */
+    public void setAuditBehavior(AuditBehavior auditBehavior)
+    {
+        _auditBehavior = auditBehavior;
+    }
+
+    public String getAuditUserComment()
+    {
+        return _auditUserComment;
+    }
+
+    /**
+     * Used to provide a comment that will be attached to certain detailed audit log records
+     * @param auditUserComment The comment to attach to the detailed audit log records
+     */
+    public void setAuditUserComment(String auditUserComment)
+    {
+        _auditUserComment = auditUserComment;
+    }
+
     /**
      * Dynamically builds the JSON object to send based on the current
      * schema name, query name and rows list.
@@ -198,6 +237,10 @@ public abstract class SaveRowsCommand extends PostCommand<SaveRowsResponse>
         json.put("queryName", getQueryName());
         if (getExtraContext() != null)
             json.put("extraContext", getExtraContext());
+        if (getAuditBehavior() != null)
+            json.put("auditBehavior", getAuditBehavior());
+        if (getAuditUserComment() != null)
+            json.put("auditUserComment", getAuditUserComment());
 
         //unfortunately, JSON simple is so simple that it doesn't
         //encode maps into JSON objects on the fly,
