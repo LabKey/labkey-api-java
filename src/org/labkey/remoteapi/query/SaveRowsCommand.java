@@ -200,7 +200,9 @@ public abstract class SaveRowsCommand extends PostCommand<SaveRowsResponse>
     }
 
     /**
-     * Used to override the audit behavior for the schema/query
+     * Used to override the audit behavior for the schema/query.
+     * Note that any audit behavior type that is configured via an XML file for the given schema/query
+     * will take precedence over this value. See TableInfo.getAuditBehavior() for more details.
      * @param auditBehavior Valid values include "NONE", "SUMMARY", and "DETAILED"
      */
     public void setAuditBehavior(AuditBehavior auditBehavior)
