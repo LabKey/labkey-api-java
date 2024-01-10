@@ -85,10 +85,6 @@ dependencies {
 configurations.all
         { Configuration config ->
             resolutionStrategy {
-                // force versions so we can remain consistent with what comes through transitively
-                // in :server:modules:platform:api via jackson
-                force "org.hamcrest:hamcrest-core:${hamcrestVersion}"
-                force "org.hamcrest:hamcrest-library:${hamcrestVersion}"
                 force "junit:junit:${junitVersion}"
             }
         }
