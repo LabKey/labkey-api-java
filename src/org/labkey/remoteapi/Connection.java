@@ -391,12 +391,6 @@ public class Connection
         return this;
     }
 
-    @Deprecated // Will be removed soon. Use stopImpersonating() instead.
-    public Connection stopImpersonate() throws IOException, CommandException
-    {
-        return stopImpersonating();
-    }
-
     CloseableHttpResponse executeRequest(HttpUriRequest request, Integer timeout) throws IOException, AuthenticationException
     {
         // Delegate authentication setup to CredentialsProvider

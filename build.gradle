@@ -82,13 +82,6 @@ dependencies {
     implementation "commons-codec:commons-codec:${commonsCodecVersion}"
 }
 
-configurations.all
-        { Configuration config ->
-            resolutionStrategy {
-                force "junit:junit:${junitVersion}"
-            }
-        }
-
 jar {
     sourceCompatibility = project.sourceCompatibility
     targetCompatibility = project.targetCompatibility
