@@ -97,7 +97,7 @@ public class GetUsersCommand extends GetCommand<GetUsersResponse>
     /**
      * @return Flag to request inactive users as well
      */
-    public Boolean getIncludeInactive()
+    public boolean getIncludeInactive()
     {
         return _includeInactive;
     }
