@@ -34,8 +34,6 @@ import java.util.Map;
  */
 abstract class RowsResponse extends CommandResponse
 {
-    private final double _requiredVersion;
-
     /**
      * Constructs a new RowsResponse given the specified text and status code.
      * @param text The response text.
@@ -47,20 +45,9 @@ abstract class RowsResponse extends CommandResponse
     RowsResponse(String text, int statusCode, String contentType, JSONObject json, HasRequiredVersion hasRequiredVersion)
     {
         super(text, statusCode, contentType, json);
-        _requiredVersion = hasRequiredVersion.getRequiredVersion();
-        fixupParsedData(_requiredVersion);
+        double requiredVersion = hasRequiredVersion.getRequiredVersion();
+        fixupParsedData(requiredVersion);
         caseInsensitizeRowMaps();
-    }
-
-    /**
-     * Returns the API version number required by the source command. This response returns data in a different format
-     * depending on the required version
-     * @return the requested API version number
-     */
-    @Deprecated // Just needed for fixup -- exposing this outside the class seems unnecessary. TODO: Remove this in v6.0.0
-    public double getRequiredVersion()
-    {
-        return _requiredVersion;
     }
 
     /**
@@ -113,12 +100,12 @@ abstract class RowsResponse extends CommandResponse
         }
 
         // If no fields to fixup, just return
-        if (dateFields.size() == 0 && floatFields.size() == 0 && intFields.size() == 0)
+        if (dateFields.isEmpty() && floatFields.isEmpty() && intFields.isEmpty())
             return;
 
         // If no rows, just return
         List<Map<String, Object>> rows = getRows();
-        if (null == rows || rows.size() == 0)
+        if (null == rows || rows.isEmpty())
             return;
 
         // The selectRows.api returns dates in a very particular format so that JavaScript can parse them into actual

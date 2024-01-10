@@ -28,7 +28,7 @@ public class GetUsersCommand extends GetCommand<GetUsersResponse>
     private int _groupId = -1;
     private String _name;
     private String _group;
-    private Boolean _includeDeactivated;
+    private boolean _includeInactive = false;
 
     public GetUsersCommand()
     {
@@ -67,14 +67,14 @@ public class GetUsersCommand extends GetCommand<GetUsersResponse>
         _group = group;
     }
 
-    /** @return the first part of the user name, useful for user name completion */
+    /** @return the first part of the username, useful for username completion */
     public String getName()
     {
         return _name;
     }
 
     /**
-     * @param name The first part of the user name, useful for user name completion. If specified, only users whose
+     * @param name The first part of the username, useful for username completion. If specified, only users whose
      * email address or display name starts with the value supplied will be returned.
      */
     public void setName(String name)
@@ -82,17 +82,29 @@ public class GetUsersCommand extends GetCommand<GetUsersResponse>
         _name = name;
     }
 
-    /**
-     * @return Flag to request Active user accounts only
-     */
-    public Boolean includeDeactivated()
+    @Deprecated
+    public Boolean getIncludeDeactivated()
     {
-        return _includeDeactivated;
+        return _includeInactive;
     }
 
-    public void setIncludeDeactivated(Boolean active)
+    @Deprecated
+    public void setIncludeDeactivated(Boolean includeInactive)
     {
-        _includeDeactivated = active;
+        _includeInactive = (null != includeInactive && includeInactive);
+    }
+
+    /**
+     * @return Flag to request inactive users as well
+     */
+    public Boolean getIncludeInactive()
+    {
+        return _includeInactive;
+    }
+
+    public void setIncludeInactive(boolean includeInactive)
+    {
+        _includeInactive = includeInactive;
     }
 
     @Override
@@ -111,9 +123,9 @@ public class GetUsersCommand extends GetCommand<GetUsersResponse>
         {
             params.put("name", _name);
         }
-        if (_includeDeactivated != null)
+        if (_includeInactive)
         {
-            params.put("active", !includeDeactivated());
+            params.put("active", false);
         }
         return params;
     }
