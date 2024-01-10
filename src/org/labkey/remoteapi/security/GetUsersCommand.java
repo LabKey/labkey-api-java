@@ -82,13 +82,13 @@ public class GetUsersCommand extends GetCommand<GetUsersResponse>
         _name = name;
     }
 
-    @Deprecated
+    @Deprecated(forRemoval = true) // Remove in 7.0.0
     public Boolean getIncludeDeactivated()
     {
         return _includeInactive;
     }
 
-    @Deprecated
+    @Deprecated(forRemoval = true) // Remove in 7.0.0
     public void setIncludeDeactivated(Boolean includeInactive)
     {
         _includeInactive = (null != includeInactive && includeInactive);
