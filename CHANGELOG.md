@@ -5,6 +5,12 @@
 * [Issue 49238](https://www.labkey.org/home/Developer/issues/issues-details.view?issueId=49238): Fix so all command responses correctly decode as UTF-8.
 * Add MoveRowsCommand to query
   * Earliest compatible LabKey Server version: 24.1.0
+* Remove deprecated `GetDomainCommand`; use `GetDomainDetailsCommand` instead.
+* Remove deprecated method `RowsResponse.getRequiredVersion()`.
+* Deprecate `GetUsersCommand` methods `getIncludeDeactivated()` and `setIncludeDeactivated()`; use `getIncludeInactive()`
+  and `setIncludeInactive()` instead.
+* Update Commons Logging, Gradle, Gradle Plugins, HttpClient, and HttpCore versions
+* Remove Hamcrest references (unused)
 
 ## version 6.0.0
 *Released*: 1 December 2023
