@@ -52,7 +52,7 @@ public class ApiKeyCredentialsProvider implements CredentialsProvider
     public boolean shouldRetryRequest(CommandException exception, HttpUriRequest request)
     {
         // Set the apikey header and retry the request in response to a Basic Auth challenge; subsequent requests should
-        // use the session. This mimics the behavior of the BasicAuthCredentialsProvider.
+        // use the session. This mimics the behavior of BasicAuthCredentialsProvider.
         boolean retry = exception instanceof AuthChallengeException;
 
         if (retry)

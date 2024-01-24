@@ -11,6 +11,8 @@
   and `setIncludeInactive()` instead.
 * Update Commons Logging, Gradle, Gradle Plugins, HttpClient, and HttpCore versions
 * Remove Hamcrest references (unused)
+* Update `ApiKeyCredentialsProvider` to respond to server auth challenges with the `apikey` header and use the session
+  on subsequent requests.
 
 ## version 6.0.0
 *Released*: 1 December 2023
