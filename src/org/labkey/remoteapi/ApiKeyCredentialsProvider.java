@@ -18,7 +18,7 @@ package org.labkey.remoteapi;
 import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.apache.hc.client5.http.protocol.HttpClientContext;
-import org.labkey.remoteapi.security.WhoAmICommand;
+import org.labkey.remoteapi.security.EnsureLoginCommand;
 
 import java.io.IOException;
 import java.net.URI;
@@ -40,13 +40,24 @@ public class ApiKeyCredentialsProvider implements CredentialsProvider
     @Override
     public void configureRequest(URI baseURI, HttpUriRequest request, HttpClientContext httpClientContext)
     {
-        request.setHeader("apikey", _apiKey);
     }
 
     @Override
     public void initializeConnection(Connection connection) throws IOException, CommandException
     {
-        // No point in calling ensureLogin.api since the server doesn't "log in" the session when using an API key
-        new WhoAmICommand().execute(connection, "/home");
+        new EnsureLoginCommand().execute(connection, "/home");
+    }
+
+    @Override
+    public boolean shouldRetryRequest(CommandException exception, HttpUriRequest request)
+    {
+        // Set the apikey header and retry the request in response to a Basic Auth challenge; subsequent requests should
+        // use the session. This mimics the behavior of the BasicAuthCredentialsProvider.
+        boolean retry = exception instanceof AuthChallengeException;
+
+        if (retry)
+            request.setHeader("apikey", _apiKey);
+
+        return retry;
     }
 }

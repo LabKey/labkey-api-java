@@ -29,8 +29,16 @@ public interface CredentialsProvider
     void configureRequest(URI baseURI, HttpUriRequest request, HttpClientContext httpClientContext) throws AuthenticationException;
 
     /**
-     * Initialize the connection before its first request. If connection-based, authenticate the user. In all cases,
-     * retrieve the CSRF token and session ID to use with subsequent requests on this connection.
+     * Initialize the connection before its first request. For example, make a request to retrieve CSRF token & session
+     * ID and/or ensure the user is logged in.
      */
     void initializeConnection(Connection connection) throws IOException, CommandException;
+
+    /**
+     * Should the Command attempt to retry the request?
+     */
+    default boolean shouldRetryRequest(CommandException exception, HttpUriRequest request)
+    {
+        return false;
+    }
 }

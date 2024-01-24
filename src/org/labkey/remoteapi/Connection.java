@@ -398,7 +398,7 @@ public class Connection
 
         CloseableHttpClient client = getHttpClient();
 
-        // Set the timeout on the request if it is different the client's default
+        // Set the timeout on the request if it's different from the client's default
         if (request instanceof HttpUriRequestBase r && timeout != null && timeout != getTimeout())
         {
             RequestConfig base = r.getConfig();
@@ -488,6 +488,11 @@ public class Connection
     public void setUserAgent(String userAgent)
     {
         _userAgent = userAgent;
+    }
+
+    public CredentialsProvider getCredentialsProvider()
+    {
+        return _credentialsProvider;
     }
 
     /**
