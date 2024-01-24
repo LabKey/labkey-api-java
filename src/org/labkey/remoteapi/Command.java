@@ -182,7 +182,7 @@ public abstract class Command<ResponseType extends CommandResponse, RequestType 
     public ResponseType execute(Connection connection, String folderPath) throws IOException, CommandException
     {
         // Execute the command. Throws CommandException for error responses.
-        try (Response response = executeWithPossibleRetry(connection, folderPath))
+        try (Response response = _execute(connection, folderPath))
         {
             // For non-streaming Commands, read the entire response body into memory as JSON or a String.
             // The json and responseText will already be parsed when checking for an exception message on small 200 responses.
@@ -307,7 +307,7 @@ public abstract class Command<ResponseType extends CommandResponse, RequestType 
         }
     }
 
-    private Response executeWithPossibleRetry(Connection connection, String folderPath) throws CommandException, IOException
+    protected Response _execute(Connection connection, String folderPath) throws CommandException, IOException
     {
         assert null != getControllerName() : "You must set the controller name before executing the command!";
         assert null != getActionName() : "You must set the action name before executing the command!";
