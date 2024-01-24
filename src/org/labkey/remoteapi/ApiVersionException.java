@@ -19,8 +19,8 @@ import org.json.JSONObject;
 
 public class ApiVersionException extends CommandException
 {
-    ApiVersionException(String message, int statusCode, JSONObject jsonProperties, String responseText, String contentType)
+    ApiVersionException(String message, int statusCode, JSONObject jsonProperties, String responseText, String contentType, String authHeaderValue)
     {
-        super(message, statusCode, jsonProperties, responseText, contentType);
+        super(message, statusCode, jsonProperties, responseText, contentType, authHeaderValue);
     }
 }

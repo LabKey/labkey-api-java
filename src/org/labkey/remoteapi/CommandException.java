@@ -38,6 +38,7 @@ import java.util.Map;
 public class CommandException extends Exception
 {
     private final String _contentType;
+    private final String _authHeaderValue;
     private final int _statusCode;
     private final JSONObject _jsonProperties;
     private final String _responseText;
@@ -49,7 +50,7 @@ public class CommandException extends Exception
      */
     public CommandException(String message)
     {
-        this(message, 0, null, null, null);
+        this(message, 0, null, null, null, null);
     }
 
     /**
@@ -60,14 +61,16 @@ public class CommandException extends Exception
      * @param jsonProperties The exception property JSONObject (may be null)
      * @param responseText The full response text (may be null)
      * @param contentType The response content type (may be null)
+     * @param authHeaderValue The value of the WWW-Authenticate header (may be null)
      */
-    public CommandException(String message, int statusCode, JSONObject jsonProperties, String responseText, String contentType)
+    public CommandException(String message, int statusCode, JSONObject jsonProperties, String responseText, String contentType, String authHeaderValue)
     {
         super(buildMessage(message, statusCode));
         _statusCode = statusCode;
         _jsonProperties = jsonProperties;
         _responseText = responseText;
         _contentType = contentType;
+        _authHeaderValue = authHeaderValue;
     }
 
     private static String buildMessage(String message, int statusCode)
@@ -112,6 +115,15 @@ public class CommandException extends Exception
     public String getResponseText()
     {
         return _responseText;
+    }
+
+    /**
+     * Returns the value of the WWW-Authenticate header
+     * @return The value or null
+     */
+    public String getAuthHeaderValue()
+    {
+        return _authHeaderValue;
     }
 
     /**

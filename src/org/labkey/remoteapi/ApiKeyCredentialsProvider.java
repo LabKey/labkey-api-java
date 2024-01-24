@@ -51,13 +51,16 @@ public class ApiKeyCredentialsProvider implements CredentialsProvider
     @Override
     public boolean shouldRetryRequest(CommandException exception, HttpUriRequest request)
     {
-        // Set the apikey header and retry the request in response to a Basic Auth challenge; subsequent requests should
-        // use the session. This mimics the behavior of BasicAuthCredentialsProvider.
-        boolean retry = exception instanceof AuthChallengeException;
+        // Determine if this is a Basic Auth challenge. If so, set the apikey header and retry the request. Subsequent
+        // requests should use the session. This mimics the behavior of BasicAuthCredentialsProvider.
 
-        if (retry)
+        String authHeaderValue = exception.getAuthHeaderValue();
+
+        boolean authChallenge = (null != authHeaderValue && authHeaderValue.startsWith("Basic realm") && "You must log in to view this content.".equals(exception.getMessage()));
+
+        if (authChallenge)
             request.setHeader("apikey", _apiKey);
 
-        return retry;
+        return authChallenge;
     }
 }

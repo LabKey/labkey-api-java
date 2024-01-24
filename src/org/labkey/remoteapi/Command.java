@@ -381,6 +381,8 @@ public abstract class Command<ResponseType extends CommandResponse, RequestType 
         //use the status text as the message by default
         String message = null != r.getStatusText() ? r.getStatusText() : "(no status text)";
 
+        String authHeaderValue = r.getHeaderValue(HttpHeaders.WWW_AUTHENTICATE);
+
         // This buffers the entire response in memory, which seems OK for API error responses.
         String responseText = r.getText();
         JSONObject json = null;
@@ -399,20 +401,15 @@ public abstract class Command<ResponseType extends CommandResponse, RequestType 
                     message = json.getString("exception");
 
                     if ("org.labkey.api.action.ApiVersionException".equals(json.opt("exceptionClass")))
-                        throw new ApiVersionException(message, r.getStatusCode(), json, responseText, contentType);
+                        throw new ApiVersionException(message, r.getStatusCode(), json, responseText, contentType, authHeaderValue);
 
-                    String authHeaderValue = r.getHeaderValue(HttpHeaders.WWW_AUTHENTICATE);
-
-                    if (null != authHeaderValue && authHeaderValue.startsWith("Basic realm"))
-                        throw new AuthChallengeException(message);
-
-                    throw new CommandException(message, r.getStatusCode(), json, responseText, contentType);
+                    throw new CommandException(message, r.getStatusCode(), json, responseText, contentType, authHeaderValue);
                 }
             }
         }
 
         if (throwByDefault)
-            throw new CommandException(message, r.getStatusCode(), json, responseText, contentType);
+            throw new CommandException(message, r.getStatusCode(), json, responseText, contentType, authHeaderValue);
 
         // If we didn't encounter an exception property on the json object, save the fully consumed text and parsed json on the Response object
         r._json = json;
