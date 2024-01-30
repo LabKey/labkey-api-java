@@ -9,10 +9,10 @@
 * Remove deprecated method `RowsResponse.getRequiredVersion()`.
 * Deprecate `GetUsersCommand` methods `getIncludeDeactivated()` and `setIncludeDeactivated()`; use `getIncludeInactive()`
   and `setIncludeInactive()` instead.
-* Update Commons Logging, Gradle, Gradle Plugins, HttpClient, and HttpCore versions
 * Remove Hamcrest references (unused)
 * Update `ApiKeyCredentialsProvider` to respond to server auth challenges with the `apikey` header and use the session
   on subsequent requests.
+* Update Commons Logging, Gradle, Gradle Plugins, HttpClient, and HttpCore versions
 
 ## version 6.0.0
 *Released*: 1 December 2023
