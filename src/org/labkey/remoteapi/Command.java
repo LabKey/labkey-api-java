@@ -20,9 +20,12 @@ import org.apache.hc.client5.http.auth.AuthenticationException;
 import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.HttpHeaders;
+import org.apache.hc.core5.http.ProtocolException;
 import org.apache.hc.core5.net.URIBuilder;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.labkey.remoteapi.query.SelectRowsCommand;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -44,7 +47,7 @@ import java.util.Scanner;
 /**
  * Abstract base class for all API commands. Developers interact with concrete classes that
  * extend this class. For example, to select data, create an instance of
- * {@link org.labkey.remoteapi.query.SelectRowsCommand}, which provides helpful methods for
+ * {@link SelectRowsCommand}, which provides helpful methods for
  * setting options and obtaining specific result types.
  * <p>
  * If a developer wishes to invoke actions that are not yet supported with a specialized class
@@ -283,6 +286,19 @@ public abstract class Command<ResponseType extends CommandResponse, RequestType 
             }
         }
 
+        public String getHeaderValue(String name)
+        {
+            Header header = null;
+            try
+            {
+                header = _httpResponse.getHeader(name);
+            }
+            catch (ProtocolException ignored)
+            {
+            }
+            return null == header ? null : header.getValue();
+        }
+
         // Caller is responsible for closing the response
         @Override
         public void close() throws IOException
@@ -291,27 +307,39 @@ public abstract class Command<ResponseType extends CommandResponse, RequestType 
         }
     }
 
-    /* NOTE: Internal experimental API for handling streaming commands. */
     protected Response _execute(Connection connection, String folderPath) throws CommandException, IOException
     {
         assert null != getControllerName() : "You must set the controller name before executing the command!";
         assert null != getActionName() : "You must set the action name before executing the command!";
-        CloseableHttpResponse httpResponse;
 
-        final HttpUriRequest request;
         try
         {
             //construct and initialize the HttpUriRequest
-            request = getHttpRequest(connection, folderPath);
-            LogFactory.getLog(Command.class).info("Requesting URL: " + request.getRequestUri());
-
-            //execute the request
-            httpResponse = connection.executeRequest(request, getTimeout());
+            final HttpUriRequest request = getHttpRequest(connection, folderPath);
+            try
+            {
+                return executeRequest(connection, request);
+            }
+            catch (CommandException e)
+            {
+                if (connection.getCredentialsProvider().shouldRetryRequest(e, request))
+                    return executeRequest(connection, request);
+                else
+                    throw e;
+            }
         }
         catch (URISyntaxException | AuthenticationException e)
         {
             throw new CommandException(e.getMessage());
         }
+    }
+
+    private Response executeRequest(Connection connection, HttpUriRequest request) throws AuthenticationException, IOException, CommandException
+    {
+        LogFactory.getLog(Command.class).info("Requesting URL: " + request.getRequestUri());
+
+        //execute the request
+        CloseableHttpResponse httpResponse = connection.executeRequest(request, getTimeout());
 
         //get the content-type header
         Header contentTypeHeader = httpResponse.getFirstHeader("Content-Type");
@@ -322,10 +350,11 @@ public abstract class Command<ResponseType extends CommandResponse, RequestType 
 
         Response response = new Response(httpResponse, contentType, contentLength);
         checkThrowError(response);
+
         return response;
     }
 
-    protected void checkThrowError(Response response) throws IOException, CommandException
+    private void checkThrowError(Response response) throws IOException, CommandException
     {
         int status = response.getStatusCode();
 
@@ -352,6 +381,8 @@ public abstract class Command<ResponseType extends CommandResponse, RequestType 
         //use the status text as the message by default
         String message = null != r.getStatusText() ? r.getStatusText() : "(no status text)";
 
+        String authHeaderValue = r.getHeaderValue(HttpHeaders.WWW_AUTHENTICATE);
+
         // This buffers the entire response in memory, which seems OK for API error responses.
         String responseText = r.getText();
         JSONObject json = null;
@@ -370,15 +401,15 @@ public abstract class Command<ResponseType extends CommandResponse, RequestType 
                     message = json.getString("exception");
 
                     if ("org.labkey.api.action.ApiVersionException".equals(json.opt("exceptionClass")))
-                        throw new ApiVersionException(message, r.getStatusCode(), json, responseText, contentType);
+                        throw new ApiVersionException(message, r.getStatusCode(), json, responseText, contentType, authHeaderValue);
 
-                    throw new CommandException(message, r.getStatusCode(), json, responseText, contentType);
+                    throw new CommandException(message, r.getStatusCode(), json, responseText, contentType, authHeaderValue);
                 }
             }
         }
 
         if (throwByDefault)
-            throw new CommandException(message, r.getStatusCode(), json, responseText, contentType);
+            throw new CommandException(message, r.getStatusCode(), json, responseText, contentType, authHeaderValue);
 
         // If we didn't encounter an exception property on the json object, save the fully consumed text and parsed json on the Response object
         r._json = json;
