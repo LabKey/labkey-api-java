@@ -18,6 +18,7 @@ package org.labkey.remoteapi;
 import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.apache.hc.client5.http.protocol.HttpClientContext;
+import org.apache.hc.core5.http.HttpStatus;
 import org.labkey.remoteapi.security.EnsureLoginCommand;
 
 import java.io.IOException;
@@ -55,8 +56,7 @@ public class ApiKeyCredentialsProvider implements CredentialsProvider
         // requests should use the session. This mimics the behavior of BasicAuthCredentialsProvider.
 
         String authHeaderValue = exception.getAuthHeaderValue();
-
-        boolean authChallenge = (null != authHeaderValue && authHeaderValue.startsWith("Basic realm") && "You must log in to view this content.".equals(exception.getMessage()));
+        boolean authChallenge = (exception.getStatusCode() == HttpStatus.SC_UNAUTHORIZED && null != authHeaderValue && authHeaderValue.startsWith("Basic realm"));
 
         if (authChallenge)
             request.setHeader("apikey", _apiKey);
