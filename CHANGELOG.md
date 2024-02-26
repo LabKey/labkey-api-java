@@ -1,7 +1,10 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## version 6.1.0-SNAPSHOT
+## version 6.2.0-SNAPSHOT
 *Released*: TBD
+
+## version 6.1.0-SNAPSHOT
+*Released*: 26 February 2024
 * [Issue 49238](https://www.labkey.org/home/Developer/issues/issues-details.view?issueId=49238): Fix so all command responses correctly decode as UTF-8.
 * Add MoveRowsCommand to query
   * Earliest compatible LabKey Server version: 24.1.0
