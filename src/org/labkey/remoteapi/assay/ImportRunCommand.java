@@ -40,6 +40,7 @@ public class ImportRunCommand extends PostCommand<ImportRunResponse>
     private String _comment;
     private Map<String, Object> _properties;
     private Map<String, Object> _batchProperties;
+    private String _auditUserComment;
 
     // Only one of the follow is allowed
     private List<Map<String, Object>> _dataRows;
@@ -116,6 +117,11 @@ public class ImportRunCommand extends PostCommand<ImportRunResponse>
         _plateMetadata = plateMetadata;
     }
 
+    public void setAuditUserComment(String auditUserComment)
+    {
+        _auditUserComment = auditUserComment;
+    }
+
     @Override
     protected ImportRunResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
@@ -157,6 +163,8 @@ public class ImportRunCommand extends PostCommand<ImportRunResponse>
                 json.put("runFilePath", _runFilePath);
             if (_plateMetadata != null)
                 json.put("plateMetadata", _plateMetadata);
+            if (_auditUserComment != null)
+                json.put("auditUserComment", _auditUserComment);
 
             builder.addTextBody("json", json.toString(), ContentType.APPLICATION_JSON);
         }
@@ -169,6 +177,8 @@ public class ImportRunCommand extends PostCommand<ImportRunResponse>
                 builder.addTextBody("name", _name);
             if (_comment != null)
                 builder.addTextBody("comment", _comment);
+            if (_auditUserComment != null)
+                builder.addTextBody("auditUserComment", _auditUserComment);
             if (_properties != null)
             {
                 for (Map.Entry<String, Object> entry : _properties.entrySet())

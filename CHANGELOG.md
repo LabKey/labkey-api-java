@@ -2,6 +2,7 @@
 
 ## version 6.2.0-SNAPSHOT
 *Released*: TBD
+* Add support for `auditUserComment` field for assay import
 
 ## version 6.1.0-SNAPSHOT
 *Released*: 26 February 2024
