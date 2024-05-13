@@ -43,6 +43,9 @@ public class Protocol extends ResponseObject
     private List<String> _availablePlateTemplates;
     private String _selectedPlateTemplate;
 
+    private Boolean _allowPlateMetadata;
+    private Boolean _plateMetadata;
+
     private Map<String, String> _protocolParameters;
     private List<String> _protocolTransformScripts;
 
@@ -86,6 +89,10 @@ public class Protocol extends ResponseObject
         if (json.has("allowTransformationScript"))
             _allowTransformationScript = (Boolean)json.get("allowTransformationScript");
         _autoCopyTargetContainerId = json.optString("autoCopyTargetContainerId", null);
+        if (json.has("allowPlateMetadata"))
+            _allowPlateMetadata = (Boolean)json.get("allowPlateMetadata");
+        if (json.has("plateMetadata"))
+            _plateMetadata = (Boolean)json.get("plateMetadata");
 
         if (json.get("availableDetectionMethods") instanceof JSONArray)
             _availableDetectionMethods = convert(json.getJSONArray("availableDetectionMethods"));
@@ -155,6 +162,11 @@ public class Protocol extends ResponseObject
 
         if (_selectedPlateTemplate != null)
             result.put("selectedPlateTemplate", _selectedPlateTemplate);
+
+        if (_allowPlateMetadata != null)
+            result.put("allowPlateMetadata", _allowPlateMetadata);
+        if (_plateMetadata != null)
+            result.put("plateMetadata", _plateMetadata);
 
         if (_protocolParameters != null)
             result.put("protocolParameters", _protocolParameters);
@@ -348,6 +360,28 @@ public class Protocol extends ResponseObject
     public String getSelectedPlateTemplate()
     {
         return _selectedPlateTemplate;
+    }
+
+    public Protocol setAllowPlateMetadata(Boolean allowPlateMetadata)
+    {
+        _allowPlateMetadata = allowPlateMetadata;
+        return this;
+    }
+
+    public Boolean getAllowPlateMetadata()
+    {
+        return _allowPlateMetadata;
+    }
+
+    public Protocol setPlateMetadata(Boolean plateMetadata)
+    {
+        _plateMetadata = plateMetadata;
+        return this;
+    }
+
+    public Boolean getPlateMetadata()
+    {
+        return _plateMetadata;
     }
 
     public Protocol setProtocolParameters(Map<String, String> protocolParameters)
