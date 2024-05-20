@@ -3,6 +3,7 @@
 ## version TBD
 *Released*: TBD
 * Add support for `auditUserComment` field for assay import
+* Add support for `allowPlateMetadata`, `plateMetadata` fields for assay plate support
 
 ## version 6.1.0
 *Released*: 26 February 2024
