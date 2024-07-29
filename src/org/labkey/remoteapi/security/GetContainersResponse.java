@@ -33,23 +33,27 @@ public class GetContainersResponse extends CommandResponse
         return getProperty("id");
     }
 
+    @Deprecated(forRemoval = true)
     public Integer getUserPermissions()
     {
         return getUserPermissions(null);
     }
 
+    @Deprecated(forRemoval = true)
     public Integer getUserPermissions(String containerPath)
     {
         Map<String, Object> containerInfo = findContainer(containerPath, getParsedData());
         return (null == containerInfo) ? null : ((Number)containerInfo.get("userPermissions")).intValue();
     }
 
+    @Deprecated(forRemoval = true)
     public Boolean hasPermission(int perm)
     {
         Integer userPerms = getUserPermissions();
         return (null == userPerms) ? null : userPerms == (userPerms | perm);
     }
 
+    @Deprecated(forRemoval = true)
     public Boolean hasPermission(int perm, String containerPath)
     {
         Integer userPerms = getUserPermissions(containerPath);
