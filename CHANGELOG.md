@@ -1,10 +1,10 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## version TBD
-*Released*: TBD
+## version 6.2.0
+*Released*: 29 July 2024
 * Add support for `auditUserComment` field for assay import
 * Add support for `allowPlateMetadata`, `plateMetadata` fields for assay plate support
-* Deprecate `GetContainersResponse` permissions methods which are incompatible with LabKey Server v24.8 and beyond.
+* Deprecate `GetContainersResponse` permissions methods which are incompatible with LabKey Server v24.8 and beyond
 
 ## version 6.1.0
 *Released*: 26 February 2024
