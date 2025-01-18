@@ -2,7 +2,7 @@
 
 ## version 6.3.0-SNAPSHOT
 *Released*: TBD
-* Update Commons Logging, HttpClient, HttpCore, Gradle, and Gradle Plugins versions
+* Update Commons Logging, Gradle, Gradle Plugins, HttpClient, HttpCore, and JSONObject versions
 
 ## version 6.2.0
 *Released*: 29 July 2024
