@@ -3,6 +3,7 @@
 ## version 6.3.0-SNAPSHOT
 *Released*: TBD
 * Update Commons Logging, Gradle, Gradle Plugins, HttpClient, HttpCore, and JSONObject versions
+* Remove defunct FileNotification API and uses
 
 ## version 6.2.0
 *Released*: 29 July 2024

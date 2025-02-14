@@ -77,7 +77,6 @@ dependencies {
     api "org.json:json:${jsonObjectVersion}"
     api "org.apache.httpcomponents.client5:httpclient5:${httpclient5Version}"
     api "org.apache.httpcomponents.core5:httpcore5:${httpcore5Version}"
-    implementation "net.sf.opencsv:opencsv:${opencsvVersion}"
     implementation "commons-logging:commons-logging:${commonsLoggingVersion}"
     implementation "commons-codec:commons-codec:${commonsCodecVersion}"
 }
