@@ -1,6 +1,6 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## version 6.3.0
+## version 6.3.0-SNAPSHOT
 *Released*: TBD
 * Update Commons Codec, Commons Logging, Gradle, Gradle Plugins, HttpClient, HttpCore, and JSONObject versions
 * Remove defunct FileNotification API and uses
