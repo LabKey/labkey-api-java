@@ -232,15 +232,18 @@ if (project.hasProperty("signing.keyId") && project.hasProperty("signing.passwor
     }
 }
 
+if (project.hasProperty("sonatype_username") && project.hasProperty("sonatype_password"))
+{
 // Plugin that uses the New Maven Central Publishing (NMCP) API to publish Maven artifacts. https://github.com/GradleUp/nmcp
-nmcp {
-    centralPortal {
-        username = sonatype_username
-        password = sonatype_password
-        // publish manually from the portal
-        publishingType = "USER_MANAGED"
+    nmcp {
+        centralPortal {
+            username = sonatype_username
+            password = sonatype_password
+            // publish manually from the portal
+            publishingType = "USER_MANAGED"
 //        // or if you want to publish automatically
 //        publishingType = "AUTOMATIC"
+        }
     }
 }
 
@@ -248,6 +251,9 @@ project.tasks.register('publishRelease', DefaultTask) {
     DefaultTask task ->
         task.group = 'Publishing'
         task.description = 'Publish to Local repository and Maven Central'
-        task.dependsOn(tasks.publish, tasks.publishLibsPublicationToCentralPortal)
+        if (project.hasProperty("artifactory_user") && project.hasProperty("artifactory_password"))
+            task.dependsOn(tasks.publish)
+        if (project.hasProperty("sonatype_username") && project.hasProperty("sonatype_password"))
+            task.dependsOn(tasks.publishLibsPublicationToCentralPortal)
 }
 
