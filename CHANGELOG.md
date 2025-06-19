@@ -1,9 +1,14 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## version 6.3.0-SNAPSHOT
+## version 6.4.0-SNAPSHOT
 *Released*: TBD
+* 
+
+## version 6.3.0
+*Released*: 19 June 2025
 * Update Commons Codec, Commons Logging, Gradle, Gradle Plugins, HttpClient, HttpCore, and JSONObject versions
 * Remove defunct FileNotification API and uses
+* Update publishing method for new Maven Central API
 
 ## version 6.2.0
 *Released*: 29 July 2024
