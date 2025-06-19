@@ -1,6 +1,6 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## vresion 6.4.0-SNAPSHOT
+## version 6.4.0-SNAPSHOT
 *Released*: TBD
 * 
 
