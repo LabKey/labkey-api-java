@@ -3,6 +3,7 @@
 ## version 6.4.0-SNAPSHOT
 *Released*: TBD
 * Update Gradle, Gradle Plugins, HttpClient, and JSONObject versions
+* Add `QuerySaveRowsCommand` which wraps the `query-saveRows.api` endpoint
 
 ## version 6.3.0
 *Released*: 19 June 2025
