@@ -209,9 +209,10 @@ public class SaveRowsApiCommand extends PostCommand<SaveRowsApiResponse>
             return _auditBehavior;
         }
 
-        public void setAuditBehavior(SaveRowsCommand.AuditBehavior auditBehavior)
+        public Command setAuditBehavior(SaveRowsCommand.AuditBehavior auditBehavior)
         {
             _auditBehavior = auditBehavior;
+            return this;
         }
 
         public String getAuditUserComment()
@@ -219,9 +220,10 @@ public class SaveRowsApiCommand extends PostCommand<SaveRowsApiResponse>
             return _auditUserComment;
         }
 
-        public void setAuditUserComment(String auditUserComment)
+        public Command setAuditUserComment(String auditUserComment)
         {
             _auditUserComment = auditUserComment;
+            return this;
         }
 
         public CommandType getCommandType()
@@ -234,9 +236,10 @@ public class SaveRowsApiCommand extends PostCommand<SaveRowsApiResponse>
             return _containerPath;
         }
 
-        public void setContainerPath(String containerPath)
+        public Command setContainerPath(String containerPath)
         {
             _containerPath = containerPath;
+            return this;
         }
 
         public Map<String, Object> getExtraContext()
@@ -244,9 +247,10 @@ public class SaveRowsApiCommand extends PostCommand<SaveRowsApiResponse>
             return _extraContext;
         }
 
-        public void setExtraContext(Map<String, Object> extraContext)
+        public Command setExtraContext(Map<String, Object> extraContext)
         {
             _extraContext = extraContext;
+            return this;
         }
 
         public String getQueryName()
@@ -264,9 +268,10 @@ public class SaveRowsApiCommand extends PostCommand<SaveRowsApiResponse>
             return _rows;
         }
 
-        public void setRows(List<Map<String, Object>> rows)
+        public Command setRows(List<Map<String, Object>> rows)
         {
             _rows = rows;
+            return this;
         }
 
         public Boolean isSkipReselectRows()
@@ -274,9 +279,10 @@ public class SaveRowsApiCommand extends PostCommand<SaveRowsApiResponse>
             return _skipReselectRows;
         }
 
-        public void setSkipReselectRows(Boolean skipReselectRows)
+        public Command setSkipReselectRows(Boolean skipReselectRows)
         {
             _skipReselectRows = skipReselectRows;
+            return this;
         }
     }
 }
