@@ -22,11 +22,30 @@ import java.util.Map;
 
 public class GetGroupPermsCommand extends GetCommand<GetGroupPermsResponse>
 {
+    private boolean _includeEmptyPermGroups = true;
     private boolean _includeSubfolders = false;
 
     public GetGroupPermsCommand()
     {
         super("security", "getGroupPerms");
+    }
+
+    /**
+     * Determines whether groups with no effective permissions are included in the result.
+     * @return true or false (default is true).
+     */
+    public boolean isIncludeEmptyPermGroups()
+    {
+        return _includeEmptyPermGroups;
+    }
+
+    /**
+     * Sets whether groups with no effective permissions are included in the result.
+     * @param includeEmptyPermGroups true to include groups with no effective permissions
+     */
+    public void setIncludeEmptyPermGroups(boolean includeEmptyPermGroups)
+    {
+        _includeEmptyPermGroups = includeEmptyPermGroups;
     }
 
     /**
@@ -60,6 +79,7 @@ public class GetGroupPermsCommand extends GetCommand<GetGroupPermsResponse>
     {
         Map<String, Object> params = super.createParameterMap();
         params.put("includeSubfolders", isIncludeSubfolders());
+        params.put("includeEmptyPermGroups", isIncludeEmptyPermGroups());
 
         return params;
     }
