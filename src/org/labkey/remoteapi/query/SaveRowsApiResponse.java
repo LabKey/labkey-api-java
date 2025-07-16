@@ -9,13 +9,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class QuerySaveRowsResponse extends CommandResponse
+public class SaveRowsApiResponse extends CommandResponse
 {
     private final boolean _committed;
     private final int _errorCount;
     private final List<Result> _results;
 
-    public QuerySaveRowsResponse(String text, int statusCode, String contentType, JSONObject json)
+    public SaveRowsApiResponse(String text, int statusCode, String contentType, JSONObject json)
     {
         super(text, statusCode, contentType, json);
 

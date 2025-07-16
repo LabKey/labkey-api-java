@@ -6,10 +6,10 @@ import org.labkey.remoteapi.domain.CreateDomainCommand;
 import org.labkey.remoteapi.domain.Domain;
 import org.labkey.remoteapi.domain.PropertyDescriptor;
 import org.labkey.remoteapi.query.InsertRowsCommand;
-import org.labkey.remoteapi.query.QuerySaveRowsCommand;
-import org.labkey.remoteapi.query.QuerySaveRowsCommand.Command;
-import org.labkey.remoteapi.query.QuerySaveRowsCommand.CommandType;
-import org.labkey.remoteapi.query.QuerySaveRowsResponse;
+import org.labkey.remoteapi.query.SaveRowsApiCommand;
+import org.labkey.remoteapi.query.SaveRowsApiCommand.Command;
+import org.labkey.remoteapi.query.SaveRowsApiCommand.CommandType;
+import org.labkey.remoteapi.query.SaveRowsApiResponse;
 import org.labkey.remoteapi.query.SaveRowsCommand;
 import org.labkey.remoteapi.query.SaveRowsResponse;
 import org.labkey.remoteapi.security.CreateContainerCommand;
@@ -18,7 +18,7 @@ import org.labkey.remoteapi.security.DeleteContainerCommand;
 import java.util.List;
 import java.util.Map;
 
-public class QuerySaveRowsCommandDemo
+public class SaveRowsApiDemo
 {
     public static void main(String[] args) throws Exception
     {
@@ -62,7 +62,7 @@ public class QuerySaveRowsCommandDemo
 
             // Execute multiple query operations using a saveRows command
             {
-                QuerySaveRowsCommand saveCmd = new QuerySaveRowsCommand();
+                SaveRowsApiCommand saveCmd = new SaveRowsApiCommand();
 
                 // Draft Ken Griffey Jr.
                 saveCmd.addCommand(new Command(CommandType.Insert, schemaName, queryName, List.of(Map.of("FirstName", "Ken", "LastName", "Griffey Jr.", "JerseyNumber", 24, "Team", "Seattle Mariners"))));
@@ -79,7 +79,7 @@ public class QuerySaveRowsCommandDemo
                 // Alvin Davis retires
                 saveCmd.addCommand(new Command(CommandType.Delete, schemaName, queryName, List.of(Map.of("JerseyNumber", 21))));
 
-                QuerySaveRowsResponse response = saveCmd.execute(conn, folderPath);
+                SaveRowsApiResponse response = saveCmd.execute(conn, folderPath);
                 System.out.printf("Executed saveRows command with %d errors and %d results%n", response.getErrorCount(), response.getResults().size());
             }
         }

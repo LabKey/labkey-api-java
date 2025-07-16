@@ -7,22 +7,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class QuerySaveRowsCommand extends PostCommand<QuerySaveRowsResponse>
+public class SaveRowsApiCommand extends PostCommand<SaveRowsApiResponse>
 {
     private final List<Command> _commands = new ArrayList<>();
     private Map<String, Object> _extraContext;
     private Boolean _transacted;
     private Boolean _validateOnly;
 
-    /**
-     * Constructs a new SaveRowsActualCommand given a controller and action name.
-     *
-     * @param commands The commands.
-     */
-    public QuerySaveRowsCommand(Command... commands)
+    public SaveRowsApiCommand(Command... commands)
     {
         super("query", "saveRows.api");
-
         addCommand(commands);
     }
 
@@ -31,12 +25,13 @@ public class QuerySaveRowsCommand extends PostCommand<QuerySaveRowsResponse>
         return _extraContext;
     }
 
-    public void setExtraContext(Map<String, Object> extraContext)
+    public SaveRowsApiCommand setExtraContext(Map<String, Object> extraContext)
     {
         _extraContext = extraContext;
+        return this;
     }
 
-    public QuerySaveRowsCommand addCommand(Command... commands)
+    public SaveRowsApiCommand addCommand(Command... commands)
     {
         for (Command command : commands)
         {
@@ -57,9 +52,10 @@ public class QuerySaveRowsCommand extends PostCommand<QuerySaveRowsResponse>
         return _transacted;
     }
 
-    public void setTransacted(Boolean transacted)
+    public SaveRowsApiCommand setTransacted(Boolean transacted)
     {
         _transacted = transacted;
+        return this;
     }
 
     public Boolean isValidateOnly()
@@ -67,9 +63,10 @@ public class QuerySaveRowsCommand extends PostCommand<QuerySaveRowsResponse>
         return _validateOnly;
     }
 
-    public void setValidateOnly(Boolean validateOnly)
+    public SaveRowsApiCommand setValidateOnly(Boolean validateOnly)
     {
         _validateOnly = validateOnly;
+        return this;
     }
 
     @Override
@@ -95,9 +92,9 @@ public class QuerySaveRowsCommand extends PostCommand<QuerySaveRowsResponse>
     }
 
     @Override
-    protected QuerySaveRowsResponse createResponse(String text, int status, String contentType, JSONObject json)
+    protected SaveRowsApiResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new QuerySaveRowsResponse(text, status, contentType, json);
+        return new SaveRowsApiResponse(text, status, contentType, json);
     }
 
     public enum CommandType
