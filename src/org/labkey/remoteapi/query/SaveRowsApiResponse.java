@@ -9,6 +9,59 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Response object for the {@link SaveRowsApiCommand}, containing results of batch operations executed on the server.
+ * This response provides details about the success or failure of each command in the batch, including:
+ * <ul>
+ *     <li>Whether the transaction was committed</li>
+ *     <li>Number of errors encountered</li>
+ *     <li>Detailed results for each command executed</li>
+ * </ul>
+ * <p>
+ * Example usage:
+ * <pre><code>
+ * SaveRowsApiCommand cmd = new SaveRowsApiCommand();
+ * // Add commands to insert/update/delete gene annotations...
+ * SaveRowsApiResponse response = cmd.execute(connection, "GenomeProject");
+ *
+ * if (response.isCommitted())
+ * {
+ *     for (SaveRowsApiResponse.Result result : response.getResults())
+ *     {
+ *         System.out.println(String.format(
+ *             "%s operation affected %d rows in %s.%s",
+ *             result.getCommand(),
+ *             result.getRowsAffected(),
+ *             result.getSchemaName(),
+ *             result.getQueryName()
+ *         ));
+ *
+ *         // For detailed examination of affected rows
+ *         for (Map<String, Object> row : result.getRows())
+ *         {
+ *             System.out.println(String.format(
+ *                 "Gene %s annotation at position %d-%d",
+ *                 row.get("geneName"),
+ *                 row.get("start"),
+ *                 row.get("end")
+ *             ));
+ *         }
+ *
+ *         // Check if operation was audited
+ *         if (result.getTransactionAuditId() > 0)
+ *         {
+ *             System.out.println("Audit record created with ID: " +
+ *                 result.getTransactionAuditId());
+ *         }
+ *     }
+ * }
+ * else
+ * {
+ *     System.out.println("Transaction failed with " +
+ *         response.getErrorCount() + " errors");
+ * }
+ * </code></pre>
+ */
 public class SaveRowsApiResponse extends CommandResponse
 {
     private final boolean _committed;

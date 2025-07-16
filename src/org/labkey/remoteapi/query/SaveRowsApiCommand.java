@@ -7,6 +7,55 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Command for executing multiple data modification operations (insert, update, delete) in a single request
+ * to a LabKey Server. This command allows batching multiple operations together, optionally in a transaction.
+ * <p>
+ * All data exposed from a LabKey Server is organized into schemas containing queries. Each command in a batch
+ * specifies the schema name (e.g., 'lists' or 'study') and query name (e.g., 'People' or 'Samples') to operate on.
+ * <p>
+ * The command supports several features:
+ * <ul>
+ *     <li>Multiple operations (insert, update, delete) in a single request</li>
+ *     <li>Optional transaction support to ensure all-or-nothing execution</li>
+ *     <li>Validation-only mode to check operations without making changes</li>
+ *     <li>Audit trail support with configurable detail levels</li>
+ *     <li>Custom audit comments for tracking changes</li>
+ * </ul>
+ * <p>
+ * Example usage:
+ * <pre><code>
+ * ApiKeyCredentialsProvider credentials = new ApiKeyCredentialsProvider("xxx");
+ * Connection conn = new Connection("http://localhost:8080", credentials);
+ * SaveRowsApiCommand saveCmd = new SaveRowsApiCommand();
+ *
+ * // Add new gene annotations
+ * saveCmd.addCommand(new Command(CommandType.Insert, "genome", "GeneAnnotations",
+ *     List.of(
+ *         Map.of("name", "p53 binding site", "geneName", "TP53", "start", 1000, "end", 1020),
+ *         Map.of("name", "TATA box", "geneName", "BRCA1", "start", 2500, "end", 2506)
+ *     )));
+ *
+ * // Update annotation positions
+ * Command updateCmd = new Command(CommandType.Update, "genome", "GeneAnnotations",
+ *     List.of(Map.of(
+ *         "name", "Promoter region",
+ *         "geneName", "EGFR",
+ *         "start", 5000,
+ *         "end", 5500
+ *     )));
+ * updateCmd.setAuditBehavior(SaveRowsCommand.AuditBehavior.DETAILED);
+ * updateCmd.setAuditUserComment("Updated promoter region coordinates based on new assembly");
+ * saveCmd.addCommand(updateCmd);
+ *
+ * // Delete obsolete annotation
+ * saveCmd.addCommand(new Command(CommandType.Delete, "genome", "GeneAnnotations",
+ *     List.of(Map.of("name", "Putative enhancer", "geneName", "MYC"))));
+ *
+ * // Execute all commands in a transaction
+ * SaveRowsApiResponse response = saveCmd.execute(conn, "GenomeProject");
+ * </code></pre>
+ */
 public class SaveRowsApiCommand extends PostCommand<SaveRowsApiResponse>
 {
     private final List<Command> _commands = new ArrayList<>();

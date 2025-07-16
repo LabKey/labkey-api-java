@@ -22,10 +22,11 @@ public class SaveRowsApiDemo
 {
     public static void main(String[] args) throws Exception
     {
-        String folderPath = "SaveRowsCommandDemo";
+        String folderPath = "SaveRowsApiDemo";
         String schemaName = "lists";
         String queryName = "Players";
 
+        // Furnish your own API key
         ApiKeyCredentialsProvider credentials = new ApiKeyCredentialsProvider("xxx");
         Connection conn = new Connection("http://localhost:8080", credentials);
 
