@@ -20,46 +20,46 @@ import java.util.Map;
  * <p>
  * Example usage:
  * <pre><code>
- * SaveRowsApiCommand cmd = new SaveRowsApiCommand();
- * // Add commands to insert/update/delete gene annotations...
- * SaveRowsApiResponse response = cmd.execute(connection, "GenomeProject");
+ *  SaveRowsApiCommand cmd = new SaveRowsApiCommand();
+ *  // Add commands to insert/update/delete gene annotations...
+ *  SaveRowsApiResponse response = cmd.execute(connection, "GenomeProject");
  *
- * if (response.isCommitted())
- * {
- *     for (SaveRowsApiResponse.Result result : response.getResults())
- *     {
- *         System.out.println(String.format(
- *             "%s operation affected %d rows in %s.%s",
- *             result.getCommand(),
- *             result.getRowsAffected(),
- *             result.getSchemaName(),
- *             result.getQueryName()
- *         ));
+ *  if (response.isCommitted())
+ *  {
+ *      for (SaveRowsApiResponse.Result result : response.getResults())
+ *      {
+ *          System.out.println(String.format(
+ *              "%s operation affected %d rows in %s.%s",
+ *              result.getCommand(),
+ *              result.getRowsAffected(),
+ *              result.getSchemaName(),
+ *              result.getQueryName()
+ *          ));
  *
- *         // For detailed examination of affected rows
- *         for (Map<String, Object> row : result.getRows())
- *         {
- *             System.out.println(String.format(
- *                 "Gene %s annotation at position %d-%d",
- *                 row.get("geneName"),
- *                 row.get("start"),
- *                 row.get("end")
- *             ));
- *         }
+ *          // For detailed examination of affected rows
+ *          for (Map&gt;String, Object> row : result.getRows())
+ *          {
+ *              System.out.println(String.format(
+ *                  "Gene %s annotation at position %d-%d",
+ *                  row.get("geneName"),
+ *                  row.get("start"),
+ *                  row.get("end")
+ *              ));
+ *          }
  *
- *         // Check if operation was audited
- *         if (result.getTransactionAuditId() > 0)
- *         {
- *             System.out.println("Audit record created with ID: " +
- *                 result.getTransactionAuditId());
- *         }
- *     }
- * }
- * else
- * {
- *     System.out.println("Transaction failed with " +
- *         response.getErrorCount() + " errors");
- * }
+ *          // Check if operation was audited
+ *          if (result.getTransactionAuditId() > 0)
+ *          {
+ *              System.out.println("Audit record created with ID: " +
+ *                result.getTransactionAuditId());
+ *          }
+ *      }
+ *  }
+ *  else
+ *  {
+ *      System.out.println("Transaction failed with " +
+ *          response.getErrorCount() + " errors");
+ *  }
  * </code></pre>
  */
 public class SaveRowsApiResponse extends CommandResponse

@@ -25,35 +25,35 @@ import java.util.Map;
  * <p>
  * Example usage:
  * <pre><code>
- * ApiKeyCredentialsProvider credentials = new ApiKeyCredentialsProvider("xxx");
- * Connection conn = new Connection("http://localhost:8080", credentials);
- * SaveRowsApiCommand saveCmd = new SaveRowsApiCommand();
+ *  ApiKeyCredentialsProvider credentials = new ApiKeyCredentialsProvider("xxx");
+ *  Connection conn = new Connection("http://localhost:8080", credentials);
+ *  SaveRowsApiCommand saveCmd = new SaveRowsApiCommand();
  *
- * // Add new gene annotations
- * saveCmd.addCommand(new Command(CommandType.Insert, "genome", "GeneAnnotations",
- *     List.of(
- *         Map.of("name", "p53 binding site", "geneName", "TP53", "start", 1000, "end", 1020),
- *         Map.of("name", "TATA box", "geneName", "BRCA1", "start", 2500, "end", 2506)
- *     )));
+ *  // Add new gene annotations
+ *  saveCmd.addCommand(new Command(CommandType.Insert, "genome", "GeneAnnotations",
+ *      List.of(
+ *          Map.of("name", "p53 binding site", "geneName", "TP53", "start", 1000, "end", 1020),
+ *          Map.of("name", "TATA box", "geneName", "BRCA1", "start", 2500, "end", 2506)
+ *      )));
  *
- * // Update annotation positions
- * Command updateCmd = new Command(CommandType.Update, "genome", "GeneAnnotations",
- *     List.of(Map.of(
- *         "name", "Promoter region",
- *         "geneName", "EGFR",
- *         "start", 5000,
- *         "end", 5500
- *     )));
- * updateCmd.setAuditBehavior(SaveRowsCommand.AuditBehavior.DETAILED);
- * updateCmd.setAuditUserComment("Updated promoter region coordinates based on new assembly");
- * saveCmd.addCommand(updateCmd);
+ *  // Update annotation positions
+ *  Command updateCmd = new Command(CommandType.Update, "genome", "GeneAnnotations",
+ *      List.of(Map.of(
+ *          "name", "Promoter region",
+ *          "geneName", "EGFR",
+ *          "start", 5000,
+ *          "end", 5500
+ *      )));
+ *  updateCmd.setAuditBehavior(SaveRowsCommand.AuditBehavior.DETAILED);
+ *  updateCmd.setAuditUserComment("Updated promoter region coordinates based on new assembly");
+ *  saveCmd.addCommand(updateCmd);
  *
- * // Delete obsolete annotation
- * saveCmd.addCommand(new Command(CommandType.Delete, "genome", "GeneAnnotations",
- *     List.of(Map.of("name", "Putative enhancer", "geneName", "MYC"))));
+ *  // Delete obsolete annotation
+ *  saveCmd.addCommand(new Command(CommandType.Delete, "genome", "GeneAnnotations",
+ *      List.of(Map.of("name", "Putative enhancer", "geneName", "MYC"))));
  *
- * // Execute all commands in a transaction
- * SaveRowsApiResponse response = saveCmd.execute(conn, "GenomeProject");
+ *  // Execute all commands in a transaction
+ *  SaveRowsApiResponse response = saveCmd.execute(conn, "GenomeProject");
  * </code></pre>
  */
 public class SaveRowsApiCommand extends PostCommand<SaveRowsApiResponse>
