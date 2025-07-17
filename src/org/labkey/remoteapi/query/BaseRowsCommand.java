@@ -32,14 +32,14 @@ import java.util.Map;
  * <p>
  * All three of these subclasses post similar JSON to the server, so this class
  * does all the common work. The client must supply three things: the schemaName,
- * the queryName and an array of 'rows' (i.e. Maps). The rows are added via
+ * the queryName and an array of 'rows' (i.e., Maps). The rows are added via
  * the {@link #addRow(Map)} or {@link #setRows(List)} methods.
  * <p>
  * All data exposed from the LabKey Server is organized into a set of queries
  * contained in a set of schemas. A schema is simply a group of queries, identified
- * by a name (e.g., 'lists' or 'study'). A query is particular table or view within
+ * by a name (e.g., 'lists' or 'study'). A query is a particular table or view within
  * that schema (e.g., 'People' or 'Peptides'). Currently, clients may update rows in
- * base tables only, and not in joined views. Therefore the query name must be the
+ * base tables only and not in joined views. Therefore, the query name must be the
  * name of a table in the schema.
  * <p>
  * To view the schemas and queries exposed in a given folder, add a Query web part
@@ -49,8 +49,8 @@ import java.util.Map;
  * <p>
  * Examples:
  * <pre><code>
- *  // May need to add CONTEXT_PATH for dev instances
- *  Connection cn = new Connection("http://localhost:8080", user, password);
+ *  ApiKeyCredentialsProvider credentials = new ApiKeyCredentialsProvider("xxx");
+ *  Connection cn = new Connection("http://localhost:8080", credentials);
  *
  *  //Insert Rows Command
  *  InsertRowsCommand cmd = new InsertRowsCommand("lists", "People");
@@ -60,7 +60,7 @@ import java.util.Map;
  *  row.put("LastName", "Test");
  *
  *  cmd.addRow(row); //can add multiple rows to insert many at once
- *  SaveRowsResponse resp = cmd.execute(cn, "PROJECT_NAME");
+ *  RowsResponse resp = cmd.execute(cn, "PROJECT_NAME");
  *
  *  //get the newly-assigned primary key value from the first return row
  *  int newKey = resp.getRows().get(0).get("Key");
@@ -98,7 +98,7 @@ public abstract class BaseRowsCommand extends PostCommand<RowsResponse>
     private String _auditUserComment;
 
     /**
-     * Constructs a new SaveRowsCommand for a given schema, query and action name.
+     * Constructs a new BaseRowsCommand for a given schema, query and action name.
      * @param schemaName The schema name.
      * @param queryName The query name.
      * @param actionName The action name to call (supplied by the derived class).

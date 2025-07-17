@@ -44,7 +44,7 @@ import java.util.Map;
  *          "start", 5000,
  *          "end", 5500
  *      )));
- *  updateCmd.setAuditBehavior(SaveRowsCommand.AuditBehavior.DETAILED);
+ *  updateCmd.setAuditBehavior(BaseRowsCommand.AuditBehavior.DETAILED);
  *  updateCmd.setAuditUserComment("Updated promoter region coordinates based on new assembly");
  *  saveCmd.addCommands(updateCmd);
  *

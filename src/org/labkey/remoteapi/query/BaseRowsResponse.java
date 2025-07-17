@@ -35,7 +35,7 @@ import java.util.Map;
 abstract class BaseRowsResponse extends CommandResponse
 {
     /**
-     * Constructs a new RowsResponse given the specified text and status code.
+     * Constructs a new BaseRowsResponse given the specified text and status code.
      * @param text The response text.
      * @param statusCode The HTTP status code.
      * @param contentType the Content-Type header value.

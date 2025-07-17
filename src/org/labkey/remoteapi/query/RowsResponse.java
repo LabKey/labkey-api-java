@@ -19,14 +19,14 @@ import org.json.JSONObject;
 import org.labkey.remoteapi.HasRequiredVersion;
 
 /**
- * Response object used for commands that derive from SaveRowsCommand.
+ * Response object used for command responses that derive from {@link BaseRowsResponse}.
  * This response object provides helper methods for accessing the important
  * bits of the parsed response data.
  */
 public class RowsResponse extends BaseRowsResponse
 {
     /**
-     * Constructs a new SaveRowsResponse given the response text and status code
+     * Constructs a new RowsResponse given the response text and status code
      * @param text The response text.
      * @param statusCode The HTTP status code.
      * @param contentType The Content-Type header value.
