@@ -81,7 +81,7 @@ import java.util.Map;
  *  resp = cmdDel.execute(cn, "PROJECT_NAME");
  * </code></pre>
  */
-public abstract class SaveRowsCommand extends PostCommand<SaveRowsResponse>
+public abstract class BaseRowsCommand extends PostCommand<SaveRowsResponse>
 {
     public enum AuditBehavior
     {
@@ -103,7 +103,7 @@ public abstract class SaveRowsCommand extends PostCommand<SaveRowsResponse>
      * @param queryName The query name.
      * @param actionName The action name to call (supplied by the derived class).
      */
-    protected SaveRowsCommand(String schemaName, String queryName, String actionName)
+    protected BaseRowsCommand(String schemaName, String queryName, String actionName)
     {
         super("query", actionName);
         assert null != schemaName;

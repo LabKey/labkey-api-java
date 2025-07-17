@@ -155,7 +155,7 @@ public class SaveRowsApiCommand extends PostCommand<SaveRowsApiResponse>
 
     public static class Command
     {
-        SaveRowsCommand.AuditBehavior _auditBehavior;
+        BaseRowsCommand.AuditBehavior _auditBehavior;
         String _auditUserComment;
         final CommandType _commandType;
         String _containerPath;
@@ -204,12 +204,12 @@ public class SaveRowsApiCommand extends PostCommand<SaveRowsApiResponse>
             return json;
         }
 
-        public SaveRowsCommand.AuditBehavior getAuditBehavior()
+        public BaseRowsCommand.AuditBehavior getAuditBehavior()
         {
             return _auditBehavior;
         }
 
-        public Command setAuditBehavior(SaveRowsCommand.AuditBehavior auditBehavior)
+        public Command setAuditBehavior(BaseRowsCommand.AuditBehavior auditBehavior)
         {
             _auditBehavior = auditBehavior;
             return this;

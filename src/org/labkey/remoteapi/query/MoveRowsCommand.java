@@ -23,17 +23,17 @@ import org.json.JSONObject;
  * permission to update data for the source container and insert data
  * for the target container.
  */
-public class MoveRowsCommand extends SaveRowsCommand
+public class MoveRowsCommand extends BaseRowsCommand
 {
     private final String _targetContainerPath;
 
     /**
      * Constructs a MoveRowsCommand for the given targetContainerPath, schemaName, and queryName.
-     * See the {@link SaveRowsCommand} for more details.
+     * See the {@link BaseRowsCommand} for more details.
      * @param targetContainerPath The targetContainerPath
      * @param schemaName The schemaName
      * @param queryName The queryName.
-     * @see SaveRowsCommand
+     * @see BaseRowsCommand
      */
     public MoveRowsCommand(String targetContainerPath, String schemaName, String queryName)
     {
