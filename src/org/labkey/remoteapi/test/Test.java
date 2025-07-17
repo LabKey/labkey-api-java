@@ -33,7 +33,7 @@ import org.labkey.remoteapi.query.GetQueriesResponse;
 import org.labkey.remoteapi.query.GetSchemasCommand;
 import org.labkey.remoteapi.query.GetSchemasResponse;
 import org.labkey.remoteapi.query.InsertRowsCommand;
-import org.labkey.remoteapi.query.SaveRowsResponse;
+import org.labkey.remoteapi.query.RowsResponse;
 import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.remoteapi.query.Sort;
@@ -124,7 +124,7 @@ public class Test
         row.put("Last", "Test Inserted Value");
 
         cmdins.addRow(row);
-        SaveRowsResponse resp = cmdins.execute(cn, folder);
+        RowsResponse resp = cmdins.execute(cn, folder);
 
         //make sure row count is one greater
         srresp = cmdsel.execute(cn, folder);

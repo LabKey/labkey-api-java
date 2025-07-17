@@ -81,7 +81,7 @@ import java.util.Map;
  *  resp = cmdDel.execute(cn, "PROJECT_NAME");
  * </code></pre>
  */
-public abstract class BaseRowsCommand extends PostCommand<SaveRowsResponse>
+public abstract class BaseRowsCommand extends PostCommand<RowsResponse>
 {
     public enum AuditBehavior
     {
@@ -279,8 +279,8 @@ public abstract class BaseRowsCommand extends PostCommand<SaveRowsResponse>
     }
 
     @Override
-    protected SaveRowsResponse createResponse(String text, int status, String contentType, JSONObject json)
+    protected RowsResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new SaveRowsResponse(text, status, contentType, json, this);
+        return new RowsResponse(text, status, contentType, json, this);
     }
 }

@@ -23,7 +23,7 @@ import org.labkey.remoteapi.HasRequiredVersion;
  * This response object provides helper methods for accessing the important
  * bits of the parsed response data.
  */
-public class SaveRowsResponse extends BaseRowsResponse
+public class RowsResponse extends BaseRowsResponse
 {
     /**
      * Constructs a new SaveRowsResponse given the response text and status code
@@ -33,7 +33,7 @@ public class SaveRowsResponse extends BaseRowsResponse
      * @param json The parsed JSONObject (or null if JSON was not returned)
      * @param hasRequiredVersion An object that implements HasRequiredVersion
      */
-    public SaveRowsResponse(String text, int statusCode, String contentType, JSONObject json, HasRequiredVersion hasRequiredVersion)
+    public RowsResponse(String text, int statusCode, String contentType, JSONObject json, HasRequiredVersion hasRequiredVersion)
     {
         super(text, statusCode, contentType, json, hasRequiredVersion);
     }
