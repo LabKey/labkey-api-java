@@ -239,42 +239,10 @@ public abstract class BaseRowsCommand extends PostCommand<RowsResponse>
             json.put("extraContext", getExtraContext());
         if (getAuditBehavior() != null)
             json.put("auditBehavior", getAuditBehavior());
-        if (getAuditUserComment() != null)
-            json.put("auditUserComment", getAuditUserComment());
 
-        //unfortunately, JSON simple is so simple that it doesn't
-        //encode maps into JSON objects on the fly,
-        //nor dates into property JSON format
-        JSONArray jsonRows = new JSONArray();
-        if(null != getRows())
-        {
-            SimpleDateFormat fmt = new SimpleDateFormat("d MMM yyyy HH:mm:ss Z");
-            for(Map<String, Object> row : getRows())
-            {
-                JSONObject jsonRow;
-                if (row instanceof JSONObject jo) //optimization
-                {
-                    jsonRow = jo;
-                }
-                else
-                {
-                    jsonRow = new JSONObject();
-                    //row map entries must be scalar values (no embedded maps or arrays)
-                    for(Map.Entry<String, Object> entry : row.entrySet())
-                    {
-                        Object value = entry.getValue();
+        stringToJson(json, "auditUserComment", getAuditUserComment());
+        json.put("rows", rowsToJson(getRows()));
 
-                        if(value instanceof Date)
-                            value = fmt.format((Date)value);
-
-                        // JSONObject.wrap allows us to save 'null' values.
-                        jsonRow.put(entry.getKey(), JSONObject.wrap(value));
-                    }
-                }
-                jsonRows.put(jsonRow);
-            }
-        }
-        json.put("rows", jsonRows);
         return json;
     }
 
@@ -282,5 +250,53 @@ public abstract class BaseRowsCommand extends PostCommand<RowsResponse>
     protected RowsResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
         return new RowsResponse(text, status, contentType, json, this);
+    }
+
+    static void stringToJson(JSONObject json, String prop, String value)
+    {
+        if (value != null && !value.isEmpty())
+        {
+            String trimmed = value.trim();
+            if (!trimmed.isEmpty())
+                json.put(prop, trimmed);
+        }
+    }
+
+    static JSONArray rowsToJson(List<Map<String, Object>> rows)
+    {
+        //unfortunately, JSON simple is so simple that it doesn't
+        //encode maps into JSON objects on the fly,
+        //nor dates into property JSON format
+        JSONArray jsonRows = new JSONArray();
+        if (null != rows && !rows.isEmpty())
+        {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy HH:mm:ss Z");
+            for (Map<String, Object> row : rows)
+            {
+                if (row instanceof JSONObject jo)
+                {
+                    jsonRows.put(jo);
+                }
+                else
+                {
+                    JSONObject jsonRow = new JSONObject();
+                    // Row map entries must be scalar values (no embedded maps or arrays)
+                    for (Map.Entry<String, Object> entry : row.entrySet())
+                    {
+                        Object value = entry.getValue();
+
+                        if (value instanceof Date dateValue)
+                            value = dateFormat.format(dateValue);
+
+                        // JSONObject.wrap allows us to save 'null' values.
+                        jsonRow.put(entry.getKey(), JSONObject.wrap(value));
+                    }
+
+                    jsonRows.put(jsonRow);
+                }
+            }
+        }
+
+        return jsonRows;
     }
 }

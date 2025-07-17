@@ -1,11 +1,8 @@
 package org.labkey.remoteapi.query;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.CommandException;
-import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.PostCommand;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +46,7 @@ import java.util.Map;
  *      )));
  *  updateCmd.setAuditBehavior(SaveRowsCommand.AuditBehavior.DETAILED);
  *  updateCmd.setAuditUserComment("Updated promoter region coordinates based on new assembly");
- *  saveCmd.addCommand(updateCmd);
+ *  saveCmd.addCommands(updateCmd);
  *
  *  // Delete obsolete annotation
  *  saveCmd.addCommand(new Command(CommandType.Delete, "genome", "GeneAnnotations",
@@ -156,32 +153,77 @@ public class SaveRowsCommand extends PostCommand<SaveRowsResponse>
         Delete
     }
 
-    public static class Command extends BaseRowsCommand
+    // N.B. You may be inclined to have this share implementation with BaseRowsCommand; however, I would caution
+    // against doing so. This class does not represent a command like a PostCommand or a GetCommand but rather
+    // aligns with the "commands" made on a request to the save rows endpoint.
+    public static class Command
     {
+        BaseRowsCommand.AuditBehavior _auditBehavior;
+        String _auditUserComment;
         final CommandType _commandType;
         String _containerPath;
+        Map<String, Object> _extraContext;
+        List<Map<String, Object>> _rows;
+        final String _queryName;
+        final String _schemaName;
         Boolean _skipReselectRows;
 
         public Command(CommandType commandType, String schemaName, String queryName, List<Map<String, Object>> rows)
         {
-            super(schemaName, queryName, null);
             assert null != commandType;
+            assert null != schemaName && !schemaName.isEmpty();
+            assert null != queryName && !queryName.isEmpty();
+
             _commandType = commandType;
-            setRows(rows);
+            _schemaName = schemaName;
+            _queryName = queryName;
+            _rows = rows;
         }
 
         public JSONObject getJsonObject()
         {
-            JSONObject json = super.getJsonObject();
-            json.put("command", getCommandType().name().toLowerCase());
+            JSONObject json = new JSONObject();
 
-            if (getContainerPath() != null && !getContainerPath().isEmpty())
-                json.put("containerPath", getContainerPath());
+            json.put("command", getCommandType().name().toLowerCase());
+            json.put("schemaName", getSchemaName());
+            json.put("queryName", getQueryName());
+            json.put("rows", BaseRowsCommand.rowsToJson(getRows()));
+
+            if (getAuditBehavior() != null)
+                json.put("auditBehavior", getAuditBehavior());
+
+            BaseRowsCommand.stringToJson(json, "auditUserComment", getAuditUserComment());
+            BaseRowsCommand.stringToJson(json, "containerPath", getContainerPath());
+
+            if (getExtraContext() != null && !getExtraContext().isEmpty())
+                json.put("extraContext", getExtraContext());
 
             if (isSkipReselectRows() != null)
                 json.put("skipReselectRows", isSkipReselectRows());
 
             return json;
+        }
+
+        public BaseRowsCommand.AuditBehavior getAuditBehavior()
+        {
+            return _auditBehavior;
+        }
+
+        public Command setAuditBehavior(BaseRowsCommand.AuditBehavior auditBehavior)
+        {
+            _auditBehavior = auditBehavior;
+            return this;
+        }
+
+        public String getAuditUserComment()
+        {
+            return _auditUserComment;
+        }
+
+        public Command setAuditUserComment(String auditUserComment)
+        {
+            _auditUserComment = auditUserComment;
+            return this;
         }
 
         public CommandType getCommandType()
@@ -194,9 +236,42 @@ public class SaveRowsCommand extends PostCommand<SaveRowsResponse>
             return _containerPath;
         }
 
-        public void setContainerPath(String containerPath)
+        public Command setContainerPath(String containerPath)
         {
             _containerPath = containerPath;
+            return this;
+        }
+
+        public Map<String, Object> getExtraContext()
+        {
+            return _extraContext;
+        }
+
+        public Command setExtraContext(Map<String, Object> extraContext)
+        {
+            _extraContext = extraContext;
+            return this;
+        }
+
+        public String getQueryName()
+        {
+            return _queryName;
+        }
+
+        public String getSchemaName()
+        {
+            return _schemaName;
+        }
+
+        public List<Map<String, Object>> getRows()
+        {
+            return _rows;
+        }
+
+        public Command setRows(List<Map<String, Object>> rows)
+        {
+            _rows = rows;
+            return this;
         }
 
         public Boolean isSkipReselectRows()
@@ -204,57 +279,10 @@ public class SaveRowsCommand extends PostCommand<SaveRowsResponse>
             return _skipReselectRows;
         }
 
-        public void setSkipReselectRows(Boolean skipReselectRows)
+        public Command setSkipReselectRows(Boolean skipReselectRows)
         {
             _skipReselectRows = skipReselectRows;
-        }
-
-        @Override
-        public String getActionName()
-        {
-            throw new UnsupportedOperationException(unsupportedMethodMessage());
-        }
-
-        @Override
-        public String getControllerName()
-        {
-            throw new UnsupportedOperationException(unsupportedMethodMessage());
-        }
-
-        @Override
-        public RowsResponse execute(Connection connection, String folderPath) throws IOException, CommandException
-        {
-            throw new UnsupportedOperationException(unsupportedMethodMessage());
-        }
-
-        @Override
-        public double getRequiredVersion()
-        {
-            throw new UnsupportedOperationException(unsupportedMethodMessage());
-        }
-
-        @Override
-        public void setRequiredVersion(double requiredVersion)
-        {
-            throw new UnsupportedOperationException(unsupportedMethodMessage());
-        }
-
-        @Override
-        public Integer getTimeout()
-        {
-            throw new UnsupportedOperationException(unsupportedMethodMessage());
-        }
-
-        @Override
-        public void setTimeout(Integer timeout)
-        {
-            throw new UnsupportedOperationException(unsupportedMethodMessage());
-        }
-
-        private String unsupportedMethodMessage()
-        {
-            // "Command does not support methodName()."
-            return Command.class.getSimpleName() + " does not support " + new Throwable().getStackTrace()[1].getMethodName() + "().";
+            return this;
         }
     }
 }
