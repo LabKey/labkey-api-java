@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Response object for the {@link SaveRowsApiCommand}, containing results of batch operations executed on the server.
+ * Response object for the {@link SaveRowsCommand}, containing results of batch operations executed on the server.
  * This response provides details about the success or failure of each command in the batch, including:
  * <ul>
  *     <li>Whether the transaction was committed</li>
@@ -20,13 +20,13 @@ import java.util.Map;
  * <p>
  * Example usage:
  * <pre><code>
- *  SaveRowsApiCommand cmd = new SaveRowsApiCommand();
+ *  SaveRowsCommand cmd = new SaveRowsCommand();
  *  // Add commands to insert/update/delete gene annotations...
- *  SaveRowsApiResponse response = cmd.execute(connection, "GenomeProject");
+ *  SaveRowsResponse response = cmd.execute(connection, "GenomeProject");
  *
  *  if (response.isCommitted())
  *  {
- *      for (SaveRowsApiResponse.Result result : response.getResults())
+ *      for (SaveRowsResponse.Result result : response.getResults())
  *      {
  *          System.out.println(String.format(
  *              "%s operation affected %d rows in %s.%s",
@@ -62,13 +62,13 @@ import java.util.Map;
  *  }
  * </code></pre>
  */
-public class SaveRowsApiResponse extends CommandResponse
+public class SaveRowsResponse extends CommandResponse
 {
     private final boolean _committed;
     private final int _errorCount;
     private final List<Result> _results;
 
-    public SaveRowsApiResponse(String text, int statusCode, String contentType, JSONObject json)
+    public SaveRowsResponse(String text, int statusCode, String contentType, JSONObject json)
     {
         super(text, statusCode, contentType, json);
 

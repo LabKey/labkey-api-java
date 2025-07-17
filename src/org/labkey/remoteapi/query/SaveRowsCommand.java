@@ -56,14 +56,14 @@ import java.util.Map;
  *  SaveRowsApiResponse response = saveCmd.execute(conn, "GenomeProject");
  * </code></pre>
  */
-public class SaveRowsApiCommand extends PostCommand<SaveRowsApiResponse>
+public class SaveRowsCommand extends PostCommand<SaveRowsResponse>
 {
     private final List<Command> _commands = new ArrayList<>();
     private Map<String, Object> _extraContext;
     private Boolean _transacted;
     private Boolean _validateOnly;
 
-    public SaveRowsApiCommand(Command... commands)
+    public SaveRowsCommand(Command... commands)
     {
         super("query", "saveRows.api");
         addCommands(commands);
@@ -74,13 +74,13 @@ public class SaveRowsApiCommand extends PostCommand<SaveRowsApiResponse>
         return _extraContext;
     }
 
-    public SaveRowsApiCommand setExtraContext(Map<String, Object> extraContext)
+    public SaveRowsCommand setExtraContext(Map<String, Object> extraContext)
     {
         _extraContext = extraContext;
         return this;
     }
 
-    public SaveRowsApiCommand addCommands(Command... commands)
+    public SaveRowsCommand addCommands(Command... commands)
     {
         for (Command command : commands)
         {
@@ -101,7 +101,7 @@ public class SaveRowsApiCommand extends PostCommand<SaveRowsApiResponse>
         return _transacted;
     }
 
-    public SaveRowsApiCommand setTransacted(Boolean transacted)
+    public SaveRowsCommand setTransacted(Boolean transacted)
     {
         _transacted = transacted;
         return this;
@@ -112,7 +112,7 @@ public class SaveRowsApiCommand extends PostCommand<SaveRowsApiResponse>
         return _validateOnly;
     }
 
-    public SaveRowsApiCommand setValidateOnly(Boolean validateOnly)
+    public SaveRowsCommand setValidateOnly(Boolean validateOnly)
     {
         _validateOnly = validateOnly;
         return this;
@@ -141,9 +141,9 @@ public class SaveRowsApiCommand extends PostCommand<SaveRowsApiResponse>
     }
 
     @Override
-    protected SaveRowsApiResponse createResponse(String text, int status, String contentType, JSONObject json)
+    protected SaveRowsResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new SaveRowsApiResponse(text, status, contentType, json);
+        return new SaveRowsResponse(text, status, contentType, json);
     }
 
     public enum CommandType
