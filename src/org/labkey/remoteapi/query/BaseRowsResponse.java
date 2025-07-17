@@ -32,7 +32,7 @@ import java.util.Map;
  * and meta-data about those rows. Primarily, this class converts
  * date values in the rows array to real Java Date objects.
  */
-abstract class RowsResponse extends CommandResponse
+abstract class BaseRowsResponse extends CommandResponse
 {
     /**
      * Constructs a new RowsResponse given the specified text and status code.
@@ -42,7 +42,7 @@ abstract class RowsResponse extends CommandResponse
      * @param json The parsed JSONObject (or null if JSON was not returned.
      * @param hasRequiredVersion An object that implements HasRequiredVersion, such as the command that created this response
      */
-    RowsResponse(String text, int statusCode, String contentType, JSONObject json, HasRequiredVersion hasRequiredVersion)
+    BaseRowsResponse(String text, int statusCode, String contentType, JSONObject json, HasRequiredVersion hasRequiredVersion)
     {
         super(text, statusCode, contentType, json);
         double requiredVersion = hasRequiredVersion.getRequiredVersion();

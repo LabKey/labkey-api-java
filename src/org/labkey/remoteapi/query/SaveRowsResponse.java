@@ -23,7 +23,7 @@ import org.labkey.remoteapi.HasRequiredVersion;
  * This response object provides helper methods for accessing the important
  * bits of the parsed response data.
  */
-public class SaveRowsResponse extends RowsResponse
+public class SaveRowsResponse extends BaseRowsResponse
 {
     /**
      * Constructs a new SaveRowsResponse given the response text and status code
