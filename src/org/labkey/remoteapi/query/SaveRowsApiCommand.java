@@ -66,7 +66,7 @@ public class SaveRowsApiCommand extends PostCommand<SaveRowsApiResponse>
     public SaveRowsApiCommand(Command... commands)
     {
         super("query", "saveRows.api");
-        addCommand(commands);
+        addCommands(commands);
     }
 
     public Map<String, Object> getExtraContext()
@@ -80,7 +80,7 @@ public class SaveRowsApiCommand extends PostCommand<SaveRowsApiResponse>
         return this;
     }
 
-    public SaveRowsApiCommand addCommand(Command... commands)
+    public SaveRowsApiCommand addCommands(Command... commands)
     {
         for (Command command : commands)
         {
