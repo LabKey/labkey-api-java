@@ -29,7 +29,7 @@ import java.util.Map;
 
 /**
  * Base class for command responses that contain an array of rows
- * and meta-data about those rows. Primarily, this class converts
+ * and metadata about those rows. Primarily, this class converts
  * date values in the rows array to real Java Date objects.
  */
 abstract class BaseRowsResponse extends CommandResponse
