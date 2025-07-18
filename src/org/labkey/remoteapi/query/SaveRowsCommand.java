@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2016 LabKey Corporation
+ * Copyright (c) 2008-2025 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,142 +15,79 @@
  */
 package org.labkey.remoteapi.query;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.labkey.remoteapi.PostCommand;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Base class for commands that make changes to rows exposed from a given
- * query in a given schema. Clients should use {@link UpdateRowsCommand},
- * {@link InsertRowsCommand} or {@link DeleteRowsCommand} and not this class directly.
+ * Command for executing multiple data modification operations (insert, update, delete) in a single request
+ * to a LabKey Server. This command allows batching multiple operations together, optionally in a transaction.
  * <p>
- * All three of these subclasses post similar JSON to the server, so this class
- * does all the common work. The client must supply three things: the schemaName,
- * the queryName and an array of 'rows' (i.e. Maps). The rows are added via
- * the {@link #addRow(Map)} or {@link #setRows(List)} methods.
+ * All data exposed from a LabKey Server is organized into schemas containing queries. Each command in a batch
+ * specifies the schema name (e.g., 'lists' or 'study') and query name (e.g., 'People' or 'Samples') to operate on.
  * <p>
- * All data exposed from the LabKey Server is organized into a set of queries
- * contained in a set of schemas. A schema is simply a group of queries, identified
- * by a name (e.g., 'lists' or 'study'). A query is particular table or view within
- * that schema (e.g., 'People' or 'Peptides'). Currently, clients may update rows in
- * base tables only, and not in joined views. Therefore the query name must be the
- * name of a table in the schema.
+ * The command supports several features:
+ * <ul>
+ *     <li>Multiple operations (insert, update, delete) in a single request</li>
+ *     <li>Optional transaction support to ensure all-or-nothing execution</li>
+ *     <li>Validation-only mode to check operations without making changes</li>
+ *     <li>Audit trail support with configurable detail levels</li>
+ *     <li>Custom audit comments for tracking changes</li>
+ * </ul>
  * <p>
- * To view the schemas and queries exposed in a given folder, add a Query web part
- * to your portal page and choose the option "Show the list of tables in this schema"
- * in the part configuration page. Alternatively, if it is exposed, click on the Query
- * tab across the top of the main part of the page.
- * <p>
- * Examples:
+ * Example usage:
  * <pre><code>
- *  // May need to add CONTEXT_PATH for dev instances
- *  Connection cn = new Connection("http://localhost:8080", user, password);
+ *  ApiKeyCredentialsProvider credentials = new ApiKeyCredentialsProvider("xxx");
+ *  Connection conn = new Connection("http://localhost:8080", credentials);
+ *  SaveRowsApiCommand saveCmd = new SaveRowsApiCommand();
  *
- *  //Insert Rows Command
- *  InsertRowsCommand cmd = new InsertRowsCommand("lists", "People");
+ *  // Add new gene annotations
+ *  saveCmd.addCommand(new Command(CommandType.Insert, "genome", "GeneAnnotations",
+ *      List.of(
+ *          Map.of("name", "p53 binding site", "geneName", "TP53", "start", 1000, "end", 1020),
+ *          Map.of("name", "TATA box", "geneName", "BRCA1", "start", 2500, "end", 2506)
+ *      )));
  *
- *  Map&lt;String, Object&gt; row = new HashMap&lt;String, Object&gt;();
- *  row.put("FirstName", "Insert");
- *  row.put("LastName", "Test");
+ *  // Update annotation positions
+ *  Command updateCmd = new Command(CommandType.Update, "genome", "GeneAnnotations",
+ *      List.of(Map.of(
+ *          "name", "Promoter region",
+ *          "geneName", "EGFR",
+ *          "start", 5000,
+ *          "end", 5500
+ *      )));
+ *  updateCmd.setAuditBehavior(BaseRowsCommand.AuditBehavior.DETAILED);
+ *  updateCmd.setAuditUserComment("Updated promoter region coordinates based on new assembly");
+ *  saveCmd.addCommands(updateCmd);
  *
- *  cmd.addRow(row); //can add multiple rows to insert many at once
- *  SaveRowsResponse resp = cmd.execute(cn, "PROJECT_NAME");
+ *  // Delete obsolete annotation
+ *  saveCmd.addCommand(new Command(CommandType.Delete, "genome", "GeneAnnotations",
+ *      List.of(Map.of("name", "Putative enhancer", "geneName", "MYC"))));
  *
- *  //get the newly-assigned primary key value from the first return row
- *  int newKey = resp.getRows().get(0).get("Key");
- *
- *  //Update Rows Command
- *  UpdateRowsCommand cmdUpd = new UpdateRowsCommand("lists", "People");
- *  row = new HashMap&lt;String, Object&gt;();
- *  row.put("Key", newKey);
- *  row.put("LastName", "Test UPDATED");
- *  cmdUpd.addRow(row);
- *  resp = cmdUpd.execute(cn, "PROJECT_NAME");
- *
- *  //Delete Rows Command
- *  DeleteRowsCommand cmdDel = new DeleteRowsCommand("lists", "People");
- *  row = new HashMap&lt;String, Object&gt;();
- *  row.put("Key", newKey);
- *  cmdDel.addRow(row);
- *  resp = cmdDel.execute(cn, "PROJECT_NAME");
+ *  // Execute all commands in a transaction
+ *  SaveRowsApiResponse response = saveCmd.execute(conn, "GenomeProject");
  * </code></pre>
  */
-public abstract class SaveRowsCommand extends PostCommand<SaveRowsResponse>
+public class SaveRowsCommand extends PostCommand<SaveRowsResponse>
 {
-    public enum AuditBehavior
-    {
-        NONE,
-        SUMMARY,
-        DETAILED
-    }
-
-    private String _schemaName;
-    private String _queryName;
+    private final List<Command> _commands = new ArrayList<>();
     private Map<String, Object> _extraContext;
-    private List<Map<String, Object>> _rows = new ArrayList<>();
-    private AuditBehavior _auditBehavior;
-    private String _auditUserComment;
+    private Boolean _transacted;
+    private Boolean _validateOnly;
 
-    /**
-     * Constructs a new SaveRowsCommand for a given schema, query and action name.
-     * @param schemaName The schema name.
-     * @param queryName The query name.
-     * @param actionName The action name to call (supplied by the derived class).
-     */
-    protected SaveRowsCommand(String schemaName, String queryName, String actionName)
+    public SaveRowsCommand(Command... commands)
     {
-        super("query", actionName);
-        assert null != schemaName;
-        assert null != queryName;
-        _schemaName = schemaName;
-        _queryName = queryName;
+        super("query", "saveRows.api");
+        addCommands(commands);
     }
 
     /**
-     * Returns the schema name.
-     * @return The schema name.
-     */
-    public String getSchemaName()
-    {
-        return _schemaName;
-    }
-
-    /**
-     * Sets the schema name
-     * @param schemaName The new schema name.
-     */
-    public void setSchemaName(String schemaName)
-    {
-        _schemaName = schemaName;
-    }
-
-    /**
-     * Returns the query name
-     * @return the query name.
-     */
-    public String getQueryName()
-    {
-        return _queryName;
-    }
-
-    /**
-     * Sets a new query name to update
-     * @param queryName the query name.
-     */
-    public void setQueryName(String queryName)
-    {
-        _queryName = queryName;
-    }
-
-    /**
-     * Gets the additional extra context.
-     * @return the extra context.
+     * Returns the extra context map containing additional parameters for the save operation.
+     * This context can be used to pass additional information to the server during the save process.
+     * @return Map containing extra context parameters, or null if no extra context is set
      */
     public Map<String, Object> getExtraContext()
     {
@@ -158,129 +95,328 @@ public abstract class SaveRowsCommand extends PostCommand<SaveRowsResponse>
     }
 
     /**
-     * Sets the additional extra context.
-     * @param extraContext The extra context.
+     * Sets additional context parameters for the save operation.
+     * @param extraContext Map containing extra parameters to be passed to the server
+     * @return This SaveRowsCommand instance for method chaining
      */
-    public void setExtraContext(Map<String, Object> extraContext)
+    public SaveRowsCommand setExtraContext(Map<String, Object> extraContext)
     {
         _extraContext = extraContext;
+        return this;
     }
 
     /**
-     * Returns the current list of 'rows' (i.e., Maps) that will
-     * be sent to the server.
-     * @return The list of rows.
+     * Adds one or more Command objects to the set of commands to be executed by this SaveRowsCommand.
+     * @param commands The commands to add to this SaveRowsCommand.
+     * @return This SaveRowsCommand instance for method chaining
      */
-    public List<Map<String, Object>> getRows()
+    public SaveRowsCommand addCommands(Command... commands)
     {
-        return _rows;
+        for (Command command : commands)
+        {
+            if (command != null)
+                _commands.add(command);
+        }
+        return this;
     }
 
     /**
-     * Sets the list of 'rows' (i.e., Maps) to be sent to the server.
-     * @param rows The rows to send
+     * Returns the list of Command objects representing the batch operations to be executed.
+     * Each Command in the list represents a single insert, update, or delete operation.
+     * @return List of Command objects to be executed
      */
-    public void setRows(List<Map<String, Object>> rows)
+    public List<Command> getCommands()
     {
-        _rows = rows;
+        return _commands;
     }
 
     /**
-     * Adds a row to the list of rows to be sent to the server.
-     * @param row The row to add
+     * Checks if the operations should be executed in a transaction.
+     * When true, all operations will be executed atomically - either all succeed or all fail.
+     * @return Boolean indicating if operations should be transacted, or null for default behavior
      */
-    public void addRow(Map<String, Object> row)
+    public Boolean isTransacted()
     {
-        _rows.add(row);
-    }
-
-    public AuditBehavior getAuditBehavior()
-    {
-        return _auditBehavior;
+        return _transacted;
     }
 
     /**
-     * Used to override the audit behavior for the schema/query.
-     * Note that any audit behavior type that is configured via an XML file for the given schema/query
-     * will take precedence over this value. See TableInfo.getAuditBehavior() for more details.
-     * @param auditBehavior Valid values include "NONE", "SUMMARY", and "DETAILED"
+     * Sets whether the operations should be executed in a transaction.
+     * @param transacted When true, all operations will be executed atomically.
+     *                   When false, operations may partially succeed.
+     *                   When null, uses server default behavior.
+     * @return This SaveRowsCommand instance for method chaining
      */
-    public void setAuditBehavior(AuditBehavior auditBehavior)
+    public SaveRowsCommand setTransacted(Boolean transacted)
     {
-        _auditBehavior = auditBehavior;
-    }
-
-    public String getAuditUserComment()
-    {
-        return _auditUserComment;
+        _transacted = transacted;
+        return this;
     }
 
     /**
-     * Used to provide a comment that will be attached to certain detailed audit log records
-     * @param auditUserComment The comment to attach to the detailed audit log records
+     * Checks if this is a validation-only operation.
+     * When true, the server will validate the operations without making any actual changes.
+     * @return Boolean When true, validates operations without making changes.
+     *                 When false, executes operations normally.
+     *                 When null, uses server default behavior.
      */
-    public void setAuditUserComment(String auditUserComment)
+    public Boolean isValidateOnly()
     {
-        _auditUserComment = auditUserComment;
+        return _validateOnly;
     }
 
     /**
-     * Dynamically builds the JSON object to send based on the current
-     * schema name, query name and rows list.
-     * @return The JSON object to send.
+     * Sets whether this should be a validation-only operation.
+     * @param validateOnly When true, validates operations without making changes.
+     *                     When false, executes operations normally.
+     *                     When null, uses server default behavior.
+     * @return This SaveRowsCommand instance for method chaining
      */
+    public SaveRowsCommand setValidateOnly(Boolean validateOnly)
+    {
+        _validateOnly = validateOnly;
+        return this;
+    }
+
     @Override
     public JSONObject getJsonObject()
     {
         JSONObject json = new JSONObject();
-        json.put("schemaName", getSchemaName());
-        json.put("queryName", getQueryName());
-        if (getExtraContext() != null)
+
+        List<JSONObject> commands = new ArrayList<>();
+        for (Command command : getCommands())
+            commands.add(command.getJsonObject());
+        json.put("commands", commands);
+
+        if (getExtraContext() != null && !getExtraContext().isEmpty())
             json.put("extraContext", getExtraContext());
-        if (getAuditBehavior() != null)
-            json.put("auditBehavior", getAuditBehavior());
-        if (getAuditUserComment() != null)
-            json.put("auditUserComment", getAuditUserComment());
 
-        //unfortunately, JSON simple is so simple that it doesn't
-        //encode maps into JSON objects on the fly,
-        //nor dates into property JSON format
-        JSONArray jsonRows = new JSONArray();
-        if(null != getRows())
-        {
-            SimpleDateFormat fmt = new SimpleDateFormat("d MMM yyyy HH:mm:ss Z");
-            for(Map<String, Object> row : getRows())
-            {
-                JSONObject jsonRow;
-                if (row instanceof JSONObject jo) //optimization
-                {
-                    jsonRow = jo;
-                }
-                else
-                {
-                    jsonRow = new JSONObject();
-                    //row map entries must be scalar values (no embedded maps or arrays)
-                    for(Map.Entry<String, Object> entry : row.entrySet())
-                    {
-                        Object value = entry.getValue();
+        if (isTransacted() != null)
+            json.put("transacted", isTransacted());
 
-                        if(value instanceof Date)
-                            value = fmt.format((Date)value);
+        if (isValidateOnly() != null)
+            json.put("validateOnly", isValidateOnly());
 
-                        // JSONObject.wrap allows us to save 'null' values.
-                        jsonRow.put(entry.getKey(), JSONObject.wrap(value));
-                    }
-                }
-                jsonRows.put(jsonRow);
-            }
-        }
-        json.put("rows", jsonRows);
         return json;
     }
 
     @Override
     protected SaveRowsResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
-        return new SaveRowsResponse(text, status, contentType, json, this);
+        return new SaveRowsResponse(text, status, contentType, json);
+    }
+
+    public enum CommandType
+    {
+        Insert,
+        Update,
+        Delete
+    }
+
+    // N.B. You may be inclined to have this share implementation with BaseRowsCommand; however, I would caution
+    // against doing so. This class does not represent a command like a PostCommand or a GetCommand but rather
+    // aligns with the "commands" made on a request to the save rows endpoint.
+    /**
+     * Represents a single command operation of a specified type
+     * (e.g., insert, update, delete) to be executed within a {@link SaveRowsCommand}.
+     */
+    public static class Command
+    {
+        BaseRowsCommand.AuditBehavior _auditBehavior;
+        String _auditUserComment;
+        final CommandType _commandType;
+        String _containerPath;
+        Map<String, Object> _extraContext;
+        List<Map<String, Object>> _rows;
+        final String _queryName;
+        final String _schemaName;
+        Boolean _skipReselectRows;
+
+        public Command(CommandType commandType, String schemaName, String queryName, List<Map<String, Object>> rows)
+        {
+            assert null != commandType;
+            assert null != schemaName && !schemaName.isEmpty();
+            assert null != queryName && !queryName.isEmpty();
+
+            _commandType = commandType;
+            _schemaName = schemaName;
+            _queryName = queryName;
+            _rows = rows;
+        }
+
+        public JSONObject getJsonObject()
+        {
+            JSONObject json = new JSONObject();
+
+            json.put("command", getCommandType().name().toLowerCase());
+            json.put("schemaName", getSchemaName());
+            json.put("queryName", getQueryName());
+            json.put("rows", BaseRowsCommand.rowsToJson(getRows()));
+
+            if (getAuditBehavior() != null)
+                json.put("auditBehavior", getAuditBehavior());
+
+            BaseRowsCommand.stringToJson(json, "auditUserComment", getAuditUserComment());
+            BaseRowsCommand.stringToJson(json, "containerPath", getContainerPath());
+
+            if (getExtraContext() != null && !getExtraContext().isEmpty())
+                json.put("extraContext", getExtraContext());
+
+            if (isSkipReselectRows() != null)
+                json.put("skipReselectRows", isSkipReselectRows());
+
+            return json;
+        }
+
+        /**
+         * Gets the audit behavior setting for this command.
+         * Determines the level of detail in the audit log for this operation.
+         * @return The current audit behavior setting, or null if using default behavior
+         */
+        public BaseRowsCommand.AuditBehavior getAuditBehavior()
+        {
+            return _auditBehavior;
+        }
+
+        /**
+         * Sets the audit behavior for this command.
+         * @param auditBehavior The desired audit behavior
+         * @return This Command instance for method chaining
+         */
+        public Command setAuditBehavior(BaseRowsCommand.AuditBehavior auditBehavior)
+        {
+            _auditBehavior = auditBehavior;
+            return this;
+        }
+
+        /**
+         * Gets the user-provided comment that will be included in the audit log.
+         * @return The audit comment, or null if none was set
+         */
+        public String getAuditUserComment()
+        {
+            return _auditUserComment;
+        }
+
+        /**
+         * Sets a user comment to be included in the audit log for this command.
+         * @param auditUserComment The comment to include in the audit log
+         * @return This Command instance for method chaining
+         */
+        public Command setAuditUserComment(String auditUserComment)
+        {
+            _auditUserComment = auditUserComment;
+            return this;
+        }
+
+        /**
+         * Gets the type of operation this command represents.
+         * @return The CommandType for this command
+         */
+        public CommandType getCommandType()
+        {
+            return _commandType;
+        }
+
+        /**
+         * Gets the container path where this command should be executed.
+         * @return The container path, or null if using the default container
+         */
+        public String getContainerPath()
+        {
+            return _containerPath;
+        }
+
+        /**
+         * Sets the container path where this command should be executed.
+         * @param containerPath The target container path
+         * @return This Command instance for method chaining
+         */
+        public Command setContainerPath(String containerPath)
+        {
+            _containerPath = containerPath;
+            return this;
+        }
+
+        /**
+         * Gets additional context parameters specific to this command.
+         * @return Map of extra context parameters, or null if none are set
+         */
+        public Map<String, Object> getExtraContext()
+        {
+            return _extraContext;
+        }
+
+        /**
+         * Sets additional context parameters for this specific command.
+         * @param extraContext Map of extra parameters to be passed with this command
+         * @return This Command instance for method chaining
+         */
+        public Command setExtraContext(Map<String, Object> extraContext)
+        {
+            _extraContext = extraContext;
+            return this;
+        }
+
+        /**
+         * Gets the name of the query this command operates on.
+         * @return The query name
+         */
+        public String getQueryName()
+        {
+            return _queryName;
+        }
+
+        /**
+         * Gets the name of the schema containing the query.
+         * @return The schema name
+         */
+        public String getSchemaName()
+        {
+            return _schemaName;
+        }
+
+        /**
+         * Gets the list of rows to be processed by this command.
+         * Each row is represented as a Map of column names to values.
+         * @return List of rows to be processed
+         */
+        public List<Map<String, Object>> getRows()
+        {
+            return _rows;
+        }
+
+        /**
+         * Sets the list of rows to be processed by this command.
+         * @param rows List of maps where each map represents a row with column names as keys
+         * @return This Command instance for method chaining
+         */
+        public Command setRows(List<Map<String, Object>> rows)
+        {
+            _rows = rows;
+            return this;
+        }
+
+        /**
+         * Checks if the command should skip re-selecting rows after the operation.
+         * @return Boolean indicating whether to skip row re-selection or null for default behavior
+         */
+        public Boolean isSkipReselectRows()
+        {
+            return _skipReselectRows;
+        }
+
+        /**
+         * Sets whether to skip re-selecting rows after the operation completes.
+         * @param skipReselectRows When true, skips row reselection after the operation
+         *                         When false, performs row reselection
+         *                         When null, uses server default behavior
+         * @return This Command instance for method chaining
+         */
+        public Command setSkipReselectRows(Boolean skipReselectRows)
+        {
+            _skipReselectRows = skipReselectRows;
+            return this;
+        }
     }
 }

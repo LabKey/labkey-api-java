@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009 LabKey Corporation
+ * Copyright (c) 2008-2025 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,65 +16,163 @@
 package org.labkey.remoteapi.query;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.HasRequiredVersion;
+import org.labkey.remoteapi.CommandResponse;
+import org.labkey.remoteapi.collections.CaseInsensitiveHashMap;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
- * Response object used for commands that derive from SaveRowsCommand.
- * This response object provides helper methods for accessing the important
- * bits of the parsed response data.
+ * Response object for the {@link SaveRowsCommand}, containing results of batch operations executed on the server.
+ * This response provides details about the success or failure of each command in the batch, including:
+ * <ul>
+ *     <li>Whether the transaction was committed</li>
+ *     <li>Number of errors encountered</li>
+ *     <li>Detailed results for each command executed</li>
+ * </ul>
+ * <p>
+ * Example usage:
+ * <pre><code>
+ *  SaveRowsCommand cmd = new SaveRowsCommand();
+ *  // Add commands to insert/update/delete gene annotations...
+ *  SaveRowsResponse response = cmd.execute(connection, "GenomeProject");
+ *
+ *  if (response.isCommitted())
+ *  {
+ *      for (SaveRowsResponse.Result result : response.getResults())
+ *      {
+ *          System.out.println(String.format(
+ *              "%s operation affected %d rows in %s.%s",
+ *              result.getCommand(),
+ *              result.getRowsAffected(),
+ *              result.getSchemaName(),
+ *              result.getQueryName()
+ *          ));
+ *
+ *          // For detailed examination of affected rows
+ *          for (Map&gt;String, Object> row : result.getRows())
+ *          {
+ *              System.out.println(String.format(
+ *                  "Gene %s annotation at position %d-%d",
+ *                  row.get("geneName"),
+ *                  row.get("start"),
+ *                  row.get("end")
+ *              ));
+ *          }
+ *
+ *          // Check if operation was audited
+ *          if (result.getTransactionAuditId() > 0)
+ *          {
+ *              System.out.println("Audit record created with ID: " +
+ *                result.getTransactionAuditId());
+ *          }
+ *      }
+ *  }
+ *  else
+ *  {
+ *      System.out.println("Transaction failed with " +
+ *          response.getErrorCount() + " errors");
+ *  }
+ * </code></pre>
  */
-public class SaveRowsResponse extends RowsResponse
+public class SaveRowsResponse extends CommandResponse
 {
-    /**
-     * Constructs a new SaveRowsResponse given the response text and status code
-     * @param text The response text.
-     * @param statusCode The HTTP status code.
-     * @param contentType The Content-Type header value.
-     * @param json The parsed JSONObject (or null if JSON was not returned)
-     * @param hasRequiredVersion An object that implements HasRequiredVersion
-     */
-    public SaveRowsResponse(String text, int statusCode, String contentType, JSONObject json, HasRequiredVersion hasRequiredVersion)
+    private final boolean _committed;
+    private final int _errorCount;
+    private final List<Result> _results;
+
+    public SaveRowsResponse(String text, int statusCode, String contentType, JSONObject json)
     {
-        super(text, statusCode, contentType, json, hasRequiredVersion);
+        super(text, statusCode, contentType, json);
+
+        _committed = json.optBoolean("committed", false);
+        _errorCount = json.optInt("errorCount", 0);
+
+        List<Result> results = new ArrayList<>();
+        if (json.has("result"))
+        {
+            for (Object resultJson : json.getJSONArray("result"))
+                results.add(new Result((JSONObject) resultJson));
+        }
+        _results = Collections.unmodifiableList(results);
     }
 
-    /**
-     * Returns the 'rowsAffected' response property.
-     * @return The number of rows affected by the command, or null if this property
-     * was not present in the response.
-     */
-    public Number getRowsAffected()
+    public boolean isCommitted()
     {
-        return getProperty("rowsAffected");
+        return _committed;
     }
 
-    /**
-     * Returns the 'schemaName' response property.
-     * @return The schema name affected by the command, or null if this property
-     * was not present in the response.
-     */
-    public String getSchemaName()
+    public int getErrorCount()
     {
-        return getProperty("schemaName");
+        return _errorCount;
     }
 
-    /**
-     * Returns the 'queryName' response property.
-     * @return The query name affected by the command, or null if this property
-     * was not present in the response.
-     */
-    public String getQueryName()
+    public List<Result> getResults()
     {
-        return getProperty("queryName");
+        return _results;
     }
 
-    /**
-     * Returns the 'command' response property.
-     * @return The command executed, or null if this property
-     * was not present in the response.
-     */
-    public String getCommand()
+    public static class Result
     {
-        return getProperty("command");
+        private final String _command;
+        private final String _containerPath;
+        private final String _queryName;
+        private final List<Map<String, Object>> _rows = new ArrayList<>();
+        private final int _rowsAffected;
+        private final String _schemaName;
+        private final int _transactionAuditId;
+
+        private Result(JSONObject json)
+        {
+            _command = json.optString("command", null);
+            _containerPath = json.optString("containerPath", null);
+            _queryName = json.optString("queryName", null);
+            _rowsAffected = json.optInt("rowsAffected", 0);
+            _schemaName = json.optString("schemaName", null);
+            _transactionAuditId = json.optInt("transactionAuditId", 0);
+
+            if (json.has("rows"))
+            {
+                for (Object rowJson : json.getJSONArray("rows"))
+                    _rows.add(new CaseInsensitiveHashMap<>(((JSONObject) rowJson).toMap()));
+            }
+        }
+
+        public String getCommand()
+        {
+            return _command;
+        }
+
+        public String getContainerPath()
+        {
+            return _containerPath;
+        }
+
+        public String getQueryName()
+        {
+            return _queryName;
+        }
+
+        public List<Map<String, Object>> getRows()
+        {
+            return _rows;
+        }
+
+        public int getRowsAffected()
+        {
+            return _rowsAffected;
+        }
+
+        public String getSchemaName()
+        {
+            return _schemaName;
+        }
+
+        public int getTransactionAuditId()
+        {
+            return _transactionAuditId;
+        }
     }
 }

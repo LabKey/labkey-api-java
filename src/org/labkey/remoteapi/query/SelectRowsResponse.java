@@ -28,7 +28,7 @@ import java.util.Map;
  * of the parsed response data.
  * @see SelectRowsCommand
  */
-public class SelectRowsResponse extends RowsResponse
+public class SelectRowsResponse extends BaseRowsResponse
 {
     /**
      * An enumeration of the possible column data types

@@ -72,7 +72,7 @@ repositories {
 
 group = "org.labkey.api"
 
-version = "6.4.0-SNAPSHOT"
+version = "7.0.0-SNAPSHOT"
 
 dependencies {
     api "org.json:json:${jsonObjectVersion}"
@@ -191,7 +191,7 @@ project.publishing {
                 scm {
                     connection = 'scm:git:https://github.com/LabKey/labkey-api-java'
                     developerConnection = 'scm:git:https://github.com/LabKey/labkey-api-java'
-                    url = 'scm:git:https://github.com/LabKey/labkey-api-java/labkey-client-api'
+                    url = 'scm:git:https://github.com/LabKey/labkey-api-java'
                 }
             }
         }

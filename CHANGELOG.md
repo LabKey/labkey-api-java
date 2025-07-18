@@ -1,8 +1,18 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## version 6.4.0-SNAPSHOT
+## version 7.1.0-SNAPSHOT
 *Released*: TBD
+*
+
+## version 7.0.0
+*Released*: 18 July 2025
 * Update Gradle, Gradle Plugins, HttpClient, and JSONObject versions
+* BREAKING CHANGES
+  * The `SaveRowsCommand` has been updated to be a command wrapper for the `query-saveRows.api`
+  * The `SaveRowsResponse` now wraps the response from the new `SaveRowsCommand`
+  * Rename original `SaveRowsResponse` to `RowsResponse`
+  * Rename original `SaveRowsCommand` to `BaseRowsCommand`
+  * Rename original `RowsResponse` to `BaseRowsResponse`
 
 ## version 6.3.0
 *Released*: 19 June 2025
