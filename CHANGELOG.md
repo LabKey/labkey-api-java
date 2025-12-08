@@ -2,7 +2,7 @@
 
 ## version 7.1.0-SNAPSHOT
 *Released*: TBD
-*
+* Gradle, Gradle plugins, commonsCodec, HttpClient, HttpCore version updates
 
 ## version 7.0.0
 *Released*: 18 July 2025
