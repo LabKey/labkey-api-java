@@ -41,6 +41,7 @@ public class ImportRunCommand extends PostCommand<ImportRunResponse>
     private Map<String, Object> _properties;
     private Map<String, Object> _batchProperties;
     private String _auditUserComment;
+    private Integer _workflowTaskId;
 
     // Only one of the follow is allowed
     private List<Map<String, Object>> _dataRows;
@@ -122,6 +123,11 @@ public class ImportRunCommand extends PostCommand<ImportRunResponse>
         _auditUserComment = auditUserComment;
     }
 
+    public void setWorkflowTaskId(Integer workflowTaskId)
+    {
+        _workflowTaskId = workflowTaskId;
+    }
+
     @Override
     protected ImportRunResponse createResponse(String text, int status, String contentType, JSONObject json)
     {
@@ -165,6 +171,8 @@ public class ImportRunCommand extends PostCommand<ImportRunResponse>
                 json.put("plateMetadata", _plateMetadata);
             if (_auditUserComment != null)
                 json.put("auditUserComment", _auditUserComment);
+            if (_workflowTaskId != null)
+                json.put("workflowTask", _workflowTaskId);
 
             builder.addTextBody("json", json.toString(), ContentType.APPLICATION_JSON);
         }
@@ -179,6 +187,8 @@ public class ImportRunCommand extends PostCommand<ImportRunResponse>
                 builder.addTextBody("comment", _comment);
             if (_auditUserComment != null)
                 builder.addTextBody("auditUserComment", _auditUserComment);
+            if (_workflowTaskId != null)
+                builder.addTextBody("workflowTask", String.valueOf(_workflowTaskId));
             if (_properties != null)
             {
                 for (Map.Entry<String, Object> entry : _properties.entrySet())
