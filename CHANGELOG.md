@@ -1,9 +1,5 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## version 7.2.0-SNAPSHOT
-*Released*: TBD
-* 
-
 ## version 7.1.0
 *Released*: 22 December 2025
 * Gradle, Gradle plugins, commonsCodec, HttpClient, HttpCore version updates
