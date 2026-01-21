@@ -63,6 +63,7 @@ public class Filter
         DOES_NOT_START_WITH("Does Not Start With", "doesnotstartwith", "DOES_NOT_START_WITH", true),
 
         CONTAINS("Contains", "contains", "CONTAINS", true),
+        CONTAINS_ALL("Contains All", "containsall", "CONTAINS_ALL", true),
         DOES_NOT_CONTAIN("Does Not Contain", "doesnotcontain", "DOES_NOT_CONTAIN", true),
 
         CONTAINS_ONE_OF("Contains One Of (example usage: a;b;c)", "containsoneof", "CONTAINS_ONE_OF", true),
