@@ -64,7 +64,11 @@ public class Filter
 
         CONTAINS("Contains", "contains", "CONTAINS", true),
         CONTAINS_ALL("Contains All", "containsall", "CONTAINS_ALL", true),
+        CONTAINS_ANY("Contains Any", "containsany", "CONTAINS_ANY", true),
+        CONTAINS_EXACTLY("Contains Exactly", "containsexactly", "CONTAINS_EXACTLY", true),
+        CONTAINS_NONE("Contains None", "containsnone", "CONTAINS_NONE", true),
         DOES_NOT_CONTAIN("Does Not Contain", "doesnotcontain", "DOES_NOT_CONTAIN", true),
+        DOES_NOT_CONTAIN_EXACTLY("Does Not Contain Exactly", "doesnotcontainexactly", "DOES_NOT_CONTAIN_EXACTLY", true),
 
         CONTAINS_ONE_OF("Contains One Of (example usage: a;b;c)", "containsoneof", "CONTAINS_ONE_OF", true),
         CONTAINS_NONE_OF("Does Not Contain Any Of (example usage: a;b;c)", "containsnoneof", "CONTAINS_NONE_OF", true),
