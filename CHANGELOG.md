@@ -2,7 +2,11 @@
 
 ## version 7.2.0-SNAPSHOT
 *Released*: TBD
-* 
+*
+
+## version 7.1.1
+*Released*: 10 February 2026
+* Explicit "+" sort direction
 
 ## version 7.1.0
 *Released*: 22 December 2025
