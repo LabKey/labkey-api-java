@@ -70,7 +70,7 @@ repositories {
 
 group = "org.labkey.api"
 
-version = "7.2.0-SortDirection-SNAPSHOT"
+version = "7.2.0-SNAPSHOT"
 
 dependencies {
     api "org.json:json:${jsonObjectVersion}"
