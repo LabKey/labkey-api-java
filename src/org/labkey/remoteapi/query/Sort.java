@@ -96,6 +96,6 @@ public class Sort
      */
     public String toQueryStringParam()
     {
-        return (getDirection() == Sort.Direction.DESCENDING ? "-" : "") + getColumnName();
+        return (getDirection() == Sort.Direction.DESCENDING ? "-" : "+") + getColumnName();
     }
 }
