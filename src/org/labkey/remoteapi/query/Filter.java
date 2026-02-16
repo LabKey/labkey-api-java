@@ -70,8 +70,8 @@ public class Filter
         DOES_NOT_CONTAIN("Does Not Contain", "doesnotcontain", "DOES_NOT_CONTAIN", true),
         DOES_NOT_CONTAIN_EXACTLY("Does Not Contain Exactly", "doesnotcontainexactly", "DOES_NOT_CONTAIN_EXACTLY", true),
 
-        IS_EMPTY("Is Empty", "isempty", "IS_EMPTY", true),
-        IS_NOT_EMPTY("Is Not Empty", "isnotempty", "IS_NOT_EMPTY", true),
+        IS_EMPTY("Is Empty", "isempty", "IS_EMPTY", false),
+        IS_NOT_EMPTY("Is Not Empty", "isnotempty", "IS_NOT_EMPTY", false),
 
         CONTAINS_ONE_OF("Contains One Of (example usage: a;b;c)", "containsoneof", "CONTAINS_ONE_OF", true),
         CONTAINS_NONE_OF("Does Not Contain Any Of (example usage: a;b;c)", "containsnoneof", "CONTAINS_NONE_OF", true),
