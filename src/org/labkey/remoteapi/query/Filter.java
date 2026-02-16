@@ -63,12 +63,12 @@ public class Filter
         DOES_NOT_START_WITH("Does Not Start With", "doesnotstartwith", "DOES_NOT_START_WITH", true),
 
         CONTAINS("Contains", "contains", "CONTAINS", true),
-        CONTAINS_ALL("Contains All", "containsall", "CONTAINS_ALL", true),
-        CONTAINS_ANY("Contains Any", "containsany", "CONTAINS_ANY", true),
-        CONTAINS_EXACTLY("Contains Exactly", "containsexactly", "CONTAINS_EXACTLY", true),
-        CONTAINS_NONE("Contains None", "containsnone", "CONTAINS_NONE", true),
-        DOES_NOT_CONTAIN("Does Not Contain", "doesnotcontain", "DOES_NOT_CONTAIN", true),
-        DOES_NOT_CONTAIN_EXACTLY("Does Not Contain Exactly", "doesnotcontainexactly", "DOES_NOT_CONTAIN_EXACTLY", true),
+        CONTAINS_ALL("Contains All", "arraycontainsall", "ARRAYCONTAINSALL", true),
+        CONTAINS_ANY("Contains Any", "arraycontainsany", "ARRAYCONTAINSANY", true),
+        CONTAINS_EXACTLY("Contains Exactly", "arraymatches", "ARRAYMATCHES", true),
+        CONTAINS_NONE("Contains None", "arraycontainsnone", "ARRAYCONTAINSNONE", true),
+        DOES_NOT_CONTAIN("Does Not Contain", "arraydoesnotcontain", "ARRAYDOESNOTCONTAIN", true),
+        DOES_NOT_CONTAIN_EXACTLY("Does Not Contain Exactly", "arraynotmatches", "ARRAYNOTMATCHES", true),
 
         IS_EMPTY("Is Empty", "isempty", "IS_EMPTY", false),
         IS_NOT_EMPTY("Is Not Empty", "isnotempty", "IS_NOT_EMPTY", false),
