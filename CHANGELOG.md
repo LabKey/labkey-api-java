@@ -2,6 +2,7 @@
 
 ## version 7.3.0-SNAPSHOT
 *Released*: TBD
+* Update Gradle version and remove some deprecated syntax
 
 ## version 7.2.0
 *Released*: 17 February 2026
