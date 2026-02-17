@@ -149,11 +149,7 @@ project.tasks.register('sourcesJar', Jar) {
         jar.archiveClassifier.set(LabKey.SOURCES_CLASSIFIER)
 }
 
-project.artifacts {
-    archives project.tasks.sourcesJar
-    archives project.tasks.javadocJar
-    archives project.tasks.fatJar
-}
+project.tasks.assemble.dependsOn(project.tasks.sourcesJar, project.tasks.javadocJar,  project.tasks.fatJar)
 
 def libDescription = "The client-side library for Java developers is a separate JAR from the LabKey Server code base. It can be used by any Java program, including another Java web application."
 
