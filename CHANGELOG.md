@@ -1,8 +1,5 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## version 7.3.0-SNAPSHOT
-*Released*: TBD
-
 ## version 7.2.0
 *Released*: 17 February 2026
 * Add array filter types
