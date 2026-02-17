@@ -4,11 +4,8 @@
 *Released*: TBD
 
 ## version 7.2.0
-*Released*: 17 February 2026
+*Released*: ???
 * Add array filter types
-
-## version 7.1.1
-*Released*: 10 February 2026
 * Explicit "+" sort direction
 
 ## version 7.1.0
