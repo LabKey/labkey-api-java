@@ -39,6 +39,12 @@ public class Filter
         // These operators require a data value
         //
 
+        ARRAY_CONTAINS_ALL("Contains All", "arraycontainsall", "ARRAY_CONTAINS_ALL", true),
+        ARRAY_CONTAINS_ANY("Contains Any", "arraycontainsany", "ARRAY_CONTAINS_ANY", true),
+        ARRAY_CONTAINS_EXACT("Contains Exactly", "arraymatches", "ARRAY_CONTAINS_EXACT", true),
+        ARRAY_CONTAINS_NOT_EXACT("Does Not Contain Exactly", "arraynotmatches", "ARRAY_CONTAINS_NOT_EXACT", true),
+        ARRAY_CONTAINS_NONE("Contains None", "arraycontainsnone", "ARRAY_CONTAINS_NONE", true),
+
         EQUAL("Equals", "eq", "EQUAL", true),
         DATE_EQUAL("Equals", "dateeq", "DATE_EQUAL", true),
 
@@ -79,6 +85,9 @@ public class Filter
         //
         // These are the "no data value" operators
         //
+
+        ARRAY_ISEMPTY("Is Empty", "arrayisempty", "ARRAY_ISEMPTY", false),
+        ARRAY_ISNOTEMPTY("Is Not Empty", "arrayisnotempty", "ARRAY_ISNOTEMPTY", false),
 
         ISBLANK("Is Blank", "isblank", "MISSING", false),
         NONBLANK("Is Not Blank", "isnonblank", "NOT_MISSING", false),

@@ -2,7 +2,7 @@
 
 ## version 7.2.0-SNAPSHOT
 *Released*: TBD
-*
+* Add array filter types
 
 ## version 7.1.1
 *Released*: 10 February 2026
