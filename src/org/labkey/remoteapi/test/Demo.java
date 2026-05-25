@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2013 LabKey Corporation
+ * Copyright (c) 2008-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ public class Demo
     private Connection getConnection()
     {
         if (null == _connection)
-            _connection = new Connection("http://localhost:8080/labkey", _email, _password);
+            _connection = new Connection("http://localhost:8080", _email, _password);
         return _connection;
     }
 
