@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2018 LabKey Corporation
+ * Copyright (c) 2008-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,7 +65,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
 
     /**
      * Constructs an ExecuteSqlCommand, initialized with a schema name and SQL query.
-     * @param schemaName The schema name ot query.
+     * @param schemaName The schema name to query.
      * @param sql The SQL query.
      */
     public ExecuteSqlCommand(String schemaName, String sql)
@@ -196,7 +196,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
 
     /**
      A sort specification to apply over the rows returned by the SQL. In general, you should either include an
-     ORDER BY clause in your SQL, or specific a sort specification in this config property, but not both.
+     ORDER BY clause in your SQL, or provide a sort specification via this config property, but not both.
      The value of this property should be a comma-delimited list of column names you want to sort by.
      Use a - prefix to sort a column in descending order
      (e.g., 'LastName,-Age' to sort first by LastName, then by Age descending).
@@ -209,7 +209,7 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
 
     /**
      A sort specification to apply over the rows returned by the SQL. In general, you should either include an
-     ORDER BY clause in your SQL, or specific a sort specification in this config property, but not both.
+     ORDER BY clause in your SQL, or provide a sort specification via this config property, but not both.
      The value of this property should be a comma-delimited list of column names you want to sort by.
      Use a - prefix to sort a column in descending order
      (e.g., 'LastName,-Age' to sort first by LastName, then by Age descending).
