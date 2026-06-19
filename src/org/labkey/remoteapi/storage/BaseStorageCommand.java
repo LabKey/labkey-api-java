@@ -21,6 +21,7 @@ import org.labkey.remoteapi.PostCommand;
 public abstract class BaseStorageCommand extends PostCommand<StorageCommandResponse>
 {
     private final StorageRow _storageRow;
+    private String _auditUserComment;
 
     public BaseStorageCommand(String action, StorageRow storageRow)
     {
@@ -47,6 +48,22 @@ public abstract class BaseStorageCommand extends PostCommand<StorageCommandRespo
     @Override
     public JSONObject getJsonObject()
     {
-        return _storageRow.toJsonObject();
+        JSONObject json = _storageRow.toJsonObject();
+        if (_auditUserComment != null)
+            json.put("auditUserComment", _auditUserComment);
+        return json;
+    }
+
+    public String getAuditUserComment()
+    {
+        return _auditUserComment;
+    }
+
+    /**
+     * @param auditUserComment the comment to attach to the audit log record for this storage change.
+     */
+    public void setAuditUserComment(String auditUserComment)
+    {
+        _auditUserComment = auditUserComment;
     }
 }

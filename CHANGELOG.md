@@ -1,8 +1,12 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## version 7.3.0-SNAPSHOT
+## version 7.4.0-SNAPSHOT
 *Released*: TBD
+
+## version 7.3.0
+*Released*: X June 2026
 * Update Gradle version and remove some deprecated syntax
+* Add support for `auditUserComment` on `BaseStorageCommand` (`CreateCommand`, `UpdateCommand`, `DeleteCommand`)
 
 ## version 7.2.0
 *Released*: 17 February 2026
