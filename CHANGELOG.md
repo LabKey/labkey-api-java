@@ -8,6 +8,7 @@
 *Released*: 15 July 2026
 * Update Gradle version and remove some deprecated syntax
 * Update HttpCore5 to 5.4.3 (CVE-2026-54399) and HttpClient5 to 5.5.2
+* Update Gradle plugins, Commons Codec, Commons Logging, and JSONObject versions
 
 ## version 7.2.0
 *Released*: 17 February 2026
