@@ -2,25 +2,19 @@
 
 This library allows Java developers to access the data and services exposed from a LabKey Server installation.
 
-For more information on the library, see our 
-[Java API](https://www.labkey.org/Documentation/wiki-page.view?name=javaAPI) page, 
-which includes a link to the [JavaDoc](https://www.labkey.org/download/clientapi_docs/java-api/)
+For more information on the library, see our [Java API](https://www.labkey.org/Documentation/wiki-page.view?name=javaAPI) page, which includes a link to the [JavaDoc](https://www.labkey.org/download/clientapi_docs/java-api/)
 where you can get details about the classes and programming interfaces. 
-
-If you have any questions about this library or LabKey Server, 
-see our [Community Support Forums](https://www.labkey.org/home/Support/LabKey%20Support%20Forum/project-begin.view?).
 
 This library is licensed under the [Apache 2.0 open-source license](http://www.apache.org/licenses/LICENSE-2.0).
 
-See the [change log](CHANGELOG.md) for information on the release versions and their
-compatibility with LabKey Server versions.
+See the [change log](CHANGELOG.md) for information on the release versions and their compatibility with LabKey Server versions.
 
 ## Development
 
 ### Dependency Declaration
 To declare a dependency on this jar file, you can use the following in Gradle
 
-```compile(group: 'org.labkey.api', name: 'labkey-client-api', version: '4.2.0')```
+```compile(group: 'org.labkey.api', name: 'labkey-client-api', version: '7.3.0')```
 
 If using the LabKey Gradle plugins and building a LabKey module, it is best to 
 use this utility method instead to facilitate testing of any local changes to
