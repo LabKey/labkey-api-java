@@ -2,13 +2,18 @@
 
 ## version 7.4.0-SNAPSHOT
 *Released*: TBD
-*
+* Merge `ExecuteSqlCommand` into the `SelectRowsCommand` hierarchy to add `includeMetadata` support, eliminate redundant
+  code, and ensure future shared properties can be implemented in both easily.
+* Eliminate unnecessary `BaseSelect` interface
+* Eliminate the `RequestType` generic type parameter on `Command`
+* Update `StopImpersonatingCommand` to use the `stopImpersonatingApi` action
+* Update Gradle plugins, Commons Codec, Commons Logging, HttpClient, and JSON-java versions
 
 ## version 7.3.0
 *Released*: 15 July 2026
 * Update Gradle version and remove some deprecated syntax
 * Update HttpCore5 to 5.4.3 (CVE-2026-54399) and HttpClient5 to 5.5.2
-* Update Gradle plugins, Commons Codec, Commons Logging, and JSONObject versions
+* Update Gradle plugins, Commons Codec, Commons Logging, and JSON-java versions
 
 ## version 7.2.0
 *Released*: 17 February 2026
@@ -25,7 +30,7 @@
 
 ## version 7.0.0
 *Released*: 18 July 2025
-* Update Gradle, Gradle Plugins, HttpClient, and JSONObject versions
+* Update Gradle, Gradle Plugins, HttpClient, and JSON-java versions
 * BREAKING CHANGES
   * The `SaveRowsCommand` has been updated to be a command wrapper for the `query-saveRows.api`
   * The `SaveRowsResponse` now wraps the response from the new `SaveRowsCommand`
@@ -35,7 +40,7 @@
 
 ## version 6.3.0
 *Released*: 19 June 2025
-* Update Commons Codec, Commons Logging, Gradle, Gradle Plugins, HttpClient, HttpCore, and JSONObject versions
+* Update Commons Codec, Commons Logging, Gradle, Gradle Plugins, HttpClient, HttpCore, and JSON-java versions
 * Remove defunct FileNotification API and uses
 * Update publishing method for new Maven Central API
 
@@ -44,7 +49,7 @@
 * Add support for `auditUserComment` field for assay import
 * Add support for `allowPlateMetadata`, `plateMetadata` fields for assay plate support
 * Deprecate `GetContainersResponse` permissions methods which are incompatible with LabKey Server v24.8+ 
-* Update Commons Codec, Commons Logging, Gradle, Gradle Plugins, HttpCore, and JSONObject versions
+* Update Commons Codec, Commons Logging, Gradle, Gradle Plugins, HttpCore, and JSON-java versions
 
 ## version 6.1.0
 *Released*: 26 February 2024

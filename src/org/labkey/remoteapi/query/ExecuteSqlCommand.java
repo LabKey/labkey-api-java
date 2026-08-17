@@ -18,6 +18,8 @@ package org.labkey.remoteapi.query;
 import org.json.JSONObject;
 import org.labkey.remoteapi.internal.EncodeUtils;
 
+import java.util.List;
+
 /**
  * Command for executing arbitrary LabKey SQL.
  * <p>
@@ -118,6 +120,16 @@ public class ExecuteSqlCommand extends BaseQueryCommand<SelectRowsResponse>
     public void setSql(String sql)
     {
         _sql = sql;
+    }
+
+    /**
+     * @param sorts the sort specifications to apply to the query
+     * @deprecated Use {@link #setSorts(List)} instead.
+     */
+    @Deprecated
+    public void setSort(List<Sort> sorts)
+    {
+        setSorts(sorts);
     }
 
     /**
