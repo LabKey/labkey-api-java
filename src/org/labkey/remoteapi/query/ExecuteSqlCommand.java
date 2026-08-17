@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import org.labkey.remoteapi.internal.EncodeUtils;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Command for executing arbitrary LabKey SQL.
@@ -214,5 +215,21 @@ public class ExecuteSqlCommand extends BaseQueryCommand<SelectRowsResponse>
         json.put("saveInSession", isSaveInSession());
 
         return json;
+    }
+
+    @Override
+    protected Map<String, Object> createParameterMap()
+    {
+        Map<String, Object> params = super.createParameterMap();
+
+        if (null != getSorts() && !getSorts().isEmpty())
+            params.put("query.sort", Sort.getSortQueryStringParam(getSorts()));
+
+        for (Map.Entry<String, String> entry : getQueryParameters().entrySet())
+        {
+            params.put("query.param." + entry.getKey(), entry.getValue());
+        }
+
+        return params;
     }
 }

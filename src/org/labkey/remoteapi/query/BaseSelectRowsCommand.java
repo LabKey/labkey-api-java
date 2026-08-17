@@ -20,6 +20,7 @@ import org.labkey.remoteapi.CommandResponse;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class BaseSelectRowsCommand<ResponseType extends CommandResponse> extends BaseQueryCommand<ResponseType>
 {
@@ -96,7 +97,18 @@ public class BaseSelectRowsCommand<ResponseType extends CommandResponse> extends
     {
         JSONObject json = super.getJsonObject();
 
+        // Note: SelectRows and ExecuteSql both support sort and param, but they differ in how they're conveyed (URL vs. JSON)
+
+        if (null != getSorts() && !getSorts().isEmpty())
+            json.put("query.sort", Sort.getSortQueryStringParam(getSorts()));
+
+        for (Map.Entry<String, String> entry : getQueryParameters().entrySet())
+        {
+            json.put("query.param." + entry.getKey(), entry.getValue());
+        }
+
         // Note: SelectRows and ExecuteSql both support offset and maxRows, but the property names are different
+
         if (getOffset() > 0)
             json.put("query.offset", getOffset());
 

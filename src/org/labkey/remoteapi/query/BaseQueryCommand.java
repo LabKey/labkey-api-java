@@ -37,6 +37,7 @@ public abstract class BaseQueryCommand<ResponseType extends CommandResponse> ext
     public BaseQueryCommand(String controllerName, String actionName)
     {
         super(controllerName, actionName);
+        setRequiredVersion(9.1); // Need >= 9.1 to support includeMetadata
     }
 
     /**
@@ -199,14 +200,6 @@ public abstract class BaseQueryCommand<ResponseType extends CommandResponse> ext
     public JSONObject getJsonObject()
     {
         JSONObject json = new JSONObject();
-
-        if (null != getSorts() && !getSorts().isEmpty())
-            json.put("query.sort", Sort.getSortQueryStringParam(getSorts()));
-
-        for (Map.Entry<String, String> entry : getQueryParameters().entrySet())
-        {
-            json.put("query.param." + entry.getKey(), entry.getValue());
-        }
 
         if (getContainerFilter() != null)
             json.put("containerFilter", getContainerFilter().name());
