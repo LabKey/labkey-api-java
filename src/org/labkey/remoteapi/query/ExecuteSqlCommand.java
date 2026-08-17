@@ -18,8 +18,6 @@ package org.labkey.remoteapi.query;
 import org.json.JSONObject;
 import org.labkey.remoteapi.internal.EncodeUtils;
 
-import java.util.Map;
-
 /**
  * Command for executing arbitrary LabKey SQL.
  * <p>
