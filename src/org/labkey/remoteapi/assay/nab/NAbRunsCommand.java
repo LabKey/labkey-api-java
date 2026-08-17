@@ -16,7 +16,7 @@
 package org.labkey.remoteapi.assay.nab;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.query.BaseQueryCommand;
+import org.labkey.remoteapi.query.BaseSelectRowsCommand;
 
 /**
  * Command for obtaining information about the current assay definitions
@@ -26,7 +26,7 @@ import org.labkey.remoteapi.query.BaseQueryCommand;
  * you may use the various setters to filter this list to assays of a given
  * name, type or id.
  */
-public class NAbRunsCommand extends BaseQueryCommand<NAbRunsResponse>
+public class NAbRunsCommand extends BaseSelectRowsCommand<NAbRunsResponse>
 {
     private String _assayName;
     private boolean _includeStats = true;

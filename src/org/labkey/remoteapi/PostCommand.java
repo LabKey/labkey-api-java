@@ -33,7 +33,7 @@ import java.net.URI;
  * specialized class in this library, the developer may invoke these APIs by creating an instance of
  * the {@link SimplePostCommand} class and setting the JSON object to post.
  */
-public abstract class PostCommand<ResponseType extends CommandResponse> extends Command<ResponseType, HttpPost>
+public abstract class PostCommand<ResponseType extends CommandResponse> extends Command<ResponseType>
 {
     /**
      * Constructs a new PostCommand given a controller and action name.

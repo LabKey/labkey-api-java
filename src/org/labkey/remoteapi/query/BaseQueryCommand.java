@@ -26,13 +26,11 @@ import java.util.Map;
 
 public abstract class BaseQueryCommand<ResponseType extends CommandResponse> extends PostCommand<ResponseType>
 {
-    protected int _maxRows = -1;
-    protected int _offset = 0;
-    protected List<Sort> _sorts;
-    protected List<Filter> _filters;
-    protected ContainerFilter _containerFilter;
+    private int _maxRows = -1;
+    private int _offset = 0;
+    private List<Sort> _sorts;
+    private ContainerFilter _containerFilter;
     private Map<String, String> _queryParameters = new HashMap<>();
-    private boolean _ignoreFilter = false;
     private boolean _includeMetadata = true;
     private boolean _includeTotalCount = true;
 
@@ -130,52 +128,6 @@ public abstract class BaseQueryCommand<ResponseType extends CommandResponse> ext
     }
 
     /**
-     * Returns the current list of filters, or null if none are defined.
-     *
-     * @return The current list of filters.
-     */
-    public List<Filter> getFilters()
-    {
-        return _filters;
-    }
-
-    /**
-     * Sets the current list of filters.
-     *
-     * @param filters The new list of filters.
-     */
-    public void setFilters(List<Filter> filters)
-    {
-        _filters = filters;
-    }
-
-    /**
-     * Adds a new filter to the list.
-     *
-     * @param filter The new filter definition.
-     */
-    public void addFilter(Filter filter)
-    {
-        if (_filters == null)
-            _filters = new ArrayList<>();
-        _filters.add(filter);
-    }
-
-    /**
-     * Constructs and adds a new filter to the list. This is equivalent to
-     * <code>addFilter(new Filter(columnName, value, operator))</code>
-     *
-     * @param columnName The column name.
-     * @param value      The filter value.
-     * @param operator   The filter operator.
-     * @see org.labkey.remoteapi.query.Filter
-     */
-    public void addFilter(String columnName, Object value, Filter.Operator operator)
-    {
-        addFilter(new Filter(columnName, value, operator));
-    }
-
-    /**
      * Returns the container filter set for this command
      *
      * @return the container filter (may be null)
@@ -194,20 +146,6 @@ public abstract class BaseQueryCommand<ResponseType extends CommandResponse> ext
     public void setContainerFilter(ContainerFilter containerFilter)
     {
         _containerFilter = containerFilter;
-    }
-
-    public boolean isIgnoreFilter()
-    {
-        return _ignoreFilter;
-    }
-
-    /**
-     * Pass true to ignore any filter that may be part of the chosen view. Defaults to false.
-     * @param ignoreFilter Set to 'true' to ignore the view filter.
-     */
-    public void setIgnoreFilter(boolean ignoreFilter)
-    {
-        _ignoreFilter = ignoreFilter;
     }
 
     public boolean isIncludeMetadata()
@@ -262,39 +200,22 @@ public abstract class BaseQueryCommand<ResponseType extends CommandResponse> ext
     {
         JSONObject json = new JSONObject();
 
-        if (getOffset() > 0)
-            json.put("query.offset", getOffset());
-
-        if (getMaxRows() >= 0)
-            json.put("query.maxRows", getMaxRows());
-        else
-            json.put("query.showRows", "all");
-
-        if (null != getSorts() && getSorts().size() > 0)
+        if (null != getSorts() && !getSorts().isEmpty())
             json.put("query.sort", Sort.getSortQueryStringParam(getSorts()));
-
-        if (null != getFilters())
-        {
-            for(Filter filter : getFilters())
-                json.put("query." + filter.getQueryStringParamName(), filter.getQueryStringParamValue());
-        }
-
-        if (getContainerFilter() != null)
-            json.put("containerFilter", getContainerFilter().name());
 
         for (Map.Entry<String, String> entry : getQueryParameters().entrySet())
         {
             json.put("query.param." + entry.getKey(), entry.getValue());
         }
 
+        if (getContainerFilter() != null)
+            json.put("containerFilter", getContainerFilter().name());
+
         if (!isIncludeTotalCount())
             json.put("includeTotalCount", isIncludeTotalCount());
 
         if (!isIncludeMetadata())
             json.put("includeMetadata", isIncludeMetadata());
-
-        if (isIgnoreFilter())
-            json.put("query.ignoreFilter", isIgnoreFilter());
 
         return json;
     }
