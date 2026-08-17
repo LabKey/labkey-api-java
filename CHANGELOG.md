@@ -2,7 +2,8 @@
 
 ## version 7.4.0-SNAPSHOT
 *Released*: TBD
-*
+* Update HttpClient5 to 5.6.4 (CVE-2026-64607)
+* Update Gradle plugins, Commons Codec, and JSONObject versions
 
 ## version 7.3.0
 *Released*: 15 July 2026
