@@ -31,7 +31,7 @@ import org.labkey.remoteapi.internal.EncodeUtils;
  * {@link org.labkey.remoteapi.query.SelectRowsCommand}, so the response object
  * will be of type {@link org.labkey.remoteapi.query.SelectRowsResponse}.
  */
-public class ExecuteSqlCommand extends BaseQueryCommand<SelectRowsResponse> implements BaseSelect
+public class ExecuteSqlCommand extends BaseQueryCommand<SelectRowsResponse>
 {
     private String _schemaName;
     private String _sql;

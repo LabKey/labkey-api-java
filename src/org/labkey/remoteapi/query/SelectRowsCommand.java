@@ -48,7 +48,7 @@ import java.util.List;
  * </code>
  * </pre>
  */
-public class SelectRowsCommand extends BaseSelectRowsCommand<SelectRowsResponse> implements BaseSelect
+public class SelectRowsCommand extends BaseSelectRowsCommand<SelectRowsResponse>
 {
     private String _schemaName;
     private String _queryName;
