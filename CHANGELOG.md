@@ -1,11 +1,13 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## version 7.4.0-SNAPSHOT
+## version 8.0.0-SNAPSHOT
 *Released*: TBD
+* POTENTIALLY BREAKING CHANGES
+  * Eliminate the `RequestType` generic type parameter on `Command`
+  * Eliminate unnecessary `BaseSelect` interface
+  * Remove deprecated methods from `GetContainersResponse` and `GetUsersCommand`
 * Merge `ExecuteSqlCommand` into the `SelectRowsCommand` hierarchy to add `includeMetadata` support, eliminate redundant
   code, and ensure future shared properties can be implemented in both easily.
-* Eliminate unnecessary `BaseSelect` interface
-* Eliminate the `RequestType` generic type parameter on `Command`
 * Update `StopImpersonatingCommand` to use the `stopImpersonatingApi` action
 * Update Gradle plugins, Commons Codec, Commons Logging, HttpClient, and JSON-java versions
 
