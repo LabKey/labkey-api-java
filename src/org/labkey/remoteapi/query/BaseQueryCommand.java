@@ -211,4 +211,26 @@ public abstract class BaseQueryCommand<ResponseType extends CommandResponse> ext
 
         return json;
     }
+
+    protected void addOffsetAndMaxRows(JSONObject json, String offsetName, String maxRowsName)
+    {
+        if (getOffset() > 0)
+            json.put(offsetName, getOffset());
+
+        if (getMaxRows() >= 0)
+            json.put(maxRowsName, getMaxRows());
+    }
+
+    protected JSONObject addSortAndParams(JSONObject json)
+    {
+        if (null != getSorts() && !getSorts().isEmpty())
+            json.put("query.sort", Sort.getSortQueryStringParam(getSorts()));
+
+        for (Map.Entry<String, String> entry : getQueryParameters().entrySet())
+        {
+            json.put("query.param." + entry.getKey(), entry.getValue());
+        }
+
+        return json;
+    }
 }

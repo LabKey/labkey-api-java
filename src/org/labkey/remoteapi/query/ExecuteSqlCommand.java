@@ -207,10 +207,7 @@ public class ExecuteSqlCommand extends BaseQueryCommand<SelectRowsResponse>
         JSONObject json = super.getJsonObject();
         json.put("schemaName", getSchemaName());
         json.put("sql", getWafEncoding() ? EncodeUtils.wafEncode(getSql()) : getSql());
-        if (getMaxRows() >= 0)
-            json.put("maxRows", getMaxRows());
-        if (getOffset() > 0)
-            json.put("offset", getOffset());
+        addOffsetAndMaxRows(json, "offset", "maxRows");
         json.put("includeDetailsColumn", isIncludeDetailsColumn());
         json.put("saveInSession", isSaveInSession());
 
@@ -221,13 +218,11 @@ public class ExecuteSqlCommand extends BaseQueryCommand<SelectRowsResponse>
     protected Map<String, Object> createParameterMap()
     {
         Map<String, Object> params = super.createParameterMap();
+        JSONObject sortAndParams = addSortAndParams(new JSONObject());
 
-        if (null != getSorts() && !getSorts().isEmpty())
-            params.put("query.sort", Sort.getSortQueryStringParam(getSorts()));
-
-        for (Map.Entry<String, String> entry : getQueryParameters().entrySet())
+        if (!sortAndParams.isEmpty())
         {
-            params.put("query.param." + entry.getKey(), entry.getValue());
+            params.putAll(sortAndParams.toMap());
         }
 
         return params;
