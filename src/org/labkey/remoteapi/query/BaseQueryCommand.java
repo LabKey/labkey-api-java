@@ -37,7 +37,6 @@ public abstract class BaseQueryCommand<ResponseType extends CommandResponse> ext
     public BaseQueryCommand(String controllerName, String actionName)
     {
         super(controllerName, actionName);
-        setRequiredVersion(9.1); // Need >= 9.1 to support includeMetadata
     }
 
     /**
