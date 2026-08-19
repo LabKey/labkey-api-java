@@ -6,6 +6,7 @@
   * Eliminate the `RequestType` generic type parameter on `Command`
   * Eliminate unnecessary `BaseSelect` interface
   * Remove deprecated methods from `GetContainersResponse` and `GetUsersCommand`
+* `ExecuteSqlCommand` now supports `setIncludeMetadata()` and `isIncludeMetadata()`
 * Merge `ExecuteSqlCommand` into the `SelectRowsCommand` hierarchy to add `includeMetadata` support, eliminate redundant
   code, and ensure future shared properties can be implemented in both easily.
 * Update `StopImpersonatingCommand` to use the `stopImpersonatingApi` action
