@@ -33,6 +33,8 @@ import java.util.Map;
  * The response of this command is exactly the same as the
  * {@link org.labkey.remoteapi.query.SelectRowsCommand}, so the response object
  * will be of type {@link org.labkey.remoteapi.query.SelectRowsResponse}.
+ * <p>
+ * JavaClientApiTest includes some testing of this command.
  */
 public class ExecuteSqlCommand extends BaseQueryCommand<SelectRowsResponse>
 {
@@ -226,5 +228,11 @@ public class ExecuteSqlCommand extends BaseQueryCommand<SelectRowsResponse>
         }
 
         return params;
+    }
+
+    // Convenience method for quoting an identifier that may have tricky characters, including quotes
+    public static String quoteIdentifier(String identifier)
+    {
+        return "\"" + identifier.replace("\"", "\"\"") + "\"";
     }
 }

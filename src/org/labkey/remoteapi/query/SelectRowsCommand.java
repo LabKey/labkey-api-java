@@ -47,6 +47,8 @@ import java.util.List;
  *     }
  * </code>
  * </pre>
+ * <p>
+ * JavaClientApiTest includes some testing of this command.
  */
 public class SelectRowsCommand extends BaseSelectRowsCommand<SelectRowsResponse>
 {
