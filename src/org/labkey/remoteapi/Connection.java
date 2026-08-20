@@ -380,8 +380,7 @@ public class Connection
         {
             CommandResponse resp = new StopImpersonatingCommand().execute(this, _impersonatePath);
 
-            // on success, a 302 response is returned (this command disables redirects)
-            if (resp.getStatusCode() != 302)
+            if (resp.getStatusCode() != 200)
                 throw new CommandException("Failed to stop impersonating");
 
             _impersonateUser = null;

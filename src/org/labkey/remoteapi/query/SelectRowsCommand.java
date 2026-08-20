@@ -47,8 +47,10 @@ import java.util.List;
  *     }
  * </code>
  * </pre>
+ * <p>
+ * JavaClientApiTest includes some testing of this command.
  */
-public class SelectRowsCommand extends BaseQueryCommand<SelectRowsResponse> implements BaseSelect
+public class SelectRowsCommand extends BaseSelectRowsCommand<SelectRowsResponse>
 {
     private String _schemaName;
     private String _queryName;
@@ -193,7 +195,7 @@ public class SelectRowsCommand extends BaseQueryCommand<SelectRowsResponse> impl
         if (null != getViewName())
             json.put("query.viewName", getViewName());
 
-        if (null != getColumns() && getColumns().size() > 0)
+        if (null != getColumns() && !getColumns().isEmpty())
         {
             StringBuilder collist = new StringBuilder();
             String sep = "";

@@ -16,10 +16,8 @@
 package org.labkey.remoteapi.query;
 
 import org.json.JSONObject;
-import org.labkey.remoteapi.PostCommand;
 import org.labkey.remoteapi.internal.EncodeUtils;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,19 +33,15 @@ import java.util.Map;
  * The response of this command is exactly the same as the
  * {@link org.labkey.remoteapi.query.SelectRowsCommand}, so the response object
  * will be of type {@link org.labkey.remoteapi.query.SelectRowsResponse}.
+ * <p>
+ * JavaClientApiTest includes some testing of this command.
  */
-public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implements BaseSelect
+public class ExecuteSqlCommand extends BaseQueryCommand<SelectRowsResponse>
 {
     private String _schemaName;
     private String _sql;
-    private int _maxRows = -1;
-    private int _offset = 0;
-    private ContainerFilter _containerFilter;
-    private boolean _includeTotalCount = true;
-    private List<Sort> _sorts;
     private boolean _saveInSession = false;
     private boolean _includeDetailsColumn = false;
-    private Map<String, String> _queryParameters = new HashMap<>();
     private boolean _wafEncoding = true;
 
     /**
@@ -132,92 +126,13 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
     }
 
     /**
-     * Returns the current row limit value. Defaults to -1, meaning return all rows.
-     * @return The current row limit value.
+     * @param sorts the sort specifications to apply to the query
+     * @deprecated Use {@link #setSorts(List)} instead.
      */
-    @Override
-    public int getMaxRows()
-    {
-        return _maxRows;
-    }
-
-    /**
-     * Sets the current row limit value. If this is set to a positive value, only
-     * the first <code>maxRows</code> rows will be returned from the server.
-     * @param maxRows The maximim number of rows to return, or -1 to get all rows (default).
-     */
-    @Override
-    public void setMaxRows(int maxRows)
-    {
-        _maxRows = maxRows;
-    }
-
-    /**
-     * Returns the index of the first row in the resultset to return (defaults to 0).
-     * @return The current offset index.
-     */
-    @Override
-    public int getOffset()
-    {
-        return _offset;
-    }
-
-    /**
-     * Sets the index of the first row in the resultset to return from the server.
-     * Use this in conjunction with {@link #setMaxRows(int)} to return pages of
-     * rows at a time from the server.
-     * @param offset The current offset index.
-     */
-    @Override
-    public void setOffset(int offset)
-    {
-        _offset = offset;
-    }
-
-    /**
-     Include the total number of rows available (defaults to true).
-     If false totalCount will equal number of rows returned (equal to maxRows unless maxRows == 0).
-     @return indication of whether total count should be included or not
-     */
-    public boolean isIncludeTotalCount()
-    {
-        return _includeTotalCount;
-    }
-
-    /**
-     Include the total number of rows available (defaults to true).
-     If false totalCount will equal number of rows returned (equal to maxRows unless maxRows == 0).
-     @param includeTotalCount setting for whether to include the total count
-     */
-    public void setIncludeTotalCount(boolean includeTotalCount)
-    {
-        _includeTotalCount = includeTotalCount;
-    }
-
-    /**
-     A sort specification to apply over the rows returned by the SQL. In general, you should either include an
-     ORDER BY clause in your SQL, or provide a sort specification via this config property, but not both.
-     The value of this property should be a comma-delimited list of column names you want to sort by.
-     Use a - prefix to sort a column in descending order
-     (e.g., 'LastName,-Age' to sort first by LastName, then by Age descending).
-     @return the list of sorts to apply
-     */
-    public List<Sort> getSorts()
-    {
-        return _sorts;
-    }
-
-    /**
-     A sort specification to apply over the rows returned by the SQL. In general, you should either include an
-     ORDER BY clause in your SQL, or provide a sort specification via this config property, but not both.
-     The value of this property should be a comma-delimited list of column names you want to sort by.
-     Use a - prefix to sort a column in descending order
-     (e.g., 'LastName,-Age' to sort first by LastName, then by Age descending).
-     @param sorts the sort specifications to apply to the query
-     */
+    @Deprecated
     public void setSort(List<Sort> sorts)
     {
-        _sorts = sorts;
+        setSorts(sorts);
     }
 
     /**
@@ -266,47 +181,6 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
         _includeDetailsColumn = includeDetailsColumn;
     }
 
-    /**
-     Map of name (string)/value pairs for the values of parameters if the SQL references underlying queries
-     that are parameterized.
-     @return map of query parameters for the SQL references
-     */
-    public Map<String, String> getQueryParameters()
-    {
-        return _queryParameters;
-    }
-
-    /**
-     Map of name (string)/value pairs for the values of parameters if the SQL references underlying queries
-     that are parameterized.
-     @param parameters a map of the named parameters to use in the underlying parameterized queries
-     */
-    public void setQueryParameters(Map<String, String> parameters)
-    {
-        _queryParameters = parameters;
-    }
-
-    /**
-     * Returns the container filter set for this command
-     * @return the container filter (may be null)
-     */
-    @Override
-    public ContainerFilter getContainerFilter()
-    {
-        return _containerFilter;
-    }
-
-    /**
-     * Sets the container filter for the sql to be executed.
-     * This will cause the query to be executed over more than one container.
-     * @param containerFilter the filter to apply to the query (may be null)
-     */
-    @Override
-    public void setContainerFilter(ContainerFilter containerFilter)
-    {
-        _containerFilter = containerFilter;
-    }
-
     public boolean getWafEncoding()
     {
         return _wafEncoding;
@@ -332,16 +206,10 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
     @Override
     public JSONObject getJsonObject()
     {
-        JSONObject json = new JSONObject();
+        JSONObject json = super.getJsonObject();
         json.put("schemaName", getSchemaName());
         json.put("sql", getWafEncoding() ? EncodeUtils.wafEncode(getSql()) : getSql());
-        if (getMaxRows() >= 0)
-            json.put("maxRows", getMaxRows());
-        if (getOffset() > 0)
-            json.put("offset", getOffset());
-        if (getContainerFilter() != null)
-            json.put("containerFilter", getContainerFilter().name());
-        json.put("includeTotalCount", isIncludeTotalCount());
+        addOffsetAndMaxRows(json, "offset", "maxRows");
         json.put("includeDetailsColumn", isIncludeDetailsColumn());
         json.put("saveInSession", isSaveInSession());
 
@@ -352,15 +220,19 @@ public class ExecuteSqlCommand extends PostCommand<SelectRowsResponse> implement
     protected Map<String, Object> createParameterMap()
     {
         Map<String, Object> params = super.createParameterMap();
+        JSONObject sortAndParams = addSortAndParams(new JSONObject());
 
-        if (null != getSorts() && !getSorts().isEmpty())
-            params.put("query.sort", Sort.getSortQueryStringParam(getSorts()));
-
-        for (Map.Entry<String, String> entry : getQueryParameters().entrySet())
+        if (!sortAndParams.isEmpty())
         {
-            params.put("query.param." + entry.getKey(), entry.getValue());
+            params.putAll(sortAndParams.toMap());
         }
 
         return params;
+    }
+
+    // Convenience method for quoting an identifier that may have tricky characters, including quotes
+    public static String quoteIdentifier(String identifier)
+    {
+        return "\"" + identifier.replace("\"", "\"\"") + "\"";
     }
 }

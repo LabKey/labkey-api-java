@@ -24,22 +24,7 @@ import org.labkey.remoteapi.assay.nab.NAbRunsResponse;
 import org.labkey.remoteapi.assay.nab.model.NAbNeutralizationResult;
 import org.labkey.remoteapi.assay.nab.model.NAbRun;
 import org.labkey.remoteapi.assay.nab.model.NAbSample;
-import org.labkey.remoteapi.query.ContainerFilter;
-import org.labkey.remoteapi.query.DeleteRowsCommand;
-import org.labkey.remoteapi.query.ExecuteSqlCommand;
-import org.labkey.remoteapi.query.Filter;
-import org.labkey.remoteapi.query.GetQueriesCommand;
-import org.labkey.remoteapi.query.GetQueriesResponse;
-import org.labkey.remoteapi.query.GetSchemasCommand;
-import org.labkey.remoteapi.query.GetSchemasResponse;
-import org.labkey.remoteapi.query.InsertRowsCommand;
-import org.labkey.remoteapi.query.RowsResponse;
-import org.labkey.remoteapi.query.SelectRowsCommand;
-import org.labkey.remoteapi.query.SelectRowsResponse;
-import org.labkey.remoteapi.query.Sort;
-import org.labkey.remoteapi.query.TruncateTableCommand;
-import org.labkey.remoteapi.query.TruncateTableResponse;
-import org.labkey.remoteapi.query.UpdateRowsCommand;
+import org.labkey.remoteapi.query.*;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -55,7 +40,7 @@ public class Test
 
     public static void main(String[] args) throws Exception
     {
-        String baseUrl = "http://localhost:8080/labkey";
+        String baseUrl = "http://localhost:8080";
         Connection cn = args.length < 2 ? new Connection(baseUrl) : new Connection(baseUrl, args[0], args[1]);
         //Connection cn = new Connection(baseUrl, new ApiKeyCredentialsProvider("session:d7c3a4aeb283e3e54c4126a707908420"));
         //Connection cn = new Connection(baseUrl, new NetRcCredentialsProvider(baseUrl));

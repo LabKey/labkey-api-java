@@ -20,7 +20,7 @@ import org.apache.hc.client5.http.classic.methods.HttpGet;
 import java.net.URI;
 
 /** Base class for all commands that use get **/
-public abstract class GetCommand<ResponseType extends CommandResponse> extends Command<ResponseType, HttpGet>
+public abstract class GetCommand<ResponseType extends CommandResponse> extends Command<ResponseType>
 {
     protected GetCommand(String controllerName, String actionName)
     {

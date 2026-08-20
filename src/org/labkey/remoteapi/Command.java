@@ -58,7 +58,7 @@ import java.util.Scanner;
  * Note that this class is not thread-safe. Do not share instances of this class or its
  * descendants between threads, unless the descendant declares explicitly that it is thread-safe.
  */
-public abstract class Command<ResponseType extends CommandResponse, RequestType extends HttpUriRequest> implements HasRequiredVersion
+public abstract class Command<ResponseType extends CommandResponse> implements HasRequiredVersion
 {
     /**
      * A constant for the official JSON content type ("application/json")
@@ -448,7 +448,7 @@ public abstract class Command<ResponseType extends CommandResponse, RequestType 
      * @throws URISyntaxException Thrown if there is a problem parsing the base URL in the connection.
      */
 
-    protected RequestType getHttpRequest(Connection connection, String folderPath) throws URISyntaxException
+    protected HttpUriRequest getHttpRequest(Connection connection, String folderPath) throws URISyntaxException
     {
         //construct a URI from connection base URI, folder path, and current parameters
         URI uri = createURI(connection, folderPath);
@@ -461,7 +461,7 @@ public abstract class Command<ResponseType extends CommandResponse, RequestType 
      * @param uri the uri to convert
      * @return The HttpUriRequest instance.
      */
-    protected abstract RequestType createRequest(URI uri);
+    protected abstract HttpUriRequest createRequest(URI uri);
 
     /**
      * Returns a full URI for this Command, including base URI, folder path, and query string.
