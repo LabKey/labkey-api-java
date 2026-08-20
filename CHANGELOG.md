@@ -1,8 +1,5 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## version 8.1.0-SNAPSHOT
-*Released*: TBD
-
 ## version 8.0.0
 *Released*: 2026-08-20
 * POTENTIALLY BREAKING CHANGES
