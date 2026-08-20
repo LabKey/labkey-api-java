@@ -9,11 +9,12 @@
   * Eliminate the `RequestType` generic type parameter on `Command`
   * Eliminate unnecessary `BaseSelect` interface
   * Remove deprecated methods from `GetContainersResponse` and `GetUsersCommand`
+  * Update `StopImpersonatingCommand` to use the `stopImpersonatingApi` action. A successful execute() call now returns
+    status code 200 instead of 302. 
 * `ExecuteSqlCommand` now supports `setIncludeMetadata()` and `isIncludeMetadata()`. Use of this flag requires LabKey
   Server v26.9+.
 * Merge `ExecuteSqlCommand` into the `SelectRowsCommand` hierarchy to add `includeMetadata` support, eliminate redundant
   code, and ensure future shared properties can be implemented in both easily.
-* Update `StopImpersonatingCommand` to use the `stopImpersonatingApi` action
 * Add `ExecuteSqlCommand.quoteIdentifier()` helper method to quote identifiers that may have tricky characters
 * Update Gradle, Gradle plugins, Commons Codec, Commons Logging, HttpClient, and JSON-java versions
 
