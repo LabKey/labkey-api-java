@@ -70,7 +70,7 @@ repositories {
 
 group = "org.labkey.api"
 
-version = "7.4.0-fb_execute_sql_refactor-SNAPSHOT"
+version = "8.1.0-SNAPSHOT"
 
 dependencies {
     api "org.json:json:${jsonObjectVersion}"

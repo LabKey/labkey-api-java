@@ -1,16 +1,21 @@
 # The LabKey Remote API Library for Java - Change Log
 
-## version 8.0.0-SNAPSHOT
+## version 8.1.0-SNAPSHOT
 *Released*: TBD
+
+## version 8.0.0
+*Released*: 2026-08-20
 * POTENTIALLY BREAKING CHANGES
   * Eliminate the `RequestType` generic type parameter on `Command`
   * Eliminate unnecessary `BaseSelect` interface
   * Remove deprecated methods from `GetContainersResponse` and `GetUsersCommand`
-* `ExecuteSqlCommand` now supports `setIncludeMetadata()` and `isIncludeMetadata()`
+* `ExecuteSqlCommand` now supports `setIncludeMetadata()` and `isIncludeMetadata()`. Use of this flag requires LabKey
+  Server v26.9+.
 * Merge `ExecuteSqlCommand` into the `SelectRowsCommand` hierarchy to add `includeMetadata` support, eliminate redundant
   code, and ensure future shared properties can be implemented in both easily.
 * Update `StopImpersonatingCommand` to use the `stopImpersonatingApi` action
-* Update Gradle plugins, Commons Codec, Commons Logging, HttpClient, and JSON-java versions
+* Add `ExecuteSqlCommand.quoteIdentifier()` helper method to quote identifiers that may have tricky characters
+* Update Gradle, Gradle plugins, Commons Codec, Commons Logging, HttpClient, and JSON-java versions
 
 ## version 7.3.0
 *Released*: 15 July 2026
