@@ -27,19 +27,19 @@
 		/*
 			If viewName, filter, columns, or sort params have been specified then set them on the command
 		*/
-		%if &viewName ne %then %do;
+		%if %length(%superq(viewName)) %then %do;
 			command.callVoidMethod('setViewName', &viewName);
 		%end;
 
-		%if &filter ne %then %do;
+		%if %length(%superq(filter)) %then %do;
 			&filter;
 		%end;
 
-		%if &columns ne %then %do;
+		%if %length(%superq(columns)) %then %do;
 			command.callVoidMethod('setColumns', &columns);
 		%end;
 
-		%if &sort ne %then %do;
+		%if %length(%superq(sort)) %then %do;
 			command.callVoidMethod('setSorts', &sort);
 		%end;
     %end;
@@ -67,9 +67,9 @@
     /*
         Container filter is totally optional, so we check here instead of setting containerFilter = &lk_containerFilter in the params list.
     */
-    %if (&containerFilter eq) and %symexist(lk_containerFilter) %then %let containerFilter = &lk_containerFilter;
+    %if %length(%superq(containerFilter)) = 0 and %symexist(lk_containerFilter) %then %let containerFilter = &lk_containerFilter;
 
-    %if &containerFilter ne %then %do;
+    %if %length(%superq(containerFilter)) %then %do;
         command.callVoidMethod('setContainerFilter', &containerFilter);
     %end;
 
