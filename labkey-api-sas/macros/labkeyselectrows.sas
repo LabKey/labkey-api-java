@@ -22,7 +22,7 @@
 		length title $1000;
 		title = cat("Schema: '", &schemaName, "', Query: '", &queryName, "'");
 
-		%if &viewName ne %then %do;
+		%if %length(%superq(viewName)) %then %do;
 			title = cat(title, ", View: '", &viewName, "'");
 		%end;
 

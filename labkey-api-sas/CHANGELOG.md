@@ -1,5 +1,13 @@
 # The LabKey Remote API Library for SAS - Change Log
 
+## version 1.1.0
+*Released* : TBD
+* `%labkeyMakeFilter` accepts every operator that takes a value; previously all of them failed ([GH Issue 1800](https://github.com/LabKey/internal-issues/issues/1800))
+* `%labkeyMakeFilter` keeps quotes, spaces, and commas in quoted values instead of stripping or splitting on them
+* `%labkeyMakeFilter` no longer resolves `&` or `%` in single-quoted arguments; quote column names and values with single quotes
+* `%labkeyMakeFilter` reports an invalid operator when the data step runs rather than when the macro is called
+* Untested against a live SAS installation; verify before release
+
 ## version 1.0.1
 *Released* : 26 July 2022
 * Update labkeyClientApi to v1.5.2
